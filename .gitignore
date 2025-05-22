@@ -1,0 +1,15 @@
+# Ignore MP4 files
+*.mp4
+
+# Ignore folders
+/result_folder/
+/video_analyzer/
+/archive/
+
+# Environment files
+.env
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class 
