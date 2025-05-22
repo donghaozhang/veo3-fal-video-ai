@@ -22,7 +22,7 @@ This project provides a Python script for generating videos using Google's Veo A
 
 Install the required Python packages:
 ```bash
-pip install -r requirements_veo3.txt
+pip install -r requirements.txt
 ```
 
 ### 2. Set up Google Cloud SDK
