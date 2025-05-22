@@ -255,6 +255,28 @@ def generate_video_from_local_image(project_id, image_filename, output_bucket_pa
         location=location
     )
 
+def generate_video_with_veo3_preview(project_id, prompt, output_bucket_path, location="us-central1"):
+    """
+    Generate a video from a text prompt using Google's Veo 3 Preview model.
+    
+    Args:
+        project_id (str): Google Cloud project ID
+        prompt (str): Text description for video generation
+        output_bucket_path (str): GCS path for storing the output (e.g., "gs://dh_learn/veo_output/")
+        location (str): Google Cloud region
+    
+    Returns:
+        str: The GCS URI of the generated video, or None if an error occurred
+    """
+    print("Using Veo 3 Preview model (veo-3.0-generate-preview).")
+    return generate_video_from_text(
+        project_id=project_id,
+        prompt=prompt,
+        output_bucket_path=output_bucket_path,
+        model_id="veo-3.0-generate-preview",
+        location=location
+    )
+
 def download_gcs_file(gcs_uri: str, local_folder_path: str, project_id: str):
     """
     Downloads a file from GCS to a local folder.
@@ -327,14 +349,28 @@ if __name__ == "__main__":
     
     # Example 2: Generate video from a local image in the images folder
     # Use the new simplified function for local images
-    image_prompt = "The man comes to life, smiling and looking around with a happy expression"
+    # image_prompt = "The man comes to life, smiling and looking around with a happy expression"
     
-    video_uri = generate_video_from_local_image(
+    # video_uri = generate_video_from_local_image(
+    #     project_id=PROJECT_ID,
+    #     image_filename="smiling_woman.jpg",
+    #     output_bucket_path=OUTPUT_BUCKET_PATH,
+    #     prompt=image_prompt  # Optional but recommended for better results
+    # )
+    
+    # if video_uri:
+    #     print(f"Image-to-video is available at: {video_uri}")
+
+    # Example 3: Generate video with Veo 3 Preview model (uncomment to use)
+    # Make sure your project is allowlisted for veo-3.0-generate-preview
+    # """
+    veo3_prompt = "A futuristic cityscape with flying vehicles and neon lights, cinematic style."
+    video_uri_veo3 = generate_video_with_veo3_preview(
         project_id=PROJECT_ID,
-        image_filename="smiling_woman.jpg",
-        output_bucket_path=OUTPUT_BUCKET_PATH,
-        prompt=image_prompt  # Optional but recommended for better results
+        prompt=veo3_prompt,
+        output_bucket_path=OUTPUT_BUCKET_PATH
     )
     
-    if video_uri:
-        print(f"Image-to-video is available at: {video_uri}") 
+    if video_uri_veo3:
+        print(f"Veo 3 Preview video is available at: {video_uri_veo3}")
+    # """ 
