@@ -1,7 +1,7 @@
 ---
-description:
-globs:
-alwaysApply: false
+description: 
+globs: 
+alwaysApply: true
 ---
 # FAL AI Dual-Model Video Generation Implementation
 
@@ -275,3 +275,4 @@ Generated videos are saved with metadata:
 - Test model-specific parameters separately
 - Validate API connection before generation
 - Use the comprehensive test suite for CI/CD
+

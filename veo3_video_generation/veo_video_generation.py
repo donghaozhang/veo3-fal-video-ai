@@ -333,8 +333,8 @@ if __name__ == "__main__":
     # pip install --upgrade google-genai
     
     # Set your project ID and output path
-    PROJECT_ID = "speedy-sunspot-460603-p7"
-    OUTPUT_BUCKET_PATH = "gs://test_dh/veo_output/"
+    PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT", "your-project-id")
+    OUTPUT_BUCKET_PATH = os.getenv("OUTPUT_BUCKET_PATH", "gs://your-bucket-name/veo_output/")
     
     # Example 1: Generate video from text
     # prompt = "A serene mountain landscape with a flowing river and colorful sunset. Camera slowly pans across the scene."

@@ -1,7 +1,7 @@
 ---
 description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
 # Video Generation Project Overview
 
@@ -113,6 +113,7 @@ veo3/
 - **Prototyping**: Start with FAL AI (either model) for quick testing
 - **Production**: Use FAL AI for API-based deployments, Google Veo for high-resolution needs
 - **Comparison**: Use the built-in comparison tools to test both FAL AI models side-by-side
+
 
 
 

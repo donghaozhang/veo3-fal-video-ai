@@ -38,8 +38,8 @@ except ImportError as e:
     sys.exit(1)
 
 # Test configuration
-PROJECT_ID = "speedy-sunspot-460603-p7"  # Update with your project ID
-OUTPUT_BUCKET_PATH = "gs://test_dh/veo_output/"  # Update with your bucket path
+PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT", "your-project-id")
+OUTPUT_BUCKET_PATH = os.getenv("OUTPUT_BUCKET_PATH", "gs://your-bucket-name/veo_output/")
 
 class VeoTestSuite:
     """Test suite for Google Veo video generation."""

@@ -35,9 +35,9 @@ except ImportError as e:
     print("Make sure veo_video_generation.py is in the same directory.")
     sys.exit(1)
 
-# Configuration
-PROJECT_ID = "speedy-sunspot-460603-p7"  # Update with your project ID
-OUTPUT_BUCKET_PATH = "gs://test_dh/veo_output/"  # Update with your bucket path
+# Configuration from environment variables
+PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT", "your-project-id")
+OUTPUT_BUCKET_PATH = os.getenv("OUTPUT_BUCKET_PATH", "gs://your-bucket-name/veo_output/")
 
 def get_user_choice(prompt, options):
     """Get user choice from a list of options."""
@@ -290,32 +290,47 @@ def show_configuration():
     print("CURRENT CONFIGURATION")
     print("="*60)
     
-    print(f"Project ID: {PROJECT_ID}")
-    print(f"Output Bucket: {OUTPUT_BUCKET_PATH}")
-    print(f"Images Directory: {current_dir / 'images'}")
-    print(f"Results Directory: {current_dir / 'result_folder'}")
+    # Environment Variables
+    print("Environment Variables (from .env file):")
+    print(f"  GOOGLE_CLOUD_PROJECT: {PROJECT_ID}")
+    print(f"  OUTPUT_BUCKET_PATH: {OUTPUT_BUCKET_PATH}")
+    
+    # Show if using defaults (dummy values)
+    if PROJECT_ID == "your-project-id":
+        print("  ⚠️  Using default project ID - update .env file with your actual project ID")
+    if OUTPUT_BUCKET_PATH == "gs://your-bucket-name/veo_output/":
+        print("  ⚠️  Using default bucket path - update .env file with your actual bucket")
+    
+    print(f"\nLocal Directories:")
+    print(f"  Images Directory: {current_dir / 'images'}")
+    print(f"  Results Directory: {current_dir / 'result_folder'}")
     
     # Check if directories exist
     images_dir = current_dir / "images"
     results_dir = current_dir / "result_folder"
     
     print(f"\nDirectory Status:")
-    print(f"Images folder exists: {'✅' if images_dir.exists() else '❌'}")
-    print(f"Results folder exists: {'✅' if results_dir.exists() else '❌'}")
+    print(f"  Images folder exists: {'✅' if images_dir.exists() else '❌'}")
+    print(f"  Results folder exists: {'✅' if results_dir.exists() else '❌'}")
     
     if images_dir.exists():
         image_files = [f for f in os.listdir(images_dir) 
                       if f.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp'))]
-        print(f"Available images: {len(image_files)}")
+        print(f"  Available images: {len(image_files)}")
         if image_files:
-            print("  - " + "\n  - ".join(image_files))
+            print("    - " + "\n    - ".join(image_files))
     
     if results_dir.exists():
         video_files = [f for f in os.listdir(results_dir) 
                       if f.lower().endswith(('.mp4', '.mov', '.avi'))]
-        print(f"Generated videos: {len(video_files)}")
+        print(f"  Generated videos: {len(video_files)}")
         if video_files:
-            print("  - " + "\n  - ".join(video_files))
+            print("    - " + "\n    - ".join(video_files))
+    
+    print(f"\nConfiguration Help:")
+    print(f"  📝 To update configuration, edit the .env file in this directory")
+    print(f"  🔧 Run 'python fix_permissions.py' to fix Google Cloud permissions")
+    print(f"  🧪 Run 'python test_veo.py' to test your configuration")
 
 def main():
     """Main demo function with interactive menu."""

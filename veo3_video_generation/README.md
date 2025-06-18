@@ -64,28 +64,41 @@ gcloud storage buckets add-iam-policy-binding gs://your-bucket \
   --role=roles/storage.objectAdmin
 ```
 
-### 5. Configure the Environment
+### 5. Configure Environment Variables
 
-Create or update the `.env` file with your project configuration:
+Copy the example configuration file and update with your values:
 ```bash
-# Google Cloud Configuration
-GOOGLE_CLOUD_PROJECT=your-project-id
-GOOGLE_CLOUD_LOCATION=us-central1
-OUTPUT_BUCKET_PATH=gs://your-bucket/veo_output/
+# Copy the example file
+cp .env.example .env
+
+# Edit the .env file with your actual values
+# Update these two key variables:
+GOOGLE_CLOUD_PROJECT=your-actual-project-id
+OUTPUT_BUCKET_PATH=gs://your-actual-bucket/veo_output/
 ```
 
-### 6. Configure the Script
+### 6. Quick Permission Fix (Automated)
 
-Edit `veo_video_generation.py` to set your project ID and output bucket path:
-```python
-PROJECT_ID = "your-project-id"
-OUTPUT_BUCKET_PATH = "gs://your-bucket/veo_output/"
+Run the automated permission fix tool:
+```bash
+# This fixes 90% of permission issues automatically
+python fix_permissions.py
+
+# Or specify your project/bucket manually
+python fix_permissions.py --project-id your-project-id --bucket-name your-bucket
 ```
 
-### 7. Run Video Generation
+### 7. Test Your Setup
 
 ```bash
-python veo_video_generation.py
+# Quick test (text-to-video with Veo 2.0 only)
+python test_veo.py --text-only
+
+# Full test (both models, text and image)
+python test_veo.py --full
+
+# Interactive demo
+python demo.py
 ```
 
 ### 8. Download Generated Videos
@@ -100,41 +113,51 @@ gcloud storage cp gs://your-bucket/veo_output/<generation-id>/sample_0.mp4 ./res
 ### Text-to-Video Generation
 
 ```python
+import os
 from veo_video_generation import generate_video_from_text
+
+# Configuration is loaded from .env file automatically
+PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT")
+OUTPUT_BUCKET_PATH = os.getenv("OUTPUT_BUCKET_PATH")
 
 # Basic text-to-video
 video_uri = generate_video_from_text(
-    project_id="your-project-id",
+    project_id=PROJECT_ID,
     prompt="A serene mountain landscape with a flowing river and colorful sunset. Camera slowly pans across the scene.",
-    output_bucket_path="gs://your-bucket/output/"
+    output_bucket_path=OUTPUT_BUCKET_PATH
 )
 
 # Using Veo 3.0 Preview model
 video_uri = generate_video_with_veo3_preview(
-    project_id="your-project-id",
+    project_id=PROJECT_ID,
     prompt="A futuristic cityscape with flying vehicles and neon lights, cinematic style.",
-    output_bucket_path="gs://your-bucket/output/"
+    output_bucket_path=OUTPUT_BUCKET_PATH
 )
 ```
 
 ### Image-to-Video Generation
 
 ```python
+import os
 from veo_video_generation import generate_video_from_image, generate_video_from_local_image
+
+# Configuration from environment
+PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT")
+OUTPUT_BUCKET_PATH = os.getenv("OUTPUT_BUCKET_PATH")
 
 # From GCS-hosted image
 video_uri = generate_video_from_image(
-    project_id="your-project-id",
+    project_id=PROJECT_ID,
     image_path="gs://your-bucket/images/landscape.jpg",
-    output_bucket_path="gs://your-bucket/output/",
+    output_bucket_path=OUTPUT_BUCKET_PATH,
     prompt="The landscape comes alive with gentle movements"  # Optional
 )
 
 # From local image file
 video_uri = generate_video_from_local_image(
-    project_id="your-project-id",
+    project_id=PROJECT_ID,
     image_filename="smiling_woman.jpg",  # File in ./images/ folder
-    output_bucket_path="gs://your-bucket/output/",
+    output_bucket_path=OUTPUT_BUCKET_PATH,
     prompt="The person comes to life, smiling and looking around with a happy expression"
 )
 ```
@@ -252,15 +275,27 @@ The person comes to life with a gentle, warm smile spreading across their face. 
 
 ```
 veo3_video_generation/
-├── veo_video_generation.py     # Main implementation
-├── README.md                   # This documentation
-├── requirements.txt            # Python dependencies
-├── .env                        # Environment configuration
-├── images/                     # Input images
-│   ├── smiling_woman.jpg      # Sample image
-│   └── bet.png                # Sample image
-└── result_folder/             # Generated videos output
+├── veo_video_generation.py     # Main video generation functions
+├── demo.py                     # Interactive demo with menu system
+├── test_veo.py                # Comprehensive test suite with CLI options
+├── fix_permissions.py         # 🔧 Automated Google Cloud permission fix tool
+├── README.md                  # This documentation
+├── requirements.txt           # Python dependencies
+├── .env                       # Environment configuration (copy from .env.example)
+├── .env.example              # Template with dummy values for all variables
+├── images/                    # Input images for image-to-video generation
+│   ├── smiling_woman.jpg     # Sample portrait image
+│   └── bet.png               # Sample landscape image
+└── result_folder/            # Downloaded video outputs
 ```
+
+### Key Files Explained
+
+- **`.env.example`**: Template showing all required environment variables with dummy values
+- **`.env`**: Your actual configuration (copy from .env.example and update with real values)
+- **`fix_permissions.py`**: Automated tool that fixes 90% of Google Cloud permission issues
+- **`demo.py`**: Interactive menu-driven demo for testing all features
+- **`test_veo.py`**: Command-line test suite with options like `--text-only`, `--compare`, `--full`
 
 ## Dependencies
 
