@@ -5,7 +5,65 @@ alwaysApply: false
 ---
 # Troubleshooting Guide
 
-## Common Issues and Solutions
+This guide covers troubleshooting for both Google Veo and FAL AI video generation platforms.
+
+## FAL AI Troubleshooting
+
+### API and Authentication Issues
+
+#### "Invalid API key" or Authentication Failures
+**Problem**: FAL AI rejects the API key  
+**Solutions**:
+1. Verify API key in [fal_video_generation/.env](mdc:fal_video_generation/.env)
+2. Check key format (should be like: `be79b36b-...`)
+3. Ensure no extra spaces or characters in the key
+4. Test with: `python test_fal_ai.py --api-only`
+
+#### Network Connection Errors
+**Problem**: Cannot connect to FAL AI services  
+**Solutions**:
+1. Check internet connection
+2. Verify FAL AI service status
+3. Try with different network/VPN
+4. Check firewall settings
+
+### FAL AI Video Generation Issues
+
+#### "Image upload failed" 
+**Problem**: Cannot upload local images to FAL AI  
+**Solutions**:
+1. Verify image format (JPEG, PNG, WebP, GIF supported)
+2. Check file size (should be under 10MB)
+3. Ensure file path is correct and file exists
+4. Test with: `generator.upload_local_image("path/to/image.jpg")`
+
+#### Video Generation Timeout
+**Problem**: Generation takes too long or times out  
+**Solutions**:
+1. Use shorter duration ("6" seconds instead of "10")
+2. Try with simpler prompts
+3. Check if using async mode: `use_async=True`
+4. Increase timeout in .env: `FAL_TIMEOUT=600`
+
+#### Poor Video Quality
+**Problem**: Generated videos don't match expectations  
+**Solutions**:
+1. Enable prompt optimizer: `prompt_optimizer=True`
+2. Use more descriptive prompts
+3. Try different image sources or formats
+4. Check input image quality and resolution
+
+### FAL AI Testing Issues
+
+#### Test Suite Failures
+**Problem**: `test_fal_ai.py` fails  
+**Solutions**:
+1. Run step by step: `python test_fal_ai.py --api-only`
+2. Check dependencies: `pip install -r requirements.txt`
+3. Verify .env file exists and has correct key
+4. Test manually: `python demo.py`
+
+## Google Veo Troubleshooting
 
 ### Authentication and Permissions
 
@@ -31,7 +89,7 @@ gcloud storage buckets add-iam-policy-binding gs://your-bucket \
 2. Re-authenticate: `gcloud auth application-default login`
 3. Verify project setting: `gcloud config get project`
 
-### Video Generation Issues
+### Google Veo Video Generation Issues
 
 #### Operation Timeout or Stuck
 **Problem**: Video generation operation not completing  
@@ -67,9 +125,33 @@ gcloud storage buckets add-iam-policy-binding gs://your-bucket \
 3. Ensure local storage permissions
 4. Try manual download: `gcloud storage cp gs://bucket/path/video.mp4 .`
 
-## Debugging Steps
+## Platform-Specific Debugging
 
-### 1. Verify Setup
+### FAL AI Debugging Steps
+
+#### 1. Basic Verification
+```bash
+cd fal_video_generation
+python test_fal_ai.py          # Complete test
+python test_fal_ai.py --api-only  # API connection only
+```
+
+#### 2. Manual Testing
+```python
+from fal_video_generator import FALVideoGenerator
+generator = FALVideoGenerator()
+# Test API connection
+print("API key loaded:", generator.api_key[:20] + "..." if generator.api_key else "None")
+```
+
+#### 3. Check Dependencies
+```bash
+pip list | grep -E "(fal-client|requests|python-dotenv)"
+```
+
+### Google Veo Debugging Steps
+
+#### 1. Verify Setup
 ```bash
 # Check authentication
 gcloud auth list
@@ -82,19 +164,36 @@ gcloud storage ls gs://your-bucket/
 gcloud services list --enabled | grep aiplatform
 ```
 
-### 2. Test with Simple Operations
+#### 2. Test with Simple Operations
 Start with basic text-to-video generation before trying complex image operations.
 
-### 3. Check Logs
+#### 3. Check Logs
 The functions in [veo_video_generation.py](mdc:veo_video_generation.py) include detailed logging. Monitor console output for specific error messages.
 
-### 4. Environment Variables
+#### 4. Environment Variables
 Verify these are set correctly by the script:
 - `GOOGLE_CLOUD_PROJECT`
 - `GOOGLE_CLOUD_LOCATION`
 - `GOOGLE_GENAI_USE_VERTEXAI`
 
+## Quick Comparison for Troubleshooting
+
+| Issue | FAL AI Solution | Google Veo Solution |
+|-------|----------------|-------------------|
+| Authentication | Check FAL_KEY in .env | Run gcloud auth login |
+| Network Issues | Check internet/firewall | Check GCP connectivity |
+| Upload Failures | Verify image format/size | Check GCS permissions |
+| Generation Timeout | Use shorter duration | Check Vertex AI quotas |
+| Poor Quality | Enable prompt optimizer | Use detailed prompts |
+
 ## Getting Help
+
+### FAL AI Resources
+- Test suite: [fal_video_generation/test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py)
+- Documentation: [fal_video_generation/README.md](mdc:fal_video_generation/README.md)
+- Demo script: [fal_video_generation/demo.py](mdc:fal_video_generation/demo.py)
+
+### Google Veo Resources
 - Detailed setup instructions: [README.md](mdc:README.md)
 - Function documentation: [veo_video_generation.py](mdc:veo_video_generation.py)
 - Google Cloud documentation: [Veo API docs](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/veo-video-generation)

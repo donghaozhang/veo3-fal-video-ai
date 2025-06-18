@@ -5,7 +5,9 @@ alwaysApply: false
 ---
 # API Reference Guide
 
-## Core Video Generation Functions
+This project provides two video generation APIs: Google Veo (complex, high-quality) and FAL AI (simple, production-ready).
+
+## Google Veo API Functions
 All functions are located in [veo_video_generation.py](mdc:veo_video_generation.py).
 
 ### Text-to-Video Generation
@@ -72,7 +74,68 @@ download_gcs_file(
 **Purpose**: Download generated video from GCS to local folder  
 **Returns**: Local file path or None on error
 
+## FAL AI API Class
+Located in [fal_video_generation/fal_video_generator.py](mdc:fal_video_generation/fal_video_generator.py).
+
+### FALVideoGenerator Class
+```python
+from fal_video_generator import FALVideoGenerator
+
+# Initialize with API key (from .env or parameter)
+generator = FALVideoGenerator(api_key=None)  # Uses FAL_KEY from .env
+```
+
+### Generate Video from Image URL
+```python
+generator.generate_video_from_image(
+    prompt: str,                    # Text description
+    image_url: str,                 # Online image URL
+    duration: str = "6",            # "6" or "10" seconds
+    prompt_optimizer: bool = True,  # Use AI prompt optimization
+    output_folder: str = "output",  # Local download folder
+    use_async: bool = False         # Async processing mode
+) -> Optional[Dict[str, Any]]
+```
+**Purpose**: Generate video from online image with text prompt  
+**Returns**: Dictionary with video URL, metadata, and local path
+
+### Generate Video from Local Image
+```python
+generator.generate_video_from_local_image(
+    prompt: str,                    # Text description
+    image_path: str,                # Local image file path
+    duration: str = "6",            # "6" or "10" seconds
+    prompt_optimizer: bool = True,  # Use AI prompt optimization
+    output_folder: str = "output",  # Local download folder
+    use_async: bool = False         # Async processing mode
+) -> Optional[Dict[str, Any]]
+```
+**Purpose**: Upload local image and generate video  
+**Returns**: Dictionary with video URL, metadata, and local path
+
+### Upload Local Image
+```python
+generator.upload_local_image(
+    image_path: str                 # Path to local image file
+) -> Optional[str]
+```
+**Purpose**: Upload local image to FAL AI and get URL  
+**Returns**: Image URL or None if failed
+
+### Download Video
+```python
+generator.download_video(
+    video_url: str,                 # FAL AI video URL
+    output_folder: str,             # Local folder for download
+    filename: str                   # Output filename
+) -> Optional[str]
+```
+**Purpose**: Download generated video to local folder  
+**Returns**: Local file path or None if failed
+
 ## Configuration Objects
+
+### Google Veo Configuration
 ```python
 from google.genai.types import GenerateVideosConfig
 
@@ -84,8 +147,24 @@ config = GenerateVideosConfig(
 )
 ```
 
+### FAL AI Response Structure
+```python
+{
+    'video': {
+        'url': 'https://v3.fal.media/files/...',
+        'file_name': 'output.mp4',
+        'file_size': 2816883
+    },
+    'duration': '6',
+    'width': 768,
+    'height': 768,
+    'local_path': 'output/video.mp4'  # If downloaded
+}
+```
+
 ## Usage Patterns
-### Basic Text Generation
+
+### Google Veo - Basic Text Generation
 ```python
 video_uri = generate_video_from_text(
     project_id="my-project",
@@ -94,7 +173,7 @@ video_uri = generate_video_from_text(
 )
 ```
 
-### Image with Text Guidance
+### Google Veo - Image with Text Guidance
 ```python
 video_uri = generate_video_from_image(
     project_id="my-project",
@@ -102,4 +181,43 @@ video_uri = generate_video_from_image(
     output_bucket_path="gs://my-bucket/videos/",
     prompt="The scene comes alive with gentle movement"
 )
+```
+
+### FAL AI - Simple Video Generation
+```python
+from fal_video_generator import FALVideoGenerator
+
+generator = FALVideoGenerator()
+result = generator.generate_video_from_image(
+    prompt="A beautiful landscape with moving clouds",
+    image_url="https://example.com/image.jpg",
+    duration="6"
+)
+
+if result:
+    print(f"Video URL: {result['video']['url']}")
+    print(f"Local path: {result['local_path']}")
+```
+
+### FAL AI - Local Image Processing
+```python
+result = generator.generate_video_from_local_image(
+    prompt="The flowers sway gently in the breeze",
+    image_path="./images/flowers.jpg",
+    duration="6",
+    output_folder="my_videos"
+)
+```
+
+## Testing APIs
+
+### Google Veo Testing
+Test functions individually or use the main script with proper GCP authentication.
+
+### FAL AI Testing
+Use the unified test suite in [fal_video_generation/test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py):
+```bash
+python test_fal_ai.py          # Setup and API test
+python test_fal_ai.py --quick  # Quick video generation test
+python test_fal_ai.py --full   # Full test with details
 ```

@@ -5,22 +5,74 @@ alwaysApply: false
 ---
 # Development Guidelines
 
+This guide covers development patterns for both Google Veo and FAL AI video generation implementations.
+
 ## Code Style and Standards
 - Follow PEP 8 Python style guidelines
 - Use descriptive variable names and function docstrings
 - Include proper error handling with try-catch blocks
 - Add logging statements for debugging and monitoring operations
+- Use type hints for better code clarity
 
-## Environment Configuration
-- Store all API keys and sensitive configuration in [.env](mdc:.env)
-- Never commit API keys to version control
-- Use environment variables for project-specific settings
-- The [.env](mdc:.env) file supports multiple AI services: Anthropic, OpenAI, Gemini, OpenRouter, DashScope, 302.ai
+## Platform-Specific Development Patterns
 
-## Google Cloud Integration Patterns
-When working with Google Cloud services in this project:
+### FAL AI Development Patterns
 
-### Authentication Setup
+#### Class-Based Architecture
+FAL AI implementation uses a class-based approach in [fal_video_generation/fal_video_generator.py](mdc:fal_video_generation/fal_video_generator.py):
+
+```python
+class FALVideoGenerator:
+    def __init__(self, api_key=None):
+        self.api_key = api_key or os.getenv('FAL_KEY')
+        if self.api_key:
+            fal_client.api_key = self.api_key
+    
+    def generate_video_from_image(self, prompt, image_url, duration="6", **kwargs):
+        # Implementation with comprehensive error handling
+```
+
+#### Error Handling Pattern
+```python
+try:
+    result = fal_client.run(endpoint, arguments=args)
+    return self._process_result(result)
+except Exception as e:
+    print(f"❌ Error: {str(e)}")
+    return None
+```
+
+#### Async Processing Support
+```python
+def _handle_async_request(self, endpoint, arguments):
+    """Handle asynchronous requests with polling"""
+    def on_queue_update(update):
+        if hasattr(update, 'logs') and update.logs:
+            for log in update.logs:
+                print(f"  {log.get('message', str(log))}")
+    
+    return fal_client.submit(endpoint, arguments=arguments, on_queue_update=on_queue_update)
+```
+
+#### File Management
+- **Configuration**: [fal_video_generation/.env](mdc:fal_video_generation/.env)
+- **Output**: [fal_video_generation/output/](mdc:fal_video_generation/output/) directory
+- **Testing**: Unified test suite in [fal_video_generation/test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py)
+
+### Google Veo Development Patterns
+
+#### Function-Based Architecture
+Google Veo uses standalone functions in [veo_video_generation.py](mdc:veo_video_generation.py):
+
+```python
+def generate_video_from_text(project_id, prompt, output_bucket_path, model_id="veo-2.0-generate-001", location="us-central1"):
+    # Set environment variables
+    # Initialize client
+    # Execute operation
+    # Return result
+```
+
+#### Authentication Setup Pattern
 ```python
 # Standard pattern used in [veo_video_generation.py](mdc:veo_video_generation.py)
 os.environ["GOOGLE_CLOUD_PROJECT"] = project_id
@@ -32,7 +84,7 @@ if "GOOGLE_APPLICATION_CREDENTIALS" in os.environ:
     del os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
 ```
 
-### Video Generation Function Structure
+#### Video Generation Function Structure
 All video generation functions should follow this pattern:
 1. Set environment variables for authentication
 2. Initialize the GenAI client
@@ -41,35 +93,120 @@ All video generation functions should follow this pattern:
 5. Handle results and errors appropriately
 6. Return GCS URI or None on failure
 
-### Error Handling
+#### Error Handling
 - Always wrap Google Cloud API calls in try-catch blocks
 - Use `traceback.print_exc()` for detailed error information
 - Return None or appropriate error indicators on failure
 - Log meaningful error messages for debugging
 
-## File Organization
-- Keep all video generation functions in [veo_video_generation.py](mdc:veo_video_generation.py)
-- Store input images in [images/](mdc:images/) directory
-- Downloaded videos go to [result_folder/](mdc:result_folder/)
-- Legacy and alternative implementations in [archive/](mdc:archive/)
-- Configuration and API keys in [.env](mdc:.env)
-- Update [requirements.txt](mdc:requirements.txt) when adding new dependencies
+## Environment Configuration
 
-## Asset Management
-- **Input Images**: Place sample images in [images/](mdc:images/) (e.g., [smiling_woman.jpg](mdc:images/smiling_woman.jpg))
-- **Generated Videos**: Automatically downloaded to [result_folder/](mdc:result_folder/)
-- **Project Assets**: Additional assets like [bet.png](mdc:bet.png) in root directory
-- **Archive**: Keep older versions and alternative implementations in [archive/](mdc:archive/)
+### FAL AI Configuration
+Store FAL AI settings in [fal_video_generation/.env](mdc:fal_video_generation/.env):
+```bash
+FAL_KEY=your_api_key_here
+FAL_TIMEOUT=300
+FAL_MAX_RETRIES=3
+```
+
+### Google Veo Configuration
+Store Google Cloud settings in [.env](mdc:.env):
+```bash
+GOOGLE_CLOUD_PROJECT=your-project-id
+GOOGLE_API_KEY=your-google-api-key
+# Multiple AI services supported: Anthropic, OpenAI, Gemini, OpenRouter, DashScope, 302.ai
+```
+
+## File Organization
+
+### Project Structure
+```
+veo3/
+├── veo_video_generation.py          # Google Veo functions
+├── .env                             # Google Cloud configuration
+├── requirements.txt                 # Main dependencies
+├── images/                          # Input images for Google Veo
+├── result_folder/                   # Google Veo output videos
+├── archive/                         # Legacy implementations
+└── fal_video_generation/            # FAL AI implementation
+    ├── fal_video_generator.py       # FAL AI class
+    ├── demo.py                      # Interactive demo
+    ├── test_fal_ai.py              # Unified test suite
+    ├── .env                         # FAL AI configuration
+    └── output/                      # FAL AI generated videos
+```
+
+### Asset Management
+- **Google Veo Input**: [images/](mdc:images/) directory (e.g., [smiling_woman.jpg](mdc:images/smiling_woman.jpg))
+- **Google Veo Output**: [result_folder/](mdc:result_folder/) for downloaded videos
+- **FAL AI Output**: [fal_video_generation/output/](mdc:fal_video_generation/output/)
+- **Archive**: Legacy tools in [archive/](mdc:archive/)
+- **Project Assets**: Additional assets like [bet.png](mdc:bet.png) in root
 
 ## Testing and Validation
+
+### FAL AI Testing
+Use the unified test suite:
+```bash
+cd fal_video_generation
+python test_fal_ai.py          # Complete test
+python test_fal_ai.py --quick  # Quick video generation
+python test_fal_ai.py --api-only  # API connection only
+```
+
+### Google Veo Testing
 - Test with sample images from [images/](mdc:images/) directory first
 - Validate GCS bucket permissions before running operations
 - Check project allowlist status for different Veo model versions
 - Verify authentication setup with `gcloud auth list`
 - Ensure [.env](mdc:.env) file contains required API keys
 
+## Development Best Practices
+
+### Code Quality
+- Use type hints for function parameters and return values
+- Implement comprehensive error handling for both platforms
+- Add docstrings with parameter descriptions and return values
+- Use logging for debugging and operation monitoring
+
+### Platform Selection Guidelines
+- **Choose FAL AI when**: Simple setup, quick prototyping, production-ready API
+- **Choose Google Veo when**: Enterprise features, higher resolution, Google Cloud integration
+
+### Error Handling Patterns
+```python
+# FAL AI pattern
+try:
+    result = generator.generate_video_from_image(prompt, image_url)
+    if result:
+        print(f"Success: {result['video']['url']}")
+    else:
+        print("Generation failed")
+except Exception as e:
+    print(f"Error: {str(e)}")
+
+# Google Veo pattern
+try:
+    video_uri = generate_video_from_text(project_id, prompt, bucket_path)
+    if video_uri:
+        print(f"Generated: {video_uri}")
+    else:
+        print("Generation failed")
+except Exception as e:
+    print(f"Error: {str(e)}")
+    traceback.print_exc()
+```
+
 ## Security Best Practices
-- Never commit [.env](mdc:.env) file to version control (add to .gitignore)
-- Use service account keys for production deployments
+- Never commit [.env](mdc:.env) files to version control (add to .gitignore)
+- Use separate API keys for development and production
 - Rotate API keys regularly
 - Limit GCS bucket permissions to minimum required scope
+- Keep FAL AI and Google Cloud credentials separate
+- Use environment-specific configuration files
+
+## Dependency Management
+- Update [requirements.txt](mdc:requirements.txt) for main project dependencies
+- Update [fal_video_generation/requirements.txt](mdc:fal_video_generation/requirements.txt) for FAL AI dependencies
+- Pin dependency versions for reproducible builds
+- Regular security updates for all dependencies

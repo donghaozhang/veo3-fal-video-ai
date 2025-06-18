@@ -3,36 +3,66 @@ description:
 globs:
 alwaysApply: false
 ---
-# Google Veo Video Generation Project Overview
+# Video Generation Project Overview
 
-This project provides Python utilities for generating videos using Google's Veo API on Vertex AI. The project supports both text-to-video and image-to-video generation with Google Cloud integration.
+This project provides Python utilities for generating videos using two different AI platforms:
+1. **Google Veo API** on Vertex AI (higher resolution, complex setup)
+2. **FAL AI MiniMax Hailuo-02** (simpler setup, production ready)
 
-## Main Entry Point
-The primary script is [veo_video_generation.py](mdc:veo_video_generation.py), which contains all the core video generation functions.
+## Main Components
 
-## Key Components
-- **Video Generation Functions**: Located in [veo_video_generation.py](mdc:veo_video_generation.py)
-  - `generate_video_from_text()` - Creates videos from text prompts
-  - `generate_video_from_image()` - Creates videos from images with optional text guidance
-  - `generate_video_from_local_image()` - Handles local image uploads to GCS
-  - `generate_video_with_veo3_preview()` - Uses the newer Veo 3.0 model
-  - `download_gcs_file()` - Downloads generated videos from Google Cloud Storage
+### Google Veo Implementation
+The primary script is [veo_video_generation.py](mdc:veo_video_generation.py), which contains Google Cloud-based video generation functions.
 
-- **Configuration**: Environment variables and API keys in [.env](mdc:.env)
-- **Dependencies**: Listed in [requirements.txt](mdc:requirements.txt) with Google Cloud and AI platform packages
-- **Documentation**: Comprehensive setup guide in [README.md](mdc:README.md)
+**Key Functions:**
+- `generate_video_from_text()` - Creates videos from text prompts
+- `generate_video_from_image()` - Creates videos from images with optional text guidance
+- `generate_video_from_local_image()` - Handles local image uploads to GCS
+- `generate_video_with_veo3_preview()` - Uses the newer Veo 3.0 model
+- `download_gcs_file()` - Downloads generated videos from Google Cloud Storage
+
+### FAL AI Implementation
+Located in [fal_video_generation/](mdc:fal_video_generation/) directory with simplified API-based approach.
+
+**Key Components:**
+- [fal_video_generator.py](mdc:fal_video_generation/fal_video_generator.py) - Main FALVideoGenerator class
+- [demo.py](mdc:fal_video_generation/demo.py) - Interactive demonstration script
+- [test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py) - Comprehensive test suite
+- [README.md](mdc:fal_video_generation/README.md) - Complete FAL AI documentation
 
 ## Project Structure
-- **Main script**: [veo_video_generation.py](mdc:veo_video_generation.py)
-- **Configuration**: [.env](mdc:.env) - Contains API keys and Google Cloud settings
-- **Input images**: [images/](mdc:images/) - Sample images for video generation (e.g., [smiling_woman.jpg](mdc:images/smiling_woman.jpg))
-- **Output folder**: [result_folder/](mdc:result_folder/) - Downloaded generated videos (e.g., sample_0.mp4)
-- **Archive**: [archive/](mdc:archive/) - Contains older versions and additional tools including legacy video_analyzer tools
-- **Additional assets**: [bet.png](mdc:bet.png) - Project-related image assets
+```
+veo3/
+├── veo_video_generation.py          # Google Veo implementation
+├── .env                             # API keys and configuration
+├── requirements.txt                 # Main dependencies
+├── README.md                        # Project documentation
+├── images/                          # Input images (smiling_woman.jpg)
+├── result_folder/                   # Google Veo output videos
+├── archive/                         # Legacy tools and older versions
+└── fal_video_generation/            # FAL AI implementation
+    ├── fal_video_generator.py       # FAL AI video generator class
+    ├── demo.py                      # Interactive demo
+    ├── test_fal_ai.py              # Unified test suite
+    ├── README.md                    # FAL AI documentation
+    ├── requirements.txt             # FAL AI dependencies
+    ├── .env                         # FAL AI configuration
+    └── output/                      # FAL AI generated videos
+```
 
 ## Configuration Requirements
+
+### Google Veo Setup
 - Google Cloud Project ID (configured in [.env](mdc:.env))
 - Google Cloud Storage bucket for output
 - Vertex AI API enabled
-- Multiple API keys configured in [.env](mdc:.env): Anthropic, OpenAI, Gemini, OpenRouter, DashScope, 302.ai
-- Proper authentication (gcloud CLI)
+- gcloud CLI authentication
+- Multiple API keys: Anthropic, OpenAI, Gemini, OpenRouter, DashScope, 302.ai
+
+### FAL AI Setup (Simpler)
+- FAL AI API key in [fal_video_generation/.env](mdc:fal_video_generation/.env)
+- Python dependencies: fal-client, requests, python-dotenv
+
+## Usage Recommendations
+- **Choose Google Veo when**: You need 1080p resolution, longer videos, or already use Google Cloud
+- **Choose FAL AI when**: You want quick setup, prototyping, or simple API integration

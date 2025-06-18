@@ -1,0 +1,155 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# FAL AI Video Generation Implementation
+
+This document covers the FAL AI MiniMax Hailuo-02 video generation implementation, which provides a simpler alternative to Google Veo with production-ready API access.
+
+## Core Components
+
+### FALVideoGenerator Class
+Located in [fal_video_generation/fal_video_generator.py](mdc:fal_video_generation/fal_video_generator.py)
+
+**Main Methods:**
+```python
+# Generate video from online image URL
+generator.generate_video_from_image(
+    prompt="Your description",
+    image_url="https://example.com/image.jpg",
+    duration="6",  # "6" or "10" seconds
+    output_folder="output"
+)
+
+# Generate video from local image file
+generator.generate_video_from_local_image(
+    prompt="Your description", 
+    image_path="path/to/image.jpg",
+    duration="6"
+)
+
+# Upload local image to FAL AI
+image_url = generator.upload_local_image("path/to/image.jpg")
+
+# Download video from URL
+local_path = generator.download_video(video_url, "output", "filename.mp4")
+```
+
+### Testing Framework
+Unified test suite in [fal_video_generation/test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py)
+
+**Test Commands:**
+```bash
+# Basic setup and API connection test
+python test_fal_ai.py
+
+# Quick video generation test (1-3 minutes)
+python test_fal_ai.py --quick
+
+# Full test with detailed output  
+python test_fal_ai.py --full
+
+# API connection test only
+python test_fal_ai.py --api-only
+```
+
+## Configuration
+
+### Environment Setup
+FAL AI requires only a simple API key setup in [fal_video_generation/.env](mdc:fal_video_generation/.env):
+
+```bash
+# FAL AI API Configuration
+FAL_KEY=your_fal_api_key_here
+
+# Optional: Additional configuration
+FAL_TIMEOUT=300
+FAL_MAX_RETRIES=3
+```
+
+### Dependencies
+Listed in [fal_video_generation/requirements.txt](mdc:fal_video_generation/requirements.txt):
+- fal-client>=0.4.0
+- python-dotenv>=1.0.0  
+- requests>=2.31.0
+- typing-extensions>=4.0.0
+
+## API Specifications
+
+### Model Endpoint
+- **Model**: `fal-ai/minimax/hailuo-02/standard/image-to-video`
+- **Resolution**: 768p standard
+- **Duration**: 6-10 seconds
+- **Input**: Image + text prompt
+- **Output**: MP4 video file
+
+### Supported Image Formats
+- JPEG (.jpg, .jpeg)
+- PNG (.png)
+- WebP (.webp)
+- GIF (.gif)
+
+### Processing Modes
+- **Synchronous**: Default mode, waits for completion
+- **Asynchronous**: For longer requests, polls for completion
+
+## Usage Patterns
+
+### Basic Video Generation
+```python
+from fal_video_generator import FALVideoGenerator
+
+generator = FALVideoGenerator()
+result = generator.generate_video_from_image(
+    prompt="A beautiful landscape with moving clouds",
+    image_url="https://example.com/image.jpg",
+    duration="6"
+)
+
+if result:
+    print(f"Video URL: {result['video']['url']}")
+    print(f"Local path: {result['local_path']}")
+```
+
+### Error Handling
+The implementation includes comprehensive error handling:
+- API key validation
+- Network error recovery
+- File upload/download failures
+- API response validation
+
+### Output Structure
+Generated videos are saved with metadata:
+```python
+{
+    'video': {
+        'url': 'https://v3.fal.media/files/...',
+        'file_name': 'output.mp4',
+        'file_size': 2816883
+    },
+    'duration': '6',
+    'local_path': 'output/video.mp4'
+}
+```
+
+## Development Guidelines
+
+### When to Use FAL AI
+- Quick prototyping and testing
+- Simple API integration needs
+- Production-ready video generation
+- When you want to avoid Google Cloud complexity
+
+### Best Practices
+- Always check for API key in environment
+- Use appropriate error handling for network operations
+- Validate image formats before upload
+- Consider async processing for longer videos
+- Test with the unified test suite before deployment
+
+### Common Patterns
+- Initialize generator once, reuse for multiple generations
+- Use local image upload for better control over input
+- Download videos locally for offline access
+- Implement retry logic for network operations

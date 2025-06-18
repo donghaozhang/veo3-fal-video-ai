@@ -5,10 +5,47 @@ alwaysApply: false
 ---
 # Setup and Configuration Guide
 
-## Quick Setup Checklist
-Refer to the detailed setup guide in [README.md](mdc:README.md) for complete instructions.
+This project offers two video generation options with different setup complexity levels:
 
-### 1. Dependencies Installation
+## FAL AI Setup (Recommended for Quick Start)
+
+### 1. FAL AI Dependencies
+```bash
+cd fal_video_generation
+pip install -r requirements.txt
+```
+
+Key packages:
+- `fal-client>=0.4.0` - FAL AI SDK
+- `python-dotenv>=1.0.0` - Environment management
+- `requests>=2.31.0` - HTTP client
+
+### 2. FAL AI Configuration
+Create [fal_video_generation/.env](mdc:fal_video_generation/.env):
+```bash
+# FAL AI API Configuration
+FAL_KEY=your_fal_api_key_here
+
+# Optional: Additional configuration
+FAL_TIMEOUT=300
+FAL_MAX_RETRIES=3
+```
+
+### 3. FAL AI Testing
+```bash
+cd fal_video_generation
+python test_fal_ai.py          # Basic setup test
+python test_fal_ai.py --quick  # Quick video generation test
+```
+
+### 4. FAL AI Usage
+```bash
+python demo.py  # Interactive demonstration
+```
+
+## Google Veo Setup (Advanced)
+
+### 1. Google Cloud Dependencies
 ```bash
 pip install -r requirements.txt
 ```
@@ -18,7 +55,7 @@ Key packages from [requirements.txt](mdc:requirements.txt):
 - `google-cloud-aiplatform` - Vertex AI integration
 - `google-cloud-storage` - GCS operations
 
-### 2. Environment Configuration
+### 2. Google Cloud Environment Configuration
 Configure your API keys and settings in [.env](mdc:.env):
 ```bash
 # Google Cloud settings (required)
@@ -52,7 +89,7 @@ gcloud storage buckets add-iam-policy-binding gs://your-bucket \
   --role=roles/storage.objectAdmin
 ```
 
-### 5. Project Configuration
+### 5. Google Veo Project Configuration
 The project is pre-configured with:
 - **Sample images**: Available in [images/](mdc:images) directory
 - **Output folder**: [result_folder/](mdc:result_folder) for downloaded videos
@@ -64,17 +101,79 @@ PROJECT_ID = "your-project-id"  # Or use from .env
 OUTPUT_BUCKET_PATH = "gs://your-bucket/veo_output/"
 ```
 
+## Platform Comparison
+
+### FAL AI (Simple Setup)
+✅ **Pros:**
+- Single API key setup
+- Production ready
+- No cloud infrastructure needed
+- Quick testing with unified test suite
+
+❌ **Cons:**
+- 768p resolution limit
+- Shorter video duration options
+
+### Google Veo (Advanced Setup)
+✅ **Pros:**
+- Higher resolution (up to 1080p)
+- Longer video duration support
+- Enterprise-grade infrastructure
+
+❌ **Cons:**
+- Complex Google Cloud setup
+- Requires GCS bucket configuration
+- More authentication steps
+
 ## Model Versions
+
+### FAL AI Models
+- **MiniMax Hailuo-02**: `fal-ai/minimax/hailuo-02/standard/image-to-video`
+- **Resolution**: 768p standard
+- **Duration**: 6-10 seconds
+
+### Google Veo Models
 - **Veo 2.0**: `veo-2.0-generate-001` (generally available)
 - **Veo 3.0**: `veo-3.0-generate-preview` (requires allowlist access)
 
 ## Directory Structure
-- [images/](mdc:images) - Input images for video generation
-- [result_folder/](mdc:result_folder) - Downloaded generated videos
-- [archive/](mdc:archive) - Legacy code and alternative implementations
-- [.env](mdc:.env) - API keys and configuration
+```
+veo3/
+├── veo_video_generation.py          # Google Veo implementation
+├── .env                             # Google Cloud configuration
+├── requirements.txt                 # Main dependencies
+├── images/                          # Input images for Google Veo
+├── result_folder/                   # Google Veo output videos
+├── archive/                         # Legacy tools
+└── fal_video_generation/            # FAL AI implementation
+    ├── fal_video_generator.py       # FAL AI main class
+    ├── demo.py                      # Interactive demo
+    ├── test_fal_ai.py              # Unified test suite
+    ├── .env                         # FAL AI configuration
+    └── output/                      # FAL AI generated videos
+```
+
+## Testing Both Platforms
+
+### FAL AI Testing
+```bash
+cd fal_video_generation
+python test_fal_ai.py          # Setup and API test
+python test_fal_ai.py --quick  # Video generation test
+python demo.py                 # Interactive demo
+```
+
+### Google Veo Testing
+Test functions individually in [veo_video_generation.py](mdc:veo_video_generation.py) with proper GCP authentication.
 
 ## Common Configuration Issues
+
+### FAL AI Issues
+1. **Invalid API Key**: Check FAL_KEY in [fal_video_generation/.env](mdc:fal_video_generation/.env)
+2. **Network Errors**: Verify internet connection and FAL AI service status
+3. **File Upload Failures**: Check image file format and size limits
+
+### Google Veo Issues
 1. **Permission Denied**: Check storage bucket permissions
 2. **Project Not Allowlisted**: Switch to Veo 2.0 or request access
 3. **Authentication Errors**: Verify `gcloud auth list` shows correct account
@@ -82,9 +181,16 @@ OUTPUT_BUCKET_PATH = "gs://your-bucket/veo_output/"
 5. **Missing API Keys**: Check [.env](mdc:.env) file configuration
 
 ## Environment Variables
-The script reads from [.env](mdc:.env) and automatically sets:
+
+### FAL AI Environment
+- `FAL_KEY` - API key for FAL AI service
+- `FAL_TIMEOUT` - Request timeout (optional)
+- `FAL_MAX_RETRIES` - Retry attempts (optional)
+
+### Google Veo Environment
 - `GOOGLE_CLOUD_PROJECT`
 - `GOOGLE_CLOUD_LOCATION` 
 - `GOOGLE_GENAI_USE_VERTEXAI`
+- `GOOGLE_APPLICATION_CREDENTIALS`
 
 
