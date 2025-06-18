@@ -87,3 +87,4 @@ The script reads from [.env](mdc:.env) and automatically sets:
 - `GOOGLE_CLOUD_LOCATION` 
 - `GOOGLE_GENAI_USE_VERTEXAI`
 
+

@@ -76,10 +76,12 @@ class FALVideoGenerator:
             
             # Define queue update handler
             def on_queue_update(update):
-                if isinstance(update, fal_client.InProgress):
-                    print(f"Processing... Status: {update.status}")
+                if hasattr(update, 'logs') and update.logs:
+                    print("Processing... Logs:")
                     for log in update.logs:
-                        print(f"Log: {log['message']}")
+                        print(f"  {log.get('message', str(log))}")
+                else:
+                    print(f"Processing... Update: {type(update).__name__}")
             
             # Generate video
             print("Submitting request to FAL AI...")
