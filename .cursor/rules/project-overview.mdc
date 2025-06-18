@@ -1,0 +1,38 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Google Veo Video Generation Project Overview
+
+This project provides Python utilities for generating videos using Google's Veo API on Vertex AI. The project supports both text-to-video and image-to-video generation with Google Cloud integration.
+
+## Main Entry Point
+The primary script is [veo_video_generation.py](mdc:veo_video_generation.py), which contains all the core video generation functions.
+
+## Key Components
+- **Video Generation Functions**: Located in [veo_video_generation.py](mdc:veo_video_generation.py)
+  - `generate_video_from_text()` - Creates videos from text prompts
+  - `generate_video_from_image()` - Creates videos from images with optional text guidance
+  - `generate_video_from_local_image()` - Handles local image uploads to GCS
+  - `generate_video_with_veo3_preview()` - Uses the newer Veo 3.0 model
+  - `download_gcs_file()` - Downloads generated videos from Google Cloud Storage
+
+- **Configuration**: Environment variables and API keys in [.env](mdc:.env)
+- **Dependencies**: Listed in [requirements.txt](mdc:requirements.txt) with Google Cloud and AI platform packages
+- **Documentation**: Comprehensive setup guide in [README.md](mdc:README.md)
+
+## Project Structure
+- **Main script**: [veo_video_generation.py](mdc:veo_video_generation.py)
+- **Configuration**: [.env](mdc:.env) - Contains API keys and Google Cloud settings
+- **Input images**: [images/](mdc:images/) - Sample images for video generation (e.g., [smiling_woman.jpg](mdc:images/smiling_woman.jpg))
+- **Output folder**: [result_folder/](mdc:result_folder/) - Downloaded generated videos (e.g., sample_0.mp4)
+- **Archive**: [archive/](mdc:archive/) - Contains older versions and additional tools including legacy video_analyzer tools
+- **Additional assets**: [bet.png](mdc:bet.png) - Project-related image assets
+
+## Configuration Requirements
+- Google Cloud Project ID (configured in [.env](mdc:.env))
+- Google Cloud Storage bucket for output
+- Vertex AI API enabled
+- Multiple API keys configured in [.env](mdc:.env): Anthropic, OpenAI, Gemini, OpenRouter, DashScope, 302.ai
+- Proper authentication (gcloud CLI)

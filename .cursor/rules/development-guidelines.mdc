@@ -1,0 +1,75 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Development Guidelines
+
+## Code Style and Standards
+- Follow PEP 8 Python style guidelines
+- Use descriptive variable names and function docstrings
+- Include proper error handling with try-catch blocks
+- Add logging statements for debugging and monitoring operations
+
+## Environment Configuration
+- Store all API keys and sensitive configuration in [.env](mdc:.env)
+- Never commit API keys to version control
+- Use environment variables for project-specific settings
+- The [.env](mdc:.env) file supports multiple AI services: Anthropic, OpenAI, Gemini, OpenRouter, DashScope, 302.ai
+
+## Google Cloud Integration Patterns
+When working with Google Cloud services in this project:
+
+### Authentication Setup
+```python
+# Standard pattern used in [veo_video_generation.py](mdc:veo_video_generation.py)
+os.environ["GOOGLE_CLOUD_PROJECT"] = project_id
+os.environ["GOOGLE_CLOUD_LOCATION"] = location
+os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = "True"
+
+# Remove credentials if set (for default auth)
+if "GOOGLE_APPLICATION_CREDENTIALS" in os.environ:
+    del os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
+```
+
+### Video Generation Function Structure
+All video generation functions should follow this pattern:
+1. Set environment variables for authentication
+2. Initialize the GenAI client
+3. Configure video generation parameters
+4. Start the operation and poll for completion
+5. Handle results and errors appropriately
+6. Return GCS URI or None on failure
+
+### Error Handling
+- Always wrap Google Cloud API calls in try-catch blocks
+- Use `traceback.print_exc()` for detailed error information
+- Return None or appropriate error indicators on failure
+- Log meaningful error messages for debugging
+
+## File Organization
+- Keep all video generation functions in [veo_video_generation.py](mdc:veo_video_generation.py)
+- Store input images in [images/](mdc:images/) directory
+- Downloaded videos go to [result_folder/](mdc:result_folder/)
+- Legacy and alternative implementations in [archive/](mdc:archive/)
+- Configuration and API keys in [.env](mdc:.env)
+- Update [requirements.txt](mdc:requirements.txt) when adding new dependencies
+
+## Asset Management
+- **Input Images**: Place sample images in [images/](mdc:images/) (e.g., [smiling_woman.jpg](mdc:images/smiling_woman.jpg))
+- **Generated Videos**: Automatically downloaded to [result_folder/](mdc:result_folder/)
+- **Project Assets**: Additional assets like [bet.png](mdc:bet.png) in root directory
+- **Archive**: Keep older versions and alternative implementations in [archive/](mdc:archive/)
+
+## Testing and Validation
+- Test with sample images from [images/](mdc:images/) directory first
+- Validate GCS bucket permissions before running operations
+- Check project allowlist status for different Veo model versions
+- Verify authentication setup with `gcloud auth list`
+- Ensure [.env](mdc:.env) file contains required API keys
+
+## Security Best Practices
+- Never commit [.env](mdc:.env) file to version control (add to .gitignore)
+- Use service account keys for production deployments
+- Rotate API keys regularly
+- Limit GCS bucket permissions to minimum required scope

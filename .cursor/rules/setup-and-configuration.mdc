@@ -1,0 +1,89 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Setup and Configuration Guide
+
+## Quick Setup Checklist
+Refer to the detailed setup guide in [README.md](mdc:README.md) for complete instructions.
+
+### 1. Dependencies Installation
+```bash
+pip install -r requirements.txt
+```
+
+Key packages from [requirements.txt](mdc:requirements.txt):
+- `google-genai` - Core GenAI SDK
+- `google-cloud-aiplatform` - Vertex AI integration
+- `google-cloud-storage` - GCS operations
+
+### 2. Environment Configuration
+Configure your API keys and settings in [.env](mdc:.env):
+```bash
+# Google Cloud settings (required)
+GOOGLE_CLOUD_PROJECT=your-project-id
+GOOGLE_API_KEY=your-google-api-key
+GOOGLE_APPLICATION_CREDENTIALS=service-account-key.json
+
+# Optional: Additional AI service API keys
+ANTHROPIC_API_KEY=your-anthropic-key
+OPENAI_API_KEY=your-openai-key
+GEMINI_API_KEY=your-gemini-key
+```
+
+### 3. Google Cloud Authentication
+```bash
+# Login and set up credentials
+gcloud auth login your-email@gmail.com
+gcloud auth application-default login
+gcloud config set project your-project-id
+```
+
+### 4. Storage Permissions (Veo 2.0)
+```bash
+# Grant permissions to Veo service account
+gcloud storage buckets add-iam-policy-binding gs://your-bucket \
+  --member="user:cloud-lvm-video-server@prod.google.com" \
+  --role=roles/storage.objectCreator
+
+gcloud storage buckets add-iam-policy-binding gs://your-bucket \
+  --member="user:cloud-lvm-video-server@prod.google.com" \
+  --role=roles/storage.objectAdmin
+```
+
+### 5. Project Configuration
+The project is pre-configured with:
+- **Sample images**: Available in [images/](mdc:images) directory
+- **Output folder**: [result_folder/](mdc:result_folder) for downloaded videos
+- **Archive**: [archive/](mdc:archive) contains legacy tools and alternative implementations
+
+Edit [veo_video_generation.py](mdc:veo_video_generation.py) to customize:
+```python
+PROJECT_ID = "your-project-id"  # Or use from .env
+OUTPUT_BUCKET_PATH = "gs://your-bucket/veo_output/"
+```
+
+## Model Versions
+- **Veo 2.0**: `veo-2.0-generate-001` (generally available)
+- **Veo 3.0**: `veo-3.0-generate-preview` (requires allowlist access)
+
+## Directory Structure
+- [images/](mdc:images) - Input images for video generation
+- [result_folder/](mdc:result_folder) - Downloaded generated videos
+- [archive/](mdc:archive) - Legacy code and alternative implementations
+- [.env](mdc:.env) - API keys and configuration
+
+## Common Configuration Issues
+1. **Permission Denied**: Check storage bucket permissions
+2. **Project Not Allowlisted**: Switch to Veo 2.0 or request access
+3. **Authentication Errors**: Verify `gcloud auth list` shows correct account
+4. **Region Issues**: Ensure `us-central1` region is used for Vertex AI
+5. **Missing API Keys**: Check [.env](mdc:.env) file configuration
+
+## Environment Variables
+The script reads from [.env](mdc:.env) and automatically sets:
+- `GOOGLE_CLOUD_PROJECT`
+- `GOOGLE_CLOUD_LOCATION` 
+- `GOOGLE_GENAI_USE_VERTEXAI`
+

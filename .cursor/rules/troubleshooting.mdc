@@ -1,0 +1,100 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Troubleshooting Guide
+
+## Common Issues and Solutions
+
+### Authentication and Permissions
+
+#### "Permission 'storage.objects.create' denied"
+**Problem**: Veo service account lacks GCS permissions  
+**Solution**: Grant storage permissions to the Veo service account
+```bash
+gcloud storage buckets add-iam-policy-binding gs://your-bucket \
+  --member="user:cloud-lvm-video-server@prod.google.com" \
+  --role=roles/storage.objectAdmin
+```
+
+#### "Text to video is not allowlisted for project"
+**Problem**: Project not allowlisted for Veo 3.0  
+**Solutions**:
+1. Switch to Veo 2.0 model: Change `model_id` to `"veo-2.0-generate-001"`
+2. Request allowlist access from Google Cloud for Veo 3.0
+
+#### Authentication Failures
+**Problem**: Invalid or missing credentials  
+**Solutions**:
+1. Check active account: `gcloud auth list`
+2. Re-authenticate: `gcloud auth application-default login`
+3. Verify project setting: `gcloud config get project`
+
+### Video Generation Issues
+
+#### Operation Timeout or Stuck
+**Problem**: Video generation operation not completing  
+**Solutions**:
+1. Check operation status in Google Cloud Console
+2. Verify sufficient quota for Vertex AI
+3. Try with shorter/simpler prompts first
+4. Check regional availability (use `us-central1`)
+
+#### Poor Video Quality
+**Problem**: Generated videos don't match expectations  
+**Solutions**:
+1. Use more detailed prompts (see [README.md](mdc:README.md) for prompt tips)
+2. Include cinematic details: camera movements, lighting, mood
+3. Specify subjects, actions, setting, and environment
+4. Try different aspect ratios or duration settings
+
+### File and Storage Issues
+
+#### Local Image Upload Failures
+**Problem**: Cannot upload local images to GCS  
+**Solutions**:
+1. Verify image file format (JPEG, PNG, GIF, WebP supported)
+2. Check file permissions and path accessibility
+3. Ensure GCS bucket exists and is accessible
+4. Verify content-type detection is working
+
+#### Download Failures
+**Problem**: Cannot download generated videos  
+**Solutions**:
+1. Check if `result_folder/` directory exists
+2. Verify GCS URI format and accessibility
+3. Ensure local storage permissions
+4. Try manual download: `gcloud storage cp gs://bucket/path/video.mp4 .`
+
+## Debugging Steps
+
+### 1. Verify Setup
+```bash
+# Check authentication
+gcloud auth list
+gcloud config get project
+
+# Test GCS access
+gcloud storage ls gs://your-bucket/
+
+# Verify Vertex AI API is enabled
+gcloud services list --enabled | grep aiplatform
+```
+
+### 2. Test with Simple Operations
+Start with basic text-to-video generation before trying complex image operations.
+
+### 3. Check Logs
+The functions in [veo_video_generation.py](mdc:veo_video_generation.py) include detailed logging. Monitor console output for specific error messages.
+
+### 4. Environment Variables
+Verify these are set correctly by the script:
+- `GOOGLE_CLOUD_PROJECT`
+- `GOOGLE_CLOUD_LOCATION`
+- `GOOGLE_GENAI_USE_VERTEXAI`
+
+## Getting Help
+- Detailed setup instructions: [README.md](mdc:README.md)
+- Function documentation: [veo_video_generation.py](mdc:veo_video_generation.py)
+- Google Cloud documentation: [Veo API docs](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/veo-video-generation)

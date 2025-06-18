@@ -1,0 +1,47 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Video Analyzer Tools (Legacy)
+
+## Overview
+The video analyzer tools have been moved to [archive/video_analyzer/](mdc:archive/video_analyzer/) and are now considered legacy components. The main project focuses on video generation using [veo_video_generation.py](mdc:veo_video_generation.py).
+
+## Legacy Tools Location
+The [archive/](mdc:archive/) directory contains:
+- **[archive/video_analyzer/](mdc:archive/video_analyzer/)**: Original video analysis tools
+- **[archive/emotion_analyzer.py](mdc:archive/emotion_analyzer.py)**: Standalone emotion detection
+- **[archive/veo_video_generator.py](mdc:archive/veo_video_generator.py)**: Alternative video generation implementation
+- **[archive/veo_video_generation.py](mdc:archive/veo_video_generation.py)**: Older version of the main script
+
+## Current Project Structure
+The main project now uses a simpler structure:
+- **Input**: [images/](mdc:images/) - Sample images like [smiling_woman.jpg](mdc:images/smiling_woman.jpg)
+- **Processing**: [veo_video_generation.py](mdc:veo_video_generation.py) - Main video generation script
+- **Output**: [result_folder/](mdc:result_folder/) - Generated videos like sample_0.mp4
+- **Configuration**: [.env](mdc:.env) - API keys and settings
+
+## Integration with Main Project
+For video analysis needs, you can:
+1. Generate videos using [veo_video_generation.py](mdc:veo_video_generation.py)
+2. Videos are automatically downloaded to [result_folder/](mdc:result_folder/)
+3. Use legacy analyzer tools from [archive/](mdc:archive/) if needed
+4. Consider modern alternatives or cloud-based analysis services
+
+## Usage Pattern
+```python
+# Current workflow
+video_uri = generate_video_from_text(...)
+if video_uri:
+    # Video automatically downloaded to result_folder/
+    local_path = download_gcs_file(video_uri, "result_folder", project_id)
+    
+    # If analysis needed, refer to legacy tools in archive/
+```
+
+## Migration Notes
+- The main project has been simplified to focus on video generation
+- Analysis tools remain available in [archive/](mdc:archive/) for reference
+- Consider using Google Cloud Video Intelligence API for modern video analysis
+- The [.env](mdc:.env) file contains multiple API keys that could be used for analysis services
