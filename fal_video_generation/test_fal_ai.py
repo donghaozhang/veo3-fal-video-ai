@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Comprehensive FAL AI Video Generation Test Suite
-Combines setup verification, API testing, and video generation testing
+Supports both MiniMax Hailuo-02 and Kling Video 2.1 models
 """
 
 import os
@@ -72,9 +72,11 @@ def test_generator_initialization():
         generator = FALVideoGenerator()
         print("✅ FALVideoGenerator initialized successfully")
         
-        # Check if the endpoint is set
-        if hasattr(generator, 'model_endpoint'):
-            print(f"✅ Model endpoint: {generator.model_endpoint}")
+        # Check if the endpoints are set
+        if hasattr(generator, 'hailuo_endpoint'):
+            print(f"✅ Hailuo endpoint: {generator.hailuo_endpoint}")
+        if hasattr(generator, 'kling_endpoint'):
+            print(f"✅ Kling endpoint: {generator.kling_endpoint}")
         
         return generator
         
@@ -132,9 +134,9 @@ def test_api_connection():
         print(f'❌ API connection test failed: {e}')
         return False
 
-def test_video_generation(generator, quick_test=False):
+def test_video_generation(generator, quick_test=False, model="hailuo"):
     """Test actual video generation"""
-    print("\n🎬 Testing video generation...")
+    print(f"\n🎬 Testing video generation with {model.upper()}...")
     
     if not generator:
         print("❌ Cannot test video generation - generator not initialized")
@@ -146,11 +148,18 @@ def test_video_generation(generator, quick_test=False):
         else:
             print("🎯 Running full video generation test...")
         
-        result = generator.generate_video_from_image(
-            image_url="https://picsum.photos/512/512",
-            prompt="A beautiful landscape with moving clouds",
-            duration="6"
-        )
+        if model == "kling":
+            result = generator.generate_video_with_kling(
+                image_url="https://picsum.photos/512/512",
+                prompt="A beautiful landscape with moving clouds, cinematic quality",
+                duration="5"
+            )
+        else:
+            result = generator.generate_video_with_hailuo(
+                image_url="https://picsum.photos/512/512",
+                prompt="A beautiful landscape with moving clouds",
+                duration="6"
+            )
         
         if result and 'video' in result:
             video_url = result['video'].get('url', 'No URL found')
@@ -182,20 +191,95 @@ def test_video_generation(generator, quick_test=False):
             traceback.print_exc()
         return False
 
+def test_both_models(generator):
+    """Test both Hailuo and Kling models for comparison"""
+    print("\n🆚 Testing both models for comparison...")
+    
+    if not generator:
+        print("❌ Cannot test models - generator not initialized")
+        return False
+    
+    results = {}
+    
+    # Test Hailuo
+    print("\n1️⃣ Testing MiniMax Hailuo-02...")
+    try:
+        result_hailuo = generator.generate_video_with_hailuo(
+            image_url="https://picsum.photos/512/512",
+            prompt="A peaceful mountain landscape with gentle movement",
+            duration="6"
+        )
+        if result_hailuo:
+            results['hailuo'] = {
+                'success': True,
+                'url': result_hailuo['video']['url'],
+                'size': result_hailuo['video']['file_size']
+            }
+            print("✅ Hailuo test successful")
+        else:
+            results['hailuo'] = {'success': False, 'error': 'Generation failed'}
+            print("❌ Hailuo test failed")
+    except Exception as e:
+        results['hailuo'] = {'success': False, 'error': str(e)}
+        print(f"❌ Hailuo test error: {e}")
+    
+    # Test Kling
+    print("\n2️⃣ Testing Kling Video 2.1...")
+    try:
+        result_kling = generator.generate_video_with_kling(
+            image_url="https://picsum.photos/512/512",
+            prompt="A peaceful mountain landscape with gentle movement",
+            duration="5"
+        )
+        if result_kling:
+            results['kling'] = {
+                'success': True,
+                'url': result_kling['video']['url'],
+                'size': result_kling['video']['file_size']
+            }
+            print("✅ Kling test successful")
+        else:
+            results['kling'] = {'success': False, 'error': 'Generation failed'}
+            print("❌ Kling test failed")
+    except Exception as e:
+        results['kling'] = {'success': False, 'error': str(e)}
+        print(f"❌ Kling test error: {e}")
+    
+    # Print comparison
+    print("\n📊 Model Comparison Results:")
+    print("-" * 40)
+    
+    for model, result in results.items():
+        if result['success']:
+            print(f"🟢 {model.upper()}: SUCCESS")
+            print(f"   📹 URL: {result['url']}")
+            print(f"   💾 Size: {result['size']} bytes")
+        else:
+            print(f"🔴 {model.upper()}: FAILED")
+            print(f"   ❌ Error: {result['error']}")
+        print()
+    
+    return any(result['success'] for result in results.values())
+
 def main():
     """Run comprehensive test suite"""
     print("🧪 FAL AI Comprehensive Test Suite")
+    print("Supports MiniMax Hailuo-02 and Kling Video 2.1")
     print("=" * 50)
     
     # Parse command line arguments
     quick_test = '--quick' in sys.argv
     full_test = '--full' in sys.argv
     api_only = '--api-only' in sys.argv
+    kling_test = '--kling' in sys.argv
+    compare_test = '--compare' in sys.argv
     
-    if len(sys.argv) > 1 and not any([quick_test, full_test, api_only]):
+    if len(sys.argv) > 1 and not any([quick_test, full_test, api_only, kling_test, compare_test]):
         print("Usage:")
         print("  python test_fal_ai.py           # Setup and API connection test")
-        print("  python test_fal_ai.py --quick   # Quick video generation test")
+        print("  python test_fal_ai.py --quick   # Quick Hailuo video generation test")
+        print("  python test_fal_ai.py --kling   # Quick Kling video generation test")
+        print("  python test_fal_ai.py --compare # Test both models for comparison")
         print("  python test_fal_ai.py --full    # Full test with detailed output")
         print("  python test_fal_ai.py --api-only # Only test API connection")
         return
@@ -246,10 +330,25 @@ def main():
             return
     
     # 5. Test video generation (optional)
-    if quick_test or full_test:
-        print("\n🎥 STEP 5: Testing Video Generation")
+    if quick_test:
+        print("\n🎥 STEP 5: Testing Hailuo Video Generation")
         print("-" * 30)
-        video_ok = test_video_generation(generator, quick_test=quick_test)
+        video_ok = test_video_generation(generator, quick_test=True, model="hailuo")
+        test_results.append(("Hailuo Video Generation", video_ok))
+    elif kling_test:
+        print("\n🎥 STEP 5: Testing Kling Video Generation")
+        print("-" * 30)
+        video_ok = test_video_generation(generator, quick_test=True, model="kling")
+        test_results.append(("Kling Video Generation", video_ok))
+    elif compare_test:
+        print("\n🎥 STEP 5: Testing Both Models")
+        print("-" * 30)
+        comparison_ok = test_both_models(generator)
+        test_results.append(("Model Comparison", comparison_ok))
+    elif full_test:
+        print("\n🎥 STEP 5: Testing Video Generation (Full)")
+        print("-" * 30)
+        video_ok = test_video_generation(generator, quick_test=False)
         test_results.append(("Video Generation", video_ok))
     
     # Summary
@@ -260,22 +359,24 @@ def main():
     all_passed = True
     for test_name, passed in test_results:
         status = "✅ PASS" if passed else "❌ FAIL"
-        print(f"{test_name:<20} {status}")
+        print(f"{test_name:<25} {status}")
         if not passed:
             all_passed = False
     
     print("-" * 25)
     if all_passed:
         print("🎉 ALL TESTS PASSED!")
-        if not (quick_test or full_test):
-            print("💡 Run with --quick to test video generation")
+        if not (quick_test or full_test or kling_test or compare_test):
+            print("💡 Run with --quick, --kling, or --compare to test video generation")
     else:
         print("❌ SOME TESTS FAILED")
         print("💡 Check the error messages above")
     
     print("\n📚 Available commands:")
-    print("  python demo.py              # Interactive demo")
-    print("  python test_fal_ai.py --quick  # Quick video test")
+    print("  python demo.py                    # Interactive demo")
+    print("  python test_fal_ai.py --quick     # Quick Hailuo test")
+    print("  python test_fal_ai.py --kling     # Quick Kling test")
+    print("  python test_fal_ai.py --compare   # Compare both models")
 
 if __name__ == "__main__":
     main() 

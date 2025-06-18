@@ -15,9 +15,11 @@ load_dotenv()
 
 class FALVideoGenerator:
     """
-    FAL AI MiniMax Hailuo-02 Video Generator
+    FAL AI Video Generator supporting multiple models
     
-    Supports image-to-video generation with various configuration options
+    Supports:
+    - MiniMax Hailuo-02: 768p resolution, 6-10 second videos
+    - Kling Video 2.1: High-quality image-to-video generation, 5-10 second videos
     """
     
     def __init__(self, api_key: Optional[str] = None):
@@ -34,8 +36,9 @@ class FALVideoGenerator:
         # Set the API key for fal_client
         os.environ['FAL_KEY'] = self.api_key
         
-        # Model endpoint
-        self.model_endpoint = "fal-ai/minimax/hailuo-02/standard/image-to-video"
+        # Model endpoints
+        self.hailuo_endpoint = "fal-ai/minimax/hailuo-02/standard/image-to-video"
+        self.kling_endpoint = "fal-ai/kling-video/v2.1/standard/image-to-video"
         
     def generate_video_from_image(
         self,
@@ -44,35 +47,53 @@ class FALVideoGenerator:
         duration: str = "6",
         prompt_optimizer: bool = True,
         output_folder: str = "output",
-        use_async: bool = False
+        use_async: bool = False,
+        model: str = "hailuo"
     ) -> Optional[Dict[str, Any]]:
         """
-        Generate video from image using FAL AI MiniMax Hailuo-02
+        Generate video from image using FAL AI models
         
         Args:
             prompt: Text description for video generation
             image_url: URL of the image to use as the first frame
-            duration: Duration in seconds ("6" or "10" - note: 10s not supported for 1080p)
-            prompt_optimizer: Whether to use the model's prompt optimizer
+            duration: Duration in seconds ("6" or "10" for Hailuo, "5" or "10" for Kling)
+            prompt_optimizer: Whether to use the model's prompt optimizer (Hailuo only)
             output_folder: Local folder to save the generated video
             use_async: Whether to use async processing
+            model: Model to use ("hailuo" for MiniMax Hailuo-02, "kling" for Kling Video 2.1)
             
         Returns:
             Dictionary containing the result with video URL and metadata
         """
         try:
-            print(f"Starting video generation with FAL AI...")
+            # Select model endpoint
+            if model.lower() == "kling":
+                endpoint = self.kling_endpoint
+                model_name = "Kling Video 2.1"
+                # Kling specific parameters
+                arguments = {
+                    "prompt": prompt,
+                    "image_url": image_url,
+                    "duration": duration,
+                    "negative_prompt": "blur, distort, and low quality",
+                    "cfg_scale": 0.5
+                }
+            else:  # Default to Hailuo
+                endpoint = self.hailuo_endpoint
+                model_name = "MiniMax Hailuo-02"
+                # Hailuo specific parameters
+                arguments = {
+                    "prompt": prompt,
+                    "image_url": image_url,
+                    "duration": duration,
+                    "prompt_optimizer": prompt_optimizer
+                }
+            
+            print(f"Starting video generation with FAL AI {model_name}...")
             print(f"Prompt: '{prompt}'")
             print(f"Image URL: {image_url}")
             print(f"Duration: {duration} seconds")
-            
-            # Prepare arguments
-            arguments = {
-                "prompt": prompt,
-                "image_url": image_url,
-                "duration": duration,
-                "prompt_optimizer": prompt_optimizer
-            }
+            print(f"Model: {model_name}")
             
             # Define queue update handler
             def on_queue_update(update):
@@ -89,7 +110,7 @@ class FALVideoGenerator:
             if use_async:
                 # Async processing
                 handler = fal_client.submit(
-                    self.model_endpoint,
+                    endpoint,
                     arguments=arguments
                 )
                 
@@ -98,11 +119,11 @@ class FALVideoGenerator:
                 
                 # Poll for completion
                 while True:
-                    status = fal_client.status(self.model_endpoint, request_id, with_logs=True)
+                    status = fal_client.status(endpoint, request_id, with_logs=True)
                     print(f"Status: {status.status}")
                     
                     if status.status == "COMPLETED":
-                        result = fal_client.result(self.model_endpoint, request_id)
+                        result = fal_client.result(endpoint, request_id)
                         break
                     elif status.status == "FAILED":
                         print(f"Request failed: {status}")
@@ -113,7 +134,7 @@ class FALVideoGenerator:
             else:
                 # Synchronous processing
                 result = fal_client.subscribe(
-                    self.model_endpoint,
+                    endpoint,
                     arguments=arguments,
                     with_logs=True,
                     on_queue_update=on_queue_update,
@@ -181,7 +202,8 @@ class FALVideoGenerator:
         duration: str = "6",
         prompt_optimizer: bool = True,
         output_folder: str = "output",
-        use_async: bool = False
+        use_async: bool = False,
+        model: str = "hailuo"
     ) -> Optional[Dict[str, Any]]:
         """
         Generate video from local image file
@@ -189,10 +211,11 @@ class FALVideoGenerator:
         Args:
             prompt: Text description for video generation
             image_path: Path to the local image file
-            duration: Duration in seconds ("6" or "10")
-            prompt_optimizer: Whether to use the model's prompt optimizer
+            duration: Duration in seconds ("6" or "10" for Hailuo, "5" or "10" for Kling)
+            prompt_optimizer: Whether to use the model's prompt optimizer (Hailuo only)
             output_folder: Local folder to save the generated video
             use_async: Whether to use async processing
+            model: Model to use ("hailuo" for MiniMax Hailuo-02, "kling" for Kling Video 2.1)
             
         Returns:
             Dictionary containing the result with video URL and metadata
@@ -209,7 +232,155 @@ class FALVideoGenerator:
             duration=duration,
             prompt_optimizer=prompt_optimizer,
             output_folder=output_folder,
-            use_async=use_async
+            use_async=use_async,
+            model=model
+        )
+    
+    def generate_video_with_kling(
+        self,
+        prompt: str,
+        image_url: str,
+        duration: str = "5",
+        negative_prompt: str = "blur, distort, and low quality",
+        cfg_scale: float = 0.5,
+        output_folder: str = "output",
+        use_async: bool = False
+    ) -> Optional[Dict[str, Any]]:
+        """
+        Generate video using Kling Video 2.1 model specifically
+        
+        Args:
+            prompt: Text description for video generation
+            image_url: URL of the image to use as the first frame
+            duration: Duration in seconds ("5" or "10")
+            negative_prompt: Negative prompt to avoid certain elements
+            cfg_scale: CFG scale for guidance (0.5 default)
+            output_folder: Local folder to save the generated video
+            use_async: Whether to use async processing
+            
+        Returns:
+            Dictionary containing the result with video URL and metadata
+        """
+        try:
+            print(f"Starting video generation with Kling Video 2.1...")
+            print(f"Prompt: '{prompt}'")
+            print(f"Image URL: {image_url}")
+            print(f"Duration: {duration} seconds")
+            print(f"CFG Scale: {cfg_scale}")
+            
+            # Kling specific parameters
+            arguments = {
+                "prompt": prompt,
+                "image_url": image_url,
+                "duration": duration,
+                "negative_prompt": negative_prompt,
+                "cfg_scale": cfg_scale
+            }
+            
+            # Define queue update handler
+            def on_queue_update(update):
+                if hasattr(update, 'logs') and update.logs:
+                    print("Processing... Logs:")
+                    for log in update.logs:
+                        print(f"  {log.get('message', str(log))}")
+                else:
+                    print(f"Processing... Update: {type(update).__name__}")
+            
+            # Generate video
+            print("Submitting request to FAL AI Kling...")
+            
+            if use_async:
+                # Async processing
+                handler = fal_client.submit(
+                    self.kling_endpoint,
+                    arguments=arguments
+                )
+                
+                request_id = handler.request_id
+                print(f"Request submitted with ID: {request_id}")
+                
+                # Poll for completion
+                while True:
+                    status = fal_client.status(self.kling_endpoint, request_id, with_logs=True)
+                    print(f"Status: {status.status}")
+                    
+                    if status.status == "COMPLETED":
+                        result = fal_client.result(self.kling_endpoint, request_id)
+                        break
+                    elif status.status == "FAILED":
+                        print(f"Request failed: {status}")
+                        return None
+                    
+                    time.sleep(5)  # Wait 5 seconds before checking again
+                    
+            else:
+                # Synchronous processing
+                result = fal_client.subscribe(
+                    self.kling_endpoint,
+                    arguments=arguments,
+                    with_logs=True,
+                    on_queue_update=on_queue_update,
+                )
+            
+            print("Video generation completed successfully!")
+            
+            # Process result
+            if result and 'video' in result:
+                video_info = result['video']
+                video_url = video_info['url']
+                file_name = video_info.get('file_name', 'kling_video.mp4')
+                file_size = video_info.get('file_size', 0)
+                
+                print(f"Generated video URL: {video_url}")
+                print(f"File name: {file_name}")
+                print(f"File size: {file_size} bytes")
+                
+                # Download video locally
+                local_path = self.download_video(video_url, output_folder, file_name)
+                if local_path:
+                    result['local_path'] = local_path
+                
+                return result
+            else:
+                print("No video found in result")
+                return None
+                
+        except Exception as e:
+            print(f"Error during Kling video generation: {e}")
+            traceback.print_exc()
+            return None
+    
+    def generate_video_with_hailuo(
+        self,
+        prompt: str,
+        image_url: str,
+        duration: str = "6",
+        prompt_optimizer: bool = True,
+        output_folder: str = "output",
+        use_async: bool = False
+    ) -> Optional[Dict[str, Any]]:
+        """
+        Generate video using MiniMax Hailuo-02 model specifically
+        
+        Args:
+            prompt: Text description for video generation
+            image_url: URL of the image to use as the first frame
+            duration: Duration in seconds ("6" or "10")
+            prompt_optimizer: Whether to use the model's prompt optimizer
+            output_folder: Local folder to save the generated video
+            use_async: Whether to use async processing
+            
+        Returns:
+            Dictionary containing the result with video URL and metadata
+        """
+        return self.generate_video_from_image(
+            prompt=prompt,
+            image_url=image_url,
+            duration=duration,
+            prompt_optimizer=prompt_optimizer,
+            output_folder=output_folder,
+            use_async=use_async,
+            model="hailuo"
         )
     
     def download_video(self, video_url: str, output_folder: str, filename: str) -> Optional[str]:
