@@ -5,7 +5,7 @@ alwaysApply: false
 ---
 # API Reference Guide
 
-This project provides two video generation APIs: Google Veo (complex, high-quality) and FAL AI (simple, production-ready).
+This project provides two video generation APIs: Google Veo (complex, high-quality) and FAL AI Dual Models (simple, production-ready).
 
 ## Google Veo API Functions
 All functions are located in [veo_video_generation.py](mdc:veo_video_generation.py).
@@ -74,7 +74,7 @@ download_gcs_file(
 **Purpose**: Download generated video from GCS to local folder  
 **Returns**: Local file path or None on error
 
-## FAL AI API Class
+## FAL AI Dual-Model API Class
 Located in [fal_video_generation/fal_video_generator.py](mdc:fal_video_generation/fal_video_generator.py).
 
 ### FALVideoGenerator Class
@@ -85,9 +85,41 @@ from fal_video_generator import FALVideoGenerator
 generator = FALVideoGenerator(api_key=None)  # Uses FAL_KEY from .env
 ```
 
-### Generate Video from Image URL
+### Universal Methods (Model Selection)
+
+#### Generate Video from Image URL
 ```python
 generator.generate_video_from_image(
+    prompt: str,                    # Text description
+    image_url: str,                 # Online image URL
+    duration: str = "6",            # "5", "6", or "10" seconds
+    model: str = "hailuo",          # "hailuo" or "kling"
+    output_folder: str = "output",  # Local download folder
+    use_async: bool = False         # Async processing mode
+) -> Optional[Dict[str, Any]]
+```
+**Purpose**: Generate video from online image with model selection  
+**Returns**: Dictionary with video URL, metadata, and local path
+
+#### Generate Video from Local Image
+```python
+generator.generate_video_from_local_image(
+    prompt: str,                    # Text description
+    image_path: str,                # Local image file path
+    duration: str = "6",            # "5", "6", or "10" seconds
+    model: str = "hailuo",          # "hailuo" or "kling"
+    output_folder: str = "output",  # Local download folder
+    use_async: bool = False         # Async processing mode
+) -> Optional[Dict[str, Any]]
+```
+**Purpose**: Upload local image and generate video with model selection  
+**Returns**: Dictionary with video URL, metadata, and local path
+
+### Model-Specific Methods
+
+#### MiniMax Hailuo-02 Optimized Generation
+```python
+generator.generate_video_with_hailuo(
     prompt: str,                    # Text description
     image_url: str,                 # Online image URL
     duration: str = "6",            # "6" or "10" seconds
@@ -96,24 +128,27 @@ generator.generate_video_from_image(
     use_async: bool = False         # Async processing mode
 ) -> Optional[Dict[str, Any]]
 ```
-**Purpose**: Generate video from online image with text prompt  
+**Purpose**: Generate video using MiniMax Hailuo-02 with optimized parameters  
 **Returns**: Dictionary with video URL, metadata, and local path
 
-### Generate Video from Local Image
+#### Kling Video 2.1 Optimized Generation
 ```python
-generator.generate_video_from_local_image(
-    prompt: str,                    # Text description
-    image_path: str,                # Local image file path
-    duration: str = "6",            # "6" or "10" seconds
-    prompt_optimizer: bool = True,  # Use AI prompt optimization
-    output_folder: str = "output",  # Local download folder
-    use_async: bool = False         # Async processing mode
+generator.generate_video_with_kling(
+    prompt: str,                           # Text description
+    image_url: str,                        # Online image URL
+    duration: str = "5",                   # "5" or "10" seconds
+    negative_prompt: str = "blur, distort, and low quality",  # Quality control
+    cfg_scale: float = 0.5,                # Generation guidance (0.1-2.0)
+    output_folder: str = "output",         # Local download folder
+    use_async: bool = False                # Async processing mode
 ) -> Optional[Dict[str, Any]]
 ```
-**Purpose**: Upload local image and generate video  
+**Purpose**: Generate video using Kling Video 2.1 with optimized parameters  
 **Returns**: Dictionary with video URL, metadata, and local path
 
-### Upload Local Image
+### Utility Methods
+
+#### Upload Local Image
 ```python
 generator.upload_local_image(
     image_path: str                 # Path to local image file
@@ -122,7 +157,7 @@ generator.upload_local_image(
 **Purpose**: Upload local image to FAL AI and get URL  
 **Returns**: Image URL or None if failed
 
-### Download Video
+#### Download Video
 ```python
 generator.download_video(
     video_url: str,                 # FAL AI video URL
@@ -149,6 +184,7 @@ config = GenerateVideosConfig(
 
 ### FAL AI Response Structure
 ```python
+# MiniMax Hailuo-02 Response
 {
     'video': {
         'url': 'https://v3.fal.media/files/...',
@@ -158,6 +194,21 @@ config = GenerateVideosConfig(
     'duration': '6',
     'width': 768,
     'height': 768,
+    'model': 'hailuo',
+    'local_path': 'output/video.mp4'  # If downloaded
+}
+
+# Kling Video 2.1 Response
+{
+    'video': {
+        'url': 'https://v3.fal.media/files/...',
+        'file_name': 'output.mp4',
+        'file_size': 3150604
+    },
+    'duration': '5',
+    'model': 'kling',
+    'cfg_scale': 0.5,
+    'negative_prompt': 'blur, distort, and low quality',
     'local_path': 'output/video.mp4'  # If downloaded
 }
 ```
@@ -183,20 +234,47 @@ video_uri = generate_video_from_image(
 )
 ```
 
-### FAL AI - Simple Video Generation
+### FAL AI - Universal Interface
 ```python
 from fal_video_generator import FALVideoGenerator
 
 generator = FALVideoGenerator()
-result = generator.generate_video_from_image(
+
+# Using Hailuo model
+hailuo_result = generator.generate_video_from_image(
     prompt="A beautiful landscape with moving clouds",
     image_url="https://example.com/image.jpg",
-    duration="6"
+    duration="6",
+    model="hailuo"
 )
 
-if result:
-    print(f"Video URL: {result['video']['url']}")
-    print(f"Local path: {result['local_path']}")
+# Using Kling model
+kling_result = generator.generate_video_from_image(
+    prompt="A cinematic landscape with dramatic lighting",
+    image_url="https://example.com/image.jpg",
+    duration="5",
+    model="kling"
+)
+```
+
+### FAL AI - Model-Specific Optimization
+```python
+# Hailuo with prompt optimization
+hailuo_result = generator.generate_video_with_hailuo(
+    prompt="A serene lake scene",
+    image_url="https://example.com/lake.jpg",
+    duration="6",
+    prompt_optimizer=True
+)
+
+# Kling with quality control
+kling_result = generator.generate_video_with_kling(
+    prompt="A dramatic sunset over mountains",
+    image_url="https://example.com/mountains.jpg",
+    duration="5",
+    cfg_scale=0.7,
+    negative_prompt="blur, distort, low quality, artifacts"
+)
 ```
 
 ### FAL AI - Local Image Processing
@@ -205,8 +283,26 @@ result = generator.generate_video_from_local_image(
     prompt="The flowers sway gently in the breeze",
     image_path="./images/flowers.jpg",
     duration="6",
+    model="hailuo",
     output_folder="my_videos"
 )
+```
+
+### FAL AI - Model Comparison
+```python
+# Compare both models with same input
+def compare_models(prompt, image_url):
+    generator = FALVideoGenerator()
+    
+    hailuo_result = generator.generate_video_from_image(
+        prompt=prompt, image_url=image_url, model="hailuo"
+    )
+    
+    kling_result = generator.generate_video_from_image(
+        prompt=prompt, image_url=image_url, model="kling"
+    )
+    
+    return hailuo_result, kling_result
 ```
 
 ## Testing APIs
@@ -215,9 +311,37 @@ result = generator.generate_video_from_local_image(
 Test functions individually or use the main script with proper GCP authentication.
 
 ### FAL AI Testing
-Use the unified test suite in [fal_video_generation/test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py):
+Use the enhanced test suite in [fal_video_generation/test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py):
 ```bash
-python test_fal_ai.py          # Setup and API test
-python test_fal_ai.py --quick  # Quick video generation test
-python test_fal_ai.py --full   # Full test with details
+python test_fal_ai.py              # Setup and API test
+python test_fal_ai.py --quick      # Quick Hailuo test
+python test_fal_ai.py --kling      # Quick Kling test
+python test_fal_ai.py --compare    # Compare both models
+python test_fal_ai.py --full       # Full test with details
 ```
+
+### FAL AI Interactive Demo
+Use the interactive demo for hands-on testing:
+```bash
+python demo.py                     # Interactive model selection demo
+```
+
+## Model Selection Guidelines
+
+### Choose MiniMax Hailuo-02 when:
+- You need reliable, consistent 768p video generation
+- You want AI-powered prompt optimization
+- You're building production workflows requiring stability
+- You prefer the established model with proven results
+
+### Choose Kling Video 2.1 when:
+- You need high-quality, artistic video output
+- You want fine control with CFG scale parameters
+- You need negative prompt capabilities for quality control
+- You're creating cinematic or professional video content
+
+### Choose Google Veo when:
+- You need 1080p resolution or higher
+- You want longer video durations
+- You already use Google Cloud infrastructure
+- You need the highest quality output available

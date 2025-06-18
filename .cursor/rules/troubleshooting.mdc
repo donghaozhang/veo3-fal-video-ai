@@ -5,9 +5,9 @@ alwaysApply: false
 ---
 # Troubleshooting Guide
 
-This guide covers troubleshooting for both Google Veo and FAL AI video generation platforms.
+This guide covers troubleshooting for both Google Veo and FAL AI dual-model video generation platforms.
 
-## FAL AI Troubleshooting
+## FAL AI Dual-Model Troubleshooting
 
 ### API and Authentication Issues
 
@@ -18,6 +18,7 @@ This guide covers troubleshooting for both Google Veo and FAL AI video generatio
 2. Check key format (should be like: `be79b36b-...`)
 3. Ensure no extra spaces or characters in the key
 4. Test with: `python test_fal_ai.py --api-only`
+5. Verify key works for both models: `python test_fal_ai.py --compare`
 
 #### Network Connection Errors
 **Problem**: Cannot connect to FAL AI services  
@@ -26,6 +27,34 @@ This guide covers troubleshooting for both Google Veo and FAL AI video generatio
 2. Verify FAL AI service status
 3. Try with different network/VPN
 4. Check firewall settings
+5. Test specific models: `python test_fal_ai.py --kling` or `--quick`
+
+### Model-Specific Issues
+
+#### Hailuo Model Problems
+**Problem**: MiniMax Hailuo-02 generation fails  
+**Solutions**:
+1. Check endpoint availability: `fal-ai/minimax/hailuo-02/standard/image-to-video`
+2. Verify duration parameter: Use "6" or "10" seconds
+3. Test prompt optimizer: `prompt_optimizer=True`
+4. Run specific test: `python test_fal_ai.py --quick`
+
+#### Kling Model Problems
+**Problem**: Kling Video 2.1 generation fails  
+**Solutions**:
+1. Check endpoint availability: `fal-ai/kling-video/v2.1/standard/image-to-video`
+2. Verify CFG scale range: 0.1-2.0 (default: 0.5)
+3. Check negative prompt format: String, not None
+4. Use correct duration: "5" or "10" seconds
+5. Run specific test: `python test_fal_ai.py --kling`
+
+#### Model Selection Issues
+**Problem**: Wrong model being used or model parameter ignored  
+**Solutions**:
+1. Use explicit model parameter: `model="hailuo"` or `model="kling"`
+2. Use model-specific methods: `generate_video_with_hailuo()` or `generate_video_with_kling()`
+3. Verify model in response: Check `result['model']` field
+4. Test with comparison: `python test_fal_ai.py --compare`
 
 ### FAL AI Video Generation Issues
 
@@ -36,22 +65,38 @@ This guide covers troubleshooting for both Google Veo and FAL AI video generatio
 2. Check file size (should be under 10MB)
 3. Ensure file path is correct and file exists
 4. Test with: `generator.upload_local_image("path/to/image.jpg")`
+5. Try different image formats or sizes
 
 #### Video Generation Timeout
 **Problem**: Generation takes too long or times out  
 **Solutions**:
-1. Use shorter duration ("6" seconds instead of "10")
+1. Use shorter duration ("5" or "6" seconds instead of "10")
 2. Try with simpler prompts
 3. Check if using async mode: `use_async=True`
 4. Increase timeout in .env: `FAL_TIMEOUT=600`
+5. Test with different models: Kling may be faster/slower than Hailuo
 
 #### Poor Video Quality
-**Problem**: Generated videos don't match expectations  
-**Solutions**:
+
+**For Hailuo Model**:
 1. Enable prompt optimizer: `prompt_optimizer=True`
 2. Use more descriptive prompts
-3. Try different image sources or formats
-4. Check input image quality and resolution
+3. Try 768p-optimized descriptions
+4. Test with proven prompts from demo
+
+**For Kling Model**:
+1. Adjust CFG scale: Higher values (0.7-1.0) for more guidance
+2. Use detailed negative prompts: "blur, distort, low quality, artifacts"
+3. Try cinematic descriptions for better results
+4. Use shorter duration (5 seconds) for higher quality
+
+#### Parameter Validation Errors
+**Problem**: Invalid parameters for specific models  
+**Solutions**:
+1. **Hailuo**: Only supports `prompt_optimizer` parameter
+2. **Kling**: Only supports `cfg_scale` and `negative_prompt` parameters
+3. Don't mix model-specific parameters
+4. Use universal methods with `model` parameter for flexibility
 
 ### FAL AI Testing Issues
 
@@ -61,26 +106,71 @@ This guide covers troubleshooting for both Google Veo and FAL AI video generatio
 1. Run step by step: `python test_fal_ai.py --api-only`
 2. Check dependencies: `pip install -r requirements.txt`
 3. Verify .env file exists and has correct key
-4. Test manually: `python demo.py`
+4. Test individual models: `python test_fal_ai.py --quick` or `--kling`
+5. Test manually: `python demo.py`
+
+#### Comparison Test Issues
+**Problem**: Model comparison fails or gives inconsistent results  
+**Solutions**:
+1. Ensure both models are accessible with same API key
+2. Check that image URL is accessible to both models
+3. Use identical prompts but model-appropriate parameters
+4. Run comparison multiple times for consistency
+5. Check file size differences (Kling typically larger than Hailuo)
+
+#### Demo Script Problems
+**Problem**: Interactive demo crashes or behaves unexpectedly  
+**Solutions**:
+1. Check Python version compatibility (3.8+)
+2. Verify all dependencies installed
+3. Test with simple inputs first
+4. Check file permissions for local image uploads
+5. Use absolute paths for local images
 
 ## Google Veo Troubleshooting
 
 ### Authentication and Permissions
 
-#### "Permission 'storage.objects.create' denied"
-**Problem**: Veo service account lacks GCS permissions  
-**Solution**: Grant storage permissions to the Veo service account
-```bash
-gcloud storage buckets add-iam-policy-binding gs://your-bucket \
-  --member="user:cloud-lvm-video-server@prod.google.com" \
-  --role=roles/storage.objectAdmin
-```
+#### "Service agents are being provisioned" Error
+**Problem**: Vertex AI service agents not yet ready  
+**Solutions**:
+1. **Quick Fix**: Run the automated permission script:
+   ```bash
+   cd veo3_video_generation
+   python fix_permissions.py
+   ```
+2. **Manual Fix**: Wait 5-10 minutes for Google to provision service agents
+3. **Verify**: Check that APIs are enabled: `gcloud services list --enabled | grep aiplatform`
+
+#### "Permission 'storage.objects.get' denied" Error
+**Problem**: Vertex AI service account lacks GCS permissions  
+**Solutions**:
+1. **Automated Fix**: Run the permission fix script:
+   ```bash
+   python fix_permissions.py --project-id your-project-id --bucket-name your-bucket
+   ```
+2. **Manual Fix**: Grant permissions to both service accounts:
+   ```bash
+   # Get your project number first
+   PROJECT_NUMBER=$(gcloud projects describe YOUR_PROJECT_ID --format="value(projectNumber)")
+   
+   # Fix Vertex AI permissions
+   gcloud storage buckets add-iam-policy-binding gs://your-bucket \
+     --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-aiplatform.iam.gserviceaccount.com" \
+     --role=roles/storage.objectAdmin
+   
+   # Fix Veo service permissions
+   gcloud storage buckets add-iam-policy-binding gs://your-bucket \
+     --member="user:cloud-lvm-video-server@prod.google.com" \
+     --role=roles/storage.objectAdmin
+   ```
 
 #### "Text to video is not allowlisted for project"
 **Problem**: Project not allowlisted for Veo 3.0  
 **Solutions**:
 1. Switch to Veo 2.0 model: Change `model_id` to `"veo-2.0-generate-001"`
 2. Request allowlist access from Google Cloud for Veo 3.0
+3. Use Veo 2.0 for production (stable and reliable)
 
 #### Authentication Failures
 **Problem**: Invalid or missing credentials  
@@ -88,6 +178,7 @@ gcloud storage buckets add-iam-policy-binding gs://your-bucket \
 1. Check active account: `gcloud auth list`
 2. Re-authenticate: `gcloud auth application-default login`
 3. Verify project setting: `gcloud config get project`
+4. Ensure service account has proper roles
 
 ### Google Veo Video Generation Issues
 
@@ -127,31 +218,62 @@ gcloud storage buckets add-iam-policy-binding gs://your-bucket \
 
 ## Platform-Specific Debugging
 
-### FAL AI Debugging Steps
+### FAL AI Dual-Model Debugging Steps
 
 #### 1. Basic Verification
 ```bash
 cd fal_video_generation
-python test_fal_ai.py          # Complete test
-python test_fal_ai.py --api-only  # API connection only
+python test_fal_ai.py              # Complete test with both models
+python test_fal_ai.py --api-only    # API connection only
+python test_fal_ai.py --compare     # Test both models side-by-side
 ```
 
-#### 2. Manual Testing
+#### 2. Model-Specific Testing
+```bash
+python test_fal_ai.py --quick       # Test Hailuo model
+python test_fal_ai.py --kling       # Test Kling model
+```
+
+#### 3. Manual Testing
 ```python
 from fal_video_generator import FALVideoGenerator
 generator = FALVideoGenerator()
+
 # Test API connection
 print("API key loaded:", generator.api_key[:20] + "..." if generator.api_key else "None")
+
+# Test both endpoints
+print("Hailuo endpoint:", generator.hailuo_endpoint)
+print("Kling endpoint:", generator.kling_endpoint)
+
+# Test specific model
+result = generator.generate_video_from_image(
+    prompt="Test prompt",
+    image_url="https://picsum.photos/512/512",
+    model="hailuo"  # or "kling"
+)
 ```
 
-#### 3. Check Dependencies
+#### 4. Check Dependencies
 ```bash
 pip list | grep -E "(fal-client|requests|python-dotenv)"
 ```
 
+#### 5. Interactive Testing
+```bash
+python demo.py  # Use interactive demo for troubleshooting
+```
+
 ### Google Veo Debugging Steps
 
-#### 1. Verify Setup
+#### 1. Quick Permission Fix
+```bash
+cd veo3_video_generation
+python fix_permissions.py          # Auto-detect project and bucket
+python fix_permissions.py --skip-apis  # Skip API enablement
+```
+
+#### 2. Verify Setup
 ```bash
 # Check authentication
 gcloud auth list
@@ -164,13 +286,21 @@ gcloud storage ls gs://your-bucket/
 gcloud services list --enabled | grep aiplatform
 ```
 
-#### 2. Test with Simple Operations
+#### 3. Test Video Generation
+```bash
+# Run basic tests
+python test_veo.py --text-only      # Test text-to-video only
+python test_veo.py --veo3           # Test Veo 3.0 (requires allowlist)
+python test_veo.py --compare        # Compare Veo 2.0 vs 3.0
+```
+
+#### 4. Test with Simple Operations
 Start with basic text-to-video generation before trying complex image operations.
 
-#### 3. Check Logs
+#### 5. Check Logs
 The functions in [veo_video_generation.py](mdc:veo_video_generation.py) include detailed logging. Monitor console output for specific error messages.
 
-#### 4. Environment Variables
+#### 6. Environment Variables
 Verify these are set correctly by the script:
 - `GOOGLE_CLOUD_PROJECT`
 - `GOOGLE_CLOUD_LOCATION`
@@ -178,22 +308,64 @@ Verify these are set correctly by the script:
 
 ## Quick Comparison for Troubleshooting
 
-| Issue | FAL AI Solution | Google Veo Solution |
-|-------|----------------|-------------------|
-| Authentication | Check FAL_KEY in .env | Run gcloud auth login |
-| Network Issues | Check internet/firewall | Check GCP connectivity |
-| Upload Failures | Verify image format/size | Check GCS permissions |
-| Generation Timeout | Use shorter duration | Check Vertex AI quotas |
-| Poor Quality | Enable prompt optimizer | Use detailed prompts |
+| Issue | FAL AI Hailuo | FAL AI Kling | Google Veo |
+|-------|---------------|--------------|------------|
+| Authentication | Check FAL_KEY in .env | Same as Hailuo | Run gcloud auth login |
+| Network Issues | Check internet/firewall | Same as Hailuo | Check GCP connectivity |
+| Upload Failures | Verify image format/size | Same as Hailuo | Check GCS permissions |
+| Generation Timeout | Use 6s duration | Use 5s duration | Check Vertex AI quotas |
+| Poor Quality | Enable prompt optimizer | Adjust CFG scale | Use detailed prompts |
+| Parameter Errors | Check prompt_optimizer | Check cfg_scale/negative_prompt | Check model parameters |
+
+## Model Selection Troubleshooting
+
+### When to Switch Models
+
+**Switch from Hailuo to Kling when**:
+- Need higher quality output
+- Want more control over generation
+- Negative prompts would be beneficial
+- Artistic/cinematic content required
+
+**Switch from Kling to Hailuo when**:
+- Need more reliable, consistent results
+- Want prompt optimization
+- Simpler generation requirements
+- Faster processing preferred
+
+**Switch to Google Veo when**:
+- Need 1080p resolution
+- Want longer video durations
+- Require highest quality available
+- Already using Google Cloud infrastructure
 
 ## Getting Help
 
 ### FAL AI Resources
-- Test suite: [fal_video_generation/test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py)
-- Documentation: [fal_video_generation/README.md](mdc:fal_video_generation/README.md)
-- Demo script: [fal_video_generation/demo.py](mdc:fal_video_generation/demo.py)
+- Dual-model test suite: [fal_video_generation/test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py)
+- Complete documentation: [fal_video_generation/README.md](mdc:fal_video_generation/README.md)
+- Interactive demo: [fal_video_generation/demo.py](mdc:fal_video_generation/demo.py)
+- Testing guide: [.cursor/rules/testing-and-demo.mdc](mdc:.cursor/rules/testing-and-demo.mdc)
 
 ### Google Veo Resources
 - Detailed setup instructions: [README.md](mdc:README.md)
 - Function documentation: [veo_video_generation.py](mdc:veo_video_generation.py)
 - Google Cloud documentation: [Veo API docs](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/veo-video-generation)
+
+### Emergency Debugging Checklist
+
+#### FAL AI (fal_video_generation/)
+1. **Quick API Test**: `python test_fal_ai.py --api-only`
+2. **Model Availability**: `python test_fal_ai.py --compare`
+3. **Environment Check**: Verify .env file and API key format
+4. **Dependency Check**: `pip install -r requirements.txt`
+5. **Manual Test**: Use `python demo.py` for interactive troubleshooting
+6. **Specific Model Test**: Use `--quick` or `--kling` flags for targeted testing
+
+#### Google Veo (veo3_video_generation/)
+1. **Permission Fix**: `python fix_permissions.py` (fixes 90% of issues)
+2. **Basic Test**: `python test_veo.py --text-only`
+3. **Authentication**: `gcloud auth application-default login`
+4. **Project Setup**: Verify project ID and bucket configuration
+5. **Manual Test**: Use `python demo.py` for interactive troubleshooting
+6. **Specific Test**: Use `--veo3` or `--compare` flags for targeted testing

@@ -1,18 +1,26 @@
 ---
-description:
-globs:
+description: 
+globs: 
 alwaysApply: false
 ---
 # Video Generation Project Overview
 
 This project provides Python utilities for generating videos using two different AI platforms:
-1. **Google Veo API** on Vertex AI (higher resolution, complex setup)
-2. **FAL AI MiniMax Hailuo-02** (simpler setup, production ready)
+1. **Google Veo API** on Vertex AI (higher resolution, automated setup with permission fixes)
+2. **FAL AI Dual Models** (simpler setup, production ready)
+   - **MiniMax Hailuo-02** (768p, prompt optimizer)
+   - **Kling Video 2.1** (high-quality, CFG scale, negative prompts)
 
 ## Main Components
 
 ### Google Veo Implementation
-The primary script is [veo_video_generation.py](mdc:veo_video_generation.py), which contains Google Cloud-based video generation functions.
+Located in [veo3_video_generation/](mdc:veo3_video_generation) directory with automated setup and permission fixes.
+
+**Key Components:**
+- [veo_video_generation.py](mdc:veo3_video_generation/veo_video_generation.py) - Main Google Veo video generation functions
+- [fix_permissions.py](mdc:veo3_video_generation/fix_permissions.py) - **Automated permission fix tool** (fixes 90% of setup issues)
+- [demo.py](mdc:veo3_video_generation/demo.py) - Interactive demonstration with Veo 2.0/3.0 selection
+- [test_veo.py](mdc:veo3_video_generation/test_veo.py) - Comprehensive test suite with command-line options
 
 **Key Functions:**
 - `generate_video_from_text()` - Creates videos from text prompts
@@ -21,48 +29,95 @@ The primary script is [veo_video_generation.py](mdc:veo_video_generation.py), wh
 - `generate_video_with_veo3_preview()` - Uses the newer Veo 3.0 model
 - `download_gcs_file()` - Downloads generated videos from Google Cloud Storage
 
-### FAL AI Implementation
-Located in [fal_video_generation/](mdc:fal_video_generation/) directory with simplified API-based approach.
+**Quick Setup**: Run `python fix_permissions.py` to automatically configure Google Cloud permissions
+
+### FAL AI Dual-Model Implementation
+Located in [fal_video_generation/](mdc:fal_video_generation) directory with simplified API-based approach supporting two models.
 
 **Key Components:**
-- [fal_video_generator.py](mdc:fal_video_generation/fal_video_generator.py) - Main FALVideoGenerator class
-- [demo.py](mdc:fal_video_generation/demo.py) - Interactive demonstration script
-- [test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py) - Comprehensive test suite
-- [README.md](mdc:fal_video_generation/README.md) - Complete FAL AI documentation
+- [fal_video_generator.py](mdc:fal_video_generation/fal_video_generator.py) - Main FALVideoGenerator class with dual-model support
+- [demo.py](mdc:fal_video_generation/demo.py) - Interactive demonstration script with model selection
+- [test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py) - Comprehensive test suite for both models
+- [README.md](mdc:fal_video_generation/README.md) - Complete FAL AI dual-model documentation
+
+**Supported Models:**
+- **MiniMax Hailuo-02**: `fal-ai/minimax/hailuo-02/standard/image-to-video`
+  - Resolution: 768p
+  - Duration: 6-10 seconds
+  - Features: Prompt optimizer
+- **Kling Video 2.1**: `fal-ai/kling-video/v2.1/standard/image-to-video`
+  - Resolution: High-quality
+  - Duration: 5-10 seconds
+  - Features: CFG scale, negative prompts
 
 ## Project Structure
 ```
 veo3/
-├── veo_video_generation.py          # Google Veo implementation
-├── .env                             # API keys and configuration
+├── README.md                        # Multi-platform project overview
 ├── requirements.txt                 # Main dependencies
-├── README.md                        # Project documentation
-├── images/                          # Input images (smiling_woman.jpg)
-├── result_folder/                   # Google Veo output videos
+├── .env                            # Legacy configuration file
 ├── archive/                         # Legacy tools and older versions
-└── fal_video_generation/            # FAL AI implementation
-    ├── fal_video_generator.py       # FAL AI video generator class
-    ├── demo.py                      # Interactive demo
-    ├── test_fal_ai.py              # Unified test suite
-    ├── README.md                    # FAL AI documentation
+├── veo3_video_generation/           # Google Veo implementation
+│   ├── veo_video_generation.py     # Main Google Veo functions
+│   ├── fix_permissions.py          # 🔧 Automated permission fix tool
+│   ├── demo.py                     # Interactive Veo demo (2.0/3.0)
+│   ├── test_veo.py                 # Comprehensive test suite
+│   ├── README.md                   # Veo-specific documentation
+│   ├── requirements.txt            # Veo dependencies
+│   ├── .env                        # Veo configuration
+│   ├── images/                     # Input images (smiling_woman.jpg, bet.png)
+│   └── result_folder/              # Veo output videos
+└── fal_video_generation/            # FAL AI dual-model implementation
+    ├── fal_video_generator.py       # FAL AI video generator class (dual-model)
+    ├── demo.py                      # Interactive demo with model selection
+    ├── test_fal_ai.py              # Unified test suite (both models)
+    ├── README.md                    # FAL AI dual-model documentation
     ├── requirements.txt             # FAL AI dependencies
     ├── .env                         # FAL AI configuration
-    └── output/                      # FAL AI generated videos
+    ├── output/                      # FAL AI generated videos
+    └── test_output/                 # Test-generated videos
 ```
 
 ## Configuration Requirements
 
 ### Google Veo Setup
-- Google Cloud Project ID (configured in [.env](mdc:.env))
+- **Quick Setup**: Run `python fix_permissions.py` (fixes 90% of issues automatically)
+- Google Cloud Project ID (configured in [veo3_video_generation/.env](mdc:veo3_video_generation/.env))
 - Google Cloud Storage bucket for output
-- Vertex AI API enabled
+- Vertex AI API enabled (automated by fix script)
 - gcloud CLI authentication
-- Multiple API keys: Anthropic, OpenAI, Gemini, OpenRouter, DashScope, 302.ai
 
 ### FAL AI Setup (Simpler)
 - FAL AI API key in [fal_video_generation/.env](mdc:fal_video_generation/.env)
 - Python dependencies: fal-client, requests, python-dotenv
+- Single API key works for both Hailuo and Kling models
+
+## Model Selection Guidelines
+
+### Choose MiniMax Hailuo-02 when:
+- You need reliable 768p video generation
+- You want AI-powered prompt optimization
+- You prefer the established model with proven results
+
+### Choose Kling Video 2.1 when:
+- You need high-quality video output
+- You want fine control with CFG scale parameters
+- You need negative prompt capabilities for better quality control
+
+### Choose Google Veo when:
+- You need 1080p resolution
+- You want longer videos
+- You already use Google Cloud infrastructure
 
 ## Usage Recommendations
-- **Choose Google Veo when**: You need 1080p resolution, longer videos, or already use Google Cloud
-- **Choose FAL AI when**: You want quick setup, prototyping, or simple API integration
+- **Prototyping**: Start with FAL AI (either model) for quick testing
+- **Production**: Use FAL AI for API-based deployments, Google Veo for high-resolution needs
+- **Comparison**: Use the built-in comparison tools to test both FAL AI models side-by-side
+
+
+
+
+
+
+
+

@@ -1,6 +1,6 @@
 ---
-description:
-globs:
+description: 
+globs: 
 alwaysApply: false
 ---
 # Development Guidelines
@@ -56,7 +56,7 @@ def _handle_async_request(self, endpoint, arguments):
 
 #### File Management
 - **Configuration**: [fal_video_generation/.env](mdc:fal_video_generation/.env)
-- **Output**: [fal_video_generation/output/](mdc:fal_video_generation/output/) directory
+- **Output**: [fal_video_generation/output/](mdc:fal_video_generation/output) directory
 - **Testing**: Unified test suite in [fal_video_generation/test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py)
 
 ### Google Veo Development Patterns
@@ -137,10 +137,10 @@ veo3/
 ```
 
 ### Asset Management
-- **Google Veo Input**: [images/](mdc:images/) directory (e.g., [smiling_woman.jpg](mdc:images/smiling_woman.jpg))
-- **Google Veo Output**: [result_folder/](mdc:result_folder/) for downloaded videos
-- **FAL AI Output**: [fal_video_generation/output/](mdc:fal_video_generation/output/)
-- **Archive**: Legacy tools in [archive/](mdc:archive/)
+- **Google Veo Input**: [images/](mdc:images) directory (e.g., [smiling_woman.jpg](mdc:images/smiling_woman.jpg))
+- **Google Veo Output**: [result_folder/](mdc:result_folder) for downloaded videos
+- **FAL AI Output**: [fal_video_generation/output/](mdc:fal_video_generation/output)
+- **Archive**: Legacy tools in [archive/](mdc:archive)
 - **Project Assets**: Additional assets like [bet.png](mdc:bet.png) in root
 
 ## Testing and Validation
@@ -155,7 +155,7 @@ python test_fal_ai.py --api-only  # API connection only
 ```
 
 ### Google Veo Testing
-- Test with sample images from [images/](mdc:images/) directory first
+- Test with sample images from [images/](mdc:images) directory first
 - Validate GCS bucket permissions before running operations
 - Check project allowlist status for different Veo model versions
 - Verify authentication setup with `gcloud auth list`
@@ -210,3 +210,4 @@ except Exception as e:
 - Update [fal_video_generation/requirements.txt](mdc:fal_video_generation/requirements.txt) for FAL AI dependencies
 - Pin dependency versions for reproducible builds
 - Regular security updates for all dependencies
+

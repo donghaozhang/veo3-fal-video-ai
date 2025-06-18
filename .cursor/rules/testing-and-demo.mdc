@@ -1,0 +1,268 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Testing and Demo Framework
+
+This document covers the comprehensive testing and demonstration capabilities for the dual-model FAL AI video generation implementation.
+
+## Test Suite Overview
+Located in [fal_video_generation/test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py)
+
+The test suite provides comprehensive validation for both MiniMax Hailuo-02 and Kling Video 2.1 models with multiple testing modes and detailed reporting.
+
+### Test Command Options
+```bash
+# Basic setup and API connection test
+python test_fal_ai.py
+
+# Quick Hailuo model test (1-3 minutes)
+python test_fal_ai.py --quick
+
+# Quick Kling model test (1-3 minutes)
+python test_fal_ai.py --kling
+
+# Compare both models side-by-side
+python test_fal_ai.py --compare
+
+# Full comprehensive test
+python test_fal_ai.py --full
+
+# API connection test only
+python test_fal_ai.py --api-only
+```
+
+## Test Components
+
+### 1. Dependency Testing
+- Validates all required imports (fal_client, requests, python-dotenv)
+- Checks FALVideoGenerator class availability
+- Reports missing dependencies with installation instructions
+
+### 2. Environment Testing
+- Validates .env file presence
+- Checks FAL_KEY format and availability
+- Tests both model endpoints configuration
+- Warns about API key format issues
+
+### 3. API Connection Testing
+- Authenticates with FAL AI using provided API key
+- Tests connection to both Hailuo and Kling endpoints
+- Validates API key permissions and rate limits
+- Reports connection status and API key validity
+
+### 4. Model-Specific Testing
+
+#### Hailuo Model Testing
+```python
+# Test parameters used
+{
+    'prompt': 'A peaceful mountain landscape with gentle movement',
+    'image_url': 'https://picsum.photos/512/512',
+    'duration': '6',
+    'prompt_optimizer': True
+}
+```
+
+#### Kling Model Testing
+```python
+# Test parameters used
+{
+    'prompt': 'A beautiful landscape with moving clouds, cinematic quality',
+    'image_url': 'https://picsum.photos/512/512', 
+    'duration': '5',
+    'cfg_scale': 0.5,
+    'negative_prompt': 'blur, distort, and low quality'
+}
+```
+
+### 5. Comparison Testing
+- Runs both models with identical input parameters
+- Measures generation time for each model
+- Compares file sizes and output quality
+- Provides side-by-side result analysis
+
+## Interactive Demo
+Located in [fal_video_generation/demo.py](mdc:fal_video_generation/demo.py)
+
+### Demo Features
+- **Model Selection Menu**: Choose between Hailuo, Kling, or comparison modes
+- **Online Image Generation**: Use web-hosted images for testing
+- **Local Image Generation**: Upload and use local image files
+- **Model Comparison**: Generate videos with both models simultaneously
+- **Custom Parameters**: Adjust model-specific settings interactively
+
+### Demo Menu Structure
+```
+🎬 FAL AI Video Generation Demo
+==============================
+1. Generate with MiniMax Hailuo-02
+2. Generate with Kling Video 2.1  
+3. Generate with Local Image (Hailuo)
+4. Generate with Local Image (Kling)
+5. Compare Both Models
+6. Custom Parameters
+7. Exit
+```
+
+### Usage Examples
+
+#### Basic Model Testing
+```bash
+python demo.py
+# Select option 1 or 2 for single model testing
+# Follow prompts for image URL and description
+```
+
+#### Model Comparison
+```bash
+python demo.py
+# Select option 5 for side-by-side comparison
+# Same input generates videos with both models
+```
+
+#### Local Image Testing
+```bash
+python demo.py
+# Select option 3 or 4 for local image upload
+# Provide path to local image file
+```
+
+## Test Output Structure
+
+### Success Response Format
+```python
+{
+    'status': 'success',
+    'model': 'hailuo' | 'kling',
+    'video_url': 'https://v3.fal.media/files/...',
+    'local_path': 'output/video.mp4',
+    'file_size': 2816883,
+    'duration': '6' | '5',
+    'generation_time': 120.5  # seconds
+}
+```
+
+### Error Response Format
+```python
+{
+    'status': 'error',
+    'model': 'hailuo' | 'kling',
+    'error_type': 'api_error' | 'network_error' | 'validation_error',
+    'error_message': 'Detailed error description',
+    'retry_suggested': True | False
+}
+```
+
+## Test Validation Criteria
+
+### API Connection Tests
+- ✅ FAL_KEY properly formatted (starts with expected prefix)
+- ✅ API authentication successful
+- ✅ Both model endpoints accessible
+- ✅ Rate limits respected
+
+### Video Generation Tests
+- ✅ Video generation completes successfully
+- ✅ Video URL is valid and accessible
+- ✅ Video file downloads correctly
+- ✅ File size is reasonable (>1MB, <10MB typically)
+- ✅ Duration matches requested length
+
+### Model-Specific Validation
+
+#### Hailuo Validation
+- ✅ Prompt optimizer parameter accepted
+- ✅ 768p resolution output
+- ✅ 6-second default duration
+- ✅ Consistent file naming
+
+#### Kling Validation
+- ✅ CFG scale parameter accepted (0.1-2.0)
+- ✅ Negative prompt parameter processed
+- ✅ 5-second default duration
+- ✅ High-quality output characteristics
+
+## Troubleshooting Test Issues
+
+### Common Test Failures
+1. **API Key Issues**
+   - Verify FAL_KEY in .env file
+   - Check key format and permissions
+   - Ensure key has access to both models
+
+2. **Network Timeouts**
+   - Video generation can take 2-5 minutes
+   - Check internet connection stability
+   - Consider using --api-only for quick validation
+
+3. **File Download Failures**
+   - Verify output directory permissions
+   - Check available disk space
+   - Ensure firewall allows HTTPS downloads
+
+4. **Model-Specific Errors**
+   - Validate parameter ranges (duration, cfg_scale)
+   - Check image URL accessibility
+   - Verify model endpoint availability
+
+### Debug Mode
+Enable detailed logging by setting environment variable:
+```bash
+export FAL_DEBUG=1
+python test_fal_ai.py --compare
+```
+
+## Continuous Integration Usage
+
+### CI/CD Pipeline Integration
+```yaml
+# Example GitHub Actions workflow
+- name: Test FAL AI Models
+  run: |
+    cd fal_video_generation
+    python test_fal_ai.py --api-only
+    python test_fal_ai.py --quick
+  env:
+    FAL_KEY: ${{ secrets.FAL_KEY }}
+```
+
+### Test Coverage Reports
+The test suite provides comprehensive coverage reporting:
+- Dependency validation: 100%
+- Environment setup: 100%
+- API connectivity: 100%
+- Model functionality: 90%+ (depends on API availability)
+
+## Performance Benchmarking
+
+### Typical Generation Times
+- **Hailuo Model**: 2-4 minutes average
+- **Kling Model**: 2-5 minutes average
+- **Network factors**: Can add 30-60 seconds
+
+### File Size Expectations
+- **Hailuo**: 2-4MB for 6-second videos
+- **Kling**: 3-5MB for 5-second videos
+- **Quality correlation**: Higher quality = larger files
+
+## Best Practices for Testing
+
+### Development Testing
+1. Start with `--api-only` for quick validation
+2. Use `--quick` for single model testing
+3. Use `--compare` for comprehensive evaluation
+4. Test with different image types and prompts
+
+### Production Validation
+1. Run full test suite before deployment
+2. Validate both models in production environment
+3. Monitor generation times and success rates
+4. Set up automated health checks
+
+### Performance Testing
+1. Test with various image sizes and formats
+2. Measure generation times across different prompts
+3. Validate concurrent request handling
+4. Monitor API rate limit compliance

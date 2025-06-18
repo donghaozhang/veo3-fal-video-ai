@@ -1,0 +1,255 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Permission Fixes and Cloud Setup
+
+This guide covers automated and manual fixes for Google Cloud Storage and Vertex AI permission issues in the video generation platforms.
+
+## Quick Fix Tool
+
+### fix_permissions.py
+**Location**: `veo3_video_generation/fix_permissions.py`  
+**Purpose**: Automatically fixes common Google Cloud Storage permission issues for Veo video generation
+
+#### Usage
+```bash
+cd veo3_video_generation
+
+# Auto-detect project and bucket
+python fix_permissions.py
+
+# Specify project and bucket
+python fix_permissions.py --project-id your-project-id --bucket-name your-bucket
+
+# Use full bucket URI
+python fix_permissions.py --bucket-uri gs://your-bucket/path/
+
+# Skip API enablement (if already enabled)
+python fix_permissions.py --skip-apis
+```
+
+#### What It Fixes
+1. **Vertex AI Service Account Permissions**
+   - Grants `roles/storage.objectAdmin` to `service-{PROJECT_NUMBER}@gcp-sa-aiplatform.iam.gserviceaccount.com`
+   - Grants `roles/storage.legacyBucketReader` for bucket access
+
+2. **Veo Service Account Permissions**
+   - Grants `roles/storage.objectAdmin` to `cloud-lvm-video-server@prod.google.com`
+   - Grants `roles/storage.objectCreator` and `roles/storage.objectViewer`
+
+3. **API Enablement** (unless `--skip-apis` used)
+   - `aiplatform.googleapis.com`
+   - `storage.googleapis.com`
+   - `compute.googleapis.com`
+
+4. **Verification**
+   - Checks that all service accounts have proper permissions
+   - Displays current bucket policy
+
+## Common Permission Errors
+
+### "Service agents are being provisioned"
+**Error Code**: `9`  
+**Message**: "Service agents are being provisioned. Service agents are needed to read the Cloud Storage file provided. So please try again in a few minutes."
+
+**Cause**: Google Cloud is still setting up the Vertex AI service agents for your project  
+**Solution**:
+1. Run `python fix_permissions.py` to ensure permissions are set
+2. Wait 5-10 minutes for service agents to be fully provisioned
+3. Retry video generation
+
+### "Permission 'storage.objects.get' denied"
+**Error Code**: `7`  
+**Message**: "service-{PROJECT_NUMBER}@gcp-sa-aiplatform.iam.gserviceaccount.com does not have storage.objects.get access"
+
+**Cause**: Vertex AI service account lacks storage permissions  
+**Solution**:
+```bash
+python fix_permissions.py  # Automated fix
+```
+
+**Manual Fix**:
+```bash
+PROJECT_NUMBER=$(gcloud projects describe YOUR_PROJECT_ID --format="value(projectNumber)")
+gcloud storage buckets add-iam-policy-binding gs://your-bucket \
+  --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-aiplatform.iam.gserviceaccount.com" \
+  --role=roles/storage.objectAdmin
+```
+
+### "Text to video is not allowlisted for project"
+**Error Code**: `400 FAILED_PRECONDITION`  
+**Message**: "Text to video is not allowlisted for project {PROJECT_NUMBER}"
+
+**Cause**: Project not allowlisted for Veo 3.0 (preview model)  
+**Solution**:
+1. Use Veo 2.0 instead: Change model to `"veo-2.0-generate-001"`
+2. Request allowlist access from Google Cloud support
+3. Veo 2.0 is stable and production-ready
+
+## Manual Permission Setup
+
+### Step 1: Get Project Information
+```bash
+# Get current project ID
+gcloud config get project
+
+# Get project number
+PROJECT_ID=$(gcloud config get project)
+PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format="value(projectNumber)")
+echo "Project ID: $PROJECT_ID"
+echo "Project Number: $PROJECT_NUMBER"
+```
+
+### Step 2: Enable Required APIs
+```bash
+gcloud services enable aiplatform.googleapis.com
+gcloud services enable storage.googleapis.com
+gcloud services enable compute.googleapis.com
+```
+
+### Step 3: Set Up Service Account Permissions
+```bash
+BUCKET_NAME="your-bucket-name"  # Replace with your bucket
+
+# Vertex AI service account
+gcloud storage buckets add-iam-policy-binding gs://$BUCKET_NAME \
+  --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-aiplatform.iam.gserviceaccount.com" \
+  --role=roles/storage.objectAdmin
+
+gcloud storage buckets add-iam-policy-binding gs://$BUCKET_NAME \
+  --member="serviceAccount:service-${PROJECT_NUMBER}@gcp-sa-aiplatform.iam.gserviceaccount.com" \
+  --role=roles/storage.legacyBucketReader
+
+# Veo service account
+gcloud storage buckets add-iam-policy-binding gs://$BUCKET_NAME \
+  --member="user:cloud-lvm-video-server@prod.google.com" \
+  --role=roles/storage.objectAdmin
+
+gcloud storage buckets add-iam-policy-binding gs://$BUCKET_NAME \
+  --member="user:cloud-lvm-video-server@prod.google.com" \
+  --role=roles/storage.objectCreator
+
+gcloud storage buckets add-iam-policy-binding gs://$BUCKET_NAME \
+  --member="user:cloud-lvm-video-server@prod.google.com" \
+  --role=roles/storage.objectViewer
+```
+
+### Step 4: Verify Permissions
+```bash
+# Check bucket policy
+gcloud storage buckets get-iam-policy gs://$BUCKET_NAME
+
+# Test bucket access
+gcloud storage ls gs://$BUCKET_NAME/
+```
+
+## Troubleshooting Permission Issues
+
+### Permission Script Fails
+**Problem**: `fix_permissions.py` script encounters errors  
+**Solutions**:
+1. Check authentication: `gcloud auth list`
+2. Verify active project: `gcloud config get project`
+3. Ensure you have Owner/Editor role on the project
+4. Try manual commands from the script output
+
+### Bucket Not Found
+**Problem**: "Bucket does not exist" error  
+**Solutions**:
+1. Create bucket: `gcloud storage buckets create gs://your-bucket-name`
+2. Verify bucket name spelling
+3. Check if bucket is in different project
+4. Update bucket configuration in code
+
+### Service Account Not Found
+**Problem**: Service account doesn't exist  
+**Solutions**:
+1. Enable Vertex AI API first: `gcloud services enable aiplatform.googleapis.com`
+2. Wait for service account creation (automatic)
+3. Check project number is correct
+4. Verify you're using the right project
+
+### Permission Changes Not Taking Effect
+**Problem**: Permissions set but still getting errors  
+**Solutions**:
+1. Wait 1-2 minutes for permissions to propagate
+2. Check for typos in service account names
+3. Verify correct bucket name
+4. Try regenerating access tokens: `gcloud auth application-default login`
+
+## Testing After Permission Fixes
+
+### Quick Test
+```bash
+cd veo3_video_generation
+python test_veo.py --text-only
+```
+
+### Comprehensive Test
+```bash
+python test_veo.py --compare  # Test both Veo 2.0 and 3.0
+```
+
+### Interactive Test
+```bash
+python demo.py  # Use menu to test specific features
+```
+
+## Best Practices
+
+### For New Projects
+1. Run `python fix_permissions.py` immediately after project setup
+2. Enable all required APIs upfront
+3. Use Veo 2.0 for production workloads
+4. Test with simple text-to-video before complex operations
+
+### For Existing Projects
+1. Run permission fix script if encountering errors
+2. Wait for service agent provisioning (5-10 minutes)
+3. Use `--skip-apis` flag if APIs already enabled
+4. Verify bucket permissions regularly
+
+### Security Considerations
+1. Use least-privilege principle (script uses necessary roles only)
+2. Monitor bucket access logs
+3. Regularly audit IAM permissions
+4. Use separate buckets for different environments
+
+## Integration with Testing
+
+The permission fix script integrates with the testing framework:
+
+```bash
+# Fix permissions then test
+python fix_permissions.py && python test_veo.py
+
+# Test specific scenarios
+python fix_permissions.py --skip-apis && python test_veo.py --text-only
+```
+
+## Common Use Cases
+
+### Development Setup
+```bash
+# First time setup
+cd veo3_video_generation
+python fix_permissions.py
+python test_veo.py --text-only
+```
+
+### Production Deployment
+```bash
+# Production environment
+python fix_permissions.py --project-id prod-project --bucket-name prod-bucket
+python test_veo.py --compare
+```
+
+### CI/CD Integration
+```bash
+# In deployment scripts
+python fix_permissions.py --skip-apis --project-id $PROJECT_ID --bucket-name $BUCKET_NAME
+```
+
+This automated approach reduces setup time from 30+ minutes to under 5 minutes for new projects.

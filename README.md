@@ -1,182 +1,267 @@
-# Google Veo 3 Video Generation
+# AI Video Generation Project
 
-This project provides a Python script for generating videos using Google's Veo API on Vertex AI. The script supports both text-to-video and image-to-video generation.
+This project provides comprehensive Python implementations for generating videos using multiple AI platforms and models. It's organized into specialized folders for different video generation services.
 
-## Features
+## 🎬 Available Implementations
 
-- Generate videos from text prompts
-- Generate videos from images (with optional text guidance)
-- Configurable video parameters (aspect ratio, duration, etc.)
-- Built with the official Google GenAI SDK
+### 1. Google Veo Video Generation (`veo3_video_generation/`)
+- **Models**: Veo 2.0 (stable) and Veo 3.0 (preview)
+- **Features**: Text-to-video, Image-to-video generation
+- **Quality**: High-resolution, cinematic quality
+- **Setup**: Requires Google Cloud authentication and configuration
 
-## Prerequisites
+### 2. FAL AI Dual-Model Generation (`fal_video_generation/`)
+- **Models**: MiniMax Hailuo-02 and Kling Video 2.1
+- **Features**: Production-ready API, dual model support
+- **Quality**: 768p (Hailuo) and high-quality (Kling)
+- **Setup**: Simple API key authentication
 
-1. A Google Cloud project with Vertex AI API enabled
-2. A Google Cloud Storage bucket to store the generated videos
-3. Proper authentication set up (gcloud CLI)
-4. Python 3.7+ installed
+## 📁 Project Structure
 
-## Step-by-Step Setup Guide
+```
+veo3/
+├── README.md                           # This overview
+├── requirements.txt                    # Global dependencies
+├── .env                               # Global environment variables
+├── 
+├── veo3_video_generation/             # Google Veo Implementation
+│   ├── veo_video_generation.py        # Main Veo implementation
+│   ├── demo.py                        # Interactive Veo demo
+│   ├── test_veo.py                    # Comprehensive test suite
+│   ├── README.md                      # Veo-specific documentation
+│   ├── requirements.txt               # Veo dependencies
+│   ├── .env                          # Veo configuration
+│   ├── images/                       # Input images for testing
+│   └── result_folder/                # Generated videos output
+│
+├── fal_video_generation/             # FAL AI Implementation
+│   ├── fal_video_generator.py        # Dual-model FAL AI class
+│   ├── demo.py                       # Interactive FAL AI demo
+│   ├── test_fal_ai.py               # FAL AI test suite
+│   ├── README.md                     # FAL AI documentation
+│   ├── requirements.txt              # FAL AI dependencies
+│   ├── .env                         # FAL AI configuration
+│   ├── output/                      # Generated videos output
+│   └── test_output/                 # Test videos output
+│
+└── archive/                         # Historical implementations
+```
 
-### 1. Install Dependencies
+## 🚀 Quick Start
 
-Install the required Python packages:
+### Option 1: Google Veo (High-Quality, Complex Setup)
+
 ```bash
+cd veo3_video_generation
 pip install -r requirements.txt
-```
 
-### 2. Set up Google Cloud SDK
-
-First, locate your Google Cloud SDK installation:
-```powershell
-# On Windows, the SDK is typically located at:
-$env:PATH += ";C:\Users\<username>\AppData\Local\Google\Cloud SDK\google-cloud-sdk\bin"
-```
-
-### 3. Authenticate with Google Cloud
-
-```powershell
-# Login with your Google account
-gcloud auth login your-email@gmail.com
-
-# Set up application default credentials
+# Configure Google Cloud authentication
+gcloud auth login
 gcloud auth application-default login
-
-# Set your project ID
 gcloud config set project your-project-id
+
+# Update configuration in .env file
+# PROJECT_ID=your-project-id
+# OUTPUT_BUCKET_PATH=gs://your-bucket/veo_output/
+
+# Run demo
+python demo.py
+
+# Or run tests
+python test_veo.py
 ```
 
-### 4. Grant Storage Permissions
+### Option 2: FAL AI (Simple Setup, Production Ready)
 
-If you're using Veo 2.0 model, you'll need to grant permissions to the service account:
-```powershell
-gcloud storage buckets add-iam-policy-binding gs://your-bucket --member="user:cloud-lvm-video-server@prod.google.com" --role=roles/storage.objectCreator
-gcloud storage buckets add-iam-policy-binding gs://your-bucket --member="user:cloud-lvm-video-server@prod.google.com" --role=roles/storage.objectAdmin
+```bash
+cd fal_video_generation
+pip install -r requirements.txt
+
+# Configure API key in .env file
+# FAL_KEY=your-fal-api-key
+
+# Run demo
+python demo.py
+
+# Or run tests
+python test_fal_ai.py --compare
 ```
 
-### 5. Configure the Script
+## 🔧 Setup Requirements
 
-Edit `veo3_video_generation.py` to set your project ID and output bucket path:
-```python
-PROJECT_ID = "your-project-id"
-OUTPUT_BUCKET_PATH = "gs://your-bucket/veo_output/"
+### Google Veo Requirements
+- Google Cloud Project with Vertex AI API enabled
+- Google Cloud Storage bucket
+- Proper authentication (gcloud CLI)
+- Python 3.8+
+- Veo 3.0 requires allowlist approval
+
+### FAL AI Requirements
+- FAL AI API key (from fal.ai)
+- Python 3.8+
+- Internet connection
+
+## 📊 Model Comparison
+
+| Feature | Google Veo 2.0 | Google Veo 3.0 | FAL Hailuo-02 | FAL Kling 2.1 |
+|---------|----------------|----------------|---------------|----------------|
+| **Resolution** | High | Higher | 768p | High-quality |
+| **Setup Complexity** | Complex | Complex | Simple | Simple |
+| **Authentication** | Google Cloud | Google Cloud | API Key | API Key |
+| **Access** | Generally Available | Preview/Allowlist | Public API | Public API |
+| **Generation Time** | 2-10 min | 2-10 min | 1-3 min | 1-3 min |
+| **Best For** | Cinematic quality | Latest features | Quick prototyping | High-quality production |
+
+## 🎯 Use Cases
+
+### Choose Google Veo When:
+- You need the highest quality video generation
+- You have Google Cloud infrastructure
+- You're building enterprise applications
+- Quality is more important than speed
+
+### Choose FAL AI When:
+- You want quick setup and testing
+- You need reliable production API
+- You want to compare multiple models
+- You prefer simple API key authentication
+
+## 🛠️ Development Features
+
+### Google Veo Features
+- ✅ Text-to-video generation
+- ✅ Image-to-video generation
+- ✅ Multiple model support (2.0 + 3.0)
+- ✅ Local image processing
+- ✅ Automatic GCS upload/download
+- ✅ Comprehensive error handling
+- ✅ Interactive demo with model selection
+- ✅ Full test suite with comparison
+
+### FAL AI Features
+- ✅ Dual-model architecture (Hailuo + Kling)
+- ✅ Universal methods with model selection
+- ✅ Model-specific optimization
+- ✅ Interactive demo with comparison
+- ✅ Comprehensive testing framework
+- ✅ Production-ready error handling
+- ✅ Automatic video download
+- ✅ Model performance comparison
+
+## 📖 Documentation
+
+Each implementation has its own detailed documentation:
+
+- **Google Veo**: See [`veo3_video_generation/README.md`](veo3_video_generation/README.md)
+- **FAL AI**: See [`fal_video_generation/README.md`](fal_video_generation/README.md)
+
+## 🧪 Testing
+
+### Test Google Veo Implementation
+```bash
+cd veo3_video_generation
+
+# Basic tests
+python test_veo.py
+
+# Test Veo 3.0 specifically
+python test_veo.py --veo3
+
+# Compare both models
+python test_veo.py --compare
+
+# Full comprehensive tests
+python test_veo.py --full
 ```
 
-### 6. Run the Script
+### Test FAL AI Implementation
+```bash
+cd fal_video_generation
 
-```powershell
-python veo3_video_generation.py
+# Basic tests
+python test_fal_ai.py
+
+# Test Kling model
+python test_fal_ai.py --kling
+
+# Compare both models
+python test_fal_ai.py --compare
+
+# Quick tests
+python test_fal_ai.py --quick
 ```
 
-### 7. Download the Generated Video
+## 🎮 Interactive Demos
 
-Once the video is generated, you can download it from the Google Cloud Storage bucket:
-```powershell
-gcloud storage cp gs://your-bucket/veo_output/<generation-id>/sample_0.mp4 .
+Both implementations include interactive demos:
+
+```bash
+# Google Veo Demo
+cd veo3_video_generation && python demo.py
+
+# FAL AI Demo  
+cd fal_video_generation && python demo.py
 ```
 
-## Usage
+The demos provide:
+- Model selection menus
+- Pre-configured test prompts
+- Image-to-video testing
+- Model comparison features
+- Configuration validation
 
-### Basic Usage
+## 🔍 Troubleshooting
 
-1. Edit the script to set your project ID and output bucket path:
-   ```python
-   PROJECT_ID = "your-project-id"
-   OUTPUT_BUCKET_PATH = "gs://your-bucket/output/"
-   ```
+### Common Issues
 
-2. Run the script:
-   ```bash
-   python veo3_video_generation.py
-   ```
+#### Google Veo Issues
+- **"Project not allowlisted"**: Use Veo 2.0 or request Veo 3.0 access
+- **Permission denied**: Check GCS bucket permissions
+- **Authentication failed**: Run `gcloud auth application-default login`
 
-### Generating Videos from Text
+#### FAL AI Issues
+- **Invalid API key**: Check your FAL_KEY in .env file
+- **Rate limiting**: Wait between requests or upgrade plan
+- **Model not available**: Try alternative model
 
-```python
-from veo3_video_generation import generate_video_from_text
+### Getting Help
 
-video_uri = generate_video_from_text(
-    project_id="your-project-id",
-    prompt="A serene mountain landscape with a flowing river and colorful sunset. Camera slowly pans across the scene.",
-    output_bucket_path="gs://your-bucket/output/"
-)
-```
+1. Check the specific README for your implementation
+2. Review the test suite output for diagnostic information
+3. Run the demo to validate your setup
+4. Check the troubleshooting sections in each implementation's README
 
-### Generating Videos from Images
+## 🚧 Development Status
 
-```python
-from veo3_video_generation import generate_video_from_image
+- ✅ **Google Veo**: Production ready with comprehensive testing
+- ✅ **FAL AI**: Production ready with dual-model support
+- 🔄 **Future**: Additional model integrations planned
 
-video_uri = generate_video_from_image(
-    project_id="your-project-id",
-    image_path="gs://your-bucket/images/landscape.jpg",  # or a local path
-    output_bucket_path="gs://your-bucket/output/",
-    prompt="The landscape comes alive with gentle movements"  # Optional
-)
-```
+## 📝 License
 
-## Troubleshooting
+This project is open source. Please check individual implementation folders for specific licensing information.
 
-### Access Issues with Veo 3.0
+## 🤝 Contributing
 
-If you encounter the error "Text to video is not allowlisted for project", you have two options:
+Contributions are welcome! Please:
+1. Fork the repository
+2. Create a feature branch
+3. Add tests for new functionality
+4. Update documentation
+5. Submit a pull request
 
-1. **Switch to Veo 2.0**: Modify the model_id parameter to "veo-2.0-generate-001" instead of "veo-3.0-generate-preview"
-2. **Request Allowlist Access**: For Veo 3.0, you need to request allowlist access from Google Cloud
+## 📚 Resources
 
-### Storage Permission Issues
-
-If you encounter permission errors when writing to Google Cloud Storage:
-```
-ERROR: ('An error occurred while generating the video: Error generating video: 
-<_InactiveRpcError of RPC that terminated with: 
-status = StatusCode.PERMISSION_DENIED, 
-details = "Permission 'storage.objects.create' denied on resource...">')
-```
-
-Fix with:
-```powershell
-gcloud storage buckets add-iam-policy-binding gs://your-bucket --member="user:cloud-lvm-video-server@prod.google.com" --role=roles/storage.objectAdmin
-```
-
-## Tips for Better Prompts
-
-For better results with Veo, include details about:
-
-1. **Subjects and actions**: What/who is in the video and what are they doing
-2. **Setting and environment**: Where the scene takes place
-3. **Cinematic styles**: Camera movements, lighting, etc.
-4. **Mood and tone**: The emotional feel of the video
-
-Example of a detailed prompt:
-```
-A medium shot, historical adventure setting: Warm lamplight illuminates a cartographer in a cluttered study, 
-poring over an ancient, sprawling map spread across a large table. Cartographer: "According to this old sea chart, 
-the lost island isn't myth! We must prepare an expedition immediately!"
-```
-
-## Configuration Options
-
-You can customize video generation with these parameters:
-
-- `aspect_ratio`: The aspect ratio of the video (e.g., "16:9", "4:3", "1:1")
-- `duration_seconds`: The length of the video in seconds
-- `fps`: Frames per second
-
-Example:
-```python
-from google.genai.types import GenerateVideosConfig
-
-config = GenerateVideosConfig(
-    aspect_ratio="16:9",
-    output_gcs_uri="gs://your-bucket/output/",
-    duration_seconds=5,
-    fps=24
-)
-```
-
-## Resources
-
+### Google Veo Resources
 - [Veo API Documentation](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/veo-video-generation)
 - [Google GenAI SDK](https://github.com/google/generative-ai-python)
-- [How to Use Google Veo 3 API on Vertex AI](https://apidog.com/blog/google-veo-3-api/) 
+- [Vertex AI Console](https://console.cloud.google.com/vertex-ai)
+
+### FAL AI Resources
+- [FAL AI Platform](https://fal.ai/)
+- [MiniMax Hailuo Documentation](https://fal.ai/models/fal-ai/minimax-video-01)
+- [Kling Video 2.1 Documentation](https://fal.ai/models/fal-ai/kling-video/v2.1/standard/image-to-video/api)
+
+---
+
+**🎬 Happy Video Generating!** Choose the implementation that best fits your needs and start creating amazing AI-generated videos. 
