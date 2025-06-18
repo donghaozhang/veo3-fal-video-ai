@@ -190,6 +190,35 @@ result = generator.generate_video_from_image(
 )
 ```
 
+## Testing
+
+### Comprehensive Test Suite
+
+The project includes a unified test suite that covers all functionality:
+
+```bash
+# Basic setup and API connection test
+python test_fal_ai.py
+
+# Quick video generation test (1-3 minutes)
+python test_fal_ai.py --quick
+
+# Full test with detailed output
+python test_fal_ai.py --full
+
+# API connection test only
+python test_fal_ai.py --api-only
+```
+
+### Test Coverage
+
+The test suite includes:
+- **Dependencies**: Verifies all required packages are installed
+- **Environment**: Checks .env file and API key configuration
+- **Generator**: Tests FALVideoGenerator initialization
+- **API Connection**: Validates API key and endpoint accessibility
+- **Video Generation**: Tests actual video generation (optional)
+
 ## Error Handling
 
 The library includes comprehensive error handling:
