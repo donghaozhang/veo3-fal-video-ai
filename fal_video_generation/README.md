@@ -98,7 +98,7 @@ result = generator.generate_video_from_image(
     prompt="A beautiful sunset over mountains",
     image_url="https://example.com/image.jpg",
     duration="6",
-    model="hailuo"  # or "kling"
+    model="fal-ai/minimax/hailuo-02/standard/image-to-video"  # Full endpoint name
 )
 ```
 
@@ -109,8 +109,8 @@ result = generator.generate_video_from_image(
 result = generator.generate_video_from_local_image(
     prompt="A beautiful sunset over mountains",
     image_path="path/to/your/image.jpg",
-    duration="6",
-    model="kling",  # Choose model
+    duration="5",
+    model="fal-ai/kling-video/v2.1/standard/image-to-video",  # Full endpoint name
     output_folder="output"
 )
 ```
@@ -176,7 +176,9 @@ Universal method that supports both models.
 - `prompt_optimizer` (bool): Whether to use prompt optimizer (Hailuo only)
 - `output_folder` (str): Local folder to save the generated video
 - `use_async` (bool): Whether to use async processing
-- `model` (str): Model to use ("hailuo" or "kling")
+- `model` (str): Model to use (full endpoint name):
+  - "fal-ai/minimax/hailuo-02/standard/image-to-video" for MiniMax Hailuo-02
+  - "fal-ai/kling-video/v2.1/standard/image-to-video" for Kling Video 2.1
 
 **Returns:**
 - Dictionary containing video URL, metadata, and local path
@@ -191,7 +193,9 @@ Generate video from a local image file using either model.
 - `prompt_optimizer` (bool): Whether to use prompt optimizer (Hailuo only)
 - `output_folder` (str): Local folder to save the generated video
 - `use_async` (bool): Whether to use async processing
-- `model` (str): Model to use ("hailuo" or "kling")
+- `model` (str): Model to use (full endpoint name):
+  - "fal-ai/minimax/hailuo-02/standard/image-to-video" for MiniMax Hailuo-02
+  - "fal-ai/kling-video/v2.1/standard/image-to-video" for Kling Video 2.1
 
 **Returns:**
 - Dictionary containing video URL, metadata, and local path

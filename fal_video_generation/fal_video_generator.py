@@ -48,7 +48,7 @@ class FALVideoGenerator:
         prompt_optimizer: bool = True,
         output_folder: str = "output",
         use_async: bool = False,
-        model: str = "hailuo"
+        model: str = "fal-ai/minimax/hailuo-02/standard/image-to-video"
     ) -> Optional[Dict[str, Any]]:
         """
         Generate video from image using FAL AI models
@@ -60,14 +60,16 @@ class FALVideoGenerator:
             prompt_optimizer: Whether to use the model's prompt optimizer (Hailuo only)
             output_folder: Local folder to save the generated video
             use_async: Whether to use async processing
-            model: Model to use ("hailuo" for MiniMax Hailuo-02, "kling" for Kling Video 2.1)
+            model: Model to use (full endpoint name):
+                   - "fal-ai/minimax/hailuo-02/standard/image-to-video" for MiniMax Hailuo-02
+                   - "fal-ai/kling-video/v2.1/standard/image-to-video" for Kling Video 2.1
             
         Returns:
             Dictionary containing the result with video URL and metadata
         """
         try:
             # Select model endpoint
-            if model.lower() == "kling":
+            if model == "fal-ai/kling-video/v2.1/standard/image-to-video":
                 endpoint = self.kling_endpoint
                 model_name = "Kling Video 2.1"
                 # Kling specific parameters
@@ -203,7 +205,7 @@ class FALVideoGenerator:
         prompt_optimizer: bool = True,
         output_folder: str = "output",
         use_async: bool = False,
-        model: str = "hailuo"
+        model: str = "fal-ai/minimax/hailuo-02/standard/image-to-video"
     ) -> Optional[Dict[str, Any]]:
         """
         Generate video from local image file
@@ -215,7 +217,9 @@ class FALVideoGenerator:
             prompt_optimizer: Whether to use the model's prompt optimizer (Hailuo only)
             output_folder: Local folder to save the generated video
             use_async: Whether to use async processing
-            model: Model to use ("hailuo" for MiniMax Hailuo-02, "kling" for Kling Video 2.1)
+            model: Model to use (full endpoint name):
+                   - "fal-ai/minimax/hailuo-02/standard/image-to-video" for MiniMax Hailuo-02
+                   - "fal-ai/kling-video/v2.1/standard/image-to-video" for Kling Video 2.1
             
         Returns:
             Dictionary containing the result with video URL and metadata
@@ -380,7 +384,7 @@ class FALVideoGenerator:
             prompt_optimizer=prompt_optimizer,
             output_folder=output_folder,
             use_async=use_async,
-            model="hailuo"
+            model="fal-ai/minimax/hailuo-02/standard/image-to-video"
         )
     
     def download_video(self, video_url: str, output_folder: str, filename: str) -> Optional[str]:

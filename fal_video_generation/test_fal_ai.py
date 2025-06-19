@@ -18,8 +18,8 @@ def show_cost_warning():
     print()
     print("🎯 AVAILABLE TEST OPTIONS:")
     print("   --api-only    : Test API connection only (FREE)")
-    print("   --hailuo      : Test MiniMax Hailuo-02 only (~$0.02-0.05)")
-    print("   --kling       : Test Kling Video 2.1 only (~$0.02-0.05)")
+    print("   --hailuo      : Test fal-ai/minimax/hailuo-02/standard/image-to-video (~$0.02-0.05)")
+    print("   --kling       : Test fal-ai/kling-video/v2.1/standard/image-to-video (~$0.02-0.05)")
     print("   --compare     : Test BOTH models (~$0.04-0.10) ⚠️ EXPENSIVE")
     print("   --quick       : Quick Hailuo test (same as --hailuo)")
     print("   --full        : Full Hailuo test with detailed output")
@@ -188,17 +188,18 @@ def test_video_generation(generator, quick_test=False, model="hailuo"):
             print("🎯 Running full video generation test...")
         
         if model == "kling":
-            result = generator.generate_video_with_kling(
+            result = generator.generate_video_from_image(
                 image_url="https://picsum.photos/512/512",
                 prompt="A beautiful landscape with moving clouds, cinematic quality",
                 duration=model_data['duration'],
-                negative_prompt="blur, distort, low quality"
+                model="fal-ai/kling-video/v2.1/standard/image-to-video"
             )
         else:
-            result = generator.generate_video_with_hailuo(
+            result = generator.generate_video_from_image(
                 image_url="https://picsum.photos/512/512",
                 prompt="A beautiful landscape with moving clouds",
-                duration=model_data['duration']
+                duration=model_data['duration'],
+                model="fal-ai/minimax/hailuo-02/standard/image-to-video"
             )
         
         if result and 'video' in result:
@@ -249,12 +250,13 @@ def test_both_models(generator):
     results = {}
     
     # Test Hailuo
-    print("\n1️⃣ Testing MiniMax Hailuo-02...")
+    print("\n1️⃣ Testing fal-ai/minimax/hailuo-02/standard/image-to-video...")
     try:
-        result_hailuo = generator.generate_video_with_hailuo(
+        result_hailuo = generator.generate_video_from_image(
             image_url="https://picsum.photos/512/512",
             prompt="A peaceful mountain landscape with gentle movement",
-            duration="6"
+            duration="6",
+            model="fal-ai/minimax/hailuo-02/standard/image-to-video"
         )
         if result_hailuo:
             results['hailuo'] = {
@@ -271,13 +273,13 @@ def test_both_models(generator):
         print(f"❌ Hailuo test error: {e}")
     
     # Test Kling
-    print("\n2️⃣ Testing Kling Video 2.1...")
+    print("\n2️⃣ Testing fal-ai/kling-video/v2.1/standard/image-to-video...")
     try:
-        result_kling = generator.generate_video_with_kling(
+        result_kling = generator.generate_video_from_image(
             image_url="https://picsum.photos/512/512",
             prompt="A peaceful mountain landscape with gentle movement",
             duration="5",
-            negative_prompt="blur, distort, low quality"
+            model="fal-ai/kling-video/v2.1/standard/image-to-video"
         )
         if result_kling:
             results['kling'] = {

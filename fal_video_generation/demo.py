@@ -72,17 +72,17 @@ def main():
         model_choice = get_user_choice("\n🎯 Select a model:", models)
         
         if model_choice == 0:
-            model_name = "hailuo"
+            model_name = "fal-ai/minimax/hailuo-02/standard/image-to-video"
             model_display = "MiniMax Hailuo-02"
-            print("\n📋 Selected: MiniMax Hailuo-02")
+            print("\n📋 Selected: fal-ai/minimax/hailuo-02/standard/image-to-video")
             print("   • Resolution: 768p")
             print("   • Duration: 6 or 10 seconds")
             print("   • Features: Prompt optimizer")
             print("   • Cost: ~$0.02-0.05 per video")
         else:
-            model_name = "kling"
+            model_name = "fal-ai/kling-video/v2.1/standard/image-to-video"
             model_display = "Kling Video 2.1"
-            print("\n📋 Selected: Kling Video 2.1")
+            print("\n📋 Selected: fal-ai/kling-video/v2.1/standard/image-to-video")
             print("   • Resolution: High quality")
             print("   • Duration: 5 or 10 seconds")
             print("   • Features: CFG scale, negative prompts")
@@ -107,18 +107,20 @@ def main():
                 print("❌ Demo cancelled by user")
                 return
             
-            if model_name == "kling":
-                result = generator.generate_video_with_kling(
+            if model_name == "fal-ai/kling-video/v2.1/standard/image-to-video":
+                result = generator.generate_video_from_image(
                     prompt="As the sun dips below the horizon, painting the sky in fiery hues of orange and purple, powerful waves relentlessly crash against jagged, dark rocks",
                     image_url="https://v3.fal.media/files/panda/W-_J46zuJDQnUhqkKm9Iv_image.webp",
                     duration="5",
+                    model=model_name,
                     output_folder="demo_output"
                 )
             else:
-                result = generator.generate_video_with_hailuo(
+                result = generator.generate_video_from_image(
                     prompt="A man walks into a winter cave with a polar bear, cinematic lighting, dramatic atmosphere",
                     image_url="https://storage.googleapis.com/falserverless/model_tests/minimax/1749891352437225630-389852416840474630_1749891352.png",
                     duration="6",
+                    model=model_name,
                     output_folder="demo_output"
                 )
             
@@ -145,7 +147,7 @@ def main():
                 result = generator.generate_video_from_local_image(
                     prompt="A smiling woman in a beautiful garden, gentle breeze moving her hair, warm sunlight",
                     image_path=local_image_path,
-                    duration="6" if model_name == "hailuo" else "5",
+                    duration="6" if model_name == "fal-ai/minimax/hailuo-02/standard/image-to-video" else "5",
                     output_folder="demo_output",
                     model=model_name
                 )
@@ -175,19 +177,21 @@ def main():
             prompt = "A peaceful landscape with gentle movement, cinematic quality"
             image_url = "https://picsum.photos/512/512"
             
-            print("🔄 Generating with MiniMax Hailuo-02...")
-            result_hailuo = generator.generate_video_with_hailuo(
+            print("🔄 Generating with fal-ai/minimax/hailuo-02/standard/image-to-video...")
+            result_hailuo = generator.generate_video_from_image(
                 prompt=prompt,
                 image_url=image_url,
                 duration="6",
+                model="fal-ai/minimax/hailuo-02/standard/image-to-video",
                 output_folder="demo_output"
             )
             
-            print("\n🔄 Generating with Kling Video 2.1...")
-            result_kling = generator.generate_video_with_kling(
+            print("\n🔄 Generating with fal-ai/kling-video/v2.1/standard/image-to-video...")
+            result_kling = generator.generate_video_from_image(
                 prompt=prompt,
                 image_url=image_url,
                 duration="5",
+                model="fal-ai/kling-video/v2.1/standard/image-to-video",
                 output_folder="demo_output"
             )
             
@@ -223,20 +227,13 @@ def main():
                 print("❌ Custom demo cancelled by user")
                 return
             
-            if model_name == "kling":
-                result = generator.generate_video_with_kling(
-                    prompt=custom_prompt,
-                    image_url=custom_image_url,
-                    duration=duration,
-                    output_folder="demo_output"
-                )
-            else:
-                result = generator.generate_video_with_hailuo(
-                    prompt=custom_prompt,
-                    image_url=custom_image_url,
-                    duration=duration,
-                    output_folder="demo_output"
-                )
+            result = generator.generate_video_from_image(
+                prompt=custom_prompt,
+                image_url=custom_image_url,
+                duration=duration,
+                model=model_name,
+                output_folder="demo_output"
+            )
             
             if result:
                 print("🎉 Success! Custom video generated:")
