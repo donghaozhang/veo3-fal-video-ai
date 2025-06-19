@@ -12,9 +12,10 @@ This project provides comprehensive Python implementations for generating videos
 
 ### 2. FAL AI Dual-Model Generation (`fal_video_generation/`)
 - **Models**: MiniMax Hailuo-02 and Kling Video 2.1
-- **Features**: Production-ready API, dual model support
+- **Features**: Production-ready API, dual model support, cost-conscious testing
 - **Quality**: 768p (Hailuo) and high-quality (Kling)
 - **Setup**: Simple API key authentication
+- **⚠️ Cost Warning**: Video generation costs money (~$0.02-0.05 per video)
 
 ## 📁 Project Structure
 
@@ -36,9 +37,11 @@ veo3/
 │
 ├── fal_video_generation/             # FAL AI Implementation
 │   ├── fal_video_generator.py        # Dual-model FAL AI class
-│   ├── demo.py                       # Interactive FAL AI demo
-│   ├── test_fal_ai.py               # FAL AI test suite
+│   ├── demo.py                       # Cost-conscious interactive demo
+│   ├── test_fal_ai.py               # Cost-conscious test suite
+│   ├── test_api_only.py             # FREE API connection test
 │   ├── README.md                     # FAL AI documentation
+│   ├── COST_CONSCIOUS_TESTING.md    # Cost protection guide
 │   ├── requirements.txt              # FAL AI dependencies
 │   ├── .env                         # FAL AI configuration
 │   ├── output/                      # Generated videos output
@@ -80,11 +83,15 @@ pip install -r requirements.txt
 # Configure API key in .env file
 # FAL_KEY=your-fal-api-key
 
-# Run demo
+# Test setup first (FREE)
+python test_api_only.py
+
+# Run demo (costs money - has confirmation prompts)
 python demo.py
 
-# Or run tests
-python test_fal_ai.py --compare
+# Or run specific model tests (costs money)
+python test_fal_ai.py --hailuo    # ~$0.02-0.05
+python test_fal_ai.py --kling     # ~$0.02-0.05
 ```
 
 ## 🔧 Setup Requirements
@@ -140,13 +147,14 @@ python test_fal_ai.py --compare
 
 ### FAL AI Features
 - ✅ Dual-model architecture (Hailuo + Kling)
-- ✅ Universal methods with model selection
+- ✅ Universal methods with full endpoint names
 - ✅ Model-specific optimization
-- ✅ Interactive demo with comparison
-- ✅ Comprehensive testing framework
+- ✅ Cost-conscious interactive demo with confirmation prompts
+- ✅ Cost-conscious testing framework with FREE options
 - ✅ Production-ready error handling
 - ✅ Automatic video download
 - ✅ Model performance comparison
+- ⚠️ Cost protection with explicit user confirmation required
 
 ## 📖 Documentation
 
@@ -175,20 +183,20 @@ python test_veo.py --full
 ```
 
 ### Test FAL AI Implementation
+
+⚠️ **Cost Warning**: Video generation tests cost money! Always start with FREE tests.
+
 ```bash
 cd fal_video_generation
 
-# Basic tests
-python test_fal_ai.py
+# FREE Tests (no cost)
+python test_api_only.py              # API connection test only
+python test_fal_ai.py                # Setup validation only
 
-# Test Kling model
-python test_fal_ai.py --kling
-
-# Compare both models
-python test_fal_ai.py --compare
-
-# Quick tests
-python test_fal_ai.py --quick
+# Paid Tests (generate real videos)
+python test_fal_ai.py --hailuo       # Test Hailuo model (~$0.02-0.05)
+python test_fal_ai.py --kling        # Test Kling model (~$0.02-0.05)
+python test_fal_ai.py --compare      # Test both models (~$0.04-0.10)
 ```
 
 ## 🎮 Interactive Demos
@@ -199,16 +207,17 @@ Both implementations include interactive demos:
 # Google Veo Demo
 cd veo3_video_generation && python demo.py
 
-# FAL AI Demo  
+# FAL AI Demo (costs money - has confirmation prompts)
 cd fal_video_generation && python demo.py
 ```
 
 The demos provide:
-- Model selection menus
+- Model selection menus with cost warnings
 - Pre-configured test prompts
 - Image-to-video testing
-- Model comparison features
+- Model comparison features (expensive - generates 2 videos)
 - Configuration validation
+- **Cost protection**: Confirmation prompts before generating videos
 
 ## 🔍 Troubleshooting
 
@@ -223,6 +232,7 @@ The demos provide:
 - **Invalid API key**: Check your FAL_KEY in .env file
 - **Rate limiting**: Wait between requests or upgrade plan
 - **Model not available**: Try alternative model
+- **Unexpected charges**: Always use FREE tests first (`test_api_only.py`)
 
 ### Getting Help
 
@@ -231,10 +241,21 @@ The demos provide:
 3. Run the demo to validate your setup
 4. Check the troubleshooting sections in each implementation's README
 
+## ⚠️ Cost Protection
+
+**IMPORTANT**: FAL AI video generation costs money (~$0.02-0.05 per video). This project includes cost protection measures:
+
+- **FREE tests available**: Use `test_api_only.py` for setup validation
+- **Cost warnings**: All paid operations show cost estimates
+- **Confirmation prompts**: User must explicitly confirm before generating videos
+- **Model-specific testing**: Test individual models to avoid unnecessary costs
+
+**Always start with FREE tests before running paid video generation!**
+
 ## 🚧 Development Status
 
 - ✅ **Google Veo**: Production ready with comprehensive testing
-- ✅ **FAL AI**: Production ready with dual-model support
+- ✅ **FAL AI**: Production ready with cost-conscious dual-model support
 - 🔄 **Future**: Additional model integrations planned
 
 ## 📝 License

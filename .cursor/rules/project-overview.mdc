@@ -35,9 +35,9 @@ Located in [veo3_video_generation/](mdc:veo3_video_generation) directory with au
 Located in [fal_video_generation/](mdc:fal_video_generation) directory with simplified API-based approach supporting two models and cost-conscious testing.
 
 **Key Components:**
-- [fal_video_generator.py](mdc:fal_video_generation/fal_video_generator.py) - Main FALVideoGenerator class with dual-model support
+- [fal_video_generator.py](mdc:fal_video_generation/fal_video_generator.py) - Main FALVideoGenerator class with full endpoint names
 - [demo.py](mdc:fal_video_generation/demo.py) - Cost-conscious interactive demo with confirmation prompts
-- [test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py) - Cost-conscious test suite with model-specific options
+- [test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py) - Cost-conscious test suite with model-specific flags
 - [test_api_only.py](mdc:fal_video_generation/test_api_only.py) - **FREE API connection test** (no video generation)
 - [README.md](mdc:fal_video_generation/README.md) - Complete FAL AI dual-model documentation
 - [COST_CONSCIOUS_TESTING.md](mdc:fal_video_generation/COST_CONSCIOUS_TESTING.md) - Cost-conscious testing guide
