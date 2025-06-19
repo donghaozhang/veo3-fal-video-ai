@@ -314,7 +314,7 @@ Test functions individually or use the main script with proper GCP authenticatio
 Use the enhanced test suite in [fal_video_generation/test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py):
 ```bash
 python test_fal_ai.py              # Setup and API test
-python test_fal_ai.py --quick      # Quick Hailuo test
+python test_fal_ai.py --hailuo     # Test Hailuo model (~$0.02-0.05)
 python test_fal_ai.py --kling      # Quick Kling test
 python test_fal_ai.py --compare    # Compare both models
 python test_fal_ai.py --full       # Full test with details

@@ -286,43 +286,61 @@ result = generator.generate_video_from_local_image(
 
 ## Testing
 
-### Comprehensive Test Suite
+### Cost-Conscious Testing
 
-The project includes a unified test suite that supports both models:
+⚠️ **Important**: Video generation costs money! Choose your tests carefully to avoid unnecessary charges.
+
+### FREE Testing (No Costs)
 
 ```bash
-# Basic setup and API connection test
+# Test API connection only - completely FREE
+python test_api_only.py
+
+# Basic setup test - FREE (no video generation)
 python test_fal_ai.py
+```
 
-# Quick Hailuo video generation test
-python test_fal_ai.py --quick
+### Paid Testing (Generates Real Videos)
 
-# Quick Kling video generation test
-python test_fal_ai.py --kling
+```bash
+# Test single model - ~$0.02-0.05 per test
+python test_fal_ai.py --hailuo      # Test Hailuo model only
+python test_fal_ai.py --kling       # Test Kling model only
+python test_fal_ai.py --quick       # Same as --hailuo
 
-# Compare both models
-python test_fal_ai.py --compare
-
-# Full test with detailed output
+# Full test with detailed output - ~$0.02-0.05
 python test_fal_ai.py --full
 
-# Only test API connection
-python test_fal_ai.py --api-only
+# Compare both models - ~$0.04-0.10 (EXPENSIVE!)
+python test_fal_ai.py --compare     # Generates 2 videos
 ```
+
+### Test Options Summary
+
+| Command | Cost | Description |
+|---------|------|-------------|
+| `python test_api_only.py` | **FREE** | API connection test only |
+| `python test_fal_ai.py` | **FREE** | Setup + API test (no videos) |
+| `python test_fal_ai.py --hailuo` | ~$0.02-0.05 | Test Hailuo model |
+| `python test_fal_ai.py --kling` | ~$0.02-0.05 | Test Kling model |
+| `python test_fal_ai.py --compare` | ~$0.04-0.10 | Test both models |
 
 ### Interactive Demo
 
-Run the interactive demo to explore both models:
+⚠️ **Cost Warning**: The demo generates real videos that cost money!
 
 ```bash
 python demo.py
 ```
 
 The demo offers:
-1. Model selection (Hailuo vs Kling)
-2. Multiple demo scenarios
-3. Custom input options
-4. Side-by-side comparison
+1. **Cost warnings** and confirmation prompts
+2. Model selection (Hailuo vs Kling) with cost estimates
+3. Multiple demo scenarios with individual cost indicators
+4. Custom input options
+5. Side-by-side comparison (expensive - generates 2 videos)
+
+Each demo option shows estimated costs before generation.
 
 ## Troubleshooting
 

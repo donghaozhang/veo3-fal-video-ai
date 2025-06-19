@@ -71,39 +71,55 @@ image_url = generator.upload_local_image("path/to/image.jpg")
 local_path = generator.download_video(video_url, "output", "filename.mp4")
 ```
 
-### Testing Framework
-Enhanced test suite in [fal_video_generation/test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py)
+### Cost-Conscious Testing Framework
+Enhanced test suite with cost warnings in [fal_video_generation/test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py)
 
-**Test Commands:**
+**FREE Testing Commands (No Cost):**
 ```bash
-# Basic setup and API connection test
+# API connection test only - completely FREE
+python test_api_only.py
+
+# Basic setup and API connection test - FREE
 python test_fal_ai.py
-
-# Quick Hailuo model test
-python test_fal_ai.py --quick
-
-# Quick Kling model test
-python test_fal_ai.py --kling
-
-# Compare both models side-by-side
-python test_fal_ai.py --compare
-
-# Full test with detailed output  
-python test_fal_ai.py --full
-
-# API connection test only
-python test_fal_ai.py --api-only
 ```
 
-### Interactive Demo
-Enhanced demo in [fal_video_generation/demo.py](mdc:fal_video_generation/demo.py)
+**Paid Testing Commands (Generates Real Videos):**
+```bash
+# Test single model - ~$0.02-0.05 per test
+python test_fal_ai.py --hailuo      # Test Hailuo model only
+python test_fal_ai.py --kling       # Test Kling model only
+python test_fal_ai.py --quick       # Same as --hailuo
+
+# Full test with detailed output - ~$0.02-0.05
+python test_fal_ai.py --full
+
+# Compare both models - ~$0.04-0.10 (EXPENSIVE!)
+python test_fal_ai.py --compare     # Generates 2 videos
+```
+
+**Cost-Conscious Features:**
+- Cost warnings displayed prominently
+- Confirmation prompts before paid operations
+- Model-specific testing to avoid unnecessary costs
+- Clear cost estimates for each operation
+
+### Cost-Conscious Interactive Demo
+Enhanced demo with cost warnings in [fal_video_generation/demo.py](mdc:fal_video_generation/demo.py)
 
 **Demo Features:**
-- Model selection menu
+- **Cost warnings** displayed upfront
+- **Confirmation prompts** before each video generation
+- Model selection menu with cost estimates
 - Online image generation with both models
 - Local image generation with both models
-- Side-by-side model comparison
+- Side-by-side model comparison (with expensive operation warning)
 - Custom parameter input for each model
+
+**Cost Safety Features:**
+- Upfront cost warnings (~$0.02-0.05 per video)
+- Confirmation prompts for all paid operations
+- Cost indicators in menu options
+- Expensive operations clearly marked
 
 ## Configuration
 

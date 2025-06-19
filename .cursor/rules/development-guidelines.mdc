@@ -143,15 +143,57 @@ veo3/
 - **Archive**: Legacy tools in [archive/](mdc:archive)
 - **Project Assets**: Additional assets like [bet.png](mdc:bet.png) in root
 
-## Testing and Validation
+## Cost-Conscious Development Practices
 
-### FAL AI Testing
-Use the unified test suite:
+### Cost Management for FAL AI
+Video generation costs money (~$0.02-0.05 per video). Follow these practices to avoid unexpected charges:
+
+#### Always Start with FREE Testing
 ```bash
 cd fal_video_generation
-python test_fal_ai.py          # Complete test
-python test_fal_ai.py --quick  # Quick video generation
-python test_fal_ai.py --api-only  # API connection only
+python test_api_only.py        # Completely FREE - validates setup without generating videos
+python test_fal_ai.py          # FREE by default - no video generation without flags
+```
+
+#### Use Model-Specific Testing
+```bash
+# Test individual models to avoid unnecessary costs
+python test_fal_ai.py --hailuo  # Test Hailuo only (~$0.02-0.05)
+python test_fal_ai.py --kling   # Test Kling only (~$0.02-0.05)
+```
+
+#### Avoid Expensive Operations During Development
+```bash
+# EXPENSIVE - Generates 2 videos (~$0.04-0.10)
+python test_fal_ai.py --compare  # Only use when specifically needed
+```
+
+#### Cost-Conscious Demo Usage
+```bash
+python demo.py  # Includes cost warnings and confirmation prompts
+```
+
+### Development Workflow for Cost Control
+1. **Setup Validation**: Always run `python test_api_only.py` first (FREE)
+2. **Single Model Testing**: Use `--hailuo` or `--kling` flags for specific model testing
+3. **Avoid Comparisons**: Only use `--compare` when specifically needed for evaluation
+4. **Monitor Costs**: Each video generation costs ~$0.02-0.05
+
+## Testing and Validation
+
+### FAL AI Cost-Conscious Testing
+Use the enhanced test suite with cost controls:
+```bash
+cd fal_video_generation
+# FREE Tests (no video generation)
+python test_api_only.py        # Completely FREE API validation
+python test_fal_ai.py          # FREE setup test (no videos)
+
+# Paid Tests (generates real videos)
+python test_fal_ai.py --hailuo # Test Hailuo model (~$0.02-0.05)
+python test_fal_ai.py --kling  # Test Kling model (~$0.02-0.05)
+python test_fal_ai.py --full   # Full test (~$0.02-0.05)
+python test_fal_ai.py --compare # Compare models (~$0.04-0.10) ⚠️ EXPENSIVE
 ```
 
 ### Google Veo Testing

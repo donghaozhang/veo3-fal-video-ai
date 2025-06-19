@@ -3,34 +3,69 @@ description:
 globs:
 alwaysApply: false
 ---
-# Testing and Demo Framework
+# Cost-Conscious Testing and Demo Framework
 
-This document covers the comprehensive testing and demonstration capabilities for the dual-model FAL AI video generation implementation.
+This document covers the cost-conscious testing and demonstration capabilities for the dual-model FAL AI video generation implementation.
 
-## Test Suite Overview
-Located in [fal_video_generation/test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py)
+## Cost-Conscious Test Suite Overview
+Located in [fal_video_generation/test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py) and [fal_video_generation/test_api_only.py](mdc:fal_video_generation/test_api_only.py)
 
-The test suite provides comprehensive validation for both MiniMax Hailuo-02 and Kling Video 2.1 models with multiple testing modes and detailed reporting.
+The test suite provides comprehensive validation with cost warnings and confirmation prompts to prevent unexpected charges.
 
-### Test Command Options
+### FREE Test Command Options (No Cost)
 ```bash
-# Basic setup and API connection test
+# API connection test only - completely FREE
+python test_api_only.py
+
+# Basic setup and API connection test - FREE (no video generation)
 python test_fal_ai.py
+```
 
-# Quick Hailuo model test (1-3 minutes)
-python test_fal_ai.py --quick
+### Paid Test Command Options (Generates Real Videos)
+```bash
+# Test single model - ~$0.02-0.05 per test
+python test_fal_ai.py --hailuo      # Test Hailuo model only
+python test_fal_ai.py --kling       # Test Kling model only
+python test_fal_ai.py --quick       # Same as --hailuo
 
-# Quick Kling model test (1-3 minutes)
-python test_fal_ai.py --kling
-
-# Compare both models side-by-side
-python test_fal_ai.py --compare
-
-# Full comprehensive test
+# Full comprehensive test - ~$0.02-0.05
 python test_fal_ai.py --full
 
-# API connection test only
-python test_fal_ai.py --api-only
+# Compare both models - ~$0.04-0.10 (EXPENSIVE!)
+python test_fal_ai.py --compare     # Generates 2 videos
+```
+
+### Cost Safety Features
+- **Cost warnings** displayed prominently before any paid operations
+- **Confirmation prompts** before generating videos
+- **Model-specific testing** to avoid testing both models accidentally
+- **Clear cost estimates** for each operation
+- **FREE default behavior** when no flags are specified
+
+## FREE Testing Script
+Located in [fal_video_generation/test_api_only.py](mdc:fal_video_generation/test_api_only.py)
+
+A completely FREE testing script that validates your setup without generating any videos:
+
+### Features
+- **No video generation** - completely free to run
+- **API key validation** without triggering charges
+- **Dependencies check** for all required packages
+- **Environment validation** for .env configuration
+- **Generator initialization** testing
+
+### Usage
+```bash
+python test_api_only.py
+```
+
+### Output Example
+```
+🆓 FAL AI API Connection Test - FREE
+Tests API connectivity without generating videos
+==================================================
+✅ Your FAL AI setup is ready for video generation
+🆓 This test was completely FREE - no videos were generated
 ```
 
 ## Test Components
@@ -83,28 +118,36 @@ python test_fal_ai.py --api-only
 - Compares file sizes and output quality
 - Provides side-by-side result analysis
 
-## Interactive Demo
+## Cost-Conscious Interactive Demo
 Located in [fal_video_generation/demo.py](mdc:fal_video_generation/demo.py)
 
 ### Demo Features
-- **Model Selection Menu**: Choose between Hailuo, Kling, or comparison modes
-- **Online Image Generation**: Use web-hosted images for testing
-- **Local Image Generation**: Upload and use local image files
-- **Model Comparison**: Generate videos with both models simultaneously
+- **Cost Warnings**: Upfront warnings about video generation costs
+- **Confirmation Prompts**: User confirmation before each paid operation
+- **Model Selection Menu**: Choose between Hailuo, Kling, or comparison modes with cost estimates
+- **Online Image Generation**: Use web-hosted images for testing (~$0.02-0.05 per video)
+- **Local Image Generation**: Upload and use local image files (~$0.02-0.05 per video)
+- **Model Comparison**: Generate videos with both models simultaneously (~$0.04-0.10)
 - **Custom Parameters**: Adjust model-specific settings interactively
 
-### Demo Menu Structure
+### Demo Menu Structure with Cost Indicators
 ```
 🎬 FAL AI Video Generation Demo
+💰 COST WARNING: Each video generation costs ~$0.02-0.05
 ==============================
-1. Generate with MiniMax Hailuo-02
-2. Generate with Kling Video 2.1  
-3. Generate with Local Image (Hailuo)
-4. Generate with Local Image (Kling)
-5. Compare Both Models
-6. Custom Parameters
-7. Exit
+1. Generate from online image (~$0.02-0.05)
+2. Generate from local image (~$0.02-0.05)
+3. Compare both models (~$0.04-0.10) ⚠️ EXPENSIVE
+4. Custom input (~$0.02-0.05)
+5. Exit
 ```
+
+### Cost Safety Features
+- **Upfront cost warnings** displayed when demo starts
+- **Individual cost estimates** for each demo option
+- **Confirmation prompts** before generating any videos
+- **Expensive operations** clearly marked with warnings
+- **User can cancel** any operation before charges occur
 
 ### Usage Examples
 

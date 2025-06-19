@@ -32,10 +32,20 @@ FAL_MAX_RETRIES=3
 ```
 
 ### 3. FAL AI Testing
+
+⚠️ **Cost Warning**: Video generation costs money! Always start with FREE tests.
+
+#### FREE Testing (No Costs)
 ```bash
 cd fal_video_generation
-python test_fal_ai.py          # Basic setup test
-python test_fal_ai.py --quick  # Quick video generation test
+python test_api_only.py        # Completely FREE API connection test
+python test_fal_ai.py          # FREE setup test (no video generation)
+```
+
+#### Paid Testing (Generates Real Videos)
+```bash
+python test_fal_ai.py --hailuo # Test Hailuo model (~$0.02-0.05)
+python test_fal_ai.py --kling  # Test Kling model (~$0.02-0.05)
 ```
 
 ### 4. FAL AI Usage
@@ -156,11 +166,18 @@ veo3/
 ## Testing Both Platforms
 
 ### FAL AI Testing
+
+⚠️ **Cost Warning**: Video generation costs money!
+
 ```bash
 cd fal_video_generation
-python test_fal_ai.py          # Setup and API test
-python test_fal_ai.py --quick  # Video generation test
-python demo.py                 # Interactive demo
+# FREE Tests
+python test_api_only.py        # Completely FREE API connection test
+python test_fal_ai.py          # FREE setup test (no video generation)
+
+# Paid Tests (generates real videos)
+python test_fal_ai.py --hailuo # Test Hailuo model (~$0.02-0.05)
+python demo.py                 # Interactive demo (with cost warnings)
 ```
 
 ### Google Veo Testing

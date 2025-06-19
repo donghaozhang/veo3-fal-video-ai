@@ -32,13 +32,15 @@ Located in [veo3_video_generation/](mdc:veo3_video_generation) directory with au
 **Quick Setup**: Run `python fix_permissions.py` to automatically configure Google Cloud permissions
 
 ### FAL AI Dual-Model Implementation
-Located in [fal_video_generation/](mdc:fal_video_generation) directory with simplified API-based approach supporting two models.
+Located in [fal_video_generation/](mdc:fal_video_generation) directory with simplified API-based approach supporting two models and cost-conscious testing.
 
 **Key Components:**
 - [fal_video_generator.py](mdc:fal_video_generation/fal_video_generator.py) - Main FALVideoGenerator class with dual-model support
-- [demo.py](mdc:fal_video_generation/demo.py) - Interactive demonstration script with model selection
-- [test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py) - Comprehensive test suite for both models
+- [demo.py](mdc:fal_video_generation/demo.py) - Cost-conscious interactive demo with confirmation prompts
+- [test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py) - Cost-conscious test suite with model-specific options
+- [test_api_only.py](mdc:fal_video_generation/test_api_only.py) - **FREE API connection test** (no video generation)
 - [README.md](mdc:fal_video_generation/README.md) - Complete FAL AI dual-model documentation
+- [COST_CONSCIOUS_TESTING.md](mdc:fal_video_generation/COST_CONSCIOUS_TESTING.md) - Cost-conscious testing guide
 
 **Supported Models:**
 - **MiniMax Hailuo-02**: `fal-ai/minimax/hailuo-02/standard/image-to-video`
@@ -69,9 +71,11 @@ veo3/
 │   └── result_folder/              # Veo output videos
 └── fal_video_generation/            # FAL AI dual-model implementation
     ├── fal_video_generator.py       # FAL AI video generator class (dual-model)
-    ├── demo.py                      # Interactive demo with model selection
-    ├── test_fal_ai.py              # Unified test suite (both models)
+    ├── demo.py                      # Cost-conscious interactive demo
+    ├── test_fal_ai.py              # Cost-conscious test suite (both models)
+    ├── test_api_only.py            # FREE API connection test
     ├── README.md                    # FAL AI dual-model documentation
+    ├── COST_CONSCIOUS_TESTING.md   # Cost-conscious testing guide
     ├── requirements.txt             # FAL AI dependencies
     ├── .env                         # FAL AI configuration
     ├── output/                      # FAL AI generated videos
@@ -110,9 +114,16 @@ veo3/
 - You already use Google Cloud infrastructure
 
 ## Usage Recommendations
-- **Prototyping**: Start with FAL AI (either model) for quick testing
+- **Testing Setup**: Use `python test_api_only.py` for FREE API validation
+- **Prototyping**: Start with FAL AI single model testing (`--hailuo` or `--kling`) to avoid unnecessary costs
 - **Production**: Use FAL AI for API-based deployments, Google Veo for high-resolution needs
-- **Comparison**: Use the built-in comparison tools to test both FAL AI models side-by-side
+- **Comparison**: Use cost-conscious comparison tools - remember comparison tests generate 2 videos (~$0.04-0.10)
+
+## Cost-Conscious Development
+- **Always start with FREE tests** (`test_api_only.py`) to validate setup
+- **Use model-specific flags** (`--hailuo`, `--kling`) to test individual models
+- **Avoid comparison tests** during development unless specifically needed
+- **Monitor costs** - each video generation costs ~$0.02-0.05
 
 
 

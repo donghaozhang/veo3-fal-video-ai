@@ -37,7 +37,7 @@ This guide covers troubleshooting for both Google Veo and FAL AI dual-model vide
 1. Check endpoint availability: `fal-ai/minimax/hailuo-02/standard/image-to-video`
 2. Verify duration parameter: Use "6" or "10" seconds
 3. Test prompt optimizer: `prompt_optimizer=True`
-4. Run specific test: `python test_fal_ai.py --quick`
+4. Run specific test: `python test_fal_ai.py --hailuo` (cost: ~$0.02-0.05)
 
 #### Kling Model Problems
 **Problem**: Kling Video 2.1 generation fails  
@@ -106,7 +106,7 @@ This guide covers troubleshooting for both Google Veo and FAL AI dual-model vide
 1. Run step by step: `python test_fal_ai.py --api-only`
 2. Check dependencies: `pip install -r requirements.txt`
 3. Verify .env file exists and has correct key
-4. Test individual models: `python test_fal_ai.py --quick` or `--kling`
+4. Test individual models: `python test_fal_ai.py --hailuo` or `--kling` (cost: ~$0.02-0.05 each)
 5. Test manually: `python demo.py`
 
 #### Comparison Test Issues
@@ -230,7 +230,7 @@ python test_fal_ai.py --compare     # Test both models side-by-side
 
 #### 2. Model-Specific Testing
 ```bash
-python test_fal_ai.py --quick       # Test Hailuo model
+python test_fal_ai.py --hailuo      # Test Hailuo model (~$0.02-0.05)
 python test_fal_ai.py --kling       # Test Kling model
 ```
 
