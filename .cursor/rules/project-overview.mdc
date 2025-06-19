@@ -119,7 +119,10 @@ veo3/
 - **Production**: Use FAL AI for API-based deployments, Google Veo for high-resolution needs
 - **Comparison**: Use cost-conscious comparison tools - remember comparison tests generate 2 videos (~$0.04-0.10)
 
-## Cost-Conscious Development
+## ⚠️ CRITICAL: Cost Protection Rules
+**See [cost-protection.mdc](mdc:.cursor/rules/cost-protection.mdc) for complete cost protection guidelines**
+
+- **NEVER run video generation tests without explicit user confirmation**
 - **Always start with FREE tests** (`test_api_only.py`) to validate setup
 - **Use model-specific flags** (`--hailuo`, `--kling`) to test individual models
 - **Avoid comparison tests** during development unless specifically needed

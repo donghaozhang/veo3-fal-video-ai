@@ -5,6 +5,11 @@ alwaysApply: false
 ---
 # Cost-Conscious Testing and Demo Framework
 
+## ⚠️ CRITICAL: Cost Protection
+**See [cost-protection.mdc](mdc:.cursor/rules/cost-protection.mdc) for complete cost protection rules**
+
+**NEVER run video generation tests without explicit user confirmation - they cost real money!**
+
 This document covers the cost-conscious testing and demonstration capabilities for the dual-model FAL AI video generation implementation.
 
 ## Cost-Conscious Test Suite Overview

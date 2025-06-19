@@ -1,0 +1,117 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Cost Protection Rule for Video Generation Testing
+
+## CRITICAL: Video Generation Cost Protection
+
+**⚠️ NEVER run video generation tests without explicit user confirmation - they cost real money!**
+
+### Prohibited Actions Without User Consent
+
+**NEVER automatically run these commands:**
+```bash
+# EXPENSIVE - These generate real videos and cost money
+python test_fal_ai.py --hailuo           # ~$0.02-0.05 per test
+python test_fal_ai.py --kling            # ~$0.02-0.05 per test  
+python test_fal_ai.py --compare          # ~$0.04-0.10 per test (2 videos)
+python test_fal_ai.py --full             # ~$0.02-0.05 per test
+python demo.py                           # Variable cost per generation
+
+# Google Veo tests (also expensive)
+python veo3_video_generation/test_veo.py --video    # Costs money
+python veo3_video_generation/demo.py               # Costs money
+```
+
+### Safe Commands (FREE to run)
+```bash
+# These are completely FREE and safe to run automatically
+python fal_video_generation/test_api_only.py       # FREE - API connection test only
+python fal_video_generation/test_fal_ai.py         # FREE - setup test only (no video generation)
+python veo3_video_generation/test_veo.py          # FREE - setup test only (no video generation)
+```
+
+### Required User Confirmation Protocol
+
+**Before running ANY video generation test:**
+
+1. **Always warn the user first:**
+   ```
+   ⚠️ WARNING: This command will generate real videos and cost money (~$X.XX)
+   Are you sure you want to proceed? This will charge your account.
+   ```
+
+2. **Wait for explicit confirmation:**
+   - User must explicitly say "yes", "proceed", "run it", or similar
+   - Do NOT proceed with just "ok" or ambiguous responses
+   - If user says "no" or seems uncertain, do NOT run the command
+
+3. **Show cost estimate:**
+   - Always include estimated cost in the warning
+   - Explain that costs are per video generated
+   - Mention if the test generates multiple videos
+
+### Implementation Guidelines
+
+**When user asks to "test" video generation:**
+- **Default to FREE tests first** (`test_api_only.py`)
+- **Ask which specific test** they want to run
+- **Explain costs** before running paid tests
+- **Get explicit confirmation** for any paid operations
+
+**When debugging video generation issues:**
+- **Start with FREE API tests** to isolate the problem
+- **Only suggest paid tests** if FREE tests pass and user explicitly wants to test video generation
+- **Always mention costs** when suggesting paid tests
+
+**Code Review and Development:**
+- **Never include paid test commands** in automated scripts or CI/CD
+- **Always use FREE tests** for validation during development
+- **Document cost implications** in any new test functions
+
+### Example Safe Interaction Pattern
+
+```
+User: "Test the FAL AI setup"
+
+AI Response: 
+"I'll test your FAL AI setup with the FREE tests first:
+
+🆓 FREE Tests (no cost):
+- python test_api_only.py        # API connection test
+- python test_fal_ai.py          # Setup validation
+
+These tests verify your configuration without generating videos or costing money.
+
+If you want to test actual video generation (which costs ~$0.02-0.05 per video), 
+please let me know and I'll ask for confirmation before running those tests."
+```
+
+### Example Unsafe Pattern (AVOID)
+
+```
+❌ WRONG: "I'll test your setup by running video generation..."
+❌ WRONG: Automatically running `python test_fal_ai.py --hailuo`
+❌ WRONG: Running demo.py without explicit user request for paid testing
+```
+
+## Cost-Conscious Development Practices
+
+1. **Always start development with FREE tests**
+2. **Use model-specific flags** (`--hailuo`, `--kling`) instead of `--compare` to minimize costs
+3. **Avoid comparison tests** during development unless specifically needed
+4. **Use `test_api_only.py` for CI/CD pipelines**
+5. **Document all cost implications** in code comments and documentation
+
+## Emergency Cost Protection
+
+If you accidentally suggest or run a paid test:
+1. **Immediately acknowledge the mistake**
+2. **Explain the cost implications**
+3. **Help user understand what was charged**
+4. **Provide guidance on avoiding future accidental charges**
+
+Remember: **Every video generation test costs real money from the user's account. Treat it like spending the user's cash directly.**
+

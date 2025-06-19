@@ -143,6 +143,11 @@ veo3/
 - **Archive**: Legacy tools in [archive/](mdc:archive)
 - **Project Assets**: Additional assets like [bet.png](mdc:bet.png) in root
 
+## ⚠️ CRITICAL: Cost Protection
+**See [cost-protection.mdc](mdc:.cursor/rules/cost-protection.mdc) for complete cost protection rules**
+
+**NEVER run video generation tests without explicit user confirmation - they cost real money!**
+
 ## Cost-Conscious Development Practices
 
 ### Cost Management for FAL AI
