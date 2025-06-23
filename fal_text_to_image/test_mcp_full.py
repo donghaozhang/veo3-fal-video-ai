@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-Comprehensive MCP Server Test
+Comprehensive MCP Server Test for Cursor
 Tests all MCP server functionality without running the actual MCP protocol.
+Designed for Cursor users who don't have Claude Desktop.
 """
 
 import asyncio
@@ -325,10 +326,11 @@ async def main():
     
     if passed == total:
         print("\n🎉 ALL TESTS PASSED! MCP server is ready for use.")
-        print("📋 Next steps:")
-        print("   1. Add configuration to Claude Desktop settings")
-        print("   2. Restart Claude Desktop")
-        print("   3. Test MCP tools in Claude interface")
+        print("📋 Next steps for Cursor:")
+        print("   1. Run the MCP server: python mcp_server.py")
+        print("   2. Test tools directly: python test_cursor_mcp.py")
+        print("   3. Use interactive demo: python demo.py")
+        print("   4. Integrate directly: from fal_text_to_image_generator import FALTextToImageGenerator")
     else:
         print(f"\n🔧 {total-passed} tests failed. Please fix issues before deploying.")
     
