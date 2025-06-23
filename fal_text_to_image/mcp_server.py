@@ -329,6 +329,13 @@ async def handle_call_tool(name: str, arguments: dict) -> list[types.TextContent
 
 async def handle_generate_image(arguments: dict) -> list[types.TextContent]:
     """Handle single image generation."""
+    # Check if generator is initialized
+    if generator is None:
+        return [types.TextContent(
+            type="text",
+            text="❌ **Error**: FAL AI generator not initialized. Please check your configuration and restart the server."
+        )]
+    
     prompt = arguments.get("prompt")
     model = arguments.get("model", "imagen4")
     negative_prompt = arguments.get("negative_prompt")
@@ -378,6 +385,13 @@ async def handle_generate_image(arguments: dict) -> list[types.TextContent]:
 
 async def handle_batch_generate_images(arguments: dict) -> list[types.TextContent]:
     """Handle batch image generation."""
+    # Check if generator is initialized
+    if generator is None:
+        return [types.TextContent(
+            type="text",
+            text="❌ **Error**: FAL AI generator not initialized. Please check your configuration and restart the server."
+        )]
+    
     prompt = arguments.get("prompt")
     models = arguments.get("models", ["imagen4", "flux_dev"])
     negative_prompt = arguments.get("negative_prompt")
@@ -473,6 +487,13 @@ async def handle_get_model_info(arguments: dict) -> list[types.TextContent]:
 
 async def handle_download_image(arguments: dict) -> list[types.TextContent]:
     """Handle downloading an image from URL."""
+    # Check if generator is initialized
+    if generator is None:
+        return [types.TextContent(
+            type="text",
+            text="❌ **Error**: FAL AI generator not initialized. Please check your configuration and restart the server."
+        )]
+    
     image_url = arguments.get("image_url")
     output_folder = arguments.get("output_folder", "output")
     filename = arguments.get("filename")
@@ -545,6 +566,17 @@ async def handle_read_resource(uri: str) -> str:
 
 async def main():
     """Main entry point for the MCP server."""
+    global generator
+    
+    # Initialize the generator
+    try:
+        generator = FALTextToImageGenerator()
+        logger.info("✅ FAL AI Text-to-Image generator initialized successfully")
+    except Exception as e:
+        logger.error(f"❌ Failed to initialize generator: {e}")
+        # Continue anyway for testing purposes
+        generator = None
+    
     # Import here to avoid issues with event loop
     from mcp.server.stdio import stdio_server
     
