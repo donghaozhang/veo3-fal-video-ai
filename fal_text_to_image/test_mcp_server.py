@@ -225,6 +225,41 @@ def test_generator_integration():
         print(f"❌ Generator integration test failed: {e}")
         return False
 
+def test_cursor_compatibility():
+    """Test Cursor-specific compatibility."""
+    print("\n🖱️ Testing Cursor Compatibility...")
+    
+    try:
+        # Test that the server can be imported and started
+        import mcp_server
+        
+        # Check if main function exists for server startup
+        if hasattr(mcp_server, 'main'):
+            print("✅ Server main function found - can be started with 'python mcp_server.py'")
+        else:
+            print("❌ Server main function not found")
+            return False
+        
+        # Check if we can test tools directly
+        if hasattr(mcp_server, 'handle_list_tools'):
+            print("✅ Tool handlers available for direct testing in Cursor")
+        else:
+            print("❌ Tool handlers not found")
+            return False
+        
+        # Check if demo exists as alternative
+        try:
+            import demo
+            print("✅ Interactive demo available as alternative: 'python demo.py'")
+        except ImportError:
+            print("⚠️ Interactive demo not found (optional)")
+        
+        return True
+    
+    except Exception as e:
+        print(f"❌ Cursor compatibility test failed: {e}")
+        return False
+
 def main():
     """Run all tests."""
     print("=" * 60)
@@ -240,7 +275,8 @@ def main():
         ("MCP Server Structure", test_mcp_server_structure),
         ("Model Configurations", test_model_configurations),
         ("Formatting Functions", test_formatting_functions),
-        ("Generator Integration", test_generator_integration)
+        ("Generator Integration", test_generator_integration),
+        ("Cursor Compatibility", test_cursor_compatibility)
     ]
     
     passed = 0
@@ -270,10 +306,11 @@ def main():
     
     if passed == total:
         print("\n🎉 All tests passed! MCP server is ready for deployment.")
-        print("💡 Next steps:")
-        print("   1. Configure MCP client (Claude Desktop, etc.)")
-        print("   2. Test with actual MCP client")
+        print("💡 Next steps for Cursor:")
+        print("   1. Run the MCP server: python mcp_server.py")
+        print("   2. Test MCP tools directly in Cursor")
         print("   3. Use cost-conscious generation tools")
+        print("   4. Alternative: Use the interactive demo: python demo.py")
     else:
         print(f"\n⚠️ {total - passed} test(s) failed. Please fix issues before deployment.")
     
