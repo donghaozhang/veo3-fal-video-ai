@@ -3,13 +3,22 @@ description:
 globs: 
 alwaysApply: true
 ---
-# Video Generation Project Overview
+# AI Content Generation Project Overview
 
-This project provides Python utilities for generating videos using two different AI platforms:
+This project provides Python utilities for generating both videos and images using multiple AI platforms:
+
+## Video Generation
 1. **Google Veo API** on Vertex AI (higher resolution, automated setup with permission fixes)
 2. **FAL AI Dual Models** (simpler setup, production ready)
    - **MiniMax Hailuo-02** (768p, prompt optimizer)
    - **Kling Video 2.1** (high-quality, CFG scale, negative prompts)
+
+## Text-to-Image Generation
+3. **FAL AI Quad Models** (consolidated test structure, MCP server support)
+   - **Imagen4** (Google's high-quality model)
+   - **Seedream** (Artistic and creative generation)
+   - **FLUX Schnell** (Ultra-fast generation)
+   - **FLUX Dev** (Balanced speed and quality)
 
 ## Main Components
 
@@ -31,7 +40,7 @@ Located in [veo3_video_generation/](mdc:veo3_video_generation) directory with au
 
 **Quick Setup**: Run `python fix_permissions.py` to automatically configure Google Cloud permissions
 
-### FAL AI Dual-Model Implementation
+### FAL AI Video Generation (Dual-Model)
 Located in [fal_video_generation/](mdc:fal_video_generation) directory with simplified API-based approach supporting two models and cost-conscious testing.
 
 **Key Components:**
@@ -42,7 +51,21 @@ Located in [fal_video_generation/](mdc:fal_video_generation) directory with simp
 - [README.md](mdc:fal_video_generation/README.md) - Complete FAL AI dual-model documentation
 - [COST_CONSCIOUS_TESTING.md](mdc:fal_video_generation/COST_CONSCIOUS_TESTING.md) - Cost-conscious testing guide
 
-**Supported Models:**
+### FAL AI Text-to-Image Generation (Quad-Model)
+Located in [fal_text_to_image/](mdc:fal_text_to_image) directory with consolidated test structure and MCP server support.
+
+**Key Components:**
+- [fal_text_to_image_generator.py](mdc:fal_text_to_image/fal_text_to_image_generator.py) - Main FALTextToImageGenerator class
+- [mcp_server.py](mdc:fal_text_to_image/mcp_server.py) - Model Context Protocol server for AI assistant integration
+- [demo.py](mdc:fal_text_to_image/demo.py) - Cost-conscious interactive demo
+- **Consolidated Test Suite:**
+  - [test_setup.py](mdc:fal_text_to_image/test_setup.py) - **FREE environment and API validation**
+  - [test_mcp.py](mdc:fal_text_to_image/test_mcp.py) - **FREE MCP server functionality tests**
+  - [test_generation.py](mdc:fal_text_to_image/test_generation.py) - **PAID image generation tests** (includes `--dragon` flag)
+  - [test_cursor_mcp.py](mdc:fal_text_to_image/test_cursor_mcp.py) - Cursor-compatible MCP testing
+- [README.md](mdc:fal_text_to_image/README.md) - Complete FAL AI text-to-image documentation
+
+**Supported Video Models:**
 - **MiniMax Hailuo-02**: `fal-ai/minimax/hailuo-02/standard/image-to-video`
   - Resolution: 768p
   - Duration: 6-10 seconds
@@ -51,6 +74,12 @@ Located in [fal_video_generation/](mdc:fal_video_generation) directory with simp
   - Resolution: High-quality
   - Duration: 5-10 seconds
   - Features: CFG scale, negative prompts
+
+**Supported Text-to-Image Models:**
+- **Imagen4**: `fal-ai/google/imagen4/text-to-image` - Photorealistic, ~6-8s, $0.015/image
+- **Seedream**: `fal-ai/seedream/text-to-image` - Artistic style, ~9-15s, $0.015/image
+- **FLUX Schnell**: `fal-ai/flux/schnell` - Ultra-fast, ~1-2s, $0.015/image
+- **FLUX Dev**: `fal-ai/flux/dev` - Balanced quality, ~2-3s, $0.015/image
 
 ## Project Structure
 ```
@@ -69,17 +98,31 @@ veo3/
 │   ├── .env                        # Veo configuration
 │   ├── images/                     # Input images (smiling_woman.jpg, bet.png)
 │   └── result_folder/              # Veo output videos
-└── fal_video_generation/            # FAL AI dual-model implementation
-    ├── fal_video_generator.py       # FAL AI video generator class (dual-model)
+├── fal_video_generation/            # FAL AI dual-model video implementation
+│   ├── fal_video_generator.py       # FAL AI video generator class (dual-model)
+│   ├── demo.py                      # Cost-conscious interactive demo
+│   ├── test_fal_ai.py              # Cost-conscious test suite (both models)
+│   ├── test_api_only.py            # FREE API connection test
+│   ├── README.md                    # FAL AI dual-model documentation
+│   ├── COST_CONSCIOUS_TESTING.md   # Cost-conscious testing guide
+│   ├── requirements.txt             # FAL AI dependencies
+│   ├── .env                         # FAL AI configuration
+│   ├── output/                      # FAL AI generated videos
+│   └── test_output/                 # Test-generated videos
+└── fal_text_to_image/               # FAL AI quad-model text-to-image implementation
+    ├── fal_text_to_image_generator.py # FAL AI text-to-image generator class
+    ├── mcp_server.py                # Model Context Protocol server
     ├── demo.py                      # Cost-conscious interactive demo
-    ├── test_fal_ai.py              # Cost-conscious test suite (both models)
-    ├── test_api_only.py            # FREE API connection test
-    ├── README.md                    # FAL AI dual-model documentation
-    ├── COST_CONSCIOUS_TESTING.md   # Cost-conscious testing guide
+    ├── test_setup.py               # FREE environment and API validation
+    ├── test_mcp.py                 # FREE MCP server functionality tests
+    ├── test_generation.py          # PAID image generation tests (includes --dragon)
+    ├── test_cursor_mcp.py          # Cursor-compatible MCP testing
+    ├── update_cursor_mcp.py        # Cursor configuration helper
+    ├── README.md                    # FAL AI text-to-image documentation
     ├── requirements.txt             # FAL AI dependencies
     ├── .env                         # FAL AI configuration
-    ├── output/                      # FAL AI generated videos
-    └── test_output/                 # Test-generated videos
+    ├── output/                      # Generated images
+    └── test_output/                 # Test-generated images
 ```
 
 ## Configuration Requirements
@@ -114,19 +157,38 @@ veo3/
 - You already use Google Cloud infrastructure
 
 ## Usage Recommendations
+
+### Video Generation
 - **Testing Setup**: Use `python test_api_only.py` for FREE API validation
 - **Prototyping**: Start with FAL AI single model testing (`--hailuo` or `--kling`) to avoid unnecessary costs
 - **Production**: Use FAL AI for API-based deployments, Google Veo for high-resolution needs
 - **Comparison**: Use cost-conscious comparison tools - remember comparison tests generate 2 videos (~$0.04-0.10)
 
+### Text-to-Image Generation
+- **Testing Setup**: Use `python test_setup.py` for FREE environment validation
+- **MCP Testing**: Use `python test_mcp.py` for FREE MCP server functionality testing
+- **Prototyping**: Start with single model testing (`python test_generation.py --flux-schnell`) to avoid unnecessary costs
+- **Dragon Generation**: Use `python test_generation.py --dragon` for dragon image testing (~$0.015)
+- **Production**: Use batch generation for efficiency (`python test_generation.py --batch 1,3`)
+- **Comparison**: Use comparison tools carefully - remember comparison tests generate 4 images (~$0.060)
+
 ## ⚠️ CRITICAL: Cost Protection Rules
 **See [cost-protection.mdc](mdc:.cursor/rules/cost-protection.mdc) for complete cost protection guidelines**
 
+### Video Generation
 - **NEVER run video generation tests without explicit user confirmation**
 - **Always start with FREE tests** (`test_api_only.py`) to validate setup
 - **Use model-specific flags** (`--hailuo`, `--kling`) to test individual models
 - **Avoid comparison tests** during development unless specifically needed
 - **Monitor costs** - each video generation costs ~$0.02-0.05
+
+### Text-to-Image Generation
+- **NEVER run image generation tests without explicit user confirmation**
+- **Always start with FREE tests** (`test_setup.py`, `test_mcp.py`) to validate setup
+- **Use model-specific flags** (`--imagen4`, `--seedream`, `--flux-schnell`, `--flux-dev`) to test individual models
+- **Use dragon generation** (`--dragon`) for testing specific scenarios
+- **Avoid comparison tests** (`--compare`) during development unless specifically needed
+- **Monitor costs** - each image generation costs ~$0.015
 
 
 

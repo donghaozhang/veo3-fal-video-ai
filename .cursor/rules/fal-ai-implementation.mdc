@@ -475,6 +475,16 @@ Both implementations include comprehensive error handling:
 - Implement MCP server for AI assistant integration
 
 ### Testing Strategy
+
+**Text-to-Image Testing (Consolidated Structure):**
+- Use FREE setup tests first (`test_setup.py`)
+- Test MCP functionality (`test_mcp.py`) 
+- Test individual models (`test_generation.py --imagen4`)
+- Use dragon generation for testing (`test_generation.py --dragon`)
+- Test batch operations carefully (`test_generation.py --batch 1,3`)
+- Use Cursor-compatible MCP testing (`test_cursor_mcp.py`)
+
+**Video Generation Testing:**
 - Use FREE API tests first (`test_api_only.py`)
 - Test individual models before batch operations
 - Use model-specific flags to test targeted functionality

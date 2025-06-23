@@ -8,16 +8,27 @@ alwaysApply: false
 ## ⚠️ CRITICAL: Cost Protection
 **See [cost-protection.mdc](mdc:.cursor/rules/cost-protection.mdc) for complete cost protection rules**
 
-**NEVER run video generation tests without explicit user confirmation - they cost real money!**
+**NEVER run video/image generation tests without explicit user confirmation - they cost real money!**
 
-This document covers the cost-conscious testing and demonstration capabilities for the dual-model FAL AI video generation implementation.
+This document covers the cost-conscious testing and demonstration capabilities for both FAL AI video generation and text-to-image implementations.
 
 ## Cost-Conscious Test Suite Overview
+
+### FAL AI Video Generation Tests
 Located in [fal_video_generation/test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py) and [fal_video_generation/test_api_only.py](mdc:fal_video_generation/test_api_only.py)
 
-The test suite provides comprehensive validation with cost warnings and confirmation prompts to prevent unexpected charges.
+### FAL AI Text-to-Image Tests (CONSOLIDATED)
+Located in [fal_text_to_image/](mdc:fal_text_to_image/) with consolidated test structure:
+- **[test_setup.py](mdc:fal_text_to_image/test_setup.py)** - FREE environment and API validation
+- **[test_mcp.py](mdc:fal_text_to_image/test_mcp.py)** - FREE MCP server functionality tests
+- **[test_generation.py](mdc:fal_text_to_image/test_generation.py)** - PAID image generation tests
+- **[test_cursor_mcp.py](mdc:fal_text_to_image/test_cursor_mcp.py)** - Cursor-compatible MCP testing
+
+The test suites provide comprehensive validation with cost warnings and confirmation prompts to prevent unexpected charges.
 
 ### FREE Test Command Options (No Cost)
+
+#### Video Generation (FAL AI)
 ```bash
 # API connection test only - completely FREE
 python test_api_only.py
@@ -26,7 +37,21 @@ python test_api_only.py
 python test_fal_ai.py
 ```
 
-### Paid Test Command Options (Generates Real Videos)
+#### Text-to-Image Generation (FAL AI)
+```bash
+# Environment and API setup test - completely FREE
+python test_setup.py
+
+# MCP server functionality test - completely FREE
+python test_mcp.py
+
+# Cursor-compatible MCP testing - completely FREE
+python test_cursor_mcp.py
+```
+
+### Paid Test Command Options (Generates Real Content)
+
+#### Video Generation (FAL AI)
 ```bash
 # Test single model - ~$0.02-0.05 per test
 python test_fal_ai.py --hailuo      # Test Hailuo model only
@@ -38,6 +63,24 @@ python test_fal_ai.py --full
 
 # Compare both models - ~$0.04-0.10 (EXPENSIVE!)
 python test_fal_ai.py --compare     # Generates 2 videos
+```
+
+#### Text-to-Image Generation (FAL AI)
+```bash
+# Test single model - ~$0.015 per test
+python test_generation.py --imagen4     # Test Imagen 4 only
+python test_generation.py --seedream    # Test Seedream only
+python test_generation.py --flux-schnell # Test FLUX Schnell only
+python test_generation.py --flux-dev    # Test FLUX Dev only
+
+# Special generation tests
+python test_generation.py --dragon      # Generate dragon image (~$0.015)
+
+# Batch testing - cost varies
+python test_generation.py --batch 1,3   # Test selected models
+
+# Compare all models - ~$0.060 (EXPENSIVE!)
+python test_generation.py --compare     # Generates 4 images
 ```
 
 ### Cost Safety Features
