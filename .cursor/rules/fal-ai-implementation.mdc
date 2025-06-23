@@ -3,13 +3,21 @@ description:
 globs: 
 alwaysApply: true
 ---
-# FAL AI Dual-Model Video Generation Implementation
+# FAL AI Multi-Model Implementation
 
-This document covers the FAL AI video generation implementation supporting two models:
+This document covers the FAL AI implementation supporting both video and text-to-image generation:
+
+## Video Generation (Dual-Model Support)
 - **MiniMax Hailuo-02**: Reliable 768p generation with prompt optimization
 - **Kling Video 2.1**: High-quality generation with CFG scale and negative prompts
 
-Both models provide production-ready API access as an alternative to Google Veo.
+## Text-to-Image Generation (Quad-Model Support)
+- **Imagen4**: Google's high-quality model with excellent realism
+- **Seedream**: Artistic and creative generation with unique style
+- **FLUX Schnell**: Ultra-fast generation (1-2 seconds)
+- **FLUX Dev**: Balanced speed and quality
+
+Both video and image modules provide production-ready API access with cost-conscious testing frameworks.
 
 ## Core Components
 
@@ -42,37 +50,61 @@ generator.generate_video_from_local_image(
 )
 ```
 
+### FALTextToImageGenerator Class
+Located in [fal_text_to_image/fal_text_to_image_generator.py](mdc:fal_text_to_image/fal_text_to_image_generator.py)
+
+**Quad-Model Support:**
+- Single class supports all four models
+- Model selection via `model` parameter
+- Batch generation with multiple models
+- Cost-conscious design with confirmation prompts
+
+**Universal Methods:**
+```python
+# Generate image with model selection
+generator.generate_image(
+    prompt="A beautiful landscape",
+    model="imagen4",  # "imagen4", "seedream", "flux_schnell", "flux_dev"
+    output_folder="output"
+)
+
+# Batch generation with multiple models
+results = generator.batch_generate(
+    prompt="A magical forest",
+    models=["imagen4", "flux_schnell"],  # Select specific models
+    auto_confirm=False,  # Prompt for cost confirmation
+    download_images=True  # Download to local folder
+)
+```
+
 **Model-Specific Methods:**
 ```python
-# MiniMax Hailuo-02 optimized method
-generator.generate_video_with_hailuo(
-    prompt="Your description",
-    image_url="https://example.com/image.jpg",
-    duration="6",
-    prompt_optimizer=True
+# Imagen4 optimized method
+generator.generate_image_with_imagen4(
+    prompt="Photorealistic portrait",
+    negative_prompt="blur, distortion",
+    num_inference_steps=50
 )
 
-# Kling Video 2.1 optimized method
-generator.generate_video_with_kling(
-    prompt="Your description",
-    image_url="https://example.com/image.jpg",
-    duration="5",
-    negative_prompt="blur, distort, and low quality",
-    cfg_scale=0.5
+# FLUX Schnell for speed
+generator.generate_image_with_flux_schnell(
+    prompt="Quick artistic sketch",
+    num_inference_steps=4
 )
 ```
 
-**Utility Methods:**
-```python
-# Upload local image to FAL AI
-image_url = generator.upload_local_image("path/to/image.jpg")
-
-# Download video from URL
-local_path = generator.download_video(video_url, "output", "filename.mp4")
-```
+**Batch Processing Features:**
+- Multi-model batch generation
+- Cost estimation and confirmation prompts
+- Performance tracking and timing
+- Detailed success/failure reporting
+- Auto-download option for generated images
+- Progress tracking with numbered steps
 
 ### Cost-Conscious Testing Framework
-Enhanced test suite with cost warnings in [fal_video_generation/test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py)
+
+**Video Generation Testing:**
+Located in [fal_video_generation/test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py)
 
 **FREE Testing Commands (No Cost):**
 ```bash
@@ -97,37 +129,116 @@ python test_fal_ai.py --full
 python test_fal_ai.py --compare     # Generates 2 videos
 ```
 
+**Text-to-Image Testing:**
+Located in [fal_text_to_image/test_text_to_image.py](mdc:fal_text_to_image/test_text_to_image.py)
+
+**FREE Testing Commands (No Cost):**
+```bash
+# API connection test only - completely FREE
+python test_api_only.py
+
+# Basic setup and API connection test - FREE
+python test_text_to_image.py
+```
+
+**Paid Testing Commands (Generates Real Images):**
+```bash
+# Test single model - ~$0.015 per test
+python test_text_to_image.py --imagen4    # Test Imagen4 only
+python test_text_to_image.py --seedream   # Test Seedream only
+python test_text_to_image.py --flux_schnell  # Test FLUX Schnell only
+python test_text_to_image.py --flux_dev   # Test FLUX Dev only
+
+# Batch test with selected models - cost varies by model count
+python test_text_to_image.py --batch 1,3  # Test imagen4 + flux_schnell
+python test_text_to_image.py --batch 2,4  # Test seedream + flux_dev
+
+# Full test with all models - ~$0.060 (EXPENSIVE!)
+python test_text_to_image.py --all        # Generates 4 images
+```
+
 **Cost-Conscious Features:**
 - Cost warnings displayed prominently
 - Confirmation prompts before paid operations
 - Model-specific testing to avoid unnecessary costs
 - Clear cost estimates for each operation
+- Batch testing with selective model combinations
 
-### Cost-Conscious Interactive Demo
-Enhanced demo with cost warnings in [fal_video_generation/demo.py](mdc:fal_video_generation/demo.py)
+### Interactive Demos
 
-**Demo Features:**
-- **Cost warnings** displayed upfront
-- **Confirmation prompts** before each video generation
+**Video Generation Demo:**
+Located in [fal_video_generation/demo.py](mdc:fal_video_generation/demo.py)
+- Cost warnings and confirmation prompts
 - Model selection menu with cost estimates
-- Online image generation with both models
-- Local image generation with both models
 - Side-by-side model comparison (with expensive operation warning)
-- Custom parameter input for each model
 
-**Cost Safety Features:**
-- Upfront cost warnings (~$0.02-0.05 per video)
-- Confirmation prompts for all paid operations
-- Cost indicators in menu options
-- Expensive operations clearly marked
+**Text-to-Image Demo:**
+Located in [fal_text_to_image/demo.py](mdc:fal_text_to_image/demo.py)
+- Interactive model selection
+- Batch generation with model picker
+- Cost estimation and confirmation
+- Detailed results display with timing
+- Support for negative prompts and custom parameters
+
+## MCP Server Implementation
+
+### FAL AI Text-to-Image MCP Server
+A Model Context Protocol (MCP) server that provides Claude and other AI assistants with access to FAL AI text-to-image generation capabilities.
+
+**Core MCP Tools:**
+1. **`generate_image`** - Generate single image with specified model
+2. **`batch_generate_images`** - Generate images with multiple models
+3. **`list_models`** - Get available models and specifications
+4. **`download_image`** - Download generated image to local storage
+5. **`get_model_info`** - Get detailed information about specific model
+
+**MCP Server Features:**
+- Cost-conscious design with cost warnings
+- Rich response formatting with metadata
+- Support for all four models (imagen4, seedream, flux_schnell, flux_dev)
+- Batch processing capabilities
+- Error handling and validation
+- Resource support for generated images
+
+**Installation and Setup:**
+```bash
+# Install MCP server dependencies
+pip install mcp>=1.0.0 httpx>=0.25.0
+
+# Create MCP server configuration
+# Add to Claude Desktop settings or other MCP clients
+```
+
+**MCP Tool Usage Examples:**
+```python
+# Generate single image
+await generate_image(
+    prompt="A serene mountain landscape",
+    model="imagen4",
+    negative_prompt="blur, artifacts"
+)
+
+# Batch generate with multiple models
+await batch_generate_images(
+    prompt="A futuristic cityscape",
+    models=["imagen4", "flux_dev"],
+    confirm_cost=True
+)
+
+# Get model information
+await get_model_info(model="flux_schnell")
+```
 
 ## Configuration
 
 ### Environment Setup
-FAL AI requires only a simple API key setup in [fal_video_generation/.env](mdc:fal_video_generation/.env):
+FAL AI requires only a simple API key setup:
+
+**Video Generation:** [fal_video_generation/.env](mdc:fal_video_generation/.env)
+**Text-to-Image:** [fal_text_to_image/.env](mdc:fal_text_to_image/.env)
 
 ```bash
-# FAL AI API Configuration (works for both models)
+# FAL AI API Configuration (works for all models)
 FAL_KEY=your_fal_api_key_here
 
 # Optional: Additional configuration
@@ -136,51 +247,79 @@ FAL_MAX_RETRIES=3
 ```
 
 ### Dependencies
-Listed in [fal_video_generation/requirements.txt](mdc:fal_video_generation/requirements.txt):
+
+**Video Generation:** [fal_video_generation/requirements.txt](mdc:fal_video_generation/requirements.txt)
+**Text-to-Image:** [fal_text_to_image/requirements.txt](mdc:fal_text_to_image/requirements.txt)
+
+Core dependencies:
 - fal-client>=0.4.0
 - python-dotenv>=1.0.0  
 - requests>=2.31.0
 - typing-extensions>=4.0.0
 
+MCP Server additional dependencies:
+- mcp>=1.0.0
+- httpx>=0.25.0
+
 ## Model Specifications
 
-### MiniMax Hailuo-02
+### Video Generation Models
+
+**MiniMax Hailuo-02:**
 - **Endpoint**: `fal-ai/minimax/hailuo-02/standard/image-to-video`
 - **Resolution**: 768p standard
 - **Duration**: 6-10 seconds (default: 6)
-- **Key Features**: 
-  - Prompt optimizer for enhanced descriptions
-  - Reliable, consistent output quality
-  - Optimized for general use cases
+- **Cost**: ~$0.02-0.05 per video
+- **Key Features**: Prompt optimizer, reliable output
 
-### Kling Video 2.1
+**Kling Video 2.1:**
 - **Endpoint**: `fal-ai/kling-video/v2.1/standard/image-to-video`
 - **Resolution**: High-quality (varies by input)
 - **Duration**: 5-10 seconds (default: 5)
-- **Key Features**:
-  - CFG scale parameter (0.1-2.0, default: 0.5)
-  - Negative prompt support
-  - Enhanced quality control
-  - Better for artistic/cinematic content
+- **Cost**: ~$0.02-0.05 per video
+- **Key Features**: CFG scale, negative prompts, enhanced quality
 
-### Supported Image Formats (Both Models)
-- JPEG (.jpg, .jpeg)
-- PNG (.png)
-- WebP (.webp)
-- GIF (.gif)
+### Text-to-Image Models
 
-### Processing Modes
-- **Synchronous**: Default mode, waits for completion
-- **Asynchronous**: For longer requests, polls for completion
+**Imagen4:**
+- **Endpoint**: `fal-ai/google/imagen4/text-to-image`
+- **Resolution**: High-quality (1024x1024 default)
+- **Speed**: ~6-8 seconds
+- **Cost**: ~$0.015 per image
+- **Key Features**: Photorealistic results, excellent for portraits
+
+**Seedream:**
+- **Endpoint**: `fal-ai/seedream/text-to-image`
+- **Resolution**: Artistic quality (varies)
+- **Speed**: ~9-15 seconds
+- **Cost**: ~$0.015 per image
+- **Key Features**: Creative and artistic style, unique aesthetics
+
+**FLUX Schnell:**
+- **Endpoint**: `fal-ai/flux/schnell`
+- **Resolution**: Good quality (1024x1024 default)
+- **Speed**: ~1-2 seconds (fastest)
+- **Cost**: ~$0.015 per image
+- **Key Features**: Ultra-fast generation, good for iterations
+
+**FLUX Dev:**
+- **Endpoint**: `fal-ai/flux/dev`
+- **Resolution**: High quality (1024x1024 default)
+- **Speed**: ~2-3 seconds
+- **Cost**: ~$0.015 per image
+- **Key Features**: Balanced speed and quality, good for production
+
+### Supported Formats
+- **Input**: Text prompts, negative prompts (text-to-image)
+- **Input**: Images + prompts (video generation)
+- **Output**: JPEG, PNG, WebP (images), MP4 (videos)
 
 ## Usage Patterns
 
 ### Model Selection Strategy
+
+**For Video Generation:**
 ```python
-from fal_video_generator import FALVideoGenerator
-
-generator = FALVideoGenerator()
-
 # For general use, reliable results
 result = generator.generate_video_with_hailuo(
     prompt="A beautiful landscape with moving clouds",
@@ -199,49 +338,65 @@ result = generator.generate_video_with_kling(
 )
 ```
 
-### Universal Interface
+**For Text-to-Image Generation:**
 ```python
-# Same interface, different models
-hailuo_result = generator.generate_video_from_image(
-    prompt="A peaceful scene",
-    image_url="https://example.com/image.jpg",
-    model="hailuo"
+# For photorealistic images
+result = generator.generate_image_with_imagen4(
+    prompt="A professional headshot photo",
+    negative_prompt="blur, distortion, artifacts"
 )
 
-kling_result = generator.generate_video_from_image(
-    prompt="A peaceful scene",
-    image_url="https://example.com/image.jpg",
-    model="kling"
+# For creative/artistic images
+result = generator.generate_image_with_seedream(
+    prompt="An abstract digital art piece",
+    style="artistic"
+)
+
+# For fast iterations
+result = generator.generate_image_with_flux_schnell(
+    prompt="A quick concept sketch",
+    num_inference_steps=4
+)
+
+# For production quality
+result = generator.generate_image_with_flux_dev(
+    prompt="A detailed product visualization",
+    num_inference_steps=50
 )
 ```
 
-### Model Comparison
+### Batch Processing
 ```python
-# Compare both models with same input
-def compare_models(prompt, image_url):
-    generator = FALVideoGenerator()
-    
-    hailuo_result = generator.generate_video_from_image(
-        prompt=prompt, image_url=image_url, model="hailuo"
-    )
-    
-    kling_result = generator.generate_video_from_image(
-        prompt=prompt, image_url=image_url, model="kling"
-    )
-    
-    return hailuo_result, kling_result
+# Generate with multiple models for comparison
+results = generator.batch_generate(
+    prompt="A futuristic city skyline",
+    models=["imagen4", "flux_dev"],  # Select best models
+    auto_confirm=False,  # Ask for cost confirmation
+    download_images=True  # Save locally
+)
+
+# Process results
+for result in results:
+    print(f"Model: {result['model']}")
+    print(f"Success: {result['success']}")
+    print(f"Time: {result['generation_time']:.2f}s")
+    if result['success']:
+        print(f"Image URL: {result['image_url']}")
+        print(f"Local path: {result['local_path']}")
 ```
 
 ### Error Handling
-The implementation includes comprehensive error handling:
-- API key validation for both endpoints
+Both implementations include comprehensive error handling:
+- API key validation for all endpoints
 - Model-specific parameter validation
 - Network error recovery
 - File upload/download failures
 - API response validation
+- Cost estimation and confirmation
 
 ### Output Structure
-Generated videos are saved with metadata:
+
+**Video Generation:**
 ```python
 {
     'video': {
@@ -255,40 +410,83 @@ Generated videos are saved with metadata:
 }
 ```
 
+**Text-to-Image Generation:**
+```python
+{
+    'image': {
+        'url': 'https://v3.fal.media/files/...',
+        'file_name': 'output.png',
+        'file_size': 1024768
+    },
+    'model': 'imagen4',  # or other model
+    'local_path': 'output/image.png',
+    'generation_time': 6.42,
+    'cost_estimate': 0.015
+}
+```
+
+**Batch Generation:**
+```python
+{
+    'results': [
+        {'model': 'imagen4', 'success': True, 'image_url': '...', 'generation_time': 6.42},
+        {'model': 'flux_dev', 'success': True, 'image_url': '...', 'generation_time': 2.18}
+    ],
+    'summary': {
+        'total_images': 2,
+        'successful': 2,
+        'failed': 0,
+        'total_time': 8.60,
+        'total_cost': 0.030,
+        'success_rate': 100.0
+    }
+}
+```
+
 ## Development Guidelines
 
 ### When to Use Each Model
 
-**Use MiniMax Hailuo-02 for:**
-- General video generation tasks
-- When you want prompt optimization
-- Reliable, consistent results
-- Production workflows requiring stability
+**Video Generation:**
+- **MiniMax Hailuo-02**: General use, reliable results, prompt optimization
+- **Kling Video 2.1**: High-quality, artistic content, fine control
 
-**Use Kling Video 2.1 for:**
-- High-quality, artistic content
-- When you need fine control over generation
-- Cinematic or professional video content
-- When negative prompts are beneficial
+**Text-to-Image Generation:**
+- **Imagen4**: Photorealistic content, portraits, professional images
+- **Seedream**: Creative and artistic content, unique aesthetics
+- **FLUX Schnell**: Fast iterations, concept development, testing
+- **FLUX Dev**: Production content, balanced quality and speed
 
 ### Best Practices
 - Always check for API key in environment
 - Use model-specific methods for optimal results
-- Test both models during development
-- Consider duration differences (Hailuo: 6s, Kling: 5s default)
-- Use comparison tools to evaluate output quality
+- Test with free API tests before paid generation
+- Consider cost implications of batch operations
+- Use appropriate models for content type
 - Implement retry logic for network operations
+- Cache results to avoid regeneration costs
 
 ### Common Patterns
 - Initialize generator once, reuse for multiple generations
-- Use model parameter for A/B testing
-- Leverage model-specific features (prompt_optimizer vs cfg_scale)
-- Download videos locally for offline access
-- Use the interactive demo for quick experimentation
+- Use batch generation for A/B testing across models
+- Leverage model-specific features (prompt_optimizer, negative_prompts, cfg_scale)
+- Download content locally for offline access
+- Use interactive demos for quick experimentation
+- Implement MCP server for AI assistant integration
 
 ### Testing Strategy
-- Use `--compare` flag to test both models
-- Test model-specific parameters separately
+- Use FREE API tests first (`test_api_only.py`)
+- Test individual models before batch operations
+- Use model-specific flags to test targeted functionality
 - Validate API connection before generation
-- Use the comprehensive test suite for CI/CD
+- Use comprehensive test suites for CI/CD
+- Monitor costs carefully during development
+
+### MCP Server Integration
+- Deploy MCP server for AI assistant access
+- Use cost-conscious MCP tools with confirmation prompts
+- Leverage batch processing for efficient AI workflows
+- Implement proper error handling and validation
+- Provide rich metadata in MCP responses
+- Support resource management for generated content
 

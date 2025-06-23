@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "fal-text-to-image": {
+      "command": "python",
+      "args": ["mcp_server.py"],
+      "cwd": ".",
+      "env": {
+        "FAL_KEY": "your_fal_api_key_here"
+      }
+    }
+  }
+} 
