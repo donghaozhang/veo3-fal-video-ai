@@ -97,8 +97,8 @@ Since you don't have Claude Desktop, here are alternative ways to test:
    • Full functionality with user confirmations
 
 3️⃣ COMMAND LINE TESTING:
-   • Run specific tests: python test_text_to_image.py --imagen4
-   • Use FREE tests: python test_api_only.py
+   • Run specific tests: python test_generation.py --imagen4
+   • Use FREE tests: python test_setup.py
    
 4️⃣ DIRECT PYTHON USAGE:
    from fal_text_to_image_generator import FALTextToImageGenerator
@@ -110,8 +110,11 @@ Since you don't have Claude Desktop, here are alternative ways to test:
    • Connect any MCP-compatible client
    • Use stdio protocol for communication
 
-💡 RECOMMENDED FOR CURSOR USERS:
-   Start with the interactive demo (python demo.py) for the best experience!
+💡 RECOMMENDED WORKFLOW FOR CURSOR USERS:
+   1. python test_setup.py - Verify environment setup (FREE)
+   2. python test_mcp.py - Test MCP functionality (FREE)  
+   3. python demo.py - Interactive demo with cost controls
+   4. python test_generation.py --help - See generation options
 """)
 
 async def main():

@@ -1,22 +1,24 @@
 #!/usr/bin/env python3
 """
-FAL AI Text-to-Image Test Suite
+FAL AI Text-to-Image Generation Test Suite
 
-This test suite provides cost-conscious testing for all four text-to-image models.
+This test suite provides cost-conscious testing for all four text-to-image models
+with various generation scenarios including dragon generation.
 
 ⚠️ COST WARNING: 
-- FREE tests: API connection and setup validation (no image generation)
-- PAID tests: Actual image generation (~$0.01-0.02 per image)
+- FREE tests: Setup validation only (no image generation)
+- PAID tests: Actual image generation (~$0.015 per image)
 
 Usage:
-    python test_text_to_image.py                    # FREE - Setup test only
-    python test_text_to_image.py --imagen4          # PAID - Test Imagen 4 only
-    python test_text_to_image.py --seedream         # PAID - Test Seedream only  
-    python test_text_to_image.py --flux-schnell     # PAID - Test FLUX Schnell only
-    python test_text_to_image.py --flux-dev         # PAID - Test FLUX Dev only
-    python test_text_to_image.py --compare          # PAID - Test all models (~$0.04-0.08)
-    python test_text_to_image.py --batch 1,3       # PAID - Batch test selected models
-    python test_text_to_image.py --full             # PAID - Full test with downloads
+    python test_generation.py                       # FREE - Setup test only
+    python test_generation.py --imagen4             # PAID - Test Imagen 4 only
+    python test_generation.py --seedream            # PAID - Test Seedream only  
+    python test_generation.py --flux-schnell        # PAID - Test FLUX Schnell only
+    python test_generation.py --flux-dev            # PAID - Test FLUX Dev only
+    python test_generation.py --dragon              # PAID - Generate dragon image
+    python test_generation.py --compare             # PAID - Test all models (~$0.060)
+    python test_generation.py --batch 1,3          # PAID - Batch test selected models
+    python test_generation.py --full                # PAID - Full test with downloads
 
 Author: AI Assistant
 Date: 2024
@@ -26,13 +28,14 @@ import os
 import sys
 import argparse
 import time
+import asyncio
 from typing import Dict, Any, List
 from fal_text_to_image_generator import FALTextToImageGenerator
 
 def print_banner():
     """Print the test banner with cost information."""
     print("=" * 70)
-    print("🧪 FAL AI TEXT-TO-IMAGE TEST SUITE")
+    print("🧪 FAL AI TEXT-TO-IMAGE GENERATION TEST SUITE")
     print("=" * 70)
     print("📋 Available Models:")
     print("   • Imagen 4 Preview Fast - Cost-effective Google model")
@@ -42,8 +45,8 @@ def print_banner():
     print()
     print("💰 COST INFORMATION:")
     print("   • FREE tests: Setup and API validation only")
-    print("   • PAID tests: ~$0.01-0.02 per image generated")
-    print("   • Comparison tests: ~$0.04-0.08 (4 images)")
+    print("   • PAID tests: ~$0.015 per image generated")
+    print("   • Comparison tests: ~$0.060 (4 images)")
     print("=" * 70)
 
 def test_environment_setup() -> bool:
@@ -91,19 +94,19 @@ def confirm_paid_test(test_description: str, cost_estimate: str) -> bool:
     confirm = input("\n🤔 Do you want to proceed? (y/N): ").strip().lower()
     return confirm in ['y', 'yes']
 
-def test_single_model(generator: FALTextToImageGenerator, model: str, download: bool = False) -> Dict[str, Any]:
+def test_single_model(generator: FALTextToImageGenerator, model: str, prompt: str = None, download: bool = False) -> Dict[str, Any]:
     """Test a single model with image generation (PAID)."""
     print(f"\n🎨 Testing {model} model...")
     
     # Test prompts for different models
-    test_prompts = {
-        "imagen4": "A beautiful landscape with mountains and a lake, digital art style",
-        "seedream": "一个美丽的风景，有山和湖，数字艺术风格",  # Chinese prompt for Seedream
-        "flux_schnell": "A cute robot in a futuristic city, cartoon style",
-        "flux_dev": "A professional portrait of a person in business attire, photorealistic"
-    }
-    
-    prompt = test_prompts.get(model, "A beautiful sunset over the ocean, artistic style")
+    if not prompt:
+        test_prompts = {
+            "imagen4": "A beautiful landscape with mountains and a lake, digital art style",
+            "seedream": "一个美丽的风景，有山和湖，数字艺术风格",  # Chinese prompt for Seedream
+            "flux_schnell": "A cute robot in a futuristic city, cartoon style",
+            "flux_dev": "A professional portrait of a person in business attire, photorealistic"
+        }
+        prompt = test_prompts.get(model, "A beautiful sunset over the ocean, artistic style")
     
     try:
         print(f"📝 Using prompt: {prompt}")
@@ -119,29 +122,16 @@ def test_single_model(generator: FALTextToImageGenerator, model: str, download: 
         result = generator.generate_image(
             prompt=prompt,
             model=model,
-            negative_prompt=negative_prompt
+            negative_prompt=negative_prompt,
+            output_folder="test_output"
         )
         generation_time = time.time() - start_time
         
         if result['success']:
             print(f"✅ {model} generation successful!")
             print(f"⏱️  Generation time: {generation_time:.2f} seconds")
-            print(f"🔗 Image URL: {result['image_url']}")
-            print(f"📏 Image size: {result.get('image_size', 'unknown')}")
-            
-            # Download if requested
-            if download:
-                try:
-                    filename = f"test_{model}_{int(time.time())}.png"
-                    local_path = generator.download_image(
-                        result['image_url'],
-                        "test_output",
-                        filename
-                    )
-                    result['local_path'] = local_path
-                    print(f"📁 Downloaded to: {local_path}")
-                except Exception as e:
-                    print(f"⚠️  Download failed: {e}")
+            print(f"🔗 Image URL: {result['image']['url']}")
+            print(f"📁 Local path: {result['local_path']}")
             
             return {
                 'success': True,
@@ -165,6 +155,22 @@ def test_single_model(generator: FALTextToImageGenerator, model: str, download: 
             'error': str(e)
         }
 
+async def test_dragon_generation(generator: FALTextToImageGenerator, model: str = "flux_schnell") -> Dict[str, Any]:
+    """Generate a dragon image using specified model (PAID)."""
+    print(f"\n🐲 Dragon Image Generation Test")
+    print("=" * 50)
+    print(f"🎨 Using {model} model")
+    print("🔥 Generating majestic dragon...")
+    
+    # Dragon prompt
+    dragon_prompt = (
+        "A majestic dragon with red scales, breathing fire, "
+        "fantasy art style, detailed and epic, cinematic lighting, "
+        "digital art masterpiece, 4k resolution"
+    )
+    
+    return test_single_model(generator, model, dragon_prompt, download=True)
+
 def test_all_models(generator: FALTextToImageGenerator, download: bool = False) -> Dict[str, Any]:
     """Test all models with comparison (PAID - EXPENSIVE)."""
     print("\n🔄 Testing All Models (Comparison Mode)")
@@ -187,25 +193,14 @@ def test_all_models(generator: FALTextToImageGenerator, download: bool = False) 
             result = generator.generate_image(
                 prompt=prompt,
                 model=model,
-                negative_prompt=negative_prompt if model in ["seedream", "flux_dev"] else None
+                negative_prompt=negative_prompt if model in ["seedream", "flux_dev"] else None,
+                output_folder="test_output"
             )
             generation_time = time.time() - start_time
             
             if result['success']:
                 print(f"✅ {model}: Success ({generation_time:.2f}s)")
-                
-                # Download for comparison
-                if download:
-                    try:
-                        filename = f"comparison_{model}_{int(time.time())}.png"
-                        local_path = generator.download_image(
-                            result['image_url'],
-                            "test_output",
-                            filename
-                        )
-                        result['local_path'] = local_path
-                    except Exception as e:
-                        print(f"⚠️  Download failed for {model}: {e}")
+                print(f"📁 Saved to: {result['local_path']}")
                 
                 results[model] = {
                     'success': True,
@@ -228,10 +223,40 @@ def test_all_models(generator: FALTextToImageGenerator, download: bool = False) 
     
     return results
 
+def test_batch_models(generator: FALTextToImageGenerator, selected_models: List[str]) -> Dict[str, Any]:
+    """Test selected models using batch generation (PAID)."""
+    print(f"\n🔄 Batch Testing {len(selected_models)} Models")
+    
+    # Use the generator's batch_generate method
+    prompt = "A futuristic cityscape at night with neon lights, cyberpunk style, highly detailed"
+    negative_prompt = "blur, distortion, low quality, artifacts"
+    
+    print(f"📝 Using prompt: {prompt}")
+    print(f"❌ Using negative prompt: {negative_prompt}")
+    
+    try:
+        result = generator.batch_generate(
+            prompt=prompt,
+            models=selected_models,
+            negative_prompt=negative_prompt,
+            output_folder="test_output",
+            download_images=True,
+            auto_confirm=True  # We already confirmed above
+        )
+        
+        return result
+    
+    except Exception as e:
+        print(f"❌ Batch generation failed: {e}")
+        return {
+            'success': False,
+            'error': str(e)
+        }
+
 def print_test_summary(results: Dict[str, Any]):
     """Print a summary of test results."""
     print("\n" + "=" * 50)
-    print("📊 TEST SUMMARY")
+    print("📊 GENERATION TEST SUMMARY")
     print("=" * 50)
     
     if isinstance(results, dict) and 'model' in results:
@@ -242,8 +267,23 @@ def print_test_summary(results: Dict[str, Any]):
         else:
             print(f"❌ {results['model']}: FAILED")
             print(f"   Error: {results.get('error', 'Unknown error')}")
+    elif isinstance(results, dict) and 'results' in results:
+        # Batch results
+        batch_results = results['results']
+        summary = results['summary']
+        
+        for result in batch_results:
+            if result['success']:
+                print(f"✅ {result['model']}: SUCCESS ({result.get('generation_time', 0):.2f}s)")
+            else:
+                print(f"❌ {result['model']}: FAILED - {result.get('error', 'Unknown')}")
+        
+        print(f"\n🎯 Batch Summary:")
+        print(f"   Success rate: {summary['successful']}/{summary['total_images']}")
+        print(f"   Total time: {summary['total_time']:.2f}s")
+        print(f"   Estimated cost: ~${summary['total_cost']:.3f}")
     else:
-        # Multiple model results
+        # Multiple model results (comparison)
         successful = 0
         total = len(results)
         
@@ -262,18 +302,23 @@ def print_test_summary(results: Dict[str, Any]):
 
 def main():
     """Main test function."""
-    parser = argparse.ArgumentParser(description="FAL AI Text-to-Image Test Suite")
+    parser = argparse.ArgumentParser(description="FAL AI Text-to-Image Generation Test Suite")
     
     # Model-specific tests
-    parser.add_argument('--imagen4', action='store_true', help='Test Imagen 4 model only (~$0.01)')
-    parser.add_argument('--seedream', action='store_true', help='Test Seedream model only (~$0.01)')
-    parser.add_argument('--flux-schnell', action='store_true', help='Test FLUX Schnell model only (~$0.01)')
-    parser.add_argument('--flux-dev', action='store_true', help='Test FLUX Dev model only (~$0.02)')
+    parser.add_argument('--imagen4', action='store_true', help='Test Imagen 4 model only (~$0.015)')
+    parser.add_argument('--seedream', action='store_true', help='Test Seedream model only (~$0.015)')
+    parser.add_argument('--flux-schnell', action='store_true', help='Test FLUX Schnell model only (~$0.015)')
+    parser.add_argument('--flux-dev', action='store_true', help='Test FLUX Dev model only (~$0.015)')
+    
+    # Special tests
+    parser.add_argument('--dragon', action='store_true', help='Generate dragon image with FLUX Schnell (~$0.015)')
+    parser.add_argument('--dragon-model', type=str, default='flux_schnell', 
+                       help='Model for dragon generation (default: flux_schnell)')
     
     # Comparison tests
-    parser.add_argument('--compare', action='store_true', help='Test all models for comparison (~$0.04-0.08)')
+    parser.add_argument('--compare', action='store_true', help='Test all models for comparison (~$0.060)')
     parser.add_argument('--batch', type=str, help='Batch test selected models (e.g., "1,3" for imagen4,flux_schnell)')
-    parser.add_argument('--full', action='store_true', help='Full test with downloads (~$0.04-0.08)')
+    parser.add_argument('--full', action='store_true', help='Full test with downloads (~$0.060)')
     
     # Options
     parser.add_argument('--download', action='store_true', help='Download generated images locally')
@@ -288,11 +333,17 @@ def main():
         sys.exit(1)
     
     # If no paid test flags, just do free setup test
-    paid_tests = [args.imagen4, args.seedream, getattr(args, 'flux_schnell'), args.flux_dev, args.compare, args.batch, args.full]
+    paid_tests = [
+        args.imagen4, args.seedream, getattr(args, 'flux_schnell'), args.flux_dev, 
+        args.dragon, args.compare, args.batch, args.full
+    ]
     if not any(paid_tests):
         print("\n✅ FREE setup test completed successfully!")
-        print("\n💡 To run paid tests, use flags like --imagen4, --seedream, --flux-schnell, --flux-dev")
-        print("   Or use --compare to test all models, --batch for selected models, --full for complete testing")
+        print("\n💡 To run paid tests, use flags like:")
+        print("   --imagen4, --seedream, --flux-schnell, --flux-dev (single models)")
+        print("   --dragon (generate dragon image)")
+        print("   --compare (test all models)")
+        print("   --batch 1,3 (test selected models)")
         return
     
     try:
@@ -302,7 +353,20 @@ def main():
         os.makedirs("test_output", exist_ok=True)
         
         # Run specific tests based on flags
-        if args.batch:
+        if args.dragon:
+            # Dragon generation test
+            cost = "~$0.015 (1 dragon image)"
+            if not confirm_paid_test(f"Generate dragon image with {args.dragon_model}", cost):
+                print("❌ Dragon generation cancelled by user.")
+                return
+            
+            result = asyncio.run(test_dragon_generation(generator, args.dragon_model))
+            print_test_summary(result)
+            
+            if result['success']:
+                print(f"\n🎉 Your dragon awaits! Check: {result['result']['local_path']}")
+        
+        elif args.batch:
             # Batch test selected models
             model_map = {
                 "1": "imagen4",
@@ -335,34 +399,12 @@ def main():
                 print("❌ Batch test cancelled by user.")
                 return
             
-            print(f"\n🔄 Running batch test with {len(selected_models)} models...")
-            
-            # Use the new batch_generate method
-            prompt = "A futuristic cityscape at night with neon lights, cyberpunk style, highly detailed"
-            negative_prompt = "blur, distortion, low quality, artifacts"
-            
-            result = generator.batch_generate(
-                prompt=prompt,
-                models=selected_models,
-                negative_prompt=negative_prompt,
-                output_folder="test_output",
-                download_images=args.download,
-                auto_confirm=True  # We already confirmed above
-            )
-            
-            if not result.get('cancelled'):
-                print_test_summary(result['results'])
-                
-                # Print batch summary
-                summary = result['summary']
-                print(f"\n📊 Batch Test Summary:")
-                print(f"   🎯 Success rate: {summary['successful']}/{summary['total_models']}")
-                print(f"   ⏱️  Total time: {summary['total_time']:.2f}s")
-                print(f"   💰 Estimated cost: ~${summary['estimated_cost']:.3f}")
+            result = test_batch_models(generator, selected_models)
+            print_test_summary(result)
         
         elif args.full or args.compare:
             # Full comparison test
-            cost = "~$0.04-0.08 (4 images)"
+            cost = "~$0.060 (4 images)"
             if not confirm_paid_test("Full model comparison test", cost):
                 print("❌ Test cancelled by user.")
                 return
@@ -374,13 +416,13 @@ def main():
             # Individual model tests
             test_models = []
             if args.imagen4:
-                test_models.append(("imagen4", "~$0.01"))
+                test_models.append(("imagen4", "~$0.015"))
             if args.seedream:
-                test_models.append(("seedream", "~$0.01"))
+                test_models.append(("seedream", "~$0.015"))
             if getattr(args, 'flux_schnell'):
-                test_models.append(("flux_schnell", "~$0.01"))
+                test_models.append(("flux_schnell", "~$0.015"))
             if args.flux_dev:
-                test_models.append(("flux_dev", "~$0.02"))
+                test_models.append(("flux_dev", "~$0.015"))
             
             for model, cost in test_models:
                 if not confirm_paid_test(f"Test {model} model", cost):
@@ -397,4 +439,4 @@ def main():
         sys.exit(1)
 
 if __name__ == "__main__":
-    main()
+    main() 
