@@ -6,6 +6,10 @@
 /video_analyzer/
 /archive/
 
+# FAL AI text-to-image output folders
+/fal_text_to_image/output/
+/fal_text_to_image/test_output/
+
 # Environment files
 .env
 

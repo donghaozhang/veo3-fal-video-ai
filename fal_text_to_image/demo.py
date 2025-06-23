@@ -58,8 +58,9 @@ def display_model_menu():
     print("2. Seedream v3 (Bilingual support, ~$0.01)")
     print("3. FLUX.1 Schnell (Fastest, ~$0.01)")
     print("4. FLUX.1 Dev (Highest quality, ~$0.02)")
-    print("5. Compare all models (~$0.04-0.08)")
-    print("6. Show model information")
+    print("5. Batch generate (select models) (~$0.01-0.08)")
+    print("6. Compare all models (~$0.04-0.08)")
+    print("7. Show model information")
     print("0. Exit")
 
 def generate_single_image(generator: FALTextToImageGenerator):
@@ -67,15 +68,17 @@ def generate_single_image(generator: FALTextToImageGenerator):
     display_model_menu()
     
     try:
-        choice = input("\nEnter your choice (0-6): ").strip()
+        choice = input("\nEnter your choice (0-7): ").strip()
         
         if choice == "0":
             return False
-        elif choice == "6":
+        elif choice == "7":
             show_model_info(generator)
             return True
-        elif choice == "5":
+        elif choice == "6":
             return compare_all_models(generator)
+        elif choice == "5":
+            return batch_generate_models(generator)
         elif choice not in ["1", "2", "3", "4"]:
             print("❌ Invalid choice. Please try again.")
             return True
@@ -199,6 +202,120 @@ def compare_all_models(generator: FALTextToImageGenerator) -> bool:
     
     return True
 
+def batch_generate_models(generator: FALTextToImageGenerator) -> bool:
+    """Batch generate images with selected models."""
+    print("\n🔄 Batch Generation Mode")
+    print("Select which models you want to use for batch generation.")
+    
+    # Display available models for selection
+    available_models = {
+        "1": ("imagen4", "Imagen 4 Preview Fast", "~$0.01"),
+        "2": ("seedream", "Seedream v3", "~$0.01"),
+        "3": ("flux_schnell", "FLUX.1 Schnell", "~$0.01"),
+        "4": ("flux_dev", "FLUX.1 Dev", "~$0.02")
+    }
+    
+    print("\n📋 Available Models:")
+    for key, (model_key, name, cost) in available_models.items():
+        print(f"{key}. {name} ({cost})")
+    
+    # Get model selection
+    print("\nSelect models (e.g., '1,3,4' for Imagen4, FLUX Schnell, and FLUX Dev):")
+    selection = input("Models to use: ").strip()
+    
+    if not selection:
+        print("❌ No models selected.")
+        return True
+    
+    # Parse selection
+    selected_models = []
+    try:
+        for choice in selection.split(','):
+            choice = choice.strip()
+            if choice in available_models:
+                model_key, name, cost = available_models[choice]
+                selected_models.append(model_key)
+            else:
+                print(f"❌ Invalid choice: {choice}")
+                return True
+    except Exception as e:
+        print(f"❌ Invalid selection format: {e}")
+        return True
+    
+    if not selected_models:
+        print("❌ No valid models selected.")
+        return True
+    
+    print(f"\n✅ Selected models: {', '.join(selected_models)}")
+    
+    # Get prompt
+    prompt = get_user_input("📝 Enter your image description")
+    if not prompt:
+        print("❌ Prompt cannot be empty.")
+        return True
+    
+    # Get negative prompt
+    compatible_models = [m for m in selected_models if m in ["seedream", "flux_dev"]]
+    negative_prompt = None
+    if compatible_models:
+        negative_prompt = get_user_input(f"❌ Enter negative prompt (optional, for {', '.join(compatible_models)})", "")
+        if not negative_prompt:
+            negative_prompt = None
+    
+    # Estimate cost
+    estimated_cost = len(selected_models) * 0.015
+    cost_str = f"~${estimated_cost:.3f} ({len(selected_models)} images)"
+    
+    # Confirm batch operation
+    if not confirm_generation(cost_str):
+        print("❌ Batch generation cancelled.")
+        return True
+    
+    try:
+        # Use the new batch_generate method
+        result = generator.batch_generate(
+            prompt=prompt,
+            models=selected_models,
+            negative_prompt=negative_prompt,
+            output_folder="output",
+            download_images=True,
+            auto_confirm=True  # We already confirmed above
+        )
+        
+        if result.get('cancelled'):
+            return True
+        
+        # Display results summary
+        print("\n📊 Batch Generation Results:")
+        print("-" * 60)
+        
+        results = result['results']
+        summary = result['summary']
+        
+        for model, model_result in results.items():
+            if model_result.get('success'):
+                time_taken = model_result.get('generation_time', 0)
+                print(f"✅ {model}: SUCCESS ({time_taken:.2f}s)")
+                print(f"   🔗 URL: {model_result['image_url']}")
+                if 'local_path' in model_result:
+                    print(f"   📁 File: {model_result['local_path']}")
+            else:
+                print(f"❌ {model}: FAILED - {model_result.get('error', 'Unknown error')}")
+        
+        print(f"\n🎯 Summary:")
+        print(f"   ✅ Successful: {summary['successful']}/{summary['total_models']}")
+        print(f"   ⏱️ Total time: {summary['total_time']:.2f}s")
+        print(f"   💰 Estimated cost: ~${summary['estimated_cost']:.3f}")
+        
+        if summary['successful'] > 0:
+            avg_time = summary['total_time'] / summary['successful']
+            print(f"   ⚡ Avg generation time: {avg_time:.2f}s")
+        
+    except Exception as e:
+        print(f"❌ Batch generation failed: {e}")
+    
+    return True
+
 def show_model_info(generator: FALTextToImageGenerator):
     """Display detailed information about all models."""
     model_info = generator.get_model_info()
@@ -234,10 +351,11 @@ def main():
             print("🎨 MAIN MENU")
             print("=" * 50)
             print("1. Generate single image")
-            print("2. Show model information")
+            print("2. Batch generate with multiple models")
+            print("3. Show model information")
             print("0. Exit")
             
-            choice = input("\nEnter your choice (0-2): ").strip()
+            choice = input("\nEnter your choice (0-3): ").strip()
             
             if choice == "0":
                 print("\n👋 Thank you for using FAL AI Text-to-Image Generator!")
@@ -246,6 +364,8 @@ def main():
                 if not generate_single_image(generator):
                     break
             elif choice == "2":
+                batch_generate_models(generator)
+            elif choice == "3":
                 show_model_info(generator)
             else:
                 print("❌ Invalid choice. Please try again.")

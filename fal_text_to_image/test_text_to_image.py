@@ -15,6 +15,7 @@ Usage:
     python test_text_to_image.py --flux-schnell     # PAID - Test FLUX Schnell only
     python test_text_to_image.py --flux-dev         # PAID - Test FLUX Dev only
     python test_text_to_image.py --compare          # PAID - Test all models (~$0.04-0.08)
+    python test_text_to_image.py --batch 1,3       # PAID - Batch test selected models
     python test_text_to_image.py --full             # PAID - Full test with downloads
 
 Author: AI Assistant
@@ -271,6 +272,7 @@ def main():
     
     # Comparison tests
     parser.add_argument('--compare', action='store_true', help='Test all models for comparison (~$0.04-0.08)')
+    parser.add_argument('--batch', type=str, help='Batch test selected models (e.g., "1,3" for imagen4,flux_schnell)')
     parser.add_argument('--full', action='store_true', help='Full test with downloads (~$0.04-0.08)')
     
     # Options
@@ -286,11 +288,11 @@ def main():
         sys.exit(1)
     
     # If no paid test flags, just do free setup test
-    paid_tests = [args.imagen4, args.seedream, getattr(args, 'flux_schnell'), args.flux_dev, args.compare, args.full]
+    paid_tests = [args.imagen4, args.seedream, getattr(args, 'flux_schnell'), args.flux_dev, args.compare, args.batch, args.full]
     if not any(paid_tests):
         print("\n✅ FREE setup test completed successfully!")
         print("\n💡 To run paid tests, use flags like --imagen4, --seedream, --flux-schnell, --flux-dev")
-        print("   Or use --compare to test all models, --full for complete testing")
+        print("   Or use --compare to test all models, --batch for selected models, --full for complete testing")
         return
     
     try:
@@ -300,7 +302,65 @@ def main():
         os.makedirs("test_output", exist_ok=True)
         
         # Run specific tests based on flags
-        if args.full or args.compare:
+        if args.batch:
+            # Batch test selected models
+            model_map = {
+                "1": "imagen4",
+                "2": "seedream", 
+                "3": "flux_schnell",
+                "4": "flux_dev"
+            }
+            
+            selected_models = []
+            try:
+                for choice in args.batch.split(','):
+                    choice = choice.strip()
+                    if choice in model_map:
+                        selected_models.append(model_map[choice])
+                    else:
+                        print(f"❌ Invalid model choice: {choice}")
+                        print("   Valid choices: 1=imagen4, 2=seedream, 3=flux_schnell, 4=flux_dev")
+                        return
+            except Exception as e:
+                print(f"❌ Invalid batch format: {e}")
+                print("   Example: --batch 1,3 (for imagen4 and flux_schnell)")
+                return
+            
+            if not selected_models:
+                print("❌ No valid models selected for batch test")
+                return
+            
+            cost = f"~${len(selected_models) * 0.015:.3f} ({len(selected_models)} images)"
+            if not confirm_paid_test(f"Batch test {len(selected_models)} models: {', '.join(selected_models)}", cost):
+                print("❌ Batch test cancelled by user.")
+                return
+            
+            print(f"\n🔄 Running batch test with {len(selected_models)} models...")
+            
+            # Use the new batch_generate method
+            prompt = "A futuristic cityscape at night with neon lights, cyberpunk style, highly detailed"
+            negative_prompt = "blur, distortion, low quality, artifacts"
+            
+            result = generator.batch_generate(
+                prompt=prompt,
+                models=selected_models,
+                negative_prompt=negative_prompt,
+                output_folder="test_output",
+                download_images=args.download,
+                auto_confirm=True  # We already confirmed above
+            )
+            
+            if not result.get('cancelled'):
+                print_test_summary(result['results'])
+                
+                # Print batch summary
+                summary = result['summary']
+                print(f"\n📊 Batch Test Summary:")
+                print(f"   🎯 Success rate: {summary['successful']}/{summary['total_models']}")
+                print(f"   ⏱️  Total time: {summary['total_time']:.2f}s")
+                print(f"   💰 Estimated cost: ~${summary['estimated_cost']:.3f}")
+        
+        elif args.full or args.compare:
             # Full comparison test
             cost = "~$0.04-0.08 (4 images)"
             if not confirm_paid_test("Full model comparison test", cost):

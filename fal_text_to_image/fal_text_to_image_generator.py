@@ -362,21 +362,27 @@ class FALTextToImageGenerator:
             print(f"❌ Error downloading image: {str(e)}")
             raise
     
-    def compare_models(
+    def batch_generate(
         self,
         prompt: str,
         models: Optional[List[str]] = None,
         negative_prompt: Optional[str] = None,
-        output_folder: str = "output"
+        output_folder: str = "output",
+        download_images: bool = True,
+        auto_confirm: bool = False,
+        **model_kwargs
     ) -> Dict[str, Any]:
         """
-        Generate images with multiple models for comparison.
+        Generate images with multiple models using the same prompt (batch processing).
         
         Args:
-            prompt: Text description
-            models: List of models to compare (default: all models)
+            prompt: Text description for all models
+            models: List of models to use (default: all models)
             negative_prompt: What to avoid (only used for compatible models)
-            output_folder: Folder to save comparison images
+            output_folder: Folder to save generated images
+            download_images: Whether to download images locally
+            auto_confirm: Skip confirmation prompt (use with caution!)
+            **model_kwargs: Additional parameters to pass to all models
             
         Returns:
             Dictionary with results from all models
@@ -384,35 +390,61 @@ class FALTextToImageGenerator:
         if models is None:
             models = list(self.MODEL_ENDPOINTS.keys())
         
-        print(f"🔄 Comparing {len(models)} models...")
-        print(f"💰 Estimated cost: ~${len(models) * 0.01:.2f} (${0.01} per image)")
+        # Validate models
+        for model in models:
+            if model not in self.MODEL_ENDPOINTS:
+                available_models = ", ".join(self.MODEL_ENDPOINTS.keys())
+                raise ValueError(f"Model '{model}' not supported. Available models: {available_models}")
         
-        confirm = input("⚠️ This will generate multiple images and cost money. Continue? (y/N): ")
-        if confirm.lower() not in ['y', 'yes']:
-            print("❌ Comparison cancelled.")
-            return {'cancelled': True}
+        print(f"🔄 Batch generating with {len(models)} models...")
+        print(f"📝 Prompt: {prompt}")
+        if negative_prompt:
+            compatible_models = [m for m in models if m in ["seedream", "flux_dev"]]
+            print(f"❌ Negative prompt (for {', '.join(compatible_models)}): {negative_prompt}")
+        print(f"💰 Estimated cost: ~${len(models) * 0.015:.3f} (~$0.01-0.02 per image)")
+        
+        if not auto_confirm:
+            confirm = input("⚠️ This will generate multiple images and cost money. Continue? (y/N): ")
+            if confirm.lower() not in ['y', 'yes']:
+                print("❌ Batch generation cancelled.")
+                return {'cancelled': True, 'reason': 'User cancelled'}
         
         results = {}
+        successful_count = 0
+        start_time = time.time()
         
-        for model in models:
-            print(f"\n🎨 Generating with {model}...")
+        for i, model in enumerate(models, 1):
+            print(f"\n🎨 [{i}/{len(models)}] Generating with {model}...")
             
             try:
+                # Generate image
+                model_start_time = time.time()
                 result = self.generate_image(
                     prompt=prompt,
                     model=model,
-                    negative_prompt=negative_prompt
+                    negative_prompt=negative_prompt,
+                    **model_kwargs
                 )
+                model_time = time.time() - model_start_time
                 
                 if result['success']:
-                    # Download image for comparison
-                    filename = f"comparison_{model}_{int(time.time())}.png"
-                    local_path = self.download_image(
-                        result['image_url'],
-                        output_folder,
-                        filename
-                    )
-                    result['local_path'] = local_path
+                    successful_count += 1
+                    result['generation_time'] = model_time
+                    
+                    # Download image if requested
+                    if download_images:
+                        try:
+                            timestamp = int(time.time())
+                            filename = f"batch_{model}_{timestamp}.png"
+                            local_path = self.download_image(
+                                result['image_url'],
+                                output_folder,
+                                filename
+                            )
+                            result['local_path'] = local_path
+                        except Exception as download_error:
+                            print(f"⚠️ Download failed for {model}: {download_error}")
+                            result['download_error'] = str(download_error)
                 
                 results[model] = result
                 
@@ -424,11 +456,66 @@ class FALTextToImageGenerator:
                     'model': model
                 }
         
-        # Summary
-        successful = sum(1 for r in results.values() if r.get('success', False))
-        print(f"\n📊 Comparison complete: {successful}/{len(models)} models succeeded")
+        total_time = time.time() - start_time
         
-        return results
+        # Summary
+        print(f"\n📊 Batch generation complete!")
+        print(f"✅ Success: {successful_count}/{len(models)} models")
+        print(f"⏱️ Total time: {total_time:.2f} seconds")
+        print(f"💰 Estimated cost: ~${successful_count * 0.015:.3f}")
+        
+        if successful_count > 0:
+            avg_time = sum(r.get('generation_time', 0) for r in results.values() if r.get('success')) / successful_count
+            print(f"⚡ Average generation time: {avg_time:.2f} seconds")
+        
+        return {
+            'results': results,
+            'summary': {
+                'total_models': len(models),
+                'successful': successful_count,
+                'failed': len(models) - successful_count,
+                'total_time': total_time,
+                'estimated_cost': successful_count * 0.015,
+                'prompt': prompt,
+                'negative_prompt': negative_prompt
+            }
+        }
+    
+    def compare_models(
+        self,
+        prompt: str,
+        models: Optional[List[str]] = None,
+        negative_prompt: Optional[str] = None,
+        output_folder: str = "output"
+    ) -> Dict[str, Any]:
+        """
+        Generate images with multiple models for comparison (legacy method).
+        
+        Args:
+            prompt: Text description
+            models: List of models to compare (default: all models)
+            negative_prompt: What to avoid (only used for compatible models)
+            output_folder: Folder to save comparison images
+            
+        Returns:
+            Dictionary with results from all models
+        """
+        print("ℹ️ Using legacy compare_models method. Consider using batch_generate for more options.")
+        
+        result = self.batch_generate(
+            prompt=prompt,
+            models=models,
+            negative_prompt=negative_prompt,
+            output_folder=output_folder,
+            download_images=True,
+            auto_confirm=False
+        )
+        
+        # Return in legacy format for backward compatibility
+        if 'cancelled' in result:
+            return result
+        
+        return result['results']
     
     def get_model_info(self) -> Dict[str, Dict[str, Any]]:
         """
