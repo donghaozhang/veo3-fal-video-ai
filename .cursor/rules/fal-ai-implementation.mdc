@@ -180,53 +180,58 @@ Located in [fal_text_to_image/demo.py](mdc:fal_text_to_image/demo.py)
 - Detailed results display with timing
 - Support for negative prompts and custom parameters
 
-## MCP Server Implementation
+## Direct Python API Usage
 
-### FAL AI Text-to-Image MCP Server
-A Model Context Protocol (MCP) server that provides Claude and other AI assistants with access to FAL AI text-to-image generation capabilities.
+### FAL AI Text-to-Image Generator
+Direct Python API for text-to-image generation with multiple models and cost-conscious design.
 
-**Core MCP Tools:**
-1. **`generate_image`** - Generate single image with specified model
-2. **`batch_generate_images`** - Generate images with multiple models
-3. **`list_models`** - Get available models and specifications
-4. **`download_image`** - Download generated image to local storage
-5. **`get_model_info`** - Get detailed information about specific model
+**Core Functions:**
+1. **`generate_image()`** - Generate single image with specified model
+2. **`batch_generate()`** - Generate images with multiple models
+3. **`get_model_info()`** - Get available models and specifications
+4. **`download_image()`** - Download generated image to local storage
+5. **`compare_models()`** - Compare output across multiple models
 
-**MCP Server Features:**
+**Key Features:**
 - Cost-conscious design with cost warnings
 - Rich response formatting with metadata
 - Support for all four models (imagen4, seedream, flux_schnell, flux_dev)
 - Batch processing capabilities
 - Error handling and validation
-- Resource support for generated images
+- Local image downloading and management
 
 **Installation and Setup:**
 ```bash
-# Install MCP server dependencies
-pip install mcp>=1.0.0 httpx>=0.25.0
+# Install core dependencies
+pip install fal-client python-dotenv requests typing-extensions
 
-# Create MCP server configuration
-# Add to Claude Desktop settings or other MCP clients
+# Set up API key in .env file
+echo "FAL_KEY=your_fal_api_key_here" > fal_text_to_image/.env
 ```
 
-**MCP Tool Usage Examples:**
+**Python API Usage Examples:**
 ```python
+from fal_text_to_image_generator import FALTextToImageGenerator
+
+# Initialize generator
+generator = FALTextToImageGenerator()
+
 # Generate single image
-await generate_image(
+result = generator.generate_image(
     prompt="A serene mountain landscape",
     model="imagen4",
     negative_prompt="blur, artifacts"
 )
 
 # Batch generate with multiple models
-await batch_generate_images(
+results = generator.batch_generate(
     prompt="A futuristic cityscape",
     models=["imagen4", "flux_dev"],
-    confirm_cost=True
+    auto_confirm=True
 )
 
 # Get model information
-await get_model_info(model="flux_schnell")
+info = generator.get_model_info()
 ```
 
 ## Configuration
@@ -257,9 +262,9 @@ Core dependencies:
 - requests>=2.31.0
 - typing-extensions>=4.0.0
 
-MCP Server additional dependencies:
-- mcp>=1.0.0
-- httpx>=0.25.0
+Optional dependencies for advanced features:
+- Pillow>=9.0.0 (for image processing)
+- matplotlib>=3.5.0 (for visualization)
 
 ## Model Specifications
 
@@ -472,17 +477,17 @@ Both implementations include comprehensive error handling:
 - Leverage model-specific features (prompt_optimizer, negative_prompts, cfg_scale)
 - Download content locally for offline access
 - Use interactive demos for quick experimentation
-- Implement MCP server for AI assistant integration
+- Implement direct Python API for programmatic access
 
 ### Testing Strategy
 
 **Text-to-Image Testing (Consolidated Structure):**
 - Use FREE setup tests first (`test_setup.py`)
-- Test MCP functionality (`test_mcp.py`) 
+- Test API functionality (`test_setup.py`) 
 - Test individual models (`test_generation.py --imagen4`)
 - Use dragon generation for testing (`test_generation.py --dragon`)
 - Test batch operations carefully (`test_generation.py --batch 1,3`)
-- Use Cursor-compatible MCP testing (`test_cursor_mcp.py`)
+- Use generation testing with various models (`test_generation.py`)
 
 **Video Generation Testing:**
 - Use FREE API tests first (`test_api_only.py`)
@@ -492,11 +497,11 @@ Both implementations include comprehensive error handling:
 - Use comprehensive test suites for CI/CD
 - Monitor costs carefully during development
 
-### MCP Server Integration
-- Deploy MCP server for AI assistant access
-- Use cost-conscious MCP tools with confirmation prompts
-- Leverage batch processing for efficient AI workflows
+### API Integration
+- Use direct Python API for programmatic access
+- Implement cost-conscious confirmation prompts in applications
+- Leverage batch processing for efficient workflows
 - Implement proper error handling and validation
-- Provide rich metadata in MCP responses
+- Provide rich metadata in API responses
 - Support resource management for generated content
 

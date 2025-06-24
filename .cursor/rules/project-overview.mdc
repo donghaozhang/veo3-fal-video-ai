@@ -14,7 +14,7 @@ This project provides Python utilities for generating both videos and images usi
    - **Kling Video 2.1** (high-quality, CFG scale, negative prompts)
 
 ## Text-to-Image Generation
-3. **FAL AI Quad Models** (consolidated test structure, MCP server support)
+3. **FAL AI Quad Models** (consolidated test structure, direct Python API)
    - **Imagen4** (Google's high-quality model)
    - **Seedream** (Artistic and creative generation)
    - **FLUX Schnell** (Ultra-fast generation)
@@ -52,17 +52,15 @@ Located in [fal_video_generation/](mdc:fal_video_generation) directory with simp
 - [COST_CONSCIOUS_TESTING.md](mdc:fal_video_generation/COST_CONSCIOUS_TESTING.md) - Cost-conscious testing guide
 
 ### FAL AI Text-to-Image Generation (Quad-Model)
-Located in [fal_text_to_image/](mdc:fal_text_to_image) directory with consolidated test structure and MCP server support.
+Located in [fal_text_to_image/](mdc:fal_text_to_image) directory with consolidated test structure and direct Python API.
 
 **Key Components:**
 - [fal_text_to_image_generator.py](mdc:fal_text_to_image/fal_text_to_image_generator.py) - Main FALTextToImageGenerator class
-- [mcp_server.py](mdc:fal_text_to_image/mcp_server.py) - Model Context Protocol server for AI assistant integration
+- [fal_text_to_image_generator.py](mdc:fal_text_to_image/fal_text_to_image_generator.py) - Main generator class with direct Python API
 - [demo.py](mdc:fal_text_to_image/demo.py) - Cost-conscious interactive demo
 - **Consolidated Test Suite:**
   - [test_setup.py](mdc:fal_text_to_image/test_setup.py) - **FREE environment and API validation**
-  - [test_mcp.py](mdc:fal_text_to_image/test_mcp.py) - **FREE MCP server functionality tests**
   - [test_generation.py](mdc:fal_text_to_image/test_generation.py) - **PAID image generation tests** (includes `--dragon` flag)
-  - [test_cursor_mcp.py](mdc:fal_text_to_image/test_cursor_mcp.py) - Cursor-compatible MCP testing
 - [README.md](mdc:fal_text_to_image/README.md) - Complete FAL AI text-to-image documentation
 
 **Supported Video Models:**
@@ -111,13 +109,10 @@ veo3/
 │   └── test_output/                 # Test-generated videos
 └── fal_text_to_image/               # FAL AI quad-model text-to-image implementation
     ├── fal_text_to_image_generator.py # FAL AI text-to-image generator class
-    ├── mcp_server.py                # Model Context Protocol server
-    ├── demo.py                      # Cost-conscious interactive demo
-    ├── test_setup.py               # FREE environment and API validation
-    ├── test_mcp.py                 # FREE MCP server functionality tests
-    ├── test_generation.py          # PAID image generation tests (includes --dragon)
-    ├── test_cursor_mcp.py          # Cursor-compatible MCP testing
-    ├── update_cursor_mcp.py        # Cursor configuration helper
+    ├── fal_text_to_image_generator.py # Main generator class with Python API
+├── demo.py                      # Cost-conscious interactive demo
+├── test_setup.py               # FREE environment and API validation
+├── test_generation.py          # PAID image generation tests (includes --dragon)
     ├── README.md                    # FAL AI text-to-image documentation
     ├── requirements.txt             # FAL AI dependencies
     ├── .env                         # FAL AI configuration
@@ -166,7 +161,7 @@ veo3/
 
 ### Text-to-Image Generation
 - **Testing Setup**: Use `python test_setup.py` for FREE environment validation
-- **MCP Testing**: Use `python test_mcp.py` for FREE MCP server functionality testing
+- **API Testing**: Use `python test_setup.py` for FREE environment and API validation
 - **Prototyping**: Start with single model testing (`python test_generation.py --flux-schnell`) to avoid unnecessary costs
 - **Dragon Generation**: Use `python test_generation.py --dragon` for dragon image testing (~$0.015)
 - **Production**: Use batch generation for efficiency (`python test_generation.py --batch 1,3`)
@@ -184,7 +179,7 @@ veo3/
 
 ### Text-to-Image Generation
 - **NEVER run image generation tests without explicit user confirmation**
-- **Always start with FREE tests** (`test_setup.py`, `test_mcp.py`) to validate setup
+- **Always start with FREE tests** (`test_setup.py`) to validate setup
 - **Use model-specific flags** (`--imagen4`, `--seedream`, `--flux-schnell`, `--flux-dev`) to test individual models
 - **Use dragon generation** (`--dragon`) for testing specific scenarios
 - **Avoid comparison tests** (`--compare`) during development unless specifically needed

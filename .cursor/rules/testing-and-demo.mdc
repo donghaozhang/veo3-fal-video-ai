@@ -20,9 +20,7 @@ Located in [fal_video_generation/test_fal_ai.py](mdc:fal_video_generation/test_f
 ### FAL AI Text-to-Image Tests (CONSOLIDATED)
 Located in [fal_text_to_image/](mdc:fal_text_to_image/) with consolidated test structure:
 - **[test_setup.py](mdc:fal_text_to_image/test_setup.py)** - FREE environment and API validation
-- **[test_mcp.py](mdc:fal_text_to_image/test_mcp.py)** - FREE MCP server functionality tests
-- **[test_generation.py](mdc:fal_text_to_image/test_generation.py)** - PAID image generation tests
-- **[test_cursor_mcp.py](mdc:fal_text_to_image/test_cursor_mcp.py)** - Cursor-compatible MCP testing
+- **[test_generation.py](mdc:fal_text_to_image/test_generation.py)** - PAID image generation tests (includes `--dragon` flag)
 
 The test suites provide comprehensive validation with cost warnings and confirmation prompts to prevent unexpected charges.
 
@@ -42,11 +40,8 @@ python test_fal_ai.py
 # Environment and API setup test - completely FREE
 python test_setup.py
 
-# MCP server functionality test - completely FREE
-python test_mcp.py
-
-# Cursor-compatible MCP testing - completely FREE
-python test_cursor_mcp.py
+# Direct API functionality test - completely FREE
+python test_setup.py
 ```
 
 ### Paid Test Command Options (Generates Real Content)
