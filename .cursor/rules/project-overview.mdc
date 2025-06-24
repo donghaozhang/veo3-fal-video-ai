@@ -110,9 +110,9 @@ veo3/
 └── fal_text_to_image/               # FAL AI quad-model text-to-image implementation
     ├── fal_text_to_image_generator.py # FAL AI text-to-image generator class
     ├── fal_text_to_image_generator.py # Main generator class with Python API
-├── demo.py                      # Cost-conscious interactive demo
-├── test_setup.py               # FREE environment and API validation
-├── test_generation.py          # PAID image generation tests (includes --dragon)
+    ├── demo.py                      # Cost-conscious interactive demo
+    ├── test_setup.py               # FREE environment and API validation
+    ├── test_generation.py          # PAID image generation tests (includes --dragon)
     ├── README.md                    # FAL AI text-to-image documentation
     ├── requirements.txt             # FAL AI dependencies
     ├── .env                         # FAL AI configuration
