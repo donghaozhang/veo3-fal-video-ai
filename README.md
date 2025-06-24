@@ -17,6 +17,14 @@ This project provides comprehensive Python implementations for generating videos
 - **Setup**: Simple API key authentication
 - **⚠️ Cost Warning**: Video generation costs money (~$0.02-0.05 per video)
 
+### 3. FAL AI Avatar Generation (`fal_avatar_generation/`)
+- **Model**: AI Avatar Single-Text (MultiTalk)
+- **Features**: Text-to-speech avatar videos with lip-sync
+- **Quality**: Talking avatars with natural expressions
+- **Voices**: 20 different voice options
+- **Setup**: Simple API key authentication
+- **⚠️ Cost Warning**: Avatar generation costs money (~$0.02-0.05 per video)
+
 ## 📁 Project Structure
 
 ```
@@ -35,7 +43,7 @@ veo3/
 │   ├── images/                       # Input images for testing
 │   └── result_folder/                # Generated videos output
 │
-├── fal_video_generation/             # FAL AI Implementation
+├── fal_video_generation/             # FAL AI Video Implementation
 │   ├── fal_video_generator.py        # Dual-model FAL AI class
 │   ├── demo.py                       # Cost-conscious interactive demo
 │   ├── test_fal_ai.py               # Cost-conscious test suite
@@ -46,6 +54,17 @@ veo3/
 │   ├── .env                         # FAL AI configuration
 │   ├── output/                      # Generated videos output
 │   └── test_output/                 # Test videos output
+│
+├── fal_avatar_generation/           # FAL AI Avatar Implementation
+│   ├── fal_avatar_generator.py      # Avatar video generator class
+│   ├── demo.py                      # Cost-conscious interactive demo
+│   ├── test_setup.py               # FREE environment tests
+│   ├── test_generation.py          # PAID avatar generation tests
+│   ├── README.md                    # Avatar generation documentation
+│   ├── requirements.txt             # Avatar dependencies
+│   ├── .env                        # Avatar configuration
+│   ├── output/                     # Generated avatar videos
+│   └── test_output/                # Test avatar videos
 │
 └── archive/                         # Historical implementations
 ```
