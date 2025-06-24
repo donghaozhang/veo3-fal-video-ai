@@ -40,6 +40,23 @@ Get your API key from: https://fal.ai/dashboard
 
 ### 3. Basic Usage
 
+#### Official FAL AI Example (Recommended Start)
+
+```python
+from fal_avatar_generator import FALAvatarGenerator
+
+# Initialize generator
+generator = FALAvatarGenerator()
+
+# Generate using exact official FAL AI example
+# Uses: Bill voice, official image, official text, official prompt
+result = generator.generate_official_example(
+    output_path="output/official_example.mp4"
+)
+
+print(f"Official example video: {result['video']['url']}")
+```
+
 #### Text-to-Speech Mode (20 voices available)
 
 ```python
@@ -48,11 +65,11 @@ from fal_avatar_generator import FALAvatarGenerator
 # Initialize generator
 generator = FALAvatarGenerator()
 
-# Generate avatar video from text
+# Generate avatar video from text (uses official example defaults)
 result = generator.generate_avatar_video(
     image_url="path/to/your/image.jpg",
     text_input="Hello! This is my avatar speaking.",
-    voice="Sarah",
+    voice="Bill",  # Default: Bill (from official example)
     output_path="output/avatar_video.mp4"
 )
 
@@ -142,6 +159,9 @@ This script validates:
 ⚠️ **WARNING**: These tests generate real videos and cost money (~$0.02-0.05 per video)
 
 ```bash
+# Official FAL AI example test (exact documentation example)
+python test_official_example.py
+
 # Basic avatar generation test
 python test_generation.py
 
@@ -234,6 +254,22 @@ Generate multi-person conversation video from two audio files.
 
 **Returns**:
 - Dictionary with video information and metadata
+
+#### `generate_official_example(**kwargs)`
+Generate avatar video using the exact official FAL AI example.
+
+**Parameters**:
+- `output_path` (str, optional): Local save path
+
+**Returns**:
+- Dictionary with video information and metadata
+
+**Note**: This method uses the exact parameters from the official FAL AI documentation:
+- Image: Official FAL AI example image
+- Text: "Spend more time with people who make you feel alive, and less with things that drain your soul."
+- Voice: "Bill"
+- Prompt: Official podcast-style prompt
+- Frames: 136, Seed: 42, Turbo: True
 
 #### `get_available_voices()`
 Get list of available voice options.

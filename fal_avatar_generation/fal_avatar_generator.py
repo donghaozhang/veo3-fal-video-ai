@@ -77,10 +77,10 @@ class FALAvatarGenerator:
         self,
         image_url: str,
         text_input: str,
-        voice: VoiceType = "Sarah",
-        prompt: str = "A person speaking naturally with clear lip-sync and natural expressions.",
+        voice: VoiceType = "Bill",
+        prompt: str = "An elderly man with a white beard and headphones records audio with a microphone. He appears engaged and expressive, suggesting a podcast or voiceover.",
         num_frames: int = 136,
-        seed: Optional[int] = None,
+        seed: Optional[int] = 42,
         turbo: bool = True,
         output_path: Optional[str] = None
     ) -> Dict[str, Any]:
@@ -90,11 +90,11 @@ class FALAvatarGenerator:
         Args:
             image_url (str): URL of the input image or local file path
             text_input (str): The text that the avatar will speak
-            voice (VoiceType): Voice to use for speech generation (default: "Sarah")
-            prompt (str): Text prompt to guide video generation
+            voice (VoiceType): Voice to use for speech generation (default: "Bill" - from official example)
+            prompt (str): Text prompt to guide video generation (default: official FAL AI example)
             num_frames (int): Number of frames (81-129, default: 136)
-            seed (int, optional): Random seed for reproducibility
-            turbo (bool): Whether to use turbo mode for faster generation
+            seed (int, optional): Random seed for reproducibility (default: 42 - from official example)
+            turbo (bool): Whether to use turbo mode for faster generation (default: True)
             output_path (str, optional): Path to save the generated video
             
         Returns:
@@ -425,6 +425,33 @@ class FALAvatarGenerator:
         """Get list of available voices"""
         return VOICE_OPTIONS.copy()
     
+    def generate_official_example(self, output_path: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Generate avatar video using the exact official FAL AI example
+        
+        This method uses the exact same parameters as shown in the official FAL AI documentation:
+        https://fal.ai/models/fal-ai/ai-avatar/single-text/api
+        
+        Args:
+            output_path (str, optional): Path to save the generated video
+            
+        Returns:
+            Dict containing the generated video information and metadata
+        """
+        print("🎭 Generating avatar video using official FAL AI example...")
+        print("📖 Source: https://fal.ai/models/fal-ai/ai-avatar/single-text/api")
+        
+        return self.generate_avatar_video(
+            image_url="https://v3.fal.media/files/panda/HuM21CXMf0q7OO2zbvwhV_c4533aada79a495b90e50e32dc9b83a8.png",
+            text_input="Spend more time with people who make you feel alive, and less with things that drain your soul.",
+            voice="Bill",
+            prompt="An elderly man with a white beard and headphones records audio with a microphone. He appears engaged and expressive, suggesting a podcast or voiceover.",
+            num_frames=136,
+            seed=42,
+            turbo=True,
+            output_path=output_path
+        )
+    
     def test_connection(self) -> bool:
         """Test connection to FAL AI API"""
         try:
@@ -465,13 +492,23 @@ def main():
             return
         
         print("\n🎭 Available voices:")
-        for i, voice in enumerate(generator.get_available_voices(), 1):
-            print(f"  {i:2d}. {voice}")
+        voices = generator.get_available_voices()
+        for i, voice in enumerate(voices, 1):
+            # Highlight Bill as the official example voice
+            if voice == "Bill":
+                print(f"  {i:2d}. {voice} ⭐ (official example)")
+            else:
+                print(f"  {i:2d}. {voice}")
         
-        print(f"\n📋 Avatar Generation Example:")
-        print(f"   - Uses placeholder image")
-        print(f"   - Sample text with Sarah voice")
-        print(f"   - Turbo mode enabled")
+        print(f"\nTotal: {len(voices)} voices available")
+        
+        print(f"\n📋 Official FAL AI Example Available:")
+        print(f"   - Image: Official FAL AI example image")
+        print(f"   - Text: 'Spend more time with people who make you feel alive...'")
+        print(f"   - Voice: Bill (official example)")
+        print(f"   - Prompt: Podcast-style generation")
+        print(f"   - Use: generator.generate_official_example()")
+        print(f"   - Source: https://fal.ai/models/fal-ai/ai-avatar/single-text/api")
         
     except Exception as e:
         print(f"❌ Error: {str(e)}")
