@@ -3,21 +3,39 @@ description:
 globs: 
 alwaysApply: true
 ---
-# Cost Protection Rule for Video Generation Testing
+# Cost Protection Rule for AI Content Generation Testing
 
-## CRITICAL: Video Generation Cost Protection
+## CRITICAL: AI Content Generation Cost Protection
 
-**⚠️ NEVER run video generation tests without explicit user confirmation - they cost real money!**
+**⚠️ NEVER run AI content generation tests without explicit user confirmation - they cost real money!**
 
 ### Prohibited Actions Without User Consent
 
 **NEVER automatically run these commands:**
 ```bash
-# EXPENSIVE - These generate real videos and cost money
+# EXPENSIVE Video Generation - These generate real videos and cost money
 python test_fal_ai.py --hailuo           # ~$0.02-0.05 per test
 python test_fal_ai.py --kling            # ~$0.02-0.05 per test  
 python test_fal_ai.py --compare          # ~$0.04-0.10 per test (2 videos)
 python test_fal_ai.py --full             # ~$0.02-0.05 per test
+python demo.py                           # Variable cost per generation
+
+# EXPENSIVE Avatar Generation - These generate real avatar videos and cost money
+python test_generation.py --voice Bill   # ~$0.03-0.05 per test
+python test_generation.py --audio        # ~$0.03-0.05 per test
+python test_generation.py --multi        # ~$0.03-0.05 per test
+python test_generation.py --compare      # ~$0.09-0.15 per test (3+ videos)
+python test_generation.py --scenarios    # ~$0.06-0.10 per test (multiple videos)
+python test_official_example.py          # ~$0.03-0.05 per test
+python demo.py                           # Variable cost per generation
+
+# EXPENSIVE Text-to-Image Generation - These generate real images and cost money
+python test_generation.py --imagen4      # ~$0.015 per test
+python test_generation.py --seedream     # ~$0.015 per test
+python test_generation.py --flux-schnell # ~$0.015 per test
+python test_generation.py --flux-dev     # ~$0.015 per test
+python test_generation.py --dragon       # ~$0.015 per test
+python test_generation.py --compare      # ~$0.060 per test (4 images)
 python demo.py                           # Variable cost per generation
 
 # Google Veo tests (also expensive)
@@ -28,18 +46,30 @@ python veo3_video_generation/demo.py               # Costs money
 ### Safe Commands (FREE to run)
 ```bash
 # These are completely FREE and safe to run automatically
+
+# Video Generation - FREE Tests
 python fal_video_generation/test_api_only.py       # FREE - API connection test only
 python fal_video_generation/test_fal_ai.py         # FREE - setup test only (no video generation)
+
+# Avatar Generation - FREE Tests  
+python fal_avatar_generation/test_setup.py         # FREE - environment and API validation
+python fal_avatar_generation/test_generation.py    # FREE - setup test only (no avatar generation)
+
+# Text-to-Image Generation - FREE Tests
+python fal_text_to_image/test_setup.py             # FREE - environment and API validation
+python fal_text_to_image/test_generation.py        # FREE - setup test only (no image generation)
+
+# Google Veo - FREE Tests
 python veo3_video_generation/test_veo.py          # FREE - setup test only (no video generation)
 ```
 
 ### Required User Confirmation Protocol
 
-**Before running ANY video generation test:**
+**Before running ANY AI content generation test:**
 
 1. **Always warn the user first:**
    ```
-   ⚠️ WARNING: This command will generate real videos and cost money (~$X.XX)
+   ⚠️ WARNING: This command will generate real content and cost money (~$X.XX)
    Are you sure you want to proceed? This will charge your account.
    ```
 
@@ -50,20 +80,20 @@ python veo3_video_generation/test_veo.py          # FREE - setup test only (no v
 
 3. **Show cost estimate:**
    - Always include estimated cost in the warning
-   - Explain that costs are per video generated
-   - Mention if the test generates multiple videos
+   - Explain that costs are per item generated
+   - Mention if the test generates multiple items
 
 ### Implementation Guidelines
 
-**When user asks to "test" video generation:**
-- **Default to FREE tests first** (`test_api_only.py`)
+**When user asks to "test" AI content generation:**
+- **Default to FREE tests first** (`test_setup.py`, `test_api_only.py`)
 - **Ask which specific test** they want to run
 - **Explain costs** before running paid tests
 - **Get explicit confirmation** for any paid operations
 
-**When debugging video generation issues:**
-- **Start with FREE API tests** to isolate the problem
-- **Only suggest paid tests** if FREE tests pass and user explicitly wants to test video generation
+**When debugging AI content generation issues:**
+- **Start with FREE setup tests** to isolate the problem
+- **Only suggest paid tests** if FREE tests pass and user explicitly wants to test content generation
 - **Always mention costs** when suggesting paid tests
 
 **Code Review and Development:**
@@ -80,30 +110,35 @@ AI Response:
 "I'll test your FAL AI setup with the FREE tests first:
 
 🆓 FREE Tests (no cost):
-- python test_api_only.py        # API connection test
-- python test_fal_ai.py          # Setup validation
+- python test_setup.py              # Environment and API validation
+- python test_api_only.py           # API connection test (video only)
 
-These tests verify your configuration without generating videos or costing money.
+These tests verify your configuration without generating content or costing money.
 
-If you want to test actual video generation (which costs ~$0.02-0.05 per video), 
-please let me know and I'll ask for confirmation before running those tests."
+If you want to test actual content generation:
+- Video: ~$0.02-0.05 per video
+- Avatar: ~$0.03-0.05 per avatar video  
+- Images: ~$0.015 per image
+
+Please let me know if you want to run paid tests and I'll ask for confirmation."
 ```
 
 ### Example Unsafe Pattern (AVOID)
 
 ```
-❌ WRONG: "I'll test your setup by running video generation..."
-❌ WRONG: Automatically running `python test_fal_ai.py --hailuo`
+❌ WRONG: "I'll test your setup by running content generation..."
+❌ WRONG: Automatically running `python test_generation.py --voice Bill`
 ❌ WRONG: Running demo.py without explicit user request for paid testing
 ```
 
 ## Cost-Conscious Development Practices
 
 1. **Always start development with FREE tests**
-2. **Use model-specific flags** (`--hailuo`, `--kling`) instead of `--compare` to minimize costs
-3. **Avoid comparison tests** during development unless specifically needed
-4. **Use `test_api_only.py` for CI/CD pipelines**
-5. **Document all cost implications** in code comments and documentation
+2. **Use model-specific flags** (`--hailuo`, `--kling`, `--voice [Name]`, `--imagen4`) instead of comparison tests to minimize costs
+3. **Use official examples** (`test_official_example.py`) for avatar generation to ensure compliance
+4. **Avoid comparison tests** during development unless specifically needed
+5. **Use `test_setup.py` for CI/CD pipelines** 
+6. **Document all cost implications** in code comments and documentation
 
 ## Emergency Cost Protection
 
@@ -113,5 +148,27 @@ If you accidentally suggest or run a paid test:
 3. **Help user understand what was charged**
 4. **Provide guidance on avoiding future accidental charges**
 
-Remember: **Every video generation test costs real money from the user's account. Treat it like spending the user's cash directly.**
+## Model-Specific Cost Guidelines
+
+### Video Generation Costs
+- **Single model test**: ~$0.02-0.05 per video
+- **Comparison test**: ~$0.04-0.10 (generates 2 videos)
+- **Use**: `--hailuo` or `--kling` for single model testing
+
+### Avatar Generation Costs  
+- **Single voice test**: ~$0.03-0.05 per avatar video
+- **Audio mode test**: ~$0.03-0.05 per avatar video
+- **Multi-audio test**: ~$0.03-0.05 per conversation video
+- **Comparison test**: ~$0.09-0.15 (generates 3+ avatar videos)
+- **Frame count impact**: 1.25x multiplier for >81 frames
+- **Use**: `--voice [VoiceName]`, `--audio`, or `--multi` for single mode testing
+- **Official examples**: Use `test_official_example.py` for documentation compliance
+
+### Text-to-Image Generation Costs
+- **Single model test**: ~$0.015 per image
+- **Comparison test**: ~$0.060 (generates 4 images)  
+- **Use**: `--imagen4`, `--seedream`, `--flux-schnell`, or `--flux-dev` for single model testing
+- **Dragon test**: `--dragon` flag for specific dragon image testing
+
+Remember: **Every AI content generation test costs real money from the user's account. Treat it like spending the user's cash directly.**
 

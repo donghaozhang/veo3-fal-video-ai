@@ -5,7 +5,7 @@ alwaysApply: false
 ---
 # API Reference Guide
 
-This project provides two video generation APIs: Google Veo (complex, high-quality) and FAL AI Dual Models (simple, production-ready).
+This project provides comprehensive AI content generation APIs: Google Veo (complex, high-quality video), FAL AI Video Generation (dual-model, production-ready), FAL AI Avatar Generation (triple-mode, lip-sync), and FAL AI Text-to-Image Generation (quad-model).
 
 ## Google Veo API Functions
 All functions are located in [veo_video_generation.py](mdc:veo_video_generation.py).
@@ -74,7 +74,7 @@ download_gcs_file(
 **Purpose**: Download generated video from GCS to local folder  
 **Returns**: Local file path or None on error
 
-## FAL AI Dual-Model API Class
+## FAL AI Video Generation API Class
 Located in [fal_video_generation/fal_video_generator.py](mdc:fal_video_generation/fal_video_generator.py).
 
 ### FALVideoGenerator Class
@@ -168,6 +168,170 @@ generator.download_video(
 **Purpose**: Download generated video to local folder  
 **Returns**: Local file path or None if failed
 
+## FAL AI Avatar Generation API Class
+Located in [fal_avatar_generation/fal_avatar_generator.py](mdc:fal_avatar_generation/fal_avatar_generator.py).
+
+### FALAvatarGenerator Class
+```python
+from fal_avatar_generator import FALAvatarGenerator, VOICE_OPTIONS
+
+# Initialize with API key (from .env or parameter)
+generator = FALAvatarGenerator(api_key=None)  # Uses FAL_KEY from .env
+```
+
+### Universal Methods (Mode Selection)
+
+#### Text-to-Speech Avatar Generation
+```python
+generator.generate_avatar_video(
+    image_url: str,                 # Image URL or local file path
+    text_input: str,                # Text that avatar will speak
+    voice: VoiceType = "Bill",      # Voice option (20 available, Bill is official example)
+    prompt: str = "An elderly man with a white beard and headphones records audio with a microphone. He appears engaged and expressive, suggesting a podcast or voiceover.",  # Official example prompt
+    num_frames: int = 136,          # Frame count (81-129, default: 136 - official example)
+    seed: Optional[int] = 42,       # Random seed (default: 42 - official example)
+    turbo: bool = True,             # Turbo mode for faster generation
+    output_path: Optional[str] = None  # Local save path
+) -> Dict[str, Any]
+```
+**Purpose**: Generate talking avatar video from text with natural speech conversion  
+**Returns**: Dictionary with video URL, generation metadata, and parameters  
+**Voice Options**: 20 voices available (see VOICE_OPTIONS list)
+
+#### Audio-to-Avatar Generation
+```python
+generator.generate_avatar_from_audio(
+    image_url: str,                 # Image URL or local file path
+    audio_url: str,                 # Audio URL or local file path
+    prompt: str = "A person speaking naturally with clear lip-sync and natural expressions.",
+    num_frames: int = 145,          # Frame count (81-129, default: 145)
+    seed: Optional[int] = None,     # Random seed for reproducibility
+    turbo: bool = True,             # Turbo mode for faster generation
+    output_path: Optional[str] = None  # Local save path
+) -> Dict[str, Any]
+```
+**Purpose**: Generate talking avatar video from custom audio file with lip-sync  
+**Returns**: Dictionary with video URL, generation metadata, and parameters  
+**Audio Support**: MP3, WAV, and other common audio formats
+
+#### Multi-Audio Conversation Generation
+```python
+generator.generate_multi_avatar_conversation(
+    image_url: str,                 # Image URL or local file path
+    first_audio_url: str,           # First person's audio URL or local file path
+    second_audio_url: str,          # Second person's audio URL or local file path
+    prompt: str = "Two people engaged in a natural conversation, speaking in sequence with clear lip-sync and natural expressions.",
+    num_frames: int = 181,          # Frame count (81-129, default: 181)
+    seed: Optional[int] = None,     # Random seed for reproducibility
+    turbo: bool = True,             # Turbo mode for faster generation
+    output_path: Optional[str] = None  # Local save path
+) -> Dict[str, Any]
+```
+**Purpose**: Generate conversation video with two people speaking sequentially  
+**Returns**: Dictionary with video URL, generation metadata, and parameters  
+**Audio Support**: Multiple audio files for conversation flow
+
+#### Official FAL AI Example Generation
+```python
+generator.generate_official_example(
+    output_path: Optional[str] = None  # Local save path
+) -> Dict[str, Any]
+```
+**Purpose**: Generate avatar video using exact FAL AI documentation example  
+**Returns**: Dictionary with video URL, generation metadata, and parameters  
+**Use Case**: Documentation compliance testing and reference implementation
+
+### Utility Methods
+
+#### Get Available Voices
+```python
+generator.get_available_voices() -> list
+```
+**Purpose**: Get list of all 20 available voice options  
+**Returns**: List of voice names
+
+#### Test API Connection
+```python
+generator.test_connection() -> bool
+```
+**Purpose**: Test API connectivity without generating content (FREE)  
+**Returns**: True if connection successful, False otherwise
+
+#### Download Video
+```python
+generator._download_video(
+    video_url: str,                 # FAL AI video URL
+    output_path: str                # Local file path
+) -> None
+```
+**Purpose**: Download generated avatar video to local file  
+**Returns**: None (internal method)
+
+## FAL AI Text-to-Image Generation API Class
+Located in [fal_text_to_image/fal_text_to_image_generator.py](mdc:fal_text_to_image/fal_text_to_image_generator.py).
+
+### FALTextToImageGenerator Class
+```python
+from fal_text_to_image_generator import FALTextToImageGenerator
+
+# Initialize with API key (from .env or parameter)
+generator = FALTextToImageGenerator(api_key=None)  # Uses FAL_KEY from .env
+```
+
+### Universal Methods (Model Selection)
+
+#### Generate Single Image
+```python
+generator.generate_image(
+    prompt: str,                    # Text description of desired image
+    model: str = "imagen4",         # "imagen4", "seedream", "flux_schnell", "flux_dev"
+    negative_prompt: str = "",      # What to avoid in the image
+    output_folder: str = "output",  # Local download folder
+    auto_confirm: bool = False      # Skip cost confirmation prompt
+) -> Optional[Dict[str, Any]]
+```
+**Purpose**: Generate single image with specified model  
+**Returns**: Dictionary with image URL, metadata, and local path
+
+#### Batch Generate with Multiple Models
+```python
+generator.batch_generate(
+    prompt: str,                    # Text description of desired image
+    models: List[str],              # List of models to use
+    negative_prompt: str = "",      # What to avoid in the image
+    output_folder: str = "output",  # Local download folder
+    auto_confirm: bool = False,     # Skip cost confirmation prompt
+    download_images: bool = True    # Auto-download generated images
+) -> Dict[str, Any]
+```
+**Purpose**: Generate images with multiple models for comparison  
+**Returns**: Dictionary with results summary and individual model results
+
+### Model-Specific Methods
+
+#### Imagen4 Optimized Generation
+```python
+generator.generate_image_with_imagen4(
+    prompt: str,                    # Text description
+    negative_prompt: str = "",      # Quality control
+    num_inference_steps: int = 50,  # Generation steps (higher = better quality)
+    output_folder: str = "output"   # Local download folder
+) -> Optional[Dict[str, Any]]
+```
+**Purpose**: Generate image using Google's Imagen4 with optimized parameters  
+**Returns**: Dictionary with image URL, metadata, and local path
+
+#### FLUX Schnell Fast Generation
+```python
+generator.generate_image_with_flux_schnell(
+    prompt: str,                    # Text description
+    num_inference_steps: int = 4,   # Generation steps (lower = faster)
+    output_folder: str = "output"   # Local download folder
+) -> Optional[Dict[str, Any]]
+```
+**Purpose**: Generate image using FLUX Schnell for ultra-fast results  
+**Returns**: Dictionary with image URL, metadata, and local path
+
 ## Configuration Objects
 
 ### Google Veo Configuration
@@ -182,7 +346,9 @@ config = GenerateVideosConfig(
 )
 ```
 
-### FAL AI Response Structure
+### FAL AI Response Structures
+
+#### Video Generation Response
 ```python
 # MiniMax Hailuo-02 Response
 {
@@ -203,145 +369,208 @@ config = GenerateVideosConfig(
     'video': {
         'url': 'https://v3.fal.media/files/...',
         'file_name': 'output.mp4',
-        'file_size': 3150604
+        'file_size': 3445621
     },
     'duration': '5',
     'model': 'kling',
-    'cfg_scale': 0.5,
-    'negative_prompt': 'blur, distort, and low quality',
     'local_path': 'output/video.mp4'  # If downloaded
 }
 ```
 
-## Usage Patterns
-
-### Google Veo - Basic Text Generation
+#### Avatar Generation Response
 ```python
-video_uri = generate_video_from_text(
-    project_id="my-project",
-    prompt="A peaceful mountain landscape at sunset",
-    output_bucket_path="gs://my-bucket/videos/"
-)
+# Text-to-Speech Avatar Response
+{
+    'video': {
+        'url': 'https://v3.fal.media/files/...',
+        'file_name': 'output.mp4',
+        'file_size': 2816883
+    },
+    'generation_time': 15.42,
+    'parameters': {
+        'image_url': 'https://v3.fal.media/files/panda/HuM21CXMf0q7OO2zbvwhV_c4533aada79a495b90e50e32dc9b83a8.png',
+        'text_input': 'Spend more time with people who make you feel alive, and less with things that drain your soul.',
+        'voice': 'Bill',
+        'prompt': 'An elderly man with a white beard and headphones records audio with a microphone. He appears engaged and expressive, suggesting a podcast or voiceover.',
+        'num_frames': 136,
+        'seed': 42,
+        'turbo': True
+    },
+    'local_path': 'output/avatar_video.mp4'  # If downloaded
+}
+
+# Audio-to-Avatar Response
+{
+    'video': {
+        'url': 'https://v3.fal.media/files/...',
+        'file_name': 'output.mp4',
+        'file_size': 3124789
+    },
+    'generation_time': 18.67,
+    'parameters': {
+        'image_url': 'path/to/image.jpg',
+        'audio_url': 'path/to/audio.mp3',
+        'prompt': 'A person speaking naturally with clear lip-sync and natural expressions.',
+        'num_frames': 145,
+        'turbo': True
+    },
+    'local_path': 'output/avatar_video.mp4'  # If downloaded
+}
+
+# Multi-Audio Conversation Response
+{
+    'video': {
+        'url': 'https://v3.fal.media/files/...',
+        'file_name': 'output.mp4',
+        'file_size': 4567890
+    },
+    'generation_time': 22.34,
+    'parameters': {
+        'image_url': 'path/to/image.jpg',
+        'first_audio_url': 'path/to/person1_audio.mp3',
+        'second_audio_url': 'path/to/person2_audio.mp3',
+        'prompt': 'Two people engaged in a natural conversation, speaking in sequence with clear lip-sync and natural expressions.',
+        'num_frames': 181,
+        'turbo': True
+    },
+    'local_path': 'output/conversation_video.mp4'  # If downloaded
+}
 ```
 
-### Google Veo - Image with Text Guidance
+#### Text-to-Image Response
 ```python
-video_uri = generate_video_from_image(
-    project_id="my-project",
-    image_path="path/to/image.jpg",
-    output_bucket_path="gs://my-bucket/videos/",
-    prompt="The scene comes alive with gentle movement"
-)
+# Single Image Generation Response
+{
+    'image': {
+        'url': 'https://v3.fal.media/files/...',
+        'file_name': 'output.png',
+        'file_size': 1024768
+    },
+    'model': 'imagen4',
+    'local_path': 'output/image.png',
+    'generation_time': 6.42,
+    'cost_estimate': 0.015
+}
+
+# Batch Generation Response
+{
+    'results': [
+        {
+            'model': 'imagen4',
+            'success': True,
+            'image_url': 'https://v3.fal.media/files/...',
+            'local_path': 'output/imagen4_image.png',
+            'generation_time': 6.42
+        },
+        {
+            'model': 'flux_schnell',
+            'success': True,
+            'image_url': 'https://v3.fal.media/files/...',
+            'local_path': 'output/flux_schnell_image.png',
+            'generation_time': 1.23
+        }
+    ],
+    'summary': {
+        'total_images': 2,
+        'successful': 2,
+        'failed': 0,
+        'total_time': 7.65,
+        'total_cost': 0.030,
+        'success_rate': 100.0
+    }
+}
 ```
 
-### FAL AI - Universal Interface
+## Voice Options (Avatar Generation)
+
+### Available Voices (20 Total)
 ```python
-from fal_video_generator import FALVideoGenerator
+# Male Voices (12)
+MALE_VOICES = [
+    "Roger", "Charlie", "George", "Callum", "River", 
+    "Liam", "Will", "Eric", "Chris", "Brian", "Daniel", "Bill"
+]
 
-generator = FALVideoGenerator()
+# Female Voices (8)
+FEMALE_VOICES = [
+    "Aria", "Sarah", "Laura", "Charlotte", 
+    "Alice", "Matilda", "Jessica", "Lily"
+]
 
-# Using Hailuo model
-hailuo_result = generator.generate_video_from_image(
-    prompt="A beautiful landscape with moving clouds",
-    image_url="https://example.com/image.jpg",
-    duration="6",
-    model="hailuo"
-)
-
-# Using Kling model
-kling_result = generator.generate_video_from_image(
-    prompt="A cinematic landscape with dramatic lighting",
-    image_url="https://example.com/image.jpg",
-    duration="5",
-    model="kling"
-)
+# Official Example Voice (recommended default)
+OFFICIAL_VOICE = "Bill"
 ```
 
-### FAL AI - Model-Specific Optimization
+### Voice Selection Usage
 ```python
-# Hailuo with prompt optimization
-hailuo_result = generator.generate_video_with_hailuo(
-    prompt="A serene lake scene",
-    image_url="https://example.com/lake.jpg",
-    duration="6",
-    prompt_optimizer=True
+from fal_avatar_generator import FALAvatarGenerator, VOICE_OPTIONS
+
+generator = FALAvatarGenerator()
+
+# Use official example voice (recommended)
+result = generator.generate_avatar_video(
+    image_url="path/to/image.jpg",
+    text_input="Your text here",
+    voice="Bill"  # Official example default
 )
 
-# Kling with quality control
-kling_result = generator.generate_video_with_kling(
-    prompt="A dramatic sunset over mountains",
-    image_url="https://example.com/mountains.jpg",
-    duration="5",
-    cfg_scale=0.7,
-    negative_prompt="blur, distort, low quality, artifacts"
-)
+# Use any available voice
+for voice in VOICE_OPTIONS:
+    print(f"Available voice: {voice}")
 ```
 
-### FAL AI - Local Image Processing
+## Error Handling and Status Codes
+
+### Common Error Types
 ```python
-result = generator.generate_video_from_local_image(
-    prompt="The flowers sway gently in the breeze",
-    image_path="./images/flowers.jpg",
-    duration="6",
-    model="hailuo",
-    output_folder="my_videos"
-)
+# API Authentication Errors
+{
+    'error': 'authentication_failed',
+    'message': 'Invalid API key or insufficient permissions',
+    'code': 401
+}
+
+# Generation Errors
+{
+    'error': 'generation_failed',
+    'message': 'Failed to generate content with specified parameters',
+    'code': 500,
+    'details': 'Model-specific error information'
+}
+
+# Parameter Validation Errors
+{
+    'error': 'validation_error',
+    'message': 'Invalid parameter values provided',
+    'code': 400,
+    'invalid_params': ['duration', 'num_frames']
+}
 ```
 
-### FAL AI - Model Comparison
-```python
-# Compare both models with same input
-def compare_models(prompt, image_url):
-    generator = FALVideoGenerator()
-    
-    hailuo_result = generator.generate_video_from_image(
-        prompt=prompt, image_url=image_url, model="hailuo"
-    )
-    
-    kling_result = generator.generate_video_from_image(
-        prompt=prompt, image_url=image_url, model="kling"
-    )
-    
-    return hailuo_result, kling_result
-```
+### Retry Mechanisms
+All API classes include automatic retry logic:
+- Network timeouts: 3 retries with exponential backoff
+- Rate limiting: Automatic retry with proper delays
+- Server errors: Configurable retry attempts
 
-## Testing APIs
+## Best Practices
 
-### Google Veo Testing
-Test functions individually or use the main script with proper GCP authentication.
+### API Usage Guidelines
+1. **Always validate API keys** before making requests
+2. **Use appropriate timeouts** for generation requests (2-5 minutes)
+3. **Implement proper error handling** for all API calls
+4. **Cache results** to avoid regenerating identical content
+5. **Monitor costs** carefully when using paid generation methods
 
-### FAL AI Testing
-Use the enhanced test suite in [fal_video_generation/test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py):
-```bash
-python test_fal_ai.py              # Setup and API test
-python test_fal_ai.py --hailuo     # Test Hailuo model (~$0.02-0.05)
-python test_fal_ai.py --kling      # Quick Kling test
-python test_fal_ai.py --compare    # Compare both models
-python test_fal_ai.py --full       # Full test with details
-```
+### Performance Optimization
+1. **Batch operations** when possible to reduce API overhead
+2. **Use model-specific methods** for optimized parameters
+3. **Download content locally** to avoid repeated API calls
+4. **Use appropriate image sizes** to balance quality and processing time
 
-### FAL AI Interactive Demo
-Use the interactive demo for hands-on testing:
-```bash
-python demo.py                     # Interactive model selection demo
-```
-
-## Model Selection Guidelines
-
-### Choose MiniMax Hailuo-02 when:
-- You need reliable, consistent 768p video generation
-- You want AI-powered prompt optimization
-- You're building production workflows requiring stability
-- You prefer the established model with proven results
-
-### Choose Kling Video 2.1 when:
-- You need high-quality, artistic video output
-- You want fine control with CFG scale parameters
-- You need negative prompt capabilities for quality control
-- You're creating cinematic or professional video content
-
-### Choose Google Veo when:
-- You need 1080p resolution or higher
-- You want longer video durations
-- You already use Google Cloud infrastructure
-- You need the highest quality output available
+### Cost Management
+1. **Test with FREE methods first** (`test_setup.py`, `test_api_only.py`)
+2. **Use single model/mode flags** during development
+3. **Avoid comparison operations** unless specifically needed
+4. **Monitor generation costs** and set appropriate limits
+5. **Use official examples** for avatar generation to ensure compliance

@@ -3,258 +3,437 @@ description:
 globs: 
 alwaysApply: false
 ---
-# Development Guidelines
+# Development Guidelines for AI Content Generation
 
-This guide covers development patterns for both Google Veo and FAL AI video generation implementations.
+## CRITICAL: Cost Protection First
 
-## Code Style and Standards
-- Follow PEP 8 Python style guidelines
-- Use descriptive variable names and function docstrings
-- Include proper error handling with try-catch blocks
-- Add logging statements for debugging and monitoring operations
-- Use type hints for better code clarity
+**⚠️ ALWAYS start with FREE tests before ANY paid content generation**
 
-## Platform-Specific Development Patterns
+Every development workflow must begin with:
+1. **FREE environment tests** (`test_setup.py`)
+2. **FREE API connection tests** (`test_api_only.py` for video)
+3. **Only then proceed** to paid generation with explicit user confirmation
 
-### FAL AI Development Patterns
+## Project Architecture
 
-#### Class-Based Architecture
-FAL AI implementation uses a class-based approach in [fal_video_generation/fal_video_generator.py](mdc:fal_video_generation/fal_video_generator.py):
+### Multi-Platform AI Content Generation
+This project provides comprehensive AI content generation capabilities:
 
-```python
-class FALVideoGenerator:
-    def __init__(self, api_key=None):
-        self.api_key = api_key or os.getenv('FAL_KEY')
-        if self.api_key:
-            fal_client.api_key = self.api_key
-    
-    def generate_video_from_image(self, prompt, image_url, duration="6", **kwargs):
-        # Implementation with comprehensive error handling
+1. **Video Generation** (Google Veo + FAL AI Dual-Model)
+2. **Avatar Generation** (FAL AI Triple-Mode with lip-sync)
+3. **Text-to-Image Generation** (FAL AI Quad-Model)
+
+### Directory Structure Standards
+```
+<content_type>_<platform>/
+├── <platform>_<content_type>_generator.py  # Main generator class
+├── demo.py                                 # Cost-conscious interactive demo
+├── test_setup.py                          # FREE environment validation
+├── test_<specific>.py                     # PAID generation tests
+├── requirements.txt                       # Dependencies
+├── .env                                   # API configuration
+├── README.md                              # Complete documentation
+├── output/                                # Generated content
+└── test_output/                           # Test-generated content
 ```
 
-#### Error Handling Pattern
+### Implementation Standards
+
+#### Generator Class Architecture
+All generator classes follow consistent patterns:
+```python
+class <Platform><ContentType>Generator:
+    def __init__(self, api_key: Optional[str] = None):
+        """Initialize with API key from .env or parameter"""
+        
+    def generate_<content_type>(self, **kwargs) -> Dict[str, Any]:
+        """Universal generation method with model/mode selection"""
+        
+    def generate_<content_type>_with_<specific_model>(self, **kwargs) -> Dict[str, Any]:
+        """Model-specific optimized methods"""
+        
+    def test_connection(self) -> bool:
+        """FREE API connectivity test"""
+```
+
+#### Cost-Conscious Testing Framework
+Every module must include:
+1. **FREE Tests**: Environment, dependencies, API connectivity
+2. **PAID Tests**: Actual content generation with cost warnings
+3. **Official Examples**: Documentation compliance (for avatar generation)
+4. **Interactive Demos**: User-friendly testing with cost confirmations
+
+## Implementation Patterns
+
+### FAL AI Video Generation (Dual-Model)
+**Location**: `fal_video_generation/`
+**Models**: MiniMax Hailuo-02, Kling Video 2.1
+**Key Features**: 
+- Universal methods with model selection
+- Model-specific optimization methods
+- Prompt optimization (Hailuo), CFG scale and negative prompts (Kling)
+
+```python
+# Universal interface with model selection
+generator.generate_video_from_image(
+    prompt="Description",
+    image_url="path/to/image.jpg",
+    model="hailuo",  # or "kling"
+    duration="6"
+)
+
+# Model-specific optimization
+generator.generate_video_with_hailuo(prompt_optimizer=True)
+generator.generate_video_with_kling(cfg_scale=0.7, negative_prompt="blur")
+```
+
+### FAL AI Avatar Generation (Triple-Mode)
+**Location**: `fal_avatar_generation/`
+**Modes**: Text-to-Speech, Audio-to-Avatar, Multi-Audio Conversation
+**Key Features**:
+- 20 voice options with official example compliance
+- Natural lip-sync and expression generation
+- Conversation support with seamless transitions
+- Official FAL AI example reproduction
+
+```python
+# Text-to-Speech Mode (20 voices available)
+generator.generate_avatar_video(
+    image_url="path/to/image.jpg",
+    text_input="Your text here",
+    voice="Bill",  # Official example default
+    num_frames=136,  # Official example frames
+    seed=42,  # Official example seed
+    turbo=True
+)
+
+# Audio-to-Avatar Mode
+generator.generate_avatar_from_audio(
+    image_url="path/to/image.jpg",
+    audio_url="path/to/audio.mp3",
+    num_frames=145  # Default for audio mode
+)
+
+# Multi-Audio Conversation Mode
+generator.generate_multi_avatar_conversation(
+    image_url="path/to/image.jpg",
+    first_audio_url="path/to/person1.mp3",
+    second_audio_url="path/to/person2.mp3",
+    num_frames=181  # Default for multi-audio mode
+)
+
+# Official Example Reproduction
+generator.generate_official_example()  # Exact documentation compliance
+```
+
+### FAL AI Text-to-Image Generation (Quad-Model)
+**Location**: `fal_text_to_image/`
+**Models**: Imagen4, Seedream, FLUX Schnell, FLUX Dev
+**Key Features**:
+- Batch generation with multiple models
+- Cost-conscious design with confirmation prompts
+- Dragon generation for testing scenarios
+
+```python
+# Single model generation
+generator.generate_image(
+    prompt="A beautiful dragon",
+    model="imagen4",
+    negative_prompt="blur, artifacts"
+)
+
+# Batch generation with multiple models
+generator.batch_generate(
+    prompt="A magical forest",
+    models=["imagen4", "flux_schnell"],
+    auto_confirm=False  # Cost confirmation required
+)
+```
+
+### Google Veo Video Generation
+**Location**: `veo3_video_generation/`
+**Features**: High-resolution, complex setup with automated permission fixes
+**Key Benefit**: Automated permission configuration via `fix_permissions.py`
+
+## Cost Management Development Practices
+
+### Required Cost Protection Implementation
+
+#### 1. FREE Test Validation
+Every module MUST include comprehensive FREE tests:
+```python
+def test_environment_setup():
+    """Test dependencies, .env, and basic configuration - FREE"""
+    
+def test_api_connection():
+    """Test API connectivity without generation - FREE"""
+    
+def test_generator_initialization():
+    """Test class initialization and methods - FREE"""
+```
+
+#### 2. Cost-Conscious Paid Tests
+All paid content generation MUST include:
+```python
+def test_with_cost_warning():
+    """Always display cost warnings before paid operations"""
+    print("⚠️ WARNING: This test costs ~$X.XX")
+    confirm = input("Continue? (y/N): ")
+    if confirm.lower() != 'y':
+        return
+```
+
+#### 3. Model/Mode-Specific Testing
+Provide granular testing to minimize costs:
+```bash
+# Video Generation
+python test_fal_ai.py --hailuo     # Single model only
+python test_fal_ai.py --kling      # Single model only
+
+# Avatar Generation  
+python test_generation.py --voice Bill    # Single voice only
+python test_generation.py --audio         # Single mode only
+python test_generation.py --multi         # Single mode only
+
+# Text-to-Image Generation
+python test_generation.py --imagen4       # Single model only
+python test_generation.py --dragon        # Specific scenario only
+```
+
+#### 4. Official Example Compliance (Avatar Generation)
+Avatar generation MUST include official example testing:
+```python
+def test_official_example():
+    """Test exact FAL AI documentation example for compliance"""
+    # Uses exact parameters from FAL AI documentation
+    # Ensures compatibility and reference implementation
+```
+
+## File Naming and Organization Standards
+
+### Consistent File Naming
+- **Main Generator**: `<platform>_<content_type>_generator.py`
+- **FREE Tests**: `test_setup.py`
+- **Paid Tests**: `test_generation.py` or `test_<specific>.py`
+- **Official Examples**: `test_official_example.py` (avatar only)
+- **API-Only Tests**: `test_api_only.py` (video only)
+- **Interactive Demo**: `demo.py`
+- **Documentation**: `README.md`
+
+### Directory Organization
+Each platform/content type gets its own directory:
+```
+veo3/
+├── fal_video_generation/      # FAL AI video (dual-model)
+├── fal_avatar_generation/     # FAL AI avatar (triple-mode)  
+├── fal_text_to_image/         # FAL AI text-to-image (quad-model)
+├── veo3_video_generation/     # Google Veo video
+└── video_tools/               # Utility tools
+```
+
+## API Design Standards
+
+### Response Structure Consistency
+All generators return consistent response structures:
+```python
+{
+    'content': {                    # 'video', 'image', etc.
+        'url': 'https://...',
+        'file_name': 'output.ext',
+        'file_size': 1234567
+    },
+    'generation_time': 15.42,       # Generation duration in seconds
+    'parameters': {                 # Original generation parameters
+        'prompt': '...',
+        'model': '...',             # or 'voice', 'mode', etc.
+        # ... other parameters
+    },
+    'local_path': 'output/file.ext' # If downloaded locally
+}
+```
+
+### Error Handling Standards
+Implement comprehensive error handling:
 ```python
 try:
-    result = fal_client.run(endpoint, arguments=args)
-    return self._process_result(result)
+    result = generate_content(**params)
+except APIKeyError:
+    logger.error("Invalid or missing API key")
+    return None
+except ValidationError as e:
+    logger.error(f"Parameter validation failed: {e}")
+    return None
+except NetworkError as e:
+    logger.error(f"Network error: {e}")
+    # Implement retry logic
 except Exception as e:
-    print(f"❌ Error: {str(e)}")
+    logger.error(f"Unexpected error: {e}")
     return None
 ```
 
-#### Async Processing Support
+## Interactive Demo Standards
+
+### Required Demo Features
+Every demo must include:
+1. **Cost warnings** displayed prominently
+2. **Model/mode selection** with cost estimates
+3. **Confirmation prompts** before paid operations
+4. **Official example options** (for avatar generation)
+5. **User-friendly menus** with clear cost indicators
+
+### Demo Menu Template
 ```python
-def _handle_async_request(self, endpoint, arguments):
-    """Handle asynchronous requests with polling"""
-    def on_queue_update(update):
-        if hasattr(update, 'logs') and update.logs:
-            for log in update.logs:
-                print(f"  {log.get('message', str(log))}")
+def display_menu():
+    print(f"🎬 {PLATFORM} {CONTENT_TYPE} Generation Demo")
+    print(f"💰 COST WARNING: Each generation costs ~$X.XX")
+    print("=" * 50)
+    print("1. Option 1 (~$X.XX)")
+    print("2. Option 2 (~$X.XX)")
+    print("3. Comparison (~$X.XX) ⚠️ EXPENSIVE")
+    print("4. Official Example (~$X.XX) 📋 RECOMMENDED")  # Avatar only
+    print("5. Exit")
+```
+
+## Testing Strategy Development
+
+### Test Suite Architecture
+Each module follows a consistent testing hierarchy:
+
+1. **Level 1 - FREE Setup Tests** (`test_setup.py`)
+   - Environment validation
+   - Dependency checking
+   - API connectivity (no generation)
+   - Class initialization
+
+2. **Level 2 - Official Example Tests** (`test_official_example.py` - avatar only)
+   - Exact documentation compliance
+   - Reference implementation validation
+   - Parameter verification
+
+3. **Level 3 - Single Model/Mode Tests** (`test_generation.py` with flags)
+   - Individual model/mode testing
+   - Cost-conscious generation
+   - Parameter validation
+
+4. **Level 4 - Comparison Tests** (expensive, use sparingly)
+   - Multi-model/mode comparison
+   - Higher costs, explicit confirmation required
+
+### Development Testing Workflow
+```bash
+# 1. Always start with FREE tests
+python test_setup.py
+
+# 2. For avatar generation, test official examples
+python test_official_example.py  # With user confirmation
+
+# 3. Test individual models/modes  
+python test_generation.py --<specific_flag>  # With user confirmation
+
+# 4. Only use comparison tests when specifically needed
+python test_generation.py --compare  # With explicit cost warnings
+```
+
+## Documentation Standards
+
+### README.md Requirements
+Every module README must include:
+1. **Feature overview** with supported models/modes
+2. **Quick start** with official examples
+3. **Cost information** with detailed pricing
+4. **FREE testing instructions** prominently featured
+5. **API reference** with code examples
+6. **Cost protection warnings** throughout
+
+### Code Documentation Standards
+```python
+def generate_content(
+    prompt: str,
+    model: str = "default",
+    **kwargs
+) -> Dict[str, Any]:
+    """
+    Generate content using specified model
     
-    return fal_client.submit(endpoint, arguments=arguments, on_queue_update=on_queue_update)
+    Args:
+        prompt: Text description of desired content
+        model: Model to use for generation  
+        **kwargs: Additional model-specific parameters
+        
+    Returns:
+        Dictionary containing content URL, metadata, and local path
+        
+    Cost:
+        ~$X.XX per generation
+        
+    Example:
+        >>> result = generator.generate_content("A beautiful sunset")
+        >>> print(result['content']['url'])
+    """
 ```
 
-#### File Management
-- **Configuration**: [fal_video_generation/.env](mdc:fal_video_generation/.env)
-- **Output**: [fal_video_generation/output/](mdc:fal_video_generation/output) directory
-- **Testing**: Unified test suite in [fal_video_generation/test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py)
+## Performance and Optimization Guidelines
 
-### Google Veo Development Patterns
+### Content Generation Optimization
+1. **Use model-specific methods** for optimized parameters
+2. **Implement caching** to avoid regeneration
+3. **Batch operations** when supported
+4. **Appropriate timeouts** for generation requests (2-5 minutes)
+5. **Local download and storage** for repeated access
 
-#### Function-Based Architecture
-Google Veo uses standalone functions in [veo_video_generation.py](mdc:veo_video_generation.py):
+### Development Performance
+1. **Always start with FREE tests** to avoid unnecessary costs
+2. **Use single model/mode flags** during development
+3. **Cache test results** to avoid repeated generation
+4. **Monitor API rate limits** and implement backoff
 
-```python
-def generate_video_from_text(project_id, prompt, output_bucket_path, model_id="veo-2.0-generate-001", location="us-central1"):
-    # Set environment variables
-    # Initialize client
-    # Execute operation
-    # Return result
-```
+### Cost Optimization Strategies
+1. **Minimize comparison testing** during development
+2. **Use official examples** as starting points
+3. **Test parameter ranges** with single generations first
+4. **Implement cost tracking** in development workflows
 
-#### Authentication Setup Pattern
-```python
-# Standard pattern used in [veo_video_generation.py](mdc:veo_video_generation.py)
-os.environ["GOOGLE_CLOUD_PROJECT"] = project_id
-os.environ["GOOGLE_CLOUD_LOCATION"] = location
-os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = "True"
+## Quality Assurance Standards
 
-# Remove credentials if set (for default auth)
-if "GOOGLE_APPLICATION_CREDENTIALS" in os.environ:
-    del os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
-```
+### Code Quality Requirements
+1. **Type hints** for all public methods
+2. **Comprehensive error handling** with specific exceptions
+3. **Logging** for debugging and monitoring
+4. **Unit tests** for utility functions
+5. **Integration tests** with cost protection
 
-#### Video Generation Function Structure
-All video generation functions should follow this pattern:
-1. Set environment variables for authentication
-2. Initialize the GenAI client
-3. Configure video generation parameters
-4. Start the operation and poll for completion
-5. Handle results and errors appropriately
-6. Return GCS URI or None on failure
+### Content Quality Validation
+1. **Generated content verification** (file size, format, accessibility)
+2. **Parameter validation** before API calls
+3. **Response structure validation**
+4. **Error recovery mechanisms**
 
-#### Error Handling
-- Always wrap Google Cloud API calls in try-catch blocks
-- Use `traceback.print_exc()` for detailed error information
-- Return None or appropriate error indicators on failure
-- Log meaningful error messages for debugging
+### User Experience Standards
+1. **Clear cost communication** throughout interfaces
+2. **Intuitive model/mode selection**
+3. **Helpful error messages** with resolution guidance
+4. **Progress indicators** for long-running operations
+5. **Cancellation options** before charges occur
 
-## Environment Configuration
+## Deployment and Production Considerations
 
-### FAL AI Configuration
-Store FAL AI settings in [fal_video_generation/.env](mdc:fal_video_generation/.env):
-```bash
-FAL_KEY=your_api_key_here
-FAL_TIMEOUT=300
-FAL_MAX_RETRIES=3
-```
+### Environment Configuration
+1. **Secure API key management** (.env files, environment variables)
+2. **Proper dependency isolation** (requirements.txt, virtual environments)
+3. **Configuration validation** on startup
+4. **Graceful degradation** when services unavailable
 
-### Google Veo Configuration
-Store Google Cloud settings in [.env](mdc:.env):
-```bash
-GOOGLE_CLOUD_PROJECT=your-project-id
-GOOGLE_API_KEY=your-google-api-key
-# Multiple AI services supported: Anthropic, OpenAI, Gemini, OpenRouter, DashScope, 302.ai
-```
+### Production Monitoring
+1. **Cost tracking** and alerting
+2. **API rate limit monitoring**
+3. **Generation success/failure rates**
+4. **Performance metrics** (generation times, file sizes)
 
-## File Organization
+### Scaling Considerations
+1. **Async processing** for multiple generations
+2. **Queue management** for batch operations
+3. **Storage management** for generated content
+4. **Load balancing** across API endpoints
 
-### Project Structure
-```
-veo3/
-├── veo_video_generation.py          # Google Veo functions
-├── .env                             # Google Cloud configuration
-├── requirements.txt                 # Main dependencies
-├── images/                          # Input images for Google Veo
-├── result_folder/                   # Google Veo output videos
-├── archive/                         # Legacy implementations
-└── fal_video_generation/            # FAL AI implementation
-    ├── fal_video_generator.py       # FAL AI class
-    ├── demo.py                      # Interactive demo
-    ├── test_fal_ai.py              # Unified test suite
-    ├── .env                         # FAL AI configuration
-    └── output/                      # FAL AI generated videos
-```
-
-### Asset Management
-- **Google Veo Input**: [images/](mdc:images) directory (e.g., [smiling_woman.jpg](mdc:images/smiling_woman.jpg))
-- **Google Veo Output**: [result_folder/](mdc:result_folder) for downloaded videos
-- **FAL AI Output**: [fal_video_generation/output/](mdc:fal_video_generation/output)
-- **Archive**: Legacy tools in [archive/](mdc:archive)
-- **Project Assets**: Additional assets like [bet.png](mdc:bet.png) in root
-
-## ⚠️ CRITICAL: Cost Protection
-**See [cost-protection.mdc](mdc:.cursor/rules/cost-protection.mdc) for complete cost protection rules**
-
-**NEVER run video generation tests without explicit user confirmation - they cost real money!**
-
-## Cost-Conscious Development Practices
-
-### Cost Management for FAL AI
-Video generation costs money (~$0.02-0.05 per video). Follow these practices to avoid unexpected charges:
-
-#### Always Start with FREE Testing
-```bash
-cd fal_video_generation
-python test_api_only.py        # Completely FREE - validates setup without generating videos
-python test_fal_ai.py          # FREE by default - no video generation without flags
-```
-
-#### Use Model-Specific Testing
-```bash
-# Test individual models to avoid unnecessary costs
-python test_fal_ai.py --hailuo  # Test Hailuo only (~$0.02-0.05)
-python test_fal_ai.py --kling   # Test Kling only (~$0.02-0.05)
-```
-
-#### Avoid Expensive Operations During Development
-```bash
-# EXPENSIVE - Generates 2 videos (~$0.04-0.10)
-python test_fal_ai.py --compare  # Only use when specifically needed
-```
-
-#### Cost-Conscious Demo Usage
-```bash
-python demo.py  # Includes cost warnings and confirmation prompts
-```
-
-### Development Workflow for Cost Control
-1. **Setup Validation**: Always run `python test_api_only.py` first (FREE)
-2. **Single Model Testing**: Use `--hailuo` or `--kling` flags for specific model testing
-3. **Avoid Comparisons**: Only use `--compare` when specifically needed for evaluation
-4. **Monitor Costs**: Each video generation costs ~$0.02-0.05
-
-## Testing and Validation
-
-### FAL AI Cost-Conscious Testing
-Use the enhanced test suite with cost controls:
-```bash
-cd fal_video_generation
-# FREE Tests (no video generation)
-python test_api_only.py        # Completely FREE API validation
-python test_fal_ai.py          # FREE setup test (no videos)
-
-# Paid Tests (generates real videos)
-python test_fal_ai.py --hailuo # Test Hailuo model (~$0.02-0.05)
-python test_fal_ai.py --kling  # Test Kling model (~$0.02-0.05)
-python test_fal_ai.py --full   # Full test (~$0.02-0.05)
-python test_fal_ai.py --compare # Compare models (~$0.04-0.10) ⚠️ EXPENSIVE
-```
-
-### Google Veo Testing
-- Test with sample images from [images/](mdc:images) directory first
-- Validate GCS bucket permissions before running operations
-- Check project allowlist status for different Veo model versions
-- Verify authentication setup with `gcloud auth list`
-- Ensure [.env](mdc:.env) file contains required API keys
-
-## Development Best Practices
-
-### Code Quality
-- Use type hints for function parameters and return values
-- Implement comprehensive error handling for both platforms
-- Add docstrings with parameter descriptions and return values
-- Use logging for debugging and operation monitoring
-
-### Platform Selection Guidelines
-- **Choose FAL AI when**: Simple setup, quick prototyping, production-ready API
-- **Choose Google Veo when**: Enterprise features, higher resolution, Google Cloud integration
-
-### Error Handling Patterns
-```python
-# FAL AI pattern
-try:
-    result = generator.generate_video_from_image(prompt, image_url)
-    if result:
-        print(f"Success: {result['video']['url']}")
-    else:
-        print("Generation failed")
-except Exception as e:
-    print(f"Error: {str(e)}")
-
-# Google Veo pattern
-try:
-    video_uri = generate_video_from_text(project_id, prompt, bucket_path)
-    if video_uri:
-        print(f"Generated: {video_uri}")
-    else:
-        print("Generation failed")
-except Exception as e:
-    print(f"Error: {str(e)}")
-    traceback.print_exc()
-```
-
-## Security Best Practices
-- Never commit [.env](mdc:.env) files to version control (add to .gitignore)
-- Use separate API keys for development and production
-- Rotate API keys regularly
-- Limit GCS bucket permissions to minimum required scope
-- Keep FAL AI and Google Cloud credentials separate
-- Use environment-specific configuration files
-
-## Dependency Management
-- Update [requirements.txt](mdc:requirements.txt) for main project dependencies
-- Update [fal_video_generation/requirements.txt](mdc:fal_video_generation/requirements.txt) for FAL AI dependencies
-- Pin dependency versions for reproducible builds
-- Regular security updates for all dependencies
+This comprehensive development framework ensures consistent, cost-conscious, and user-friendly AI content generation across all platforms and content types.
 

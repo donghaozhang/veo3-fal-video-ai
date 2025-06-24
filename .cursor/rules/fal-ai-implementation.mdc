@@ -5,11 +5,16 @@ alwaysApply: false
 ---
 # FAL AI Multi-Model Implementation
 
-This document covers the FAL AI implementation supporting both video and text-to-image generation:
+This document covers the FAL AI implementation supporting video generation, avatar generation, and text-to-image generation:
 
 ## Video Generation (Dual-Model Support)
 - **MiniMax Hailuo-02**: Reliable 768p generation with prompt optimization
 - **Kling Video 2.1**: High-quality generation with CFG scale and negative prompts
+
+## Avatar Generation (Triple-Mode Support)
+- **Text-to-Speech Avatar**: 20 voice options with natural speech conversion using official FAL AI examples
+- **Audio-to-Avatar**: Custom audio files for lip-sync animation with natural expressions
+- **Multi-Audio Conversation**: Two-person conversations with sequential speaking and seamless transitions
 
 ## Text-to-Image Generation (Quad-Model Support)
 - **Imagen4**: Google's high-quality model with excellent realism
@@ -17,7 +22,7 @@ This document covers the FAL AI implementation supporting both video and text-to
 - **FLUX Schnell**: Ultra-fast generation (1-2 seconds)
 - **FLUX Dev**: Balanced speed and quality
 
-Both video and image modules provide production-ready API access with cost-conscious testing frameworks.
+All modules provide production-ready API access with cost-conscious testing frameworks and official example compliance.
 
 ## Core Components
 
@@ -49,6 +54,68 @@ generator.generate_video_from_local_image(
     model="kling"  # Choose model
 )
 ```
+
+### FALAvatarGenerator Class
+Located in [fal_avatar_generation/fal_avatar_generator.py](mdc:fal_avatar_generation/fal_avatar_generator.py)
+
+**Triple-Mode Support:**
+- Single class supports all three avatar generation modes
+- Mode selection via different methods
+- Official FAL AI example compliance with defaults
+- Cost-conscious design with confirmation prompts
+
+**Universal Methods:**
+```python
+# Text-to-Speech Avatar (20 voice options)
+result = generator.generate_avatar_video(
+    image_url="path/to/image.jpg",
+    text_input="Hello! This is my avatar speaking.",
+    voice="Bill",  # Default: Bill (from official example)
+    prompt="An elderly man with a white beard and headphones records audio with a microphone. He appears engaged and expressive, suggesting a podcast or voiceover.",
+    num_frames=136,  # Official example default
+    seed=42,  # Official example default
+    turbo=True,
+    output_path="output/avatar_video.mp4"
+)
+
+# Audio-to-Avatar (custom audio files)
+result = generator.generate_avatar_from_audio(
+    image_url="path/to/image.jpg",
+    audio_url="path/to/audio.mp3",
+    prompt="A person speaking naturally with clear lip-sync and natural expressions.",
+    num_frames=145,  # Default for audio mode
+    output_path="output/avatar_video.mp4"
+)
+
+# Multi-Audio Conversation (two-person dialogue)
+result = generator.generate_multi_avatar_conversation(
+    image_url="path/to/image.jpg",
+    first_audio_url="path/to/person1_audio.mp3",
+    second_audio_url="path/to/person2_audio.mp3",
+    prompt="Two people engaged in a natural conversation, speaking in sequence with clear lip-sync and natural expressions.",
+    num_frames=181,  # Default for multi-audio mode
+    output_path="output/conversation_video.mp4"
+)
+
+# Official FAL AI Example (exact documentation reproduction)
+result = generator.generate_official_example(
+    output_path="output/official_example.mp4"
+)
+```
+
+**Voice Options (20 Available):**
+- **Male Voices**: Roger, Charlie, George, Callum, River, Liam, Will, Eric, Chris, Brian, Daniel, Bill
+- **Female Voices**: Aria, Sarah, Laura, Charlotte, Alice, Matilda, Jessica, Lily
+- **Official Default**: Bill (from FAL AI documentation examples)
+
+**Key Features:**
+- Natural lip-sync technology with automatic mouth movement synchronization
+- Natural expressions with AI-generated facial expressions and movements
+- Conversation support for multi-person dialogue with seamless transitions
+- Customizable parameters including frame count, voice selection, and prompts
+- Turbo mode for faster generation with optimized processing
+- Local & remote support for both local files and URLs for images/audio
+- Cost-conscious testing with separate FREE and PAID test suites
 
 ### FALTextToImageGenerator Class
 Located in [fal_text_to_image/fal_text_to_image_generator.py](mdc:fal_text_to_image/fal_text_to_image_generator.py)
@@ -129,32 +196,69 @@ python test_fal_ai.py --full
 python test_fal_ai.py --compare     # Generates 2 videos
 ```
 
+**Avatar Generation Testing:**
+Located in [fal_avatar_generation/test_generation.py](mdc:fal_avatar_generation/test_generation.py)
+
+**FREE Testing Commands (No Cost):**
+```bash
+# Environment and API validation - completely FREE
+python test_setup.py
+
+# Basic setup and dependency validation - FREE
+python test_generation.py
+```
+
+**Paid Testing Commands (Generates Real Avatar Videos):**
+```bash
+# Official FAL AI example test - ~$0.03-0.05 per test
+python test_official_example.py
+
+# Test specific voice - ~$0.03-0.05 per test
+python test_generation.py --voice Bill       # Test Bill voice
+python test_generation.py --voice Sarah      # Test Sarah voice
+
+# Test audio-to-avatar mode - ~$0.03-0.05 per test
+python test_generation.py --audio            # Test custom audio files
+
+# Test multi-audio conversation mode - ~$0.03-0.05 per test
+python test_generation.py --multi            # Test two-person conversation
+
+# Quick test with minimal frames (cheaper) - ~$0.025 per test
+python test_generation.py --quick
+
+# Compare multiple voices - ~$0.09-0.15 (EXPENSIVE!)
+python test_generation.py --compare          # Generates 3 avatar videos
+
+# Test custom scenarios - ~$0.06-0.10
+python test_generation.py --scenarios        # Multiple test scenarios
+```
+
 **Text-to-Image Testing:**
-Located in [fal_text_to_image/test_text_to_image.py](mdc:fal_text_to_image/test_text_to_image.py)
+Located in [fal_text_to_image/test_generation.py](mdc:fal_text_to_image/test_generation.py)
 
 **FREE Testing Commands (No Cost):**
 ```bash
 # API connection test only - completely FREE
-python test_api_only.py
+python test_setup.py
 
 # Basic setup and API connection test - FREE
-python test_text_to_image.py
+python test_generation.py
 ```
 
 **Paid Testing Commands (Generates Real Images):**
 ```bash
 # Test single model - ~$0.015 per test
-python test_text_to_image.py --imagen4    # Test Imagen4 only
-python test_text_to_image.py --seedream   # Test Seedream only
-python test_text_to_image.py --flux_schnell  # Test FLUX Schnell only
-python test_text_to_image.py --flux_dev   # Test FLUX Dev only
+python test_generation.py --imagen4    # Test Imagen4 only
+python test_generation.py --seedream   # Test Seedream only
+python test_generation.py --flux_schnell  # Test FLUX Schnell only
+python test_generation.py --flux_dev   # Test FLUX Dev only
 
 # Batch test with selected models - cost varies by model count
-python test_text_to_image.py --batch 1,3  # Test imagen4 + flux_schnell
-python test_text_to_image.py --batch 2,4  # Test seedream + flux_dev
+python test_generation.py --batch 1,3  # Test imagen4 + flux_schnell
+python test_generation.py --batch 2,4  # Test seedream + flux_dev
 
 # Full test with all models - ~$0.060 (EXPENSIVE!)
-python test_text_to_image.py --all        # Generates 4 images
+python test_generation.py --all        # Generates 4 images
 ```
 
 **Cost-Conscious Features:**
@@ -172,6 +276,14 @@ Located in [fal_video_generation/demo.py](mdc:fal_video_generation/demo.py)
 - Model selection menu with cost estimates
 - Side-by-side model comparison (with expensive operation warning)
 
+**Avatar Generation Demo:**
+Located in [fal_avatar_generation/demo.py](mdc:fal_avatar_generation/demo.py)
+- Interactive mode selection (Text-to-Speech, Audio-to-Avatar, Multi-Audio Conversation)
+- Voice selection with official example highlighting (Bill voice emphasized)
+- Cost estimation and confirmation prompts
+- Support for custom images, text input, and audio files
+- Official example option for quick testing
+
 **Text-to-Image Demo:**
 Located in [fal_text_to_image/demo.py](mdc:fal_text_to_image/demo.py)
 - Interactive model selection
@@ -181,6 +293,27 @@ Located in [fal_text_to_image/demo.py](mdc:fal_text_to_image/demo.py)
 - Support for negative prompts and custom parameters
 
 ## Direct Python API Usage
+
+### FAL AI Avatar Generator
+Direct Python API for avatar video generation with triple-mode support and cost-conscious design.
+
+**Core Functions:**
+1. **`generate_avatar_video()`** - Generate text-to-speech avatar with 20 voice options
+2. **`generate_avatar_from_audio()`** - Generate avatar from custom audio files
+3. **`generate_multi_avatar_conversation()`** - Generate two-person conversation videos
+4. **`generate_official_example()`** - Generate using exact FAL AI documentation examples
+5. **`get_available_voices()`** - Get list of all 20 available voices
+6. **`test_connection()`** - Test API connectivity without generating content
+
+**Key Features:**
+- Cost-conscious design with cost warnings and confirmation prompts
+- Rich response formatting with metadata including generation time and parameters
+- Support for all three avatar generation modes
+- Official example compliance with FAL AI documentation defaults
+- Natural lip-sync and expression generation
+- Local and remote file support for images and audio
+- Error handling and validation
+- Local video downloading and management
 
 ### FAL AI Text-to-Image Generator
 Direct Python API for text-to-image generation with multiple models and cost-conscious design.
@@ -203,68 +336,11 @@ Direct Python API for text-to-image generation with multiple models and cost-con
 **Installation and Setup:**
 ```bash
 # Install core dependencies
-pip install fal-client python-dotenv requests typing-extensions
+pip install fal-client requests python-dotenv
 
-# Set up API key in .env file
-echo "FAL_KEY=your_fal_api_key_here" > fal_text_to_image/.env
+# Set up environment
+echo "FAL_KEY=your-fal-ai-api-key-here" > .env
 ```
-
-**Python API Usage Examples:**
-```python
-from fal_text_to_image_generator import FALTextToImageGenerator
-
-# Initialize generator
-generator = FALTextToImageGenerator()
-
-# Generate single image
-result = generator.generate_image(
-    prompt="A serene mountain landscape",
-    model="imagen4",
-    negative_prompt="blur, artifacts"
-)
-
-# Batch generate with multiple models
-results = generator.batch_generate(
-    prompt="A futuristic cityscape",
-    models=["imagen4", "flux_dev"],
-    auto_confirm=True
-)
-
-# Get model information
-info = generator.get_model_info()
-```
-
-## Configuration
-
-### Environment Setup
-FAL AI requires only a simple API key setup:
-
-**Video Generation:** [fal_video_generation/.env](mdc:fal_video_generation/.env)
-**Text-to-Image:** [fal_text_to_image/.env](mdc:fal_text_to_image/.env)
-
-```bash
-# FAL AI API Configuration (works for all models)
-FAL_KEY=your_fal_api_key_here
-
-# Optional: Additional configuration
-FAL_TIMEOUT=300
-FAL_MAX_RETRIES=3
-```
-
-### Dependencies
-
-**Video Generation:** [fal_video_generation/requirements.txt](mdc:fal_video_generation/requirements.txt)
-**Text-to-Image:** [fal_text_to_image/requirements.txt](mdc:fal_text_to_image/requirements.txt)
-
-Core dependencies:
-- fal-client>=0.4.0
-- python-dotenv>=1.0.0  
-- requests>=2.31.0
-- typing-extensions>=4.0.0
-
-Optional dependencies for advanced features:
-- Pillow>=9.0.0 (for image processing)
-- matplotlib>=3.5.0 (for visualization)
 
 ## Model Specifications
 
@@ -272,38 +348,67 @@ Optional dependencies for advanced features:
 
 **MiniMax Hailuo-02:**
 - **Endpoint**: `fal-ai/minimax/hailuo-02/standard/image-to-video`
-- **Resolution**: 768p standard
-- **Duration**: 6-10 seconds (default: 6)
+- **Resolution**: 768p
+- **Duration**: 6 or 10 seconds
+- **Speed**: ~15-25 seconds
 - **Cost**: ~$0.02-0.05 per video
-- **Key Features**: Prompt optimizer, reliable output
+- **Key Features**: Prompt optimizer, reliable results
 
 **Kling Video 2.1:**
 - **Endpoint**: `fal-ai/kling-video/v2.1/standard/image-to-video`
-- **Resolution**: High-quality (varies by input)
-- **Duration**: 5-10 seconds (default: 5)
+- **Resolution**: High quality
+- **Duration**: 5 or 10 seconds
+- **Speed**: ~20-30 seconds
 - **Cost**: ~$0.02-0.05 per video
-- **Key Features**: CFG scale, negative prompts, enhanced quality
+- **Key Features**: CFG scale, negative prompts, artistic control
+
+### Avatar Generation Models
+
+**FAL AI Avatar Single-Text:**
+- **Endpoint**: `fal-ai/ai-avatar/single-text`
+- **Resolution**: Variable (depends on input image)
+- **Duration**: Based on text length and frame count (81-129 frames)
+- **Speed**: ~10-20 seconds
+- **Cost**: ~$0.02-0.05 per avatar video (1.25x multiplier for >81 frames)
+- **Key Features**: 20 voice options, text-to-speech conversion, natural lip-sync
+- **Official Example**: Bill voice with podcast-style prompt
+
+**FAL AI Avatar Audio:**
+- **Endpoint**: `fal-ai/ai-avatar`
+- **Resolution**: Variable (depends on input image)
+- **Duration**: Based on audio length and frame count (81-129 frames)
+- **Speed**: ~10-20 seconds
+- **Cost**: ~$0.02-0.05 per avatar video (1.25x multiplier for >81 frames)
+- **Key Features**: Custom audio lip-sync, natural expressions, supports MP3/WAV/other formats
+
+**FAL AI Avatar Multi:**
+- **Endpoint**: `fal-ai/ai-avatar/multi`
+- **Resolution**: Variable (depends on input image)
+- **Duration**: Based on combined audio length and frame count (81-129 frames)
+- **Speed**: ~15-25 seconds
+- **Cost**: ~$0.02-0.05 per conversation video (1.25x multiplier for >81 frames)
+- **Key Features**: Two-person conversations, sequential speaking, seamless transitions
 
 ### Text-to-Image Models
 
 **Imagen4:**
 - **Endpoint**: `fal-ai/google/imagen4/text-to-image`
-- **Resolution**: High-quality (1024x1024 default)
+- **Resolution**: High quality (1024x1024 default)
 - **Speed**: ~6-8 seconds
 - **Cost**: ~$0.015 per image
-- **Key Features**: Photorealistic results, excellent for portraits
+- **Key Features**: Photorealistic, excellent for portraits and professional images
 
 **Seedream:**
 - **Endpoint**: `fal-ai/seedream/text-to-image`
-- **Resolution**: Artistic quality (varies)
+- **Resolution**: High quality (1024x1024 default)
 - **Speed**: ~9-15 seconds
 - **Cost**: ~$0.015 per image
-- **Key Features**: Creative and artistic style, unique aesthetics
+- **Key Features**: Artistic style, creative generation, unique aesthetics
 
 **FLUX Schnell:**
 - **Endpoint**: `fal-ai/flux/schnell`
-- **Resolution**: Good quality (1024x1024 default)
-- **Speed**: ~1-2 seconds (fastest)
+- **Resolution**: High quality (1024x1024 default)
+- **Speed**: ~1-2 seconds
 - **Cost**: ~$0.015 per image
 - **Key Features**: Ultra-fast generation, good for iterations
 
@@ -315,9 +420,8 @@ Optional dependencies for advanced features:
 - **Key Features**: Balanced speed and quality, good for production
 
 ### Supported Formats
-- **Input**: Text prompts, negative prompts (text-to-image)
-- **Input**: Images + prompts (video generation)
-- **Output**: JPEG, PNG, WebP (images), MP4 (videos)
+- **Input**: Text prompts, negative prompts (text-to-image), images + prompts (video/avatar generation), audio files (avatar generation)
+- **Output**: JPEG, PNG, WebP (images), MP4 (videos/avatars)
 
 ## Usage Patterns
 
@@ -340,6 +444,37 @@ result = generator.generate_video_with_kling(
     duration="5",
     cfg_scale=0.7,
     negative_prompt="blur, distort, low quality, artifacts"
+)
+```
+
+**For Avatar Generation:**
+```python
+# For text-to-speech avatars (recommended: use official example)
+result = generator.generate_avatar_video(
+    image_url="https://v3.fal.media/files/panda/HuM21CXMf0q7OO2zbvwhV_c4533aada79a495b90e50e32dc9b83a8.png",
+    text_input="Spend more time with people who make you feel alive, and less with things that drain your soul.",
+    voice="Bill",  # Official example voice
+    prompt="An elderly man with a white beard and headphones records audio with a microphone. He appears engaged and expressive, suggesting a podcast or voiceover.",
+    num_frames=136,  # Official example frames
+    seed=42,  # Official example seed
+    turbo=True
+)
+
+# For custom audio lip-sync
+result = generator.generate_avatar_from_audio(
+    image_url="path/to/your/image.jpg",
+    audio_url="path/to/your/audio.mp3",
+    prompt="A person speaking naturally with clear lip-sync and natural expressions.",
+    num_frames=145
+)
+
+# For multi-person conversations
+result = generator.generate_multi_avatar_conversation(
+    image_url="path/to/your/image.jpg",
+    first_audio_url="path/to/person1_audio.mp3",
+    second_audio_url="path/to/person2_audio.mp3",
+    prompt="Two people engaged in a natural conversation, speaking in sequence with clear lip-sync and natural expressions.",
+    num_frames=181
 )
 ```
 
@@ -391,7 +526,7 @@ for result in results:
 ```
 
 ### Error Handling
-Both implementations include comprehensive error handling:
+All implementations include comprehensive error handling:
 - API key validation for all endpoints
 - Model-specific parameter validation
 - Network error recovery
@@ -412,6 +547,28 @@ Both implementations include comprehensive error handling:
     'duration': '6',  # or '5' for Kling
     'model': 'hailuo',  # or 'kling'
     'local_path': 'output/video.mp4'
+}
+```
+
+**Avatar Generation:**
+```python
+{
+    'video': {
+        'url': 'https://v3.fal.media/files/...',
+        'file_name': 'output.mp4',
+        'file_size': 2816883
+    },
+    'generation_time': 15.42,
+    'parameters': {
+        'image_url': '...',
+        'text_input': '...',  # or audio_url for audio mode
+        'voice': 'Bill',      # text mode only
+        'prompt': '...',
+        'num_frames': 136,
+        'seed': 42,
+        'turbo': True
+    },
+    'local_path': 'output/avatar_video.mp4'
 }
 ```
 
@@ -456,6 +613,11 @@ Both implementations include comprehensive error handling:
 - **MiniMax Hailuo-02**: General use, reliable results, prompt optimization
 - **Kling Video 2.1**: High-quality, artistic content, fine control
 
+**Avatar Generation:**
+- **Text-to-Speech Avatar**: Quick avatar generation with built-in speech synthesis, 20 voice options, official examples
+- **Audio-to-Avatar**: Custom audio content, professional voiceovers, existing audio files
+- **Multi-Audio Conversation**: Dialogue scenes, interviews, conversation videos, educational content
+
 **Text-to-Image Generation:**
 - **Imagen4**: Photorealistic content, portraits, professional images
 - **Seedream**: Creative and artistic content, unique aesthetics
@@ -470,16 +632,29 @@ Both implementations include comprehensive error handling:
 - Use appropriate models for content type
 - Implement retry logic for network operations
 - Cache results to avoid regeneration costs
+- Use official examples as starting points for avatar generation
+- Validate frame count ranges (81-129 for avatars)
+- Provide clear prompts for better avatar expressions
 
 ### Common Patterns
 - Initialize generator once, reuse for multiple generations
 - Use batch generation for A/B testing across models
-- Leverage model-specific features (prompt_optimizer, negative_prompts, cfg_scale)
+- Leverage model-specific features (prompt_optimizer, negative_prompts, cfg_scale, voice options)
 - Download content locally for offline access
 - Use interactive demos for quick experimentation
 - Implement direct Python API for programmatic access
+- Use official examples for consistent avatar generation results
 
 ### Testing Strategy
+
+**Avatar Generation Testing (Cost-Conscious Structure):**
+- Use FREE setup tests first (`test_setup.py`)
+- Test official examples (`test_official_example.py`) for documentation compliance
+- Test individual modes (`test_generation.py --voice Bill`)
+- Test specific voices (`test_generation.py --voice [VoiceName]`)
+- Test audio modes (`test_generation.py --audio`)
+- Test conversation modes (`test_generation.py --multi`)
+- Use generation testing with various modes (`test_generation.py`)
 
 **Text-to-Image Testing (Consolidated Structure):**
 - Use FREE setup tests first (`test_setup.py`)
@@ -504,4 +679,6 @@ Both implementations include comprehensive error handling:
 - Implement proper error handling and validation
 - Provide rich metadata in API responses
 - Support resource management for generated content
+- Use official examples for avatar generation consistency
+- Validate input parameters before API calls
 

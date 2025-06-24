@@ -5,7 +5,7 @@ alwaysApply: true
 ---
 # AI Content Generation Project Overview
 
-This project provides Python utilities for generating both videos and images using multiple AI platforms:
+This project provides Python utilities for generating videos, images, and avatars using multiple AI platforms:
 
 ## Video Generation
 1. **Google Veo API** on Vertex AI (higher resolution, automated setup with permission fixes)
@@ -13,8 +13,14 @@ This project provides Python utilities for generating both videos and images usi
    - **MiniMax Hailuo-02** (768p, prompt optimizer)
    - **Kling Video 2.1** (high-quality, CFG scale, negative prompts)
 
+## Avatar Generation
+3. **FAL AI Triple-Mode System** (talking avatars with lip-sync)
+   - **Text-to-Speech**: 20 voice options with natural speech conversion
+   - **Audio-to-Avatar**: Custom audio files for lip-sync animation
+   - **Multi-Audio Conversation**: Two-person conversations with sequential speaking
+
 ## Text-to-Image Generation
-3. **FAL AI Quad Models** (consolidated test structure, direct Python API)
+4. **FAL AI Quad Models** (consolidated test structure, direct Python API)
    - **Imagen4** (Google's high-quality model)
    - **Seedream** (Artistic and creative generation)
    - **FLUX Schnell** (Ultra-fast generation)
@@ -51,12 +57,22 @@ Located in [fal_video_generation/](mdc:fal_video_generation) directory with simp
 - [README.md](mdc:fal_video_generation/README.md) - Complete FAL AI dual-model documentation
 - [COST_CONSCIOUS_TESTING.md](mdc:fal_video_generation/COST_CONSCIOUS_TESTING.md) - Cost-conscious testing guide
 
+### FAL AI Avatar Generation (Triple-Mode)
+Located in [fal_avatar_generation/](mdc:fal_avatar_generation) directory with comprehensive avatar video generation using official FAL AI examples.
+
+**Key Components:**
+- [fal_avatar_generator.py](mdc:fal_avatar_generation/fal_avatar_generator.py) - Main FALAvatarGenerator class with triple-mode support
+- [demo.py](mdc:fal_avatar_generation/demo.py) - Cost-conscious interactive demo with mode selection
+- [test_official_example.py](mdc:fal_avatar_generation/test_official_example.py) - **Test using exact FAL AI documentation examples**
+- [test_setup.py](mdc:fal_avatar_generation/test_setup.py) - **FREE environment and API validation**
+- [test_generation.py](mdc:fal_avatar_generation/test_generation.py) - **PAID avatar generation tests** (includes `--voice`, `--audio`, `--multi` flags)
+- [README.md](mdc:fal_avatar_generation/README.md) - Complete FAL AI avatar documentation
+
 ### FAL AI Text-to-Image Generation (Quad-Model)
 Located in [fal_text_to_image/](mdc:fal_text_to_image) directory with consolidated test structure and direct Python API.
 
 **Key Components:**
 - [fal_text_to_image_generator.py](mdc:fal_text_to_image/fal_text_to_image_generator.py) - Main FALTextToImageGenerator class
-- [fal_text_to_image_generator.py](mdc:fal_text_to_image/fal_text_to_image_generator.py) - Main generator class with direct Python API
 - [demo.py](mdc:fal_text_to_image/demo.py) - Cost-conscious interactive demo
 - **Consolidated Test Suite:**
   - [test_setup.py](mdc:fal_text_to_image/test_setup.py) - **FREE environment and API validation**
@@ -72,6 +88,20 @@ Located in [fal_text_to_image/](mdc:fal_text_to_image) directory with consolidat
   - Resolution: High-quality
   - Duration: 5-10 seconds
   - Features: CFG scale, negative prompts
+
+**Supported Avatar Models:**
+- **FAL AI Avatar Single-Text**: `fal-ai/ai-avatar/single-text`
+  - Features: 20 voice options, text-to-speech conversion, natural lip-sync
+  - Frame Range: 81-129 frames (default: 136)
+  - Official Example: Bill voice with podcast-style prompt
+- **FAL AI Avatar Audio**: `fal-ai/ai-avatar`
+  - Features: Custom audio lip-sync, natural expressions
+  - Frame Range: 81-129 frames (default: 145)
+  - Supports: MP3, WAV, and other audio formats
+- **FAL AI Avatar Multi**: `fal-ai/ai-avatar/multi`
+  - Features: Two-person conversations, sequential speaking
+  - Frame Range: 81-129 frames (default: 181)
+  - Supports: Multiple audio files for conversation flow
 
 **Supported Text-to-Image Models:**
 - **Imagen4**: `fal-ai/google/imagen4/text-to-image` - Photorealistic, ~6-8s, $0.015/image
@@ -107,9 +137,19 @@ veo3/
 │   ├── .env                         # FAL AI configuration
 │   ├── output/                      # FAL AI generated videos
 │   └── test_output/                 # Test-generated videos
+├── fal_avatar_generation/           # FAL AI triple-mode avatar implementation
+│   ├── fal_avatar_generator.py      # FAL AI avatar generator class (triple-mode)
+│   ├── demo.py                      # Cost-conscious interactive demo with mode selection
+│   ├── test_official_example.py    # Test using exact FAL AI documentation examples
+│   ├── test_setup.py               # FREE environment and API validation
+│   ├── test_generation.py          # PAID avatar generation tests (voice/audio/multi flags)
+│   ├── README.md                    # FAL AI avatar documentation
+│   ├── requirements.txt             # FAL AI dependencies
+│   ├── .env                         # FAL AI configuration
+│   ├── output/                      # Generated avatar videos
+│   └── test_output/                 # Test-generated avatar videos
 └── fal_text_to_image/               # FAL AI quad-model text-to-image implementation
     ├── fal_text_to_image_generator.py # FAL AI text-to-image generator class
-    ├── fal_text_to_image_generator.py # Main generator class with Python API
     ├── demo.py                      # Cost-conscious interactive demo
     ├── test_setup.py               # FREE environment and API validation
     ├── test_generation.py          # PAID image generation tests (includes --dragon)
@@ -130,9 +170,12 @@ veo3/
 - gcloud CLI authentication
 
 ### FAL AI Setup (Simpler)
-- FAL AI API key in [fal_video_generation/.env](mdc:fal_video_generation/.env)
+- FAL AI API key in respective `.env` files:
+  - [fal_video_generation/.env](mdc:fal_video_generation/.env)
+  - [fal_avatar_generation/.env](mdc:fal_avatar_generation/.env)  
+  - [fal_text_to_image/.env](mdc:fal_text_to_image/.env)
 - Python dependencies: fal-client, requests, python-dotenv
-- Single API key works for both Hailuo and Kling models
+- Single API key works for all FAL AI models (video, avatar, image)
 
 ## Model Selection Guidelines
 
@@ -151,6 +194,13 @@ veo3/
 - You want longer videos
 - You already use Google Cloud infrastructure
 
+### Choose FAL AI Avatar Generation when:
+- You need talking avatars with lip-sync
+- You want text-to-speech conversion with 20 voice options
+- You need custom audio file lip-sync animation
+- You want multi-person conversation videos
+- You need natural facial expressions and movements
+
 ## Usage Recommendations
 
 ### Video Generation
@@ -159,9 +209,17 @@ veo3/
 - **Production**: Use FAL AI for API-based deployments, Google Veo for high-resolution needs
 - **Comparison**: Use cost-conscious comparison tools - remember comparison tests generate 2 videos (~$0.04-0.10)
 
+### Avatar Generation
+- **Testing Setup**: Use `python test_setup.py` for FREE environment validation
+- **Official Testing**: Use `python test_official_example.py` for exact FAL AI documentation examples
+- **Prototyping**: Start with single mode testing (`python test_generation.py --voice Bill`) to avoid unnecessary costs
+- **Voice Testing**: Use `python test_generation.py --voice [VoiceName]` for specific voice testing (~$0.03-0.05)
+- **Audio Testing**: Use `python test_generation.py --audio` for custom audio file testing (~$0.03-0.05)
+- **Conversation Testing**: Use `python test_generation.py --multi` for multi-person conversation testing (~$0.03-0.05)
+- **Production**: Use official examples as defaults, customize parameters as needed
+
 ### Text-to-Image Generation
 - **Testing Setup**: Use `python test_setup.py` for FREE environment validation
-- **API Testing**: Use `python test_setup.py` for FREE environment and API validation
 - **Prototyping**: Start with single model testing (`python test_generation.py --flux-schnell`) to avoid unnecessary costs
 - **Dragon Generation**: Use `python test_generation.py --dragon` for dragon image testing (~$0.015)
 - **Production**: Use batch generation for efficiency (`python test_generation.py --batch 1,3`)
@@ -176,6 +234,14 @@ veo3/
 - **Use model-specific flags** (`--hailuo`, `--kling`) to test individual models
 - **Avoid comparison tests** during development unless specifically needed
 - **Monitor costs** - each video generation costs ~$0.02-0.05
+
+### Avatar Generation
+- **NEVER run avatar generation tests without explicit user confirmation**
+- **Always start with FREE tests** (`test_setup.py`) to validate setup
+- **Use official examples** (`test_official_example.py`) for documentation compliance
+- **Use mode-specific flags** (`--voice`, `--audio`, `--multi`) to test individual modes
+- **Avoid comparison tests** during development unless specifically needed
+- **Monitor costs** - each avatar generation costs ~$0.02-0.05
 
 ### Text-to-Image Generation
 - **NEVER run image generation tests without explicit user confirmation**

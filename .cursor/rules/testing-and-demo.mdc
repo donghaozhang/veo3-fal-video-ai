@@ -8,14 +8,20 @@ alwaysApply: false
 ## ⚠️ CRITICAL: Cost Protection
 **See [cost-protection.mdc](mdc:.cursor/rules/cost-protection.mdc) for complete cost protection rules**
 
-**NEVER run video/image generation tests without explicit user confirmation - they cost real money!**
+**NEVER run video/image/avatar generation tests without explicit user confirmation - they cost real money!**
 
-This document covers the cost-conscious testing and demonstration capabilities for both FAL AI video generation and text-to-image implementations.
+This document covers the cost-conscious testing and demonstration capabilities for FAL AI video generation, avatar generation, and text-to-image implementations.
 
 ## Cost-Conscious Test Suite Overview
 
 ### FAL AI Video Generation Tests
 Located in [fal_video_generation/test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py) and [fal_video_generation/test_api_only.py](mdc:fal_video_generation/test_api_only.py)
+
+### FAL AI Avatar Generation Tests (TRIPLE-MODE)
+Located in [fal_avatar_generation/](mdc:fal_avatar_generation/) with comprehensive triple-mode test structure:
+- **[test_setup.py](mdc:fal_avatar_generation/test_setup.py)** - FREE environment and API validation
+- **[test_official_example.py](mdc:fal_avatar_generation/test_official_example.py)** - Test using exact FAL AI documentation examples
+- **[test_generation.py](mdc:fal_avatar_generation/test_generation.py)** - PAID avatar generation tests (includes `--voice`, `--audio`, `--multi` flags)
 
 ### FAL AI Text-to-Image Tests (CONSOLIDATED)
 Located in [fal_text_to_image/](mdc:fal_text_to_image/) with consolidated test structure:
@@ -35,13 +41,22 @@ python test_api_only.py
 python test_fal_ai.py
 ```
 
+#### Avatar Generation (FAL AI)
+```bash
+# Environment and API setup test - completely FREE
+python test_setup.py
+
+# Basic setup and dependency validation - FREE (no avatar generation)
+python test_generation.py
+```
+
 #### Text-to-Image Generation (FAL AI)
 ```bash
 # Environment and API setup test - completely FREE
 python test_setup.py
 
-# Direct API functionality test - completely FREE
-python test_setup.py
+# Basic setup and dependency validation - FREE (no image generation)
+python test_generation.py
 ```
 
 ### Paid Test Command Options (Generates Real Content)
@@ -58,6 +73,32 @@ python test_fal_ai.py --full
 
 # Compare both models - ~$0.04-0.10 (EXPENSIVE!)
 python test_fal_ai.py --compare     # Generates 2 videos
+```
+
+#### Avatar Generation (FAL AI)
+```bash
+# Official FAL AI example test - ~$0.03-0.05 per test
+python test_official_example.py    # Exact documentation example
+
+# Test specific voice - ~$0.03-0.05 per test
+python test_generation.py --voice Bill      # Test Bill voice (official example)
+python test_generation.py --voice Sarah     # Test Sarah voice
+python test_generation.py --voice Roger     # Test Roger voice
+
+# Test audio-to-avatar mode - ~$0.03-0.05 per test
+python test_generation.py --audio           # Test custom audio files
+
+# Test multi-audio conversation mode - ~$0.03-0.05 per test
+python test_generation.py --multi           # Test two-person conversation
+
+# Quick test with minimal frames (cheaper) - ~$0.025 per test
+python test_generation.py --quick
+
+# Compare multiple voices - ~$0.09-0.15 (EXPENSIVE!)
+python test_generation.py --compare         # Generates 3+ avatar videos
+
+# Test custom scenarios - ~$0.06-0.10
+python test_generation.py --scenarios       # Multiple test scenarios
 ```
 
 #### Text-to-Image Generation (FAL AI)
@@ -80,59 +121,86 @@ python test_generation.py --compare     # Generates 4 images
 
 ### Cost Safety Features
 - **Cost warnings** displayed prominently before any paid operations
-- **Confirmation prompts** before generating videos
-- **Model-specific testing** to avoid testing both models accidentally
+- **Confirmation prompts** before generating content
+- **Model/mode-specific testing** to avoid testing multiple models/modes accidentally
 - **Clear cost estimates** for each operation
 - **FREE default behavior** when no flags are specified
+- **Official example testing** for documentation compliance (avatar generation)
 
-## FREE Testing Script
+## FREE Testing Scripts
+
+### Video Generation
 Located in [fal_video_generation/test_api_only.py](mdc:fal_video_generation/test_api_only.py)
 
 A completely FREE testing script that validates your setup without generating any videos:
 
-### Features
+#### Features
 - **No video generation** - completely free to run
 - **API key validation** without triggering charges
 - **Dependencies check** for all required packages
 - **Environment validation** for .env configuration
 - **Generator initialization** testing
 
-### Usage
+### Avatar Generation
+Located in [fal_avatar_generation/test_setup.py](mdc:fal_avatar_generation/test_setup.py)
+
+A completely FREE testing script that validates your avatar generation setup:
+
+#### Features
+- **No avatar generation** - completely free to run
+- **API key validation** without triggering charges
+- **Dependencies check** for all required packages (fal-client, requests, python-dotenv)
+- **Environment validation** for .env configuration
+- **Generator initialization** testing for all three modes
+- **Voice options validation** (20 voices available)
+
+#### Usage
 ```bash
-python test_api_only.py
+python test_setup.py
 ```
 
-### Output Example
+#### Output Example
 ```
-🆓 FAL AI API Connection Test - FREE
-Tests API connectivity without generating videos
-==================================================
-✅ Your FAL AI setup is ready for video generation
-🆓 This test was completely FREE - no videos were generated
+🆓 FAL AI Avatar Generation Setup Test - FREE
+Tests environment and API connectivity without generating avatars
+===============================================================
+✅ Dependencies: All required packages installed
+✅ Environment: FAL_KEY configured properly
+✅ API Connection: Successfully connected to FAL AI
+✅ Generator: All three modes (text-to-speech, audio-to-avatar, multi-audio) ready
+✅ Voices: All 20 voice options available
+🆓 This test was completely FREE - no avatars were generated
 ```
+
+### Text-to-Image Generation
+Located in [fal_text_to_image/test_setup.py](mdc:fal_text_to_image/test_setup.py)
+
+A completely FREE testing script for text-to-image setup validation.
 
 ## Test Components
 
 ### 1. Dependency Testing
 - Validates all required imports (fal_client, requests, python-dotenv)
-- Checks FALVideoGenerator class availability
+- Checks generator class availability
 - Reports missing dependencies with installation instructions
 
 ### 2. Environment Testing
 - Validates .env file presence
 - Checks FAL_KEY format and availability
-- Tests both model endpoints configuration
+- Tests endpoint configuration
 - Warns about API key format issues
 
 ### 3. API Connection Testing
 - Authenticates with FAL AI using provided API key
-- Tests connection to both Hailuo and Kling endpoints
+- Tests connection to respective endpoints
 - Validates API key permissions and rate limits
 - Reports connection status and API key validity
 
-### 4. Model-Specific Testing
+### 4. Model/Mode-Specific Testing
 
-#### Hailuo Model Testing
+#### Video Generation Models
+
+**Hailuo Model Testing**
 ```python
 # Test parameters used
 {
@@ -143,7 +211,7 @@ Tests API connectivity without generating videos
 }
 ```
 
-#### Kling Model Testing
+**Kling Model Testing**
 ```python
 # Test parameters used
 {
@@ -155,16 +223,77 @@ Tests API connectivity without generating videos
 }
 ```
 
+#### Avatar Generation Modes
+
+**Text-to-Speech Mode Testing (Official Example)**
+```python
+# Official FAL AI example parameters
+{
+    'image_url': 'https://v3.fal.media/files/panda/HuM21CXMf0q7OO2zbvwhV_c4533aada79a495b90e50e32dc9b83a8.png',
+    'text_input': 'Spend more time with people who make you feel alive, and less with things that drain your soul.',
+    'voice': 'Bill',
+    'prompt': 'An elderly man with a white beard and headphones records audio with a microphone. He appears engaged and expressive, suggesting a podcast or voiceover.',
+    'num_frames': 136,
+    'seed': 42,
+    'turbo': True
+}
+```
+
+**Audio-to-Avatar Mode Testing**
+```python
+# Test parameters used
+{
+    'image_url': 'path/to/test/image.jpg',
+    'audio_url': 'path/to/test/audio.mp3',
+    'prompt': 'A person speaking naturally with clear lip-sync and natural expressions.',
+    'num_frames': 145,
+    'turbo': True
+}
+```
+
+**Multi-Audio Conversation Mode Testing**
+```python
+# Test parameters used
+{
+    'image_url': 'path/to/test/image.jpg',
+    'first_audio_url': 'path/to/person1_audio.mp3',
+    'second_audio_url': 'path/to/person2_audio.mp3',
+    'prompt': 'Two people engaged in a natural conversation, speaking in sequence with clear lip-sync and natural expressions.',
+    'num_frames': 181,
+    'turbo': True
+}
+```
+
+#### Text-to-Image Model Testing
+
+**Model-Specific Parameters**
+```python
+# Imagen4 testing
+{
+    'prompt': 'A beautiful dragon in a magical forest',
+    'negative_prompt': 'blur, distortion, artifacts',
+    'num_inference_steps': 50
+}
+
+# FLUX Schnell testing (fast)
+{
+    'prompt': 'A quick dragon sketch',
+    'num_inference_steps': 4
+}
+```
+
 ### 5. Comparison Testing
-- Runs both models with identical input parameters
-- Measures generation time for each model
+- Runs multiple models/modes with identical input parameters
+- Measures generation time for each model/mode
 - Compares file sizes and output quality
 - Provides side-by-side result analysis
 
-## Cost-Conscious Interactive Demo
+## Cost-Conscious Interactive Demos
+
+### Video Generation Demo
 Located in [fal_video_generation/demo.py](mdc:fal_video_generation/demo.py)
 
-### Demo Features
+#### Demo Features
 - **Cost Warnings**: Upfront warnings about video generation costs
 - **Confirmation Prompts**: User confirmation before each paid operation
 - **Model Selection Menu**: Choose between Hailuo, Kling, or comparison modes with cost estimates
@@ -172,6 +301,47 @@ Located in [fal_video_generation/demo.py](mdc:fal_video_generation/demo.py)
 - **Local Image Generation**: Upload and use local image files (~$0.02-0.05 per video)
 - **Model Comparison**: Generate videos with both models simultaneously (~$0.04-0.10)
 - **Custom Parameters**: Adjust model-specific settings interactively
+
+### Avatar Generation Demo
+Located in [fal_avatar_generation/demo.py](mdc:fal_avatar_generation/demo.py)
+
+#### Demo Features
+- **Cost Warnings**: Upfront warnings about avatar generation costs
+- **Mode Selection Menu**: Choose between Text-to-Speech, Audio-to-Avatar, or Multi-Audio Conversation
+- **Voice Selection**: Interactive voice picker with 20 options (Bill highlighted as official example)
+- **Official Example Option**: Quick generation using exact FAL AI documentation examples
+- **Confirmation Prompts**: User confirmation before each paid operation
+- **Custom Parameters**: Adjust frame count, prompts, and generation settings
+- **File Support**: Local and remote images/audio files
+
+#### Demo Menu Structure with Cost Indicators
+```
+🎭 FAL AI Avatar Generation Demo
+💰 COST WARNING: Each avatar generation costs ~$0.03-0.05
+=============================================
+1. Text-to-Speech Avatar (~$0.03-0.05)
+   - 20 voice options available
+   - Official example: Bill voice recommended
+2. Audio-to-Avatar (~$0.03-0.05)
+   - Use custom audio files
+   - Natural lip-sync animation
+3. Multi-Audio Conversation (~$0.03-0.05)
+   - Two-person conversations
+   - Sequential speaking
+4. Official FAL AI Example (~$0.03-0.05)
+   - Exact documentation reproduction
+5. Exit
+```
+
+### Text-to-Image Demo
+Located in [fal_text_to_image/demo.py](mdc:fal_text_to_image/demo.py)
+
+#### Demo Features
+- **Cost Warnings**: Upfront warnings about image generation costs
+- **Model Selection Menu**: Choose between Imagen4, Seedream, FLUX Schnell, FLUX Dev
+- **Batch Generation**: Generate with multiple models simultaneously
+- **Dragon Generation**: Special dragon image generation option
+- **Custom Parameters**: Negative prompts, inference steps, etc.
 
 ### Demo Menu Structure with Cost Indicators
 ```
@@ -188,9 +358,10 @@ Located in [fal_video_generation/demo.py](mdc:fal_video_generation/demo.py)
 ### Cost Safety Features
 - **Upfront cost warnings** displayed when demo starts
 - **Individual cost estimates** for each demo option
-- **Confirmation prompts** before generating any videos
+- **Confirmation prompts** before generating any content
 - **Expensive operations** clearly marked with warnings
 - **User can cancel** any operation before charges occur
+- **Official example recommendations** for avatar generation
 
 ### Usage Examples
 
@@ -201,154 +372,89 @@ python demo.py
 # Follow prompts for image URL and description
 ```
 
-#### Model Comparison
+#### Avatar Generation Testing
 ```bash
 python demo.py
-# Select option 5 for side-by-side comparison
-# Same input generates videos with both models
+# Select option 4 for official example (recommended)
+# Or select option 1 for custom text-to-speech
+# Follow prompts for image, text, and voice selection
 ```
 
-#### Local Image Testing
+#### Model/Mode Comparison
 ```bash
 python demo.py
-# Select option 3 or 4 for local image upload
-# Provide path to local image file
+# Select option 3 for comparison (costs ~2x-4x more)
+# Confirm additional costs before proceeding
 ```
 
-## Test Output Structure
+## Official Example Testing (Avatar Generation Only)
 
-### Success Response Format
+### FAL AI Documentation Compliance
+Located in [fal_avatar_generation/test_official_example.py](mdc:fal_avatar_generation/test_official_example.py)
+
+#### Purpose
+- **Test exact FAL AI documentation examples** to ensure compliance
+- **Validate official parameters** work correctly
+- **Provide reference implementation** for users
+- **Cost**: ~$0.03-0.05 per test (generates one avatar video)
+
+#### Official Example Parameters
 ```python
 {
-    'status': 'success',
-    'model': 'hailuo' | 'kling',
-    'video_url': 'https://v3.fal.media/files/...',
-    'local_path': 'output/video.mp4',
-    'file_size': 2816883,
-    'duration': '6' | '5',
-    'generation_time': 120.5  # seconds
+    'image_url': 'https://v3.fal.media/files/panda/HuM21CXMf0q7OO2zbvwhV_c4533aada79a495b90e50e32dc9b83a8.png',
+    'text_input': 'Spend more time with people who make you feel alive, and less with things that drain your soul.',
+    'voice': 'Bill',
+    'prompt': 'An elderly man with a white beard and headphones records audio with a microphone. He appears engaged and expressive, suggesting a podcast or voiceover.',
+    'num_frames': 136,
+    'seed': 42,
+    'turbo': True
 }
 ```
 
-### Error Response Format
-```python
-{
-    'status': 'error',
-    'model': 'hailuo' | 'kling',
-    'error_type': 'api_error' | 'network_error' | 'validation_error',
-    'error_message': 'Detailed error description',
-    'retry_suggested': True | False
-}
-```
-
-## Test Validation Criteria
-
-### API Connection Tests
-- ✅ FAL_KEY properly formatted (starts with expected prefix)
-- ✅ API authentication successful
-- ✅ Both model endpoints accessible
-- ✅ Rate limits respected
-
-### Video Generation Tests
-- ✅ Video generation completes successfully
-- ✅ Video URL is valid and accessible
-- ✅ Video file downloads correctly
-- ✅ File size is reasonable (>1MB, <10MB typically)
-- ✅ Duration matches requested length
-
-### Model-Specific Validation
-
-#### Hailuo Validation
-- ✅ Prompt optimizer parameter accepted
-- ✅ 768p resolution output
-- ✅ 6-second default duration
-- ✅ Consistent file naming
-
-#### Kling Validation
-- ✅ CFG scale parameter accepted (0.1-2.0)
-- ✅ Negative prompt parameter processed
-- ✅ 5-second default duration
-- ✅ High-quality output characteristics
-
-## Troubleshooting Test Issues
-
-### Common Test Failures
-1. **API Key Issues**
-   - Verify FAL_KEY in .env file
-   - Check key format and permissions
-   - Ensure key has access to both models
-
-2. **Network Timeouts**
-   - Video generation can take 2-5 minutes
-   - Check internet connection stability
-   - Consider using --api-only for quick validation
-
-3. **File Download Failures**
-   - Verify output directory permissions
-   - Check available disk space
-   - Ensure firewall allows HTTPS downloads
-
-4. **Model-Specific Errors**
-   - Validate parameter ranges (duration, cfg_scale)
-   - Check image URL accessibility
-   - Verify model endpoint availability
-
-### Debug Mode
-Enable detailed logging by setting environment variable:
+#### Usage
 ```bash
-export FAL_DEBUG=1
-python test_fal_ai.py --compare
+python test_official_example.py
+# Generates avatar video using exact FAL AI documentation example
+# Cost: ~$0.03-0.05
 ```
 
-## Continuous Integration Usage
+## Testing Best Practices
 
-### CI/CD Pipeline Integration
-```yaml
-# Example GitHub Actions workflow
-- name: Test FAL AI Models
-  run: |
-    cd fal_video_generation
-    python test_fal_ai.py --api-only
-    python test_fal_ai.py --quick
-  env:
-    FAL_KEY: ${{ secrets.FAL_KEY }}
+### Cost-Conscious Development Workflow
+1. **Always start with FREE tests** (`test_setup.py`, `test_api_only.py`)
+2. **Use official examples** for avatar generation when possible
+3. **Test single models/modes** before running comparisons
+4. **Confirm costs** before running paid tests
+5. **Use model-specific flags** to avoid unnecessary generation
+
+### Recommended Testing Sequence
+
+#### For New Setup
+```bash
+# 1. FREE environment validation
+python test_setup.py
+
+# 2. FREE API connection test (video only)
+python test_api_only.py
+
+# 3. Official example test (avatar only, PAID)
+python test_official_example.py  # With user confirmation
+
+# 4. Single model/mode tests (PAID)
+python test_generation.py --voice Bill  # With user confirmation
 ```
 
-### Test Coverage Reports
-The test suite provides comprehensive coverage reporting:
-- Dependency validation: 100%
-- Environment setup: 100%
-- API connectivity: 100%
-- Model functionality: 90%+ (depends on API availability)
+#### For Development
+```bash
+# Always use FREE tests during development
+python test_setup.py
 
-## Performance Benchmarking
+# Only run paid tests when specifically testing generation
+# Always with explicit user confirmation
+```
 
-### Typical Generation Times
-- **Hailuo Model**: 2-4 minutes average
-- **Kling Model**: 2-5 minutes average
-- **Network factors**: Can add 30-60 seconds
-
-### File Size Expectations
-- **Hailuo**: 2-4MB for 6-second videos
-- **Kling**: 3-5MB for 5-second videos
-- **Quality correlation**: Higher quality = larger files
-
-## Best Practices for Testing
-
-### Development Testing
-1. Start with `--api-only` for quick validation
-2. Use `--quick` for single model testing
-3. Use `--compare` for comprehensive evaluation
-4. Test with different image types and prompts
-
-### Production Validation
-1. Run full test suite before deployment
-2. Validate both models in production environment
-3. Monitor generation times and success rates
-4. Set up automated health checks
-
-### Performance Testing
-1. Test with various image sizes and formats
-2. Measure generation times across different prompts
-3. Validate concurrent request handling
-4. Monitor API rate limit compliance
+### Cost Monitoring
+- Track generation costs during development
+- Use single model/mode flags to minimize costs
+- Avoid comparison tests during development
+- Document all cost implications in test functions
