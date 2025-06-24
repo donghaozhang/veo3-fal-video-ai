@@ -122,16 +122,25 @@ def test_single_model(generator: FALTextToImageGenerator, model: str, prompt: st
         result = generator.generate_image(
             prompt=prompt,
             model=model,
-            negative_prompt=negative_prompt,
-            output_folder="test_output"
+            negative_prompt=negative_prompt
         )
         generation_time = time.time() - start_time
         
         if result['success']:
             print(f"✅ {model} generation successful!")
             print(f"⏱️  Generation time: {generation_time:.2f} seconds")
-            print(f"🔗 Image URL: {result['image']['url']}")
-            print(f"📁 Local path: {result['local_path']}")
+            print(f"🔗 Image URL: {result['image_url']}")
+            
+            local_path = None
+            if download:
+                try:
+                    local_path = generator.download_image(result['image_url'], output_folder="test_output")
+                    print(f"📁 Image downloaded to: {local_path}")
+                except Exception as e:
+                    print(f"❌ Error downloading image: {e}")
+
+            # Update result to include local path for summary
+            result['local_path'] = local_path
             
             return {
                 'success': True,
@@ -322,6 +331,7 @@ def main():
     
     # Options
     parser.add_argument('--download', action='store_true', help='Download generated images locally')
+    parser.add_argument('-y', '--yes', action='store_true', help='Automatically answer yes to prompts; use with caution.')
     
     args = parser.parse_args()
     
@@ -356,7 +366,7 @@ def main():
         if args.dragon:
             # Dragon generation test
             cost = "~$0.015 (1 dragon image)"
-            if not confirm_paid_test(f"Generate dragon image with {args.dragon_model}", cost):
+            if not args.yes and not confirm_paid_test(f"Generate dragon image with {args.dragon_model}", cost):
                 print("❌ Dragon generation cancelled by user.")
                 return
             
@@ -395,7 +405,7 @@ def main():
                 return
             
             cost = f"~${len(selected_models) * 0.015:.3f} ({len(selected_models)} images)"
-            if not confirm_paid_test(f"Batch test {len(selected_models)} models: {', '.join(selected_models)}", cost):
+            if not args.yes and not confirm_paid_test(f"Batch test {len(selected_models)} models: {', '.join(selected_models)}", cost):
                 print("❌ Batch test cancelled by user.")
                 return
             
@@ -405,7 +415,7 @@ def main():
         elif args.full or args.compare:
             # Full comparison test
             cost = "~$0.060 (4 images)"
-            if not confirm_paid_test("Full model comparison test", cost):
+            if not args.yes and not confirm_paid_test("Full model comparison test", cost):
                 print("❌ Test cancelled by user.")
                 return
             
@@ -425,7 +435,7 @@ def main():
                 test_models.append(("flux_dev", "~$0.015"))
             
             for model, cost in test_models:
-                if not confirm_paid_test(f"Test {model} model", cost):
+                if not args.yes and not confirm_paid_test(f"Test {model} model", cost):
                     print(f"❌ {model} test cancelled by user.")
                     continue
                 
