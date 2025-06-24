@@ -4,10 +4,13 @@ Generate talking avatar videos from images using FAL AI's Avatar models. This im
 
 ## 🎭 Features
 
-- **Text-to-Speech Avatar Generation**: Convert text to talking avatar videos with 20 voice options
-- **Audio-to-Avatar Generation**: Use custom audio files for lip-sync animation
+- **Triple-Mode Avatar Generation**:
+  - **Text-to-Speech**: Convert text to talking avatar videos with 20 voice options
+  - **Audio-to-Avatar**: Use custom audio files for lip-sync animation
+  - **Multi-Audio Conversation**: Two-person conversations with sequential speaking
 - **Natural Lip-Sync Technology**: Automatic mouth movement synchronization
 - **Natural Expressions**: AI-generated facial expressions and movements
+- **Conversation Support**: Multi-person dialogue with seamless transitions
 - **Customizable Parameters**: Frame count, voice selection, prompts
 - **Turbo Mode**: Faster generation with optimized processing
 - **Local & Remote Support**: Both local files and URLs for images/audio
@@ -74,6 +77,26 @@ result = generator.generate_avatar_from_audio(
 print(f"Video generated: {result['video']['url']}")
 ```
 
+#### Multi-Audio Conversation Mode (two-person dialogue)
+
+```python
+from fal_avatar_generator import FALAvatarGenerator
+
+# Initialize generator
+generator = FALAvatarGenerator()
+
+# Generate multi-person conversation video
+result = generator.generate_multi_avatar_conversation(
+    image_url="path/to/your/image.jpg",
+    first_audio_url="path/to/person1_audio.mp3",
+    second_audio_url="path/to/person2_audio.mp3",
+    prompt="Two people engaged in a natural conversation, speaking in sequence.",
+    output_path="output/conversation_video.mp4"
+)
+
+print(f"Conversation video generated: {result['video']['url']}")
+```
+
 ### 4. Interactive Demo
 
 ```bash
@@ -81,10 +104,11 @@ python demo.py
 ```
 
 The demo provides a user-friendly interface to:
-- Choose between text-to-speech or audio-to-avatar modes
+- Choose between text-to-speech, audio-to-avatar, or multi-audio conversation modes
 - Select images (local files, URLs, or sample images)
 - Enter text for speech or select audio files
 - Choose from 20 available voices (text mode only)
+- Configure multiple audio files for conversations (multi-audio mode)
 - Configure generation parameters
 - Preview cost estimates before generation
 
@@ -130,6 +154,12 @@ python test_generation.py --voice Bill
 # Compare multiple voices (costs more)
 python test_generation.py --compare
 
+# Test audio-to-avatar generation
+python test_generation.py --audio
+
+# Test multi-audio conversation generation
+python test_generation.py --multi
+
 # Test custom scenarios
 python test_generation.py --scenarios
 ```
@@ -167,6 +197,37 @@ Generate a talking avatar video.
 - `voice` (str): Voice name (default: "Sarah")
 - `prompt` (str): Generation prompt (default: natural speaking)
 - `num_frames` (int): Frame count 81-129 (default: 136)
+- `seed` (int, optional): Random seed for reproducibility
+- `turbo` (bool): Enable turbo mode (default: True)
+- `output_path` (str, optional): Local save path
+
+**Returns**:
+- Dictionary with video information and metadata
+
+#### `generate_avatar_from_audio(**kwargs)`
+Generate avatar video from custom audio file.
+
+**Parameters**:
+- `image_url` (str): Image URL or local file path
+- `audio_url` (str): Audio URL or local file path
+- `prompt` (str): Generation prompt (default: natural speaking)
+- `num_frames` (int): Frame count 81-129 (default: 145)
+- `seed` (int, optional): Random seed for reproducibility
+- `turbo` (bool): Enable turbo mode (default: True)
+- `output_path` (str, optional): Local save path
+
+**Returns**:
+- Dictionary with video information and metadata
+
+#### `generate_multi_avatar_conversation(**kwargs)`
+Generate multi-person conversation video from two audio files.
+
+**Parameters**:
+- `image_url` (str): Image URL or local file path
+- `first_audio_url` (str): First person's audio URL or local file path
+- `second_audio_url` (str): Second person's audio URL or local file path
+- `prompt` (str): Generation prompt (default: natural conversation)
+- `num_frames` (int): Frame count 81-129 (default: 181)
 - `seed` (int, optional): Random seed for reproducibility
 - `turbo` (bool): Enable turbo mode (default: True)
 - `output_path` (str, optional): Local save path

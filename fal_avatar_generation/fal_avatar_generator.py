@@ -65,10 +65,12 @@ class FALAvatarGenerator:
         # Model endpoints
         self.text_endpoint = "fal-ai/ai-avatar/single-text"
         self.audio_endpoint = "fal-ai/ai-avatar"
+        self.multi_endpoint = "fal-ai/ai-avatar/multi"
         
         print(f"✅ FAL Avatar Generator initialized")
         print(f"📍 Text-to-speech endpoint: {self.text_endpoint}")
         print(f"📍 Audio-to-avatar endpoint: {self.audio_endpoint}")
+        print(f"📍 Multi-audio endpoint: {self.multi_endpoint}")
         print(f"🎭 Available voices: {len(VOICE_OPTIONS)} options")
     
     def generate_avatar_video(
@@ -280,6 +282,120 @@ class FALAvatarGenerator:
                 
         except Exception as e:
             print(f"❌ Error generating avatar video from audio: {str(e)}")
+            raise
+    
+    def generate_multi_avatar_conversation(
+        self,
+        image_url: str,
+        first_audio_url: str,
+        second_audio_url: str,
+        prompt: str = "Two people engaged in a natural conversation, speaking in sequence with clear lip-sync and natural expressions.",
+        num_frames: int = 181,
+        seed: Optional[int] = None,
+        turbo: bool = True,
+        output_path: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """
+        Generate a multi-person conversation avatar video from an image and two audio files
+        
+        Args:
+            image_url (str): URL of the input image or local file path
+            first_audio_url (str): URL of the first person's audio file or local file path
+            second_audio_url (str): URL of the second person's audio file or local file path
+            prompt (str): Text prompt to guide video generation
+            num_frames (int): Number of frames (81-129, default: 181)
+            seed (int, optional): Random seed for reproducibility
+            turbo (bool): Whether to use turbo mode for faster generation
+            output_path (str, optional): Path to save the generated video
+            
+        Returns:
+            Dict containing the generated video information and metadata
+        """
+        try:
+            print(f"🎬 Starting multi-person avatar conversation generation...")
+            print(f"🖼️ Image: {image_url}")
+            print(f"🎵 First audio: {first_audio_url}")
+            print(f"🎵 Second audio: {second_audio_url}")
+            print(f"⚡ Turbo mode: {turbo}")
+            
+            # Handle local image files
+            if os.path.isfile(image_url):
+                print(f"📤 Uploading local image: {image_url}")
+                image_url = fal_client.upload_file(image_url)
+                print(f"✅ Image uploaded: {image_url}")
+            
+            # Handle local audio files
+            if os.path.isfile(first_audio_url):
+                print(f"📤 Uploading first audio: {first_audio_url}")
+                first_audio_url = fal_client.upload_file(first_audio_url)
+                print(f"✅ First audio uploaded: {first_audio_url}")
+            
+            if os.path.isfile(second_audio_url):
+                print(f"📤 Uploading second audio: {second_audio_url}")
+                second_audio_url = fal_client.upload_file(second_audio_url)
+                print(f"✅ Second audio uploaded: {second_audio_url}")
+            
+            # Validate parameters
+            if not (81 <= num_frames <= 129):
+                raise ValueError(f"num_frames must be between 81 and 129, got {num_frames}")
+            
+            # Prepare arguments
+            arguments = {
+                "image_url": image_url,
+                "first_audio_url": first_audio_url,
+                "second_audio_url": second_audio_url,
+                "prompt": prompt,
+                "num_frames": num_frames,
+                "turbo": turbo
+            }
+            
+            if seed is not None:
+                arguments["seed"] = seed
+            
+            print(f"🚀 Submitting request to {self.multi_endpoint}...")
+            
+            # Track generation time
+            start_time = time.time()
+            
+            def on_queue_update(update):
+                if isinstance(update, fal_client.InProgress):
+                    for log in update.logs:
+                        print(f"📋 {log['message']}")
+            
+            # Generate the multi-avatar conversation video
+            result = fal_client.subscribe(
+                self.multi_endpoint,
+                arguments=arguments,
+                with_logs=True,
+                on_queue_update=on_queue_update
+            )
+            
+            generation_time = time.time() - start_time
+            
+            if result and 'video' in result:
+                video_info = result['video']
+                video_url = video_info['url']
+                file_size = video_info.get('file_size', 0)
+                
+                print(f"✅ Multi-avatar conversation generated successfully!")
+                print(f"⏱️ Generation time: {generation_time:.2f} seconds")
+                print(f"📊 File size: {file_size / (1024*1024):.2f} MB")
+                print(f"🔗 Video URL: {video_url}")
+                
+                # Download video if output path specified
+                if output_path:
+                    self._download_video(video_url, output_path)
+                
+                # Add metadata to result
+                result['generation_time'] = generation_time
+                result['parameters'] = arguments
+                
+                return result
+            else:
+                raise Exception(f"Unexpected result format: {result}")
+                
+        except Exception as e:
+            print(f"❌ Error generating multi-avatar conversation: {str(e)}")
             raise
     
     def _download_video(self, video_url: str, output_path: str) -> None:

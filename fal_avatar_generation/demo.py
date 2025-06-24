@@ -37,20 +37,30 @@ def display_voices(voices: list):
     """Display available voices in a formatted list"""
     print("\n🎤 Available Voices:")
     print("=" * 50)
+    print("⭐ Recommended: Bill (from official FAL AI example)")
+    print("-" * 50)
     
     # Display in columns for better readability
     for i in range(0, len(voices), 4):
         row = voices[i:i+4]
         formatted_row = []
         for j, voice in enumerate(row):
-            formatted_row.append(f"{i+j+1:2d}. {voice:<12}")
+            # Highlight Bill as recommended
+            if voice == "Bill":
+                formatted_row.append(f"{i+j+1:2d}. {voice:<12} ⭐")
+            else:
+                formatted_row.append(f"{i+j+1:2d}. {voice:<12}")
         print("  ".join(formatted_row))
 
 def get_voice_choice(voices: list) -> str:
     """Get voice selection from user"""
     while True:
         try:
-            choice = input(f"\nSelect voice (1-{len(voices)} or name): ").strip()
+            choice = input(f"\nSelect voice (1-{len(voices)}, name, or Enter for Bill): ").strip()
+            
+            # Default to Bill if no input
+            if not choice:
+                return "Bill"
             
             # Check if it's a number
             if choice.isdigit():
@@ -100,31 +110,38 @@ def get_sample_images():
 def get_image_input() -> str:
     """Get image input from user (URL or local file)"""
     print("\n🖼️ Image Input Options:")
-    print("1. Use image URL")
-    print("2. Use local image file")
+    print("1. Use official FAL AI example image (recommended)")
+    print("2. Use custom image URL")
+    print("3. Use local image file")
     
     sample_images = get_sample_images()
     if sample_images:
-        print("3. Use sample image")
+        print("4. Use sample image")
     
     while True:
-        choice = input("\nSelect option (1-3): ").strip()
+        choice = input("\nSelect option (1-4): ").strip()
         
         if choice == "1":
+            # Official FAL AI example image
+            official_image = "https://v3.fal.media/files/panda/HuM21CXMf0q7OO2zbvwhV_c4533aada79a495b90e50e32dc9b83a8.png"
+            print(f"✅ Using official FAL AI example image")
+            return official_image
+        
+        elif choice == "2":
             url = input("Enter image URL: ").strip()
             if url:
                 return url
             else:
                 print("Please enter a valid URL")
         
-        elif choice == "2":
+        elif choice == "3":
             path = input("Enter local image path: ").strip()
             if os.path.isfile(path):
                 return path
             else:
                 print("File not found. Please enter a valid path.")
         
-        elif choice == "3" and sample_images:
+        elif choice == "4" and sample_images:
             print("\n📁 Available sample images:")
             for i, img in enumerate(sample_images[:10], 1):  # Show max 10
                 print(f"  {i}. {os.path.basename(img)} ({img})")
@@ -143,35 +160,51 @@ def get_image_input() -> str:
 
 def get_text_input() -> str:
     """Get text input from user"""
-    print("\n📝 Text Input:")
-    print("Enter the text that the avatar should speak.")
-    print("(Press Enter twice to finish, or Ctrl+C to cancel)")
+    print("\n📝 Text Input Options:")
+    print("1. Use official FAL AI example text (recommended)")
+    print("2. Enter custom text")
     
-    lines = []
-    empty_lines = 0
-    
-    try:
-        while True:
-            line = input()
-            if line.strip() == "":
-                empty_lines += 1
-                if empty_lines >= 2:
-                    break
-            else:
-                empty_lines = 0
-                lines.append(line)
+    while True:
+        choice = input("\nSelect option (1-2): ").strip()
         
-        text = "\n".join(lines).strip()
-        if not text:
-            # Provide default text if none entered
-            text = "Hello! This is a demonstration of AI-generated avatar video with lip-sync technology."
-            print(f"Using default text: {text}")
+        if choice == "1":
+            # Official FAL AI example text
+            official_text = "Spend more time with people who make you feel alive, and less with things that drain your soul."
+            print(f"✅ Using official FAL AI example text: {official_text}")
+            return official_text
         
-        return text
+        elif choice == "2":
+            print("\nEnter the text that the avatar should speak.")
+            print("(Press Enter twice to finish, or Ctrl+C to cancel)")
+            
+            lines = []
+            empty_lines = 0
+            
+            try:
+                while True:
+                    line = input()
+                    if line.strip() == "":
+                        empty_lines += 1
+                        if empty_lines >= 2:
+                            break
+                    else:
+                        empty_lines = 0
+                        lines.append(line)
+                
+                text = "\n".join(lines).strip()
+                if not text:
+                    # Fallback to official text if none entered
+                    text = "Spend more time with people who make you feel alive, and less with things that drain your soul."
+                    print(f"No text entered. Using official example: {text}")
+                
+                return text
+                
+            except KeyboardInterrupt:
+                print("\n❌ Text input cancelled")
+                sys.exit(0)
         
-    except KeyboardInterrupt:
-        print("\n❌ Text input cancelled")
-        sys.exit(0)
+        else:
+            print("Invalid option. Please enter 1 or 2.")
 
 def get_audio_input() -> str:
     """Get audio input from user (URL or local file)"""
@@ -243,12 +276,13 @@ def main():
         print("\n🎬 Generation Mode:")
         print("1. Text-to-Speech (choose from 20 voices)")
         print("2. Audio-to-Avatar (use your own audio file)")
+        print("3. Multi-Audio Conversation (two people speaking in sequence)")
         
         while True:
-            mode_choice = input("\nSelect mode (1-2): ").strip()
-            if mode_choice in ["1", "2"]:
+            mode_choice = input("\nSelect mode (1-3): ").strip()
+            if mode_choice in ["1", "2", "3"]:
                 break
-            print("Please enter 1 or 2")
+            print("Please enter 1, 2, or 3")
         
         # Get user inputs
         print("\n" + "=" * 50)
@@ -276,7 +310,7 @@ def main():
             # Default frame count for text mode
             default_frames = 136
             
-        else:
+        elif mode_choice == "2":
             # Audio-to-avatar mode
             audio_input = get_audio_input()
             print(f"✅ Audio selected: {audio_input}")
@@ -287,6 +321,26 @@ def main():
             
             # Default frame count for audio mode
             default_frames = 145
+            
+        else:
+            # Multi-audio conversation mode
+            print("\n🎤 Multi-Audio Conversation Setup:")
+            print("You need to provide two audio files for a conversation.")
+            
+            print("\n👤 First Person Audio:")
+            first_audio = get_audio_input()
+            print(f"✅ First audio selected: {first_audio}")
+            
+            print("\n👤 Second Person Audio:")
+            second_audio = get_audio_input()
+            print(f"✅ Second audio selected: {second_audio}")
+            
+            # No voice selection needed for multi-audio mode
+            text_input = None
+            voice = None
+            
+            # Default frame count for multi-audio mode
+            default_frames = 181
         
         # Get additional parameters
         print(f"\n⚙️ Additional Parameters:")
@@ -312,9 +366,9 @@ def main():
         turbo = turbo_input != 'n'
         
         # Custom prompt
-        custom_prompt = input("Custom prompt (optional, press Enter for default): ").strip()
+        custom_prompt = input("Custom prompt (optional, press Enter for official example): ").strip()
         if not custom_prompt:
-            custom_prompt = "A person speaking naturally with clear lip-sync and natural expressions."
+            custom_prompt = "An elderly man with a white beard and headphones records audio with a microphone. He appears engaged and expressive, suggesting a podcast or voiceover."
         
         # Cost estimation
         base_cost = 0.03  # Approximate cost per generation
@@ -337,20 +391,26 @@ def main():
         # Generate filename
         import time
         timestamp = int(time.time())
-        mode_suffix = "text" if mode_choice == "1" else "audio"
+        mode_suffixes = {"1": "text", "2": "audio", "3": "multi"}
+        mode_suffix = mode_suffixes[mode_choice]
         output_filename = f"avatar_{mode_suffix}_{timestamp}.mp4"
         output_path = os.path.join(output_dir, output_filename)
         
         print(f"\n🚀 Starting avatar video generation...")
         print(f"📊 Parameters:")
-        print(f"   - Mode: {'Text-to-Speech' if mode_choice == '1' else 'Audio-to-Avatar'}")
+        
+        mode_names = {"1": "Text-to-Speech", "2": "Audio-to-Avatar", "3": "Multi-Audio Conversation"}
+        print(f"   - Mode: {mode_names[mode_choice]}")
         print(f"   - Image: {os.path.basename(image_input) if os.path.isfile(image_input) else image_input}")
         
         if mode_choice == "1":
             print(f"   - Text length: {len(text_input)} characters")
             print(f"   - Voice: {voice}")
-        else:
+        elif mode_choice == "2":
             print(f"   - Audio: {os.path.basename(audio_input) if os.path.isfile(audio_input) else audio_input}")
+        else:
+            print(f"   - First audio: {os.path.basename(first_audio) if os.path.isfile(first_audio) else first_audio}")
+            print(f"   - Second audio: {os.path.basename(second_audio) if os.path.isfile(second_audio) else second_audio}")
         
         print(f"   - Frames: {num_frames}")
         print(f"   - Turbo: {turbo}")
@@ -368,11 +428,22 @@ def main():
                 turbo=turbo,
                 output_path=output_path
             )
-        else:
+        elif mode_choice == "2":
             # Audio-to-avatar mode
             result = generator.generate_avatar_from_audio(
                 image_url=image_input,
                 audio_url=audio_input,
+                prompt=custom_prompt,
+                num_frames=num_frames,
+                turbo=turbo,
+                output_path=output_path
+            )
+        else:
+            # Multi-audio conversation mode
+            result = generator.generate_multi_avatar_conversation(
+                image_url=image_input,
+                first_audio_url=first_audio,
+                second_audio_url=second_audio,
                 prompt=custom_prompt,
                 num_frames=num_frames,
                 turbo=turbo,

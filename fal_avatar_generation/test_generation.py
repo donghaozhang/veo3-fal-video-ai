@@ -10,6 +10,7 @@ Each avatar video generation costs approximately $0.02-0.05 depending on frame c
 Test scenarios:
 - Basic avatar generation with default settings (text-to-speech)
 - Audio-to-avatar generation with custom audio files
+- Multi-audio conversation generation (two-person dialogue)
 - Custom voice testing
 - Different frame counts
 - Multi-avatar comparison (multiple voices)
@@ -21,6 +22,7 @@ Options:
     --quick         Quick test with minimal frames (81 frames)
     --standard      Standard test with default frames (136 frames)
     --audio         Test audio-to-avatar generation
+    --multi         Test multi-audio conversation generation
     --compare       Compare multiple voices (costs more - generates multiple videos)
     --voice NAME    Test specific voice (e.g., --voice Sarah)
     --frames N      Custom frame count (81-129)
@@ -53,10 +55,10 @@ def get_user_confirmation(test_name: str, cost_estimate: str, details: str = "")
 
 def get_test_image() -> str:
     """Get a test image URL or local file"""
-    # Default test image (placeholder)
-    default_image = "https://via.placeholder.com/512x512/4A90E2/FFFFFF?text=Avatar+Test"
+    # Official test image from FAL AI documentation
+    official_image = "https://v3.fal.media/files/panda/HuM21CXMf0q7OO2zbvwhV_c4533aada79a495b90e50e32dc9b83a8.png"
     
-    # Check for local test images
+    # Check for local test images first
     test_images = [
         "images/test_avatar.jpg",
         "images/person.jpg",
@@ -69,8 +71,8 @@ def get_test_image() -> str:
             print(f"📷 Using local test image: {img_path}")
             return img_path
     
-    print(f"📷 Using default placeholder image")
-    return default_image
+    print(f"📷 Using official FAL AI example image")
+    return official_image
 
 def test_basic_generation(generator: FALAvatarGenerator, args) -> bool:
     """Test basic avatar generation"""
@@ -90,7 +92,8 @@ def test_basic_generation(generator: FALAvatarGenerator, args) -> bool:
     try:
         # Test parameters
         image_url = get_test_image()
-        text_input = "Hello! This is a test of AI avatar generation with lip-sync technology. The avatar should speak this text naturally with proper mouth movements."
+        # Official text from FAL AI documentation
+        text_input = "Spend more time with people who make you feel alive, and less with things that drain your soul."
         
         print(f"🚀 Starting basic avatar generation...")
         print(f"   Image: {image_url}")
@@ -108,7 +111,7 @@ def test_basic_generation(generator: FALAvatarGenerator, args) -> bool:
             image_url=image_url,
             text_input=text_input,
             voice=args.voice,
-            prompt="A person speaking naturally with clear lip-sync and natural expressions.",
+            prompt="An elderly man with a white beard and headphones records audio with a microphone. He appears engaged and expressive, suggesting a podcast or voiceover.",
             num_frames=args.frames,
             turbo=not args.no_turbo,
             output_path=output_path
@@ -157,7 +160,8 @@ def test_voice_comparison(generator: FALAvatarGenerator, args) -> bool:
     
     try:
         image_url = get_test_image()
-        text_input = "This is a voice comparison test. Each avatar will speak the same text with a different voice to demonstrate the variety of available speech synthesis options."
+        # Use official text from FAL AI documentation for consistency
+        text_input = "Spend more time with people who make you feel alive, and less with things that drain your soul."
         
         results = []
         timestamp = int(time.time())
@@ -171,7 +175,7 @@ def test_voice_comparison(generator: FALAvatarGenerator, args) -> bool:
                 image_url=image_url,
                 text_input=text_input,
                 voice=voice,
-                prompt=f"A person speaking naturally with the {voice} voice, clear lip-sync and natural expressions.",
+                prompt="An elderly man with a white beard and headphones records audio with a microphone. He appears engaged and expressive, suggesting a podcast or voiceover.",
                 num_frames=args.frames,
                 turbo=not args.no_turbo,
                 output_path=output_path
@@ -344,15 +348,78 @@ def test_audio_generation(generator: FALAvatarGenerator, args) -> bool:
         print(f"❌ Error in audio generation test: {str(e)}")
         return False
 
+def test_multi_audio_generation(generator: FALAvatarGenerator, args) -> bool:
+    """Test multi-audio conversation generation"""
+    print("\n🎭 Testing Multi-Audio Conversation Generation")
+    print("-" * 40)
+    
+    # Cost estimation
+    base_cost = 0.03
+    cost_multiplier = 1.25 if args.frames > 81 else 1.0
+    estimated_cost = f"~${base_cost * cost_multiplier:.3f}"
+    
+    details = f"1 conversation video, {args.frames} frames, two-person conversation"
+    if not get_user_confirmation("Multi-Audio Conversation Test", estimated_cost, details):
+        print("❌ Multi-audio generation test cancelled")
+        return False
+    
+    try:
+        # Test parameters
+        image_url = get_test_image()
+        
+        # Use sample audio URLs for demonstration
+        # In real usage, users would provide their own conversation audio files
+        first_audio_url = "https://www2.cs.uic.edu/~i101/SoundFiles/BabyElephantWalk60.wav"  # Sample audio 1
+        second_audio_url = "https://www2.cs.uic.edu/~i101/SoundFiles/CantinaBand60.wav"  # Sample audio 2
+        
+        print(f"🚀 Starting multi-audio conversation generation...")
+        print(f"   Image: {image_url}")
+        print(f"   First audio: {first_audio_url}")
+        print(f"   Second audio: {second_audio_url}")
+        print(f"   Frames: {args.frames}")
+        print(f"   Turbo: {not args.no_turbo}")
+        
+        # Generate output path
+        timestamp = int(time.time())
+        output_path = f"test_output/multi_conversation_{timestamp}.mp4"
+        
+        # Generate multi-avatar conversation video
+        result = generator.generate_multi_avatar_conversation(
+            image_url=image_url,
+            first_audio_url=first_audio_url,
+            second_audio_url=second_audio_url,
+            prompt="Two people engaged in a natural conversation, speaking in sequence with clear lip-sync and natural expressions. The scene captures a lively conversational exchange between both speakers.",
+            num_frames=args.frames,
+            turbo=not args.no_turbo,
+            output_path=output_path
+        )
+        
+        if result and 'video' in result:
+            print(f"✅ Multi-audio conversation generation successful!")
+            print(f"📁 Saved to: {output_path}")
+            print(f"⏱️ Generation time: {result.get('generation_time', 0):.2f} seconds")
+            
+            video_info = result['video']
+            print(f"📊 File size: {video_info.get('file_size', 0) / (1024*1024):.2f} MB")
+            return True
+        else:
+            print(f"❌ Multi-audio conversation generation failed")
+            return False
+            
+    except Exception as e:
+        print(f"❌ Error in multi-audio generation test: {str(e)}")
+        return False
+
 def main():
     """Main test function"""
     parser = argparse.ArgumentParser(description="FAL AI Avatar Generation Tests (PAID)")
     parser.add_argument('--quick', action='store_true', help='Quick test with minimal frames (81)')
     parser.add_argument('--standard', action='store_true', help='Standard test with default frames (136)')
     parser.add_argument('--audio', action='store_true', help='Test audio-to-avatar generation')
+    parser.add_argument('--multi', action='store_true', help='Test multi-audio conversation generation')
     parser.add_argument('--compare', action='store_true', help='Compare multiple voices (costs more)')
     parser.add_argument('--scenarios', action='store_true', help='Test custom scenarios')
-    parser.add_argument('--voice', default='Sarah', help='Voice to use for testing')
+    parser.add_argument('--voice', default='Bill', help='Voice to use for testing (default: Bill - from official example)')
     parser.add_argument('--frames', type=int, help='Custom frame count (81-129)')
     parser.add_argument('--no-turbo', action='store_true', help='Disable turbo mode')
     
@@ -388,11 +455,21 @@ def main():
         tests_run = []
         tests_passed = []
         
-        if not any([args.compare, args.scenarios]):
+        if not any([args.audio, args.multi, args.compare, args.scenarios]):
             # Default: run basic test
             tests_run.append("Basic Generation")
             if test_basic_generation(generator, args):
                 tests_passed.append("Basic Generation")
+        
+        if args.audio:
+            tests_run.append("Audio-to-Avatar")
+            if test_audio_generation(generator, args):
+                tests_passed.append("Audio-to-Avatar")
+        
+        if args.multi:
+            tests_run.append("Multi-Audio Conversation")
+            if test_multi_audio_generation(generator, args):
+                tests_passed.append("Multi-Audio Conversation")
         
         if args.compare:
             tests_run.append("Voice Comparison")
