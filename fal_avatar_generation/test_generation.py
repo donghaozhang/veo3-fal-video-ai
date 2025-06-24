@@ -8,7 +8,8 @@ This script tests actual avatar video generation using FAL AI.
 Each avatar video generation costs approximately $0.02-0.05 depending on frame count.
 
 Test scenarios:
-- Basic avatar generation with default settings
+- Basic avatar generation with default settings (text-to-speech)
+- Audio-to-avatar generation with custom audio files
 - Custom voice testing
 - Different frame counts
 - Multi-avatar comparison (multiple voices)
@@ -19,6 +20,7 @@ Usage:
 Options:
     --quick         Quick test with minimal frames (81 frames)
     --standard      Standard test with default frames (136 frames)
+    --audio         Test audio-to-avatar generation
     --compare       Compare multiple voices (costs more - generates multiple videos)
     --voice NAME    Test specific voice (e.g., --voice Sarah)
     --frames N      Custom frame count (81-129)
@@ -282,11 +284,72 @@ def test_custom_scenarios(generator: FALAvatarGenerator, args) -> bool:
         print(f"❌ Error in custom scenarios test: {str(e)}")
         return False
 
+def test_audio_generation(generator: FALAvatarGenerator, args) -> bool:
+    """Test audio-to-avatar generation"""
+    print("\n🎵 Testing Audio-to-Avatar Generation")
+    print("-" * 40)
+    
+    # Cost estimation
+    base_cost = 0.03
+    cost_multiplier = 1.25 if args.frames > 81 else 1.0
+    estimated_cost = f"~${base_cost * cost_multiplier:.3f}"
+    
+    details = f"1 video, {args.frames} frames, audio-to-avatar mode"
+    if not get_user_confirmation("Audio-to-Avatar Test", estimated_cost, details):
+        print("❌ Audio generation test cancelled")
+        return False
+    
+    try:
+        # Test parameters
+        image_url = get_test_image()
+        
+        # Use a sample audio URL or create a simple test audio
+        # For demo purposes, we'll use a placeholder audio URL
+        # In real usage, users would provide their own audio files
+        audio_url = "https://www2.cs.uic.edu/~i101/SoundFiles/BabyElephantWalk60.wav"  # Sample audio
+        
+        print(f"🚀 Starting audio-to-avatar generation...")
+        print(f"   Image: {image_url}")
+        print(f"   Audio: {audio_url}")
+        print(f"   Frames: {args.frames}")
+        print(f"   Turbo: {not args.no_turbo}")
+        
+        # Generate output path
+        timestamp = int(time.time())
+        output_path = f"test_output/audio_avatar_{timestamp}.mp4"
+        
+        # Generate avatar video from audio
+        result = generator.generate_avatar_from_audio(
+            image_url=image_url,
+            audio_url=audio_url,
+            prompt="A person speaking naturally with clear lip-sync matching the provided audio.",
+            num_frames=args.frames,
+            turbo=not args.no_turbo,
+            output_path=output_path
+        )
+        
+        if result and 'video' in result:
+            print(f"✅ Audio-to-avatar generation successful!")
+            print(f"📁 Saved to: {output_path}")
+            print(f"⏱️ Generation time: {result.get('generation_time', 0):.2f} seconds")
+            
+            video_info = result['video']
+            print(f"📊 File size: {video_info.get('file_size', 0) / (1024*1024):.2f} MB")
+            return True
+        else:
+            print(f"❌ Audio-to-avatar generation failed")
+            return False
+            
+    except Exception as e:
+        print(f"❌ Error in audio generation test: {str(e)}")
+        return False
+
 def main():
     """Main test function"""
     parser = argparse.ArgumentParser(description="FAL AI Avatar Generation Tests (PAID)")
     parser.add_argument('--quick', action='store_true', help='Quick test with minimal frames (81)')
     parser.add_argument('--standard', action='store_true', help='Standard test with default frames (136)')
+    parser.add_argument('--audio', action='store_true', help='Test audio-to-avatar generation')
     parser.add_argument('--compare', action='store_true', help='Compare multiple voices (costs more)')
     parser.add_argument('--scenarios', action='store_true', help='Test custom scenarios')
     parser.add_argument('--voice', default='Sarah', help='Voice to use for testing')

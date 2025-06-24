@@ -1,16 +1,16 @@
 # FAL AI Avatar Video Generation
 
-Generate talking avatar videos from images and text using FAL AI's Avatar models. This implementation provides a Python interface for creating lip-synced avatar videos with natural speech synthesis and facial expressions.
+Generate talking avatar videos from images using FAL AI's Avatar models. This implementation provides a Python interface for creating lip-synced avatar videos with both text-to-speech conversion and custom audio file support.
 
 ## 🎭 Features
 
-- **Text-to-Speech Avatar Generation**: Convert text to talking avatar videos
-- **20 Voice Options**: Choose from diverse voice personalities
-- **Lip-Sync Technology**: Automatic mouth movement synchronization
+- **Text-to-Speech Avatar Generation**: Convert text to talking avatar videos with 20 voice options
+- **Audio-to-Avatar Generation**: Use custom audio files for lip-sync animation
+- **Natural Lip-Sync Technology**: Automatic mouth movement synchronization
 - **Natural Expressions**: AI-generated facial expressions and movements
 - **Customizable Parameters**: Frame count, voice selection, prompts
 - **Turbo Mode**: Faster generation with optimized processing
-- **Local & Remote Images**: Support for both local files and URLs
+- **Local & Remote Support**: Both local files and URLs for images/audio
 - **Cost-Conscious Testing**: Separate FREE and PAID test suites
 
 ## 🚀 Quick Start
@@ -37,17 +37,37 @@ Get your API key from: https://fal.ai/dashboard
 
 ### 3. Basic Usage
 
+#### Text-to-Speech Mode (20 voices available)
+
 ```python
 from fal_avatar_generator import FALAvatarGenerator
 
 # Initialize generator
 generator = FALAvatarGenerator()
 
-# Generate avatar video
+# Generate avatar video from text
 result = generator.generate_avatar_video(
     image_url="path/to/your/image.jpg",
     text_input="Hello! This is my avatar speaking.",
     voice="Sarah",
+    output_path="output/avatar_video.mp4"
+)
+
+print(f"Video generated: {result['video']['url']}")
+```
+
+#### Audio-to-Avatar Mode (custom audio files)
+
+```python
+from fal_avatar_generator import FALAvatarGenerator
+
+# Initialize generator
+generator = FALAvatarGenerator()
+
+# Generate avatar video from audio file
+result = generator.generate_avatar_from_audio(
+    image_url="path/to/your/image.jpg",
+    audio_url="path/to/your/audio.mp3",
     output_path="output/avatar_video.mp4"
 )
 
@@ -61,9 +81,10 @@ python demo.py
 ```
 
 The demo provides a user-friendly interface to:
+- Choose between text-to-speech or audio-to-avatar modes
 - Select images (local files, URLs, or sample images)
-- Enter text for the avatar to speak
-- Choose from 20 available voices
+- Enter text for speech or select audio files
+- Choose from 20 available voices (text mode only)
 - Configure generation parameters
 - Preview cost estimates before generation
 

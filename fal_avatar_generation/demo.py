@@ -173,21 +173,82 @@ def get_text_input() -> str:
         print("\n❌ Text input cancelled")
         sys.exit(0)
 
+def get_audio_input() -> str:
+    """Get audio input from user (URL or local file)"""
+    print("\n🎵 Audio Input Options:")
+    print("1. Use audio URL")
+    print("2. Use local audio file")
+    
+    # Check for sample audio files
+    audio_extensions = ['.mp3', '.wav', '.m4a', '.aac', '.ogg', '.flac']
+    sample_audio = []
+    
+    audio_dirs = ["audio", "samples", "../audio"]
+    for audio_dir in audio_dirs:
+        if os.path.exists(audio_dir):
+            for file in os.listdir(audio_dir):
+                if any(file.lower().endswith(ext) for ext in audio_extensions):
+                    sample_audio.append(os.path.join(audio_dir, file))
+    
+    if sample_audio:
+        print("3. Use sample audio")
+    
+    while True:
+        choice = input("\nSelect option (1-3): ").strip()
+        
+        if choice == "1":
+            url = input("Enter audio URL: ").strip()
+            if url:
+                return url
+            else:
+                print("Please enter a valid URL")
+        
+        elif choice == "2":
+            path = input("Enter local audio path: ").strip()
+            if os.path.isfile(path):
+                return path
+            else:
+                print("File not found. Please enter a valid path.")
+        
+        elif choice == "3" and sample_audio:
+            print("\n📁 Available sample audio files:")
+            for i, audio in enumerate(sample_audio[:10], 1):  # Show max 10
+                print(f"  {i}. {os.path.basename(audio)} ({audio})")
+            
+            try:
+                audio_choice = int(input(f"Select audio (1-{min(len(sample_audio), 10)}): ")) - 1
+                if 0 <= audio_choice < len(sample_audio):
+                    return sample_audio[audio_choice]
+                else:
+                    print("Invalid selection")
+            except ValueError:
+                print("Please enter a number")
+        
+        else:
+            print("Invalid option. Please try again.")
+
 def main():
     """Main demo function"""
     print("🎭 FAL AI Avatar Video Generation Demo")
     print("=" * 50)
-    print("Generate talking avatar videos from images and text!")
-    print("Features: 20 voice options, lip-sync, natural expressions")
+    print("Generate talking avatar videos from images!")
+    print("Features: Text-to-speech (20 voices) OR custom audio with lip-sync")
     
     try:
         # Initialize generator
         print("\n🔧 Initializing FAL Avatar Generator...")
         generator = FALAvatarGenerator()
         
-        # Get available voices
-        voices = generator.get_available_voices()
-        display_voices(voices)
+        # Choose generation mode
+        print("\n🎬 Generation Mode:")
+        print("1. Text-to-Speech (choose from 20 voices)")
+        print("2. Audio-to-Avatar (use your own audio file)")
+        
+        while True:
+            mode_choice = input("\nSelect mode (1-2): ").strip()
+            if mode_choice in ["1", "2"]:
+                break
+            print("Please enter 1 or 2")
         
         # Get user inputs
         print("\n" + "=" * 50)
@@ -197,13 +258,35 @@ def main():
         image_input = get_image_input()
         print(f"✅ Image selected: {image_input}")
         
-        # Get text
-        text_input = get_text_input()
-        print(f"✅ Text entered: {text_input[:50]}{'...' if len(text_input) > 50 else ''}")
-        
-        # Get voice
-        voice = get_voice_choice(voices)
-        print(f"✅ Voice selected: {voice}")
+        # Get text or audio based on mode
+        if mode_choice == "1":
+            # Text-to-speech mode
+            # Get available voices
+            voices = generator.get_available_voices()
+            display_voices(voices)
+            
+            # Get text
+            text_input = get_text_input()
+            print(f"✅ Text entered: {text_input[:50]}{'...' if len(text_input) > 50 else ''}")
+            
+            # Get voice
+            voice = get_voice_choice(voices)
+            print(f"✅ Voice selected: {voice}")
+            
+            # Default frame count for text mode
+            default_frames = 136
+            
+        else:
+            # Audio-to-avatar mode
+            audio_input = get_audio_input()
+            print(f"✅ Audio selected: {audio_input}")
+            
+            # No voice selection needed for audio mode
+            text_input = None
+            voice = None
+            
+            # Default frame count for audio mode
+            default_frames = 145
         
         # Get additional parameters
         print(f"\n⚙️ Additional Parameters:")
@@ -211,9 +294,9 @@ def main():
         # Frame count
         while True:
             try:
-                frames_input = input("Number of frames (81-129, default 136): ").strip()
+                frames_input = input(f"Number of frames (81-129, default {default_frames}): ").strip()
                 if not frames_input:
-                    num_frames = 136
+                    num_frames = default_frames
                     break
                 
                 num_frames = int(frames_input)
@@ -254,28 +337,47 @@ def main():
         # Generate filename
         import time
         timestamp = int(time.time())
-        output_filename = f"avatar_video_{timestamp}.mp4"
+        mode_suffix = "text" if mode_choice == "1" else "audio"
+        output_filename = f"avatar_{mode_suffix}_{timestamp}.mp4"
         output_path = os.path.join(output_dir, output_filename)
         
         print(f"\n🚀 Starting avatar video generation...")
         print(f"📊 Parameters:")
+        print(f"   - Mode: {'Text-to-Speech' if mode_choice == '1' else 'Audio-to-Avatar'}")
         print(f"   - Image: {os.path.basename(image_input) if os.path.isfile(image_input) else image_input}")
-        print(f"   - Text length: {len(text_input)} characters")
-        print(f"   - Voice: {voice}")
+        
+        if mode_choice == "1":
+            print(f"   - Text length: {len(text_input)} characters")
+            print(f"   - Voice: {voice}")
+        else:
+            print(f"   - Audio: {os.path.basename(audio_input) if os.path.isfile(audio_input) else audio_input}")
+        
         print(f"   - Frames: {num_frames}")
         print(f"   - Turbo: {turbo}")
         print(f"   - Output: {output_path}")
         
-        # Generate avatar video
-        result = generator.generate_avatar_video(
-            image_url=image_input,
-            text_input=text_input,
-            voice=voice,
-            prompt=custom_prompt,
-            num_frames=num_frames,
-            turbo=turbo,
-            output_path=output_path
-        )
+        # Generate avatar video based on mode
+        if mode_choice == "1":
+            # Text-to-speech mode
+            result = generator.generate_avatar_video(
+                image_url=image_input,
+                text_input=text_input,
+                voice=voice,
+                prompt=custom_prompt,
+                num_frames=num_frames,
+                turbo=turbo,
+                output_path=output_path
+            )
+        else:
+            # Audio-to-avatar mode
+            result = generator.generate_avatar_from_audio(
+                image_url=image_input,
+                audio_url=audio_input,
+                prompt=custom_prompt,
+                num_frames=num_frames,
+                turbo=turbo,
+                output_path=output_path
+            )
         
         print(f"\n🎉 Avatar video generation completed!")
         print(f"📁 Saved to: {output_path}")
