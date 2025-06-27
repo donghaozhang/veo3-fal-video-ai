@@ -1,6 +1,18 @@
-# ElevenLabs Text-to-Speech Controller
+# ElevenLabs Text-to-Speech Package
 
-A comprehensive Python implementation for controlling ElevenLabs text-to-speech with advanced voice and timing features, based on the [official ElevenLabs API documentation](https://elevenlabs.io/docs/capabilities/text-to-speech).
+A comprehensive, modular Python package for ElevenLabs text-to-speech with advanced voice control, timing features, dialogue generation, and OpenRouter AI integration.
+
+## ✨ New! Refactored Modular Architecture
+
+This package has been completely refactored from monolithic files into a well-organized, modular structure:
+
+- **🏗️ Modular Design**: Clean separation of concerns across multiple focused modules
+- **🔧 Enhanced Maintainability**: Smaller files (150-300 lines each) that are easier to understand and modify  
+- **🧪 Better Testing**: Isolated components for comprehensive unit testing
+- **📦 Proper Package Structure**: Professional Python package with setup.py and proper imports
+- **🔄 Backward Compatibility**: Existing code works with minimal import changes
+
+> **Migration Note**: See [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md) for help transitioning from the old structure.
 
 ## Features
 
