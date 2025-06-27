@@ -25,10 +25,18 @@ This project provides comprehensive Python implementations for generating videos
 - **Setup**: Simple API key authentication
 - **⚠️ Cost Warning**: Avatar generation costs money (~$0.02-0.05 per video)
 
+### 4. ✨ **NEW!** ElevenLabs Text-to-Speech Package (`text_to_speech/`)
+- **Features**: Comprehensive modular TTS package with OpenRouter AI integration
+- **Architecture**: Recently refactored from monolithic to professional modular structure
+- **Capabilities**: Voice control, dialogue generation, timing control, 3000+ voices
+- **Pipeline**: Complete AI content generation (OpenRouter → ElevenLabs TTS)
+- **Models**: Support for top 10 OpenRouter models (Claude, Gemini, DeepSeek, etc.)
+- **Setup**: Simple API key authentication (ElevenLabs + OpenRouter)
+
 ## 📁 Project Structure
 
 ```
-veo3/
+veo3-video-generation/
 ├── README.md                           # This overview
 ├── requirements.txt                    # Global dependencies
 ├── .env                               # Global environment variables
@@ -65,6 +73,20 @@ veo3/
 │   ├── .env                        # Avatar configuration
 │   ├── output/                     # Generated avatar videos
 │   └── test_output/                # Test avatar videos
+│
+├── text_to_speech/                 # ✨ NEW! Modular TTS Package
+│   ├── README.md                    # TTS package documentation
+│   ├── MIGRATION_GUIDE.md          # Migration from old structure
+│   ├── setup.py                    # Package installation
+│   ├── requirements.txt            # TTS dependencies
+│   ├── models/                     # Data models and enums
+│   ├── tts/                        # Core TTS functionality
+│   ├── pipeline/                   # OpenRouter AI integration
+│   ├── utils/                      # Utility functions
+│   ├── config/                     # Configuration management
+│   ├── examples/                   # Usage examples
+│   ├── cli/                        # Command line tools
+│   └── output/                     # Generated audio files
 │
 └── archive/                         # Historical implementations
 ```
@@ -113,6 +135,37 @@ python test_fal_ai.py --hailuo    # ~$0.02-0.05
 python test_fal_ai.py --kling     # ~$0.02-0.05
 ```
 
+### Option 3: ✨ **NEW!** Text-to-Speech Package (Professional TTS + AI)
+
+```bash
+cd text_to_speech
+pip install -r requirements.txt
+
+# Configure API keys in .env file (or environment variables)
+# ELEVENLABS_API_KEY=your-elevenlabs-key
+# OPENROUTER_API_KEY=your-openrouter-key
+
+# Basic TTS usage
+python examples/basic_usage.py
+
+# Interactive pipeline (AI content generation → TTS)
+python cli/interactive.py
+
+# Quick start demo
+python cli/quick_start.py
+
+# Advanced usage examples
+python -c "
+from text_to_speech import ElevenLabsTTSController
+tts = ElevenLabsTTSController('your-api-key')
+tts.text_to_speech_with_timing_control(
+    text='Hello! This is the new modular TTS package.',
+    voice_name='rachel',
+    output_file='output/welcome.mp3'
+)
+"
+```
+
 ## 🔧 Setup Requirements
 
 ### Google Veo Requirements
@@ -127,7 +180,16 @@ python test_fal_ai.py --kling     # ~$0.02-0.05
 - Python 3.8+
 - Internet connection
 
-## 📊 Model Comparison
+### Text-to-Speech Package Requirements
+- ElevenLabs API key (from elevenlabs.io)
+- OpenRouter API key (from openrouter.ai) - for AI content generation
+- Python 3.8+
+- Internet connection
+- **New Modular Architecture**: Recently refactored for professional development
+
+## 📊 Feature Comparison
+
+### Video Generation Models
 
 | Feature | Google Veo 2.0 | Google Veo 3.0 | FAL Hailuo-02 | FAL Kling 2.1 |
 |---------|----------------|----------------|---------------|----------------|
@@ -137,6 +199,17 @@ python test_fal_ai.py --kling     # ~$0.02-0.05
 | **Access** | Generally Available | Preview/Allowlist | Public API | Public API |
 | **Generation Time** | 2-10 min | 2-10 min | 1-3 min | 1-3 min |
 | **Best For** | Cinematic quality | Latest features | Quick prototyping | High-quality production |
+
+### ✨ Text-to-Speech Package Features
+
+| Feature | Description | Status |
+|---------|-------------|---------|
+| **Architecture** | Modular package structure (15+ focused modules) | ✅ Recently refactored |
+| **Voice Library** | 3000+ ElevenLabs voices + popular presets | ✅ Comprehensive |
+| **AI Integration** | OpenRouter (Claude, Gemini, DeepSeek, etc.) | ✅ Top 10 models |
+| **Pipeline** | Description → AI Content → Speech | ✅ End-to-end |
+| **Features** | Timing control, dialogue, voice cloning | ✅ Professional |
+| **Setup** | Simple API keys (ElevenLabs + OpenRouter) | ✅ Easy |
 
 ## 🎯 Use Cases
 
@@ -151,6 +224,13 @@ python test_fal_ai.py --kling     # ~$0.02-0.05
 - You need reliable production API
 - You want to compare multiple models
 - You prefer simple API key authentication
+
+### Choose Text-to-Speech Package When:
+- You need professional voice synthesis
+- You want AI-generated content with speech
+- You need multi-speaker dialogue generation
+- You want a complete content creation pipeline
+- You prefer modular, maintainable code architecture
 
 ## 🛠️ Development Features
 
@@ -175,12 +255,30 @@ python test_fal_ai.py --kling     # ~$0.02-0.05
 - ✅ Model performance comparison
 - ⚠️ Cost protection with explicit user confirmation required
 
+### ✨ Text-to-Speech Package Features
+- ✅ **Modular Architecture**: 15+ focused modules (150-300 lines each)
+- ✅ **Professional Package**: setup.py, proper imports, clean structure
+- ✅ **Voice Control**: 3000+ voices, popular presets, custom cloning
+- ✅ **AI Integration**: OpenRouter (Claude, Gemini, DeepSeek, etc.)
+- ✅ **Complete Pipeline**: Description → AI Content → Speech
+- ✅ **Multi-Speaker Dialogue**: Emotional tags, voice pairing
+- ✅ **Timing Control**: Speed, pauses, natural speech patterns
+- ✅ **Utilities**: Validation, file management, error handling
+- ✅ **Configuration**: Voice presets, model settings, defaults
+- ✅ **Examples & CLI**: Interactive tools, usage examples
+- ✅ **Backward Compatible**: Existing code works with minimal changes
+- 📚 **Migration Guide**: Complete transition documentation
+
 ## 📖 Documentation
 
 Each implementation has its own detailed documentation:
 
 - **Google Veo**: See [`veo3_video_generation/README.md`](veo3_video_generation/README.md)
-- **FAL AI**: See [`fal_video_generation/README.md`](fal_video_generation/README.md)
+- **FAL AI Video**: See [`fal_video_generation/README.md`](fal_video_generation/README.md)
+- **FAL AI Avatar**: See [`fal_avatar_generation/README.md`](fal_avatar_generation/README.md)
+- **✨ Text-to-Speech**: See [`text_to_speech/README.md`](text_to_speech/README.md)
+  - **Migration Guide**: [`text_to_speech/MIGRATION_GUIDE.md`](text_to_speech/MIGRATION_GUIDE.md)
+  - **Setup Instructions**: [`text_to_speech/setup.py`](text_to_speech/setup.py)
 
 ## 🧪 Testing
 
@@ -218,25 +316,63 @@ python test_fal_ai.py --kling        # Test Kling model (~$0.02-0.05)
 python test_fal_ai.py --compare      # Test both models (~$0.04-0.10)
 ```
 
+### Test Text-to-Speech Package
+
+✅ **No Cost**: Text-to-speech testing supports dummy API keys for structure validation.
+
+```bash
+cd text_to_speech
+
+# Test package structure (FREE - no API calls)
+python -c "
+import sys
+sys.path.append('..')
+from text_to_speech import ElevenLabsTTSController
+print('✅ Package imports working!')
+"
+
+# Test with dummy keys (FREE - no API calls)
+python examples/basic_usage.py       # Basic TTS examples
+
+# Test individual modules
+python -c "
+from text_to_speech.utils.validators import validate_text_input
+print('✅ Utilities working!')
+"
+
+# Interactive demos (requires real API keys)
+python cli/interactive.py            # Interactive pipeline
+python cli/quick_start.py           # Quick start demo
+```
+
 ## 🎮 Interactive Demos
 
-Both implementations include interactive demos:
+All implementations include interactive demos:
 
 ```bash
 # Google Veo Demo
 cd veo3_video_generation && python demo.py
 
-# FAL AI Demo (costs money - has confirmation prompts)
+# FAL AI Video Demo (costs money - has confirmation prompts)
 cd fal_video_generation && python demo.py
+
+# FAL AI Avatar Demo (costs money - has confirmation prompts)
+cd fal_avatar_generation && python demo.py
+
+# ✨ Text-to-Speech Interactive Pipeline
+cd text_to_speech && python cli/interactive.py
+
+# ✨ Text-to-Speech Quick Start Demo
+cd text_to_speech && python cli/quick_start.py
 ```
 
 The demos provide:
-- Model selection menus with cost warnings
-- Pre-configured test prompts
-- Image-to-video testing
-- Model comparison features (expensive - generates 2 videos)
-- Configuration validation
-- **Cost protection**: Confirmation prompts before generating videos
+- **Video Generation**: Model selection menus with cost warnings
+- **Video Features**: Pre-configured test prompts, image-to-video testing
+- **Cost Protection**: Confirmation prompts before generating videos
+- **✨ TTS Pipeline**: AI content generation → speech conversion
+- **✨ TTS Features**: Voice selection, timing control, multi-speaker dialogue
+- **Configuration Validation**: Setup verification for all platforms
 
 ## 🔍 Troubleshooting
 
@@ -252,6 +388,13 @@ The demos provide:
 - **Rate limiting**: Wait between requests or upgrade plan
 - **Model not available**: Try alternative model
 - **Unexpected charges**: Always use FREE tests first (`test_api_only.py`)
+
+#### ✨ Text-to-Speech Issues
+- **Import errors**: Ensure `PYTHONPATH` includes project root or install with `pip install -e .`
+- **Invalid API key**: Check `ELEVENLABS_API_KEY` and `OPENROUTER_API_KEY` in environment
+- **Missing List import**: Fixed in latest version (use `from typing import List`)
+- **Old import errors**: Use migration guide to update from monolithic structure
+- **Package structure**: Use new modular imports (see `MIGRATION_GUIDE.md`)
 
 ### Getting Help
 
@@ -274,8 +417,14 @@ The demos provide:
 ## 🚧 Development Status
 
 - ✅ **Google Veo**: Production ready with comprehensive testing
-- ✅ **FAL AI**: Production ready with cost-conscious dual-model support
-- 🔄 **Future**: Additional model integrations planned
+- ✅ **FAL AI Video**: Production ready with cost-conscious dual-model support
+- ✅ **FAL AI Avatar**: Production ready with text-to-speech integration
+- ✅ **✨ Text-to-Speech**: Recently refactored to modular architecture - fully functional
+  - 🆕 **Architecture**: Transformed from 3 monolithic files (2,500+ lines) to 15+ focused modules
+  - ✅ **Testing**: Comprehensive test suite with import validation
+  - ✅ **Migration**: Complete migration guide and backward compatibility
+  - ✅ **Professional**: Setup.py, proper package structure, CLI tools
+- 🔄 **Future**: Additional model integrations and enhanced pipeline features planned
 
 ## 📝 License
 
@@ -301,7 +450,15 @@ Contributions are welcome! Please:
 - [FAL AI Platform](https://fal.ai/)
 - [MiniMax Hailuo Documentation](https://fal.ai/models/fal-ai/minimax-video-01)
 - [Kling Video 2.1 Documentation](https://fal.ai/models/fal-ai/kling-video/v2.1/standard/image-to-video/api)
+- [FAL AI Avatar Documentation](https://fal.ai/models/fal-ai/avatar-video)
+
+### ✨ Text-to-Speech Resources
+- [ElevenLabs API Documentation](https://elevenlabs.io/docs/capabilities/text-to-speech)
+- [OpenRouter Platform](https://openrouter.ai/)
+- [ElevenLabs Voice Library](https://elevenlabs.io/app/speech-synthesis/text-to-speech)
+- [Text-to-Dialogue Documentation](https://elevenlabs.io/docs/cookbooks/text-to-dialogue)
+- [Package Migration Guide](text_to_speech/MIGRATION_GUIDE.md)
 
 ---
 
-**🎬 Happy Video Generating!** Choose the implementation that best fits your needs and start creating amazing AI-generated videos. 
+**🎬 Happy Creating!** Choose the implementation that best fits your needs and start creating amazing AI-generated videos and professional text-to-speech content! 🎙️ 
