@@ -10,6 +10,10 @@
 /fal_text_to_image/output/
 /fal_text_to_image/test_output/
 
+# Text-to-speech virtual environment and output
+/text_to_speech/tts_env/
+/text_to_speech/output/
+
 # Environment files
 .env
 
