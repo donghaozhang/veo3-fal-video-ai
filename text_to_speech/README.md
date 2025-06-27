@@ -82,6 +82,22 @@ success = tts.text_to_speech_with_timing_control(
 python text_to_dialogue_script.py
 ```
 
+### 6. Complete AI Pipeline Usage
+
+```bash
+# Quick start with demos
+python quick_start.py
+
+# Interactive pipeline (user-friendly)
+python interactive_pipeline.py
+
+# Quick demo
+python interactive_pipeline.py --demo
+
+# Advanced pipeline usage
+python openrouter_tts_pipeline.py
+```
+
 ## Text-to-Dialogue Examples
 
 Based on the [official ElevenLabs Text-to-Dialogue documentation](https://elevenlabs.io/docs/cookbooks/text-to-dialogue):
@@ -141,6 +157,83 @@ Available emotional context tags:
 **Neutral**: `[calmly]`, `[quietly]`, `[loudly]`, `[politely]`, `[curiously]`
 
 **Special**: `[whispering]`, `[shouting]`, `[stuttering]`, `[sarcastically]`, `[mischievously]`
+
+## OpenRouter AI + Text-to-Speech Pipeline
+
+Complete end-to-end pipeline that generates content using top AI models and converts to speech:
+
+### Pipeline Steps:
+1. **Input**: Description of person(s) + desired length
+2. **Length Calculation**: Estimate content requirements (words, tokens, timing)
+3. **LLM Generation**: Use OpenRouter models to create content
+4. **Content Processing**: Structure output for text-to-speech
+5. **Speech Generation**: Convert to audio using ElevenLabs
+
+### Supported AI Models (Top 10):
+1. **Claude Sonnet 4** - Anthropic's latest, most capable
+2. **Gemini 2.0 Flash** - Google's fast, high-quality model
+3. **Gemini 2.5 Flash Preview** - Latest Google preview
+4. **DeepSeek V3 (Free)** - High-quality free model
+5. **Gemini 2.5 Flash** - Google's production model
+6. **Claude 3.7 Sonnet** - Advanced Anthropic model
+7. **Gemini 2.5 Pro** - Google's professional model
+8. **DeepSeek V3** - High-performance paid model
+9. **Gemini 2.0 Flash Lite** - Lightweight Google model
+10. **Gemini 2.5 Flash Lite** - Efficient Google model
+
+### Interactive Pipeline Usage:
+
+```bash
+# Setup API keys
+export OPENROUTER_API_KEY="your_openrouter_key"
+export ELEVENLABS_API_KEY="your_elevenlabs_key"
+
+# Run interactive pipeline
+python interactive_pipeline.py
+```
+
+### Example Pipeline Workflows:
+
+#### Single Speaker Presentation:
+```python
+from openrouter_tts_pipeline import OpenRouterTTSPipeline, OpenRouterModel
+
+pipeline = OpenRouterTTSPipeline(openrouter_key, elevenlabs_key)
+
+results = pipeline.run_complete_pipeline(
+    description="a tech entrepreneur explaining AI startup strategies",
+    num_people=1,
+    length_minutes=2.0,
+    content_type="presentation",
+    voice_style="professional",
+    model=OpenRouterModel.CLAUDE_SONNET_4,
+    output_file="ai_startup_talk.mp3"
+)
+```
+
+#### Two-Person Dialogue:
+```python
+results = pipeline.run_complete_pipeline(
+    description="two coffee enthusiasts debating espresso vs drip coffee",
+    num_people=2,
+    length_minutes=1.5,
+    content_type="conversation",
+    voice_style="casual",
+    model=OpenRouterModel.GEMINI_2_FLASH,
+    output_file="coffee_debate.mp3"
+)
+```
+
+### Content Types:
+- **Conversation**: Natural dialogue between speakers
+- **Presentation**: Informative speech or talk
+- **Interview**: Q&A format discussion
+- **Story**: Narrative content with character voices
+
+### Voice Styles:
+- **Professional**: Business, formal tone (Rachel + Drew)
+- **Casual**: Friendly, relaxed conversation (Bella + Antoni)
+- **Dramatic**: Expressive, theatrical delivery (Elli + Josh)
 
 ## Usage Examples
 
@@ -365,15 +458,19 @@ tts.text_to_speech(
 ## File Structure
 
 ```
-elevenlabs_v3_guide/
+text_to_speech/
 ├── README.md                          # This file
 ├── requirements.txt                   # Python dependencies
 ├── elevenlabs_tts_controller.py       # Main TTS controller class
 ├── elevenlabs_dialogue_controller.py  # Advanced dialogue controller
 ├── text_to_dialogue_script.py        # Simple dialogue script
+├── openrouter_tts_pipeline.py        # Complete OpenRouter + TTS pipeline
+├── interactive_pipeline.py           # User-friendly interactive interface
+├── quick_start.py                     # Demo script with examples
 ├── example_usage.py                   # Simple usage examples
 ├── eleven_v3_prompting_guide.md      # ElevenLabs v3 guide
 ├── elevenlabs_controls_guide.md      # Controls and formatting guide
+├── .env.example                       # Example environment configuration
 └── output/                           # Generated audio files (created automatically)
 ```
 
