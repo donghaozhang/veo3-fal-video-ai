@@ -1,6 +1,6 @@
 """
-FAL AI MiniMax Hailuo-02 Video Generation
-Advanced image-to-video generation using FAL AI's MiniMax Hailuo-02 model with 768p resolution
+FAL AI Image-to-Video Generation
+Advanced image-to-video generation using FAL AI's dual models with high-quality output
 """
 
 import os
@@ -13,9 +13,9 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-class FALVideoGenerator:
+class FALImageToVideoGenerator:
     """
-    FAL AI Video Generator supporting multiple models
+    FAL AI Image-to-Video Generator supporting multiple models
     
     Supports:
     - MiniMax Hailuo-02: 768p resolution, 6-10 second videos
@@ -24,7 +24,7 @@ class FALVideoGenerator:
     
     def __init__(self, api_key: Optional[str] = None):
         """
-        Initialize the FAL Video Generator
+        Initialize the FAL Image-to-Video Generator
         
         Args:
             api_key: FAL API key (if not provided, will use FAL_KEY environment variable)
@@ -431,7 +431,7 @@ def main():
     """
     try:
         # Initialize the generator
-        generator = FALVideoGenerator()
+        generator = FALImageToVideoGenerator()
         
         # Example 1: Generate video from online image URL
         print("=== Example 1: Generate from online image ===")

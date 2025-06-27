@@ -16,13 +16,13 @@ def test_imports():
         ('fal_client', 'fal_client'),
         ('requests', 'requests'),
         ('python-dotenv', 'dotenv'),
-        ('FALVideoGenerator', 'fal_video_generator')
+        ('FALImageToVideoGenerator', 'fal_image_to_video_generator')
     ]
     
     for name, module in modules:
         try:
-            if name == 'FALVideoGenerator':
-                from fal_video_generator import FALVideoGenerator
+                    if name == 'FALImageToVideoGenerator':
+            from fal_image_to_video_generator import FALImageToVideoGenerator
             else:
                 __import__(module)
             print(f"✅ {name} imported successfully")
@@ -65,11 +65,11 @@ def test_generator_initialization():
     print("\n🎬 Testing FAL Video Generator initialization...")
     
     try:
-        from fal_video_generator import FALVideoGenerator
+        from fal_image_to_video_generator import FALImageToVideoGenerator
         
         # Try to initialize (this will check for API key)
-        generator = FALVideoGenerator()
-        print("✅ FALVideoGenerator initialized successfully")
+        generator = FALImageToVideoGenerator()
+        print("✅ FALImageToVideoGenerator initialized successfully")
         
         # Check if the endpoints are set
         if hasattr(generator, 'hailuo_endpoint'):
@@ -80,7 +80,7 @@ def test_generator_initialization():
         return generator
         
     except ValueError as e:
-        print(f"❌ Failed to initialize FALVideoGenerator: {e}")
+        print(f"❌ Failed to initialize FALImageToVideoGenerator: {e}")
         return None
     except Exception as e:
         print(f"❌ Unexpected error during initialization: {e}")

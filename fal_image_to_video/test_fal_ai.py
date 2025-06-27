@@ -33,13 +33,13 @@ def test_imports():
         ('fal_client', 'fal_client'),
         ('requests', 'requests'),
         ('python-dotenv', 'dotenv'),
-        ('FALVideoGenerator', 'fal_video_generator')
+        ('FALImageToVideoGenerator', 'fal_image_to_video_generator')
     ]
     
     for name, module in modules:
         try:
-            if name == 'FALVideoGenerator':
-                from fal_video_generator import FALVideoGenerator
+                    if name == 'FALImageToVideoGenerator':
+            from fal_image_to_video_generator import FALImageToVideoGenerator
             else:
                 __import__(module)
             print(f"✅ {name} imported successfully")

@@ -7,7 +7,7 @@ Cost-conscious with user confirmation prompts
 
 import os
 import sys
-from fal_video_generator import FALVideoGenerator
+from fal_image_to_video_generator import FALImageToVideoGenerator
 
 def show_cost_warning():
     """Display cost warning for video generation"""
@@ -61,7 +61,7 @@ def main():
         
         # Initialize generator
         print("🔧 Initializing FAL Video Generator...")
-        generator = FALVideoGenerator()
+        generator = FALImageToVideoGenerator()
         print("✅ Generator initialized successfully!")
         
         # Model selection with cost info
