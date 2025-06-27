@@ -1,0 +1,9 @@
+# Core FAL AI dependencies
+fal-client
+python-dotenv
+requests
+typing-extensions
+
+# Optional MCP Server dependencies
+mcp>=1.0.0
+httpx>=0.25.0
