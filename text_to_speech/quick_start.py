@@ -63,6 +63,9 @@ def run_demo_examples():
     print("\n🚀 Initializing OpenRouter + ElevenLabs Pipeline")
     pipeline = OpenRouterTTSPipeline(openrouter_key, elevenlabs_key)
     
+    # Ensure output directory exists
+    os.makedirs("output", exist_ok=True)
+    
     # Define demo scenarios
     demo_scenarios = [
         {

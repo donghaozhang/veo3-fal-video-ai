@@ -253,6 +253,9 @@ def main():
     safe_description = safe_description.replace(' ', '_')
     output_file = f"{safe_description}_{user_input['num_people']}person_{user_input['length_minutes']}min.mp3"
     
+    # Ensure output directory exists
+    os.makedirs("output", exist_ok=True)
+    
     # Show configuration
     print("\n📋 Configuration Summary:")
     print("=" * 40)
@@ -324,6 +327,9 @@ def quick_demo():
     
     try:
         pipeline = OpenRouterTTSPipeline(openrouter_key, elevenlabs_key)
+        
+        # Ensure output directory exists
+        os.makedirs("output", exist_ok=True)
         
         results = pipeline.run_complete_pipeline(
             description="two friends comparing their favorite coffee drinks",

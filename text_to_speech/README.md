@@ -471,7 +471,7 @@ text_to_speech/
 ├── eleven_v3_prompting_guide.md      # ElevenLabs v3 guide
 ├── elevenlabs_controls_guide.md      # Controls and formatting guide
 ├── .env.example                       # Example environment configuration
-└── output/                           # Generated audio files (created automatically)
+└── output/                           # Generated audio files (.mp3) - created automatically
 ```
 
 ## Run Examples

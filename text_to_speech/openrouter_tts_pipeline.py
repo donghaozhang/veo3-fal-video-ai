@@ -88,6 +88,10 @@ class OpenRouterTTSPipeline:
         self.openrouter_api_key = openrouter_api_key
         self.elevenlabs_api_key = elevenlabs_api_key
         
+        # Ensure output directory exists
+        self.output_dir = "output"
+        os.makedirs(self.output_dir, exist_ok=True)
+        
         # Initialize ElevenLabs controllers
         self.tts_controller = ElevenLabsTTSController(elevenlabs_api_key)
         
@@ -149,6 +153,18 @@ class OpenRouterTTSPipeline:
                 "dual": "Create a {length_minutes}-minute story with dialogue between {description}. Include character interactions."
             }
         }
+    
+    def _get_output_path(self, filename: str) -> str:
+        """
+        Get the full output path for a file
+        
+        Args:
+            filename: The filename (e.g., "test.mp3")
+            
+        Returns:
+            Full path in the output directory
+        """
+        return os.path.join(self.output_dir, filename)
     
     def calculate_content_length(self, length_minutes: float, num_people: int) -> Dict[str, int]:
         """
@@ -571,6 +587,9 @@ Example format:
         if output_file is None:
             timestamp = int(time.time())
             output_file = f"pipeline_output_{timestamp}.mp3"
+        
+        # Ensure output file is in the output directory
+        output_file = self._get_output_path(output_file)
         
         print(f"\n🎤 Step 5: Converting to speech...")
         print(f"Output file: {output_file}")
