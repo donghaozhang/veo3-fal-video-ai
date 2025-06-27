@@ -7,7 +7,7 @@ Audio format handling, processing, and utility functions.
 import os
 import io
 import time
-from typing import Dict, Optional, Union, Any
+from typing import Dict, List, Optional, Union, Any
 from pathlib import Path
 from ..models.common import AudioFormat
 from ..utils.file_manager import save_audio_file, ensure_output_dir

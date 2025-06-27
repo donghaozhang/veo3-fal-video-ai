@@ -37,7 +37,8 @@ def check_setup():
     # Check dependencies
     try:
         import requests
-        from openrouter_tts_pipeline import OpenRouterTTSPipeline, OpenRouterModel
+        from ..pipeline.core import OpenRouterTTSPipeline
+        from ..models.pipeline import OpenRouterModel
         print("✅ All dependencies available")
         return True
     except ImportError as e:
@@ -57,7 +58,8 @@ def run_demo_examples():
     elevenlabs_key = os.getenv("ELEVENLABS_API_KEY")
     
     # Import pipeline
-    from openrouter_tts_pipeline import OpenRouterTTSPipeline, OpenRouterModel
+    from ..pipeline.core import OpenRouterTTSPipeline
+    from ..models.pipeline import OpenRouterModel
     
     # Initialize pipeline
     print("\n🚀 Initializing OpenRouter + ElevenLabs Pipeline")
@@ -208,7 +210,8 @@ def show_pipeline_info():
     print("⏱️ Length: 0.5 - 10 minutes (recommended: 1-3 minutes)")
 
 
-if __name__ == "__main__":
+def main():
+    """Main function for CLI entry point"""
     import sys
     
     if len(sys.argv) > 1:
@@ -225,4 +228,8 @@ if __name__ == "__main__":
         show_pipeline_info()
         print("\n🚀 Starting demo in 3 seconds...")
         time.sleep(3)
-        run_demo_examples() 
+        run_demo_examples()
+
+
+if __name__ == "__main__":
+    main() 

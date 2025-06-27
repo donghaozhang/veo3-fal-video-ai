@@ -13,7 +13,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 try:
-    from openrouter_tts_pipeline import OpenRouterTTSPipeline, OpenRouterModel
+    from ..pipeline.core import OpenRouterTTSPipeline
+    from ..models.pipeline import OpenRouterModel
     PIPELINE_AVAILABLE = True
 except ImportError:
     PIPELINE_AVAILABLE = False
