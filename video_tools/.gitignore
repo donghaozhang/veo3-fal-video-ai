@@ -16,9 +16,16 @@ temp/
 *_first_*s.mp4
 *_with_audio.*
 *_new_audio.*
+*_mixed_audio.*
+*_concat_audio.*
 *_processed.*
 *_cut.*
 *_trimmed.*
+
+# Temporary files created during processing
+mixed_audio.mp3
+concatenated_audio.mp3
+temp_audio_list.txt
 
 # Common formats if generated in root (samples/ is tracked)
 /*.mp4
