@@ -1,179 +1,255 @@
-# Video Tools
+# Video Tools - Advanced Video & Audio Processing Suite
 
-A collection of Python scripts for video processing and manipulation using FFmpeg.
+A comprehensive collection of Python utilities for video and audio processing, including AI-powered video understanding with Google Gemini.
+
+## 🎯 Features
+
+### Core Video/Audio Processing
+- **Video Cutting**: Extract specific durations from videos
+- **Audio Management**: Add, replace, extract, mix, and concatenate audio
+- **Subtitle Generation**: Create SRT/VTT files for video players
+- **Format Support**: MP4, AVI, MOV, MKV, WebM, and more
+
+### 🤖 AI-Powered Video & Audio Understanding (NEW!)
+- **Smart Analysis**: Google Gemini AI video and audio understanding
+- **Transcription**: Speech-to-text with timestamps and speaker identification
+- **Description**: Automated video/audio summarization
+- **Scene Analysis**: Timeline breakdown and key moments
+- **Content Analysis**: Comprehensive audio quality and acoustic features
+- **Event Detection**: Audio events, segments, and sound identification
+- **Q&A**: Ask specific questions about video or audio content
+- **Information Extraction**: Identify people, places, facts
+
+## 🚀 Quick Start
+
+### Basic Usage
+```bash
+# Cut first 5 seconds from all videos
+python video_audio_utils.py cut
+
+# Generate subtitles for video players
+python video_audio_utils.py generate-subtitles
+
+# AI video analysis (requires Google Gemini API)
+python video_audio_utils.py analyze-videos
+
+# AI audio analysis (requires Google Gemini API)
+python video_audio_utils.py analyze-audio
+```
+
+### AI Video & Audio Understanding Setup
+```bash
+# Install Gemini dependencies
+pip install google-generativeai
+
+# Set API key
+export GEMINI_API_KEY=your_api_key_here
+
+# Test analysis
+python video_audio_utils.py describe-videos
+
+# Test audio analysis
+python video_audio_utils.py describe-audio
+```
 
 ## 📁 Directory Structure
 
 ```
 video_tools/
-├── video_audio_utils.py    # Main utility script
-├── README.md               # This documentation
-├── .gitignore             # Git ignore rules
-├── samples/               # Original sample videos/audio (tracked in git)
-│   └── sample_video.mp4   # Main sample video for testing
-├── processed/             # Manual processing outputs (ignored by git)
-└── test_output/           # Test-generated files (ignored by git)
-    ├── sample_video_first_1s.mp4
-    ├── sample_video_first_3s.mp4
-    ├── sample_video_first_5s.mp4
-    ├── sample_video_audio.mp3
-    └── ... (other test outputs)
+├── video_audio_utils.py          # Main CLI interface
+├── video_utils/                  # Modular package
+│   ├── core.py                   # Core utilities (ffmpeg, video info)
+│   ├── video_processor.py        # Video cutting and processing
+│   ├── audio_processor.py        # Audio manipulation
+│   ├── subtitle_generator.py     # Subtitle creation (SRT/VTT)
+│   ├── video_understanding.py    # AI video/audio analysis (NEW!)
+│   ├── interactive.py            # User interaction
+│   └── commands.py               # CLI command implementations
+├── test_subtitles.py             # Subtitle functionality tests
+├── test_video_understanding.py   # AI analysis tests
+├── GEMINI_SETUP.md              # AI setup guide
+├── requirements_gemini.txt       # AI dependencies
+├── samples/                      # Sample videos for testing
+├── test_output/                  # Generated test files
+└── README.md                     # This documentation
 ```
 
-**Organization Notes:**
-- `samples/` - Contains original input files that serve as test samples
-- `processed/` - For manually processed outputs and production files  
-- `test_output/` - Auto-generated test files (ignored by git to keep repo clean)
+## 🎬 Available Commands
 
-## 📁 Scripts
-
-### `video_audio_utils.py`
-Comprehensive video and audio manipulation utility supporting multiple operations:
-
-#### **Video Cutting**
-Extracts the first N seconds from video files in the current directory.
-
-**Features:**
-- ✂️ **Video Cutting**: Extract first N seconds from videos
-- 🎵 **Audio Addition**: Add audio to silent videos
-- 🔄 **Audio Replacement**: Replace existing audio in videos
-- 🎵 **Audio Extraction**: Extract audio tracks from videos
-- 🎛️ **Audio Mixing**: Mix multiple audio files together and add to videos
-- 🔗 **Audio Concatenation**: Join multiple audio files in sequence and add to videos
-- 🎬 Automatically finds all video/audio files in current directory
-- ⚡ Fast processing using FFmpeg stream copy when possible
-- 📊 Progress tracking and detailed output information
-- 🛡️ Safe processing with existing file checks
-
-**Usage:**
+### Video Processing
 ```bash
-# Navigate to video_tools directory
-cd video_tools
-
-# Video cutting - extract first N seconds
-python video_audio_utils.py cut 5          # Extract first 5 seconds
-python video_audio_utils.py cut 10         # Extract first 10 seconds
-
-# Audio operations  
-python video_audio_utils.py add-audio      # Add audio to silent videos
-python video_audio_utils.py replace-audio  # Replace existing audio
-python video_audio_utils.py extract-audio  # Extract audio from videos
-
-# Advanced audio operations (NEW!)
-python video_audio_utils.py mix-audio      # Mix multiple audio files and add to videos
-python video_audio_utils.py concat-audio   # Concatenate multiple audio files and add to videos
-
-# Or process files in any other directory
-cd /path/to/your/videos
-python /path/to/video_tools/video_audio_utils.py [command]
+python video_audio_utils.py cut [duration]      # Extract first N seconds (default: 5)
+python video_audio_utils.py add-audio           # Add audio to silent videos
+python video_audio_utils.py replace-audio       # Replace existing audio
+python video_audio_utils.py extract-audio       # Extract audio tracks
 ```
 
-**Supported Video Formats:**
-- `.mp4`, `.avi`, `.mov`, `.mkv`, `.webm`, `.flv`, `.wmv`
-
-**Supported Audio Formats:**
-- `.mp3`, `.wav`, `.aac`, `.ogg`, `.m4a`, `.flac`
-
-## 🎛️ Advanced Audio Features
-
-### **Audio Mixing**
-Combines multiple audio files by layering them together (playing simultaneously):
-- Automatically normalizes volume levels to prevent distortion
-- Creates a single mixed audio track from multiple sources
-- Perfect for adding background music, sound effects, etc.
-- Interactive selection: choose specific files or mix all available audio
-
-### **Audio Concatenation** 
-Joins multiple audio files in sequence (playing one after another):
-- Maintains original audio quality and timing
-- Creates a single continuous audio track
-- Perfect for creating playlists, joining speech segments, etc.
-- Interactive selection with custom ordering
-
-**Example Workflow:**
+### Audio Processing  
 ```bash
-# Mix 3 audio files and add to all videos
-python video_audio_utils.py mix-audio
-# → Select files: music.mp3, effects.wav, voice.mp3
-# → Creates: mixed_audio.mp3 
-# → Applies to: video1_mixed_audio.mp4, video2_mixed_audio.mp4
-
-# Concatenate audio files in sequence and add to videos  
-python video_audio_utils.py concat-audio
-# → Select files: intro.mp3, main.mp3, outro.mp3
-# → Creates: concatenated_audio.mp3
-# → Applies to: video1_concat_audio.mp4, video2_concat_audio.mp4
+python video_audio_utils.py mix-audio           # Mix multiple audio files
+python video_audio_utils.py concat-audio        # Concatenate audio files
 ```
 
-**Requirements:**
-- Python 3.6+
-- FFmpeg installed and in PATH
-- For mixing/concatenation: at least 2 audio files
-
-**Example Output:**
+### Subtitles
+```bash
+python video_audio_utils.py generate-subtitles  # Create .srt/.vtt files for video players
+python video_audio_utils.py burn-subtitles      # Embed subtitles permanently into video
 ```
-🎬 Video Cutting:
-Original: video.mp4 (7.5 MB, 110.4 seconds)
-Output:   video_first_5s.mp4 (0.4 MB, 5 seconds)
 
-🎵 Audio Mixing:
-Selected: music.mp3, effects.wav, voice.mp3
-Mixed:    mixed_audio.mp3 (all tracks layered)
-Applied:  video_mixed_audio.mp4
+### 🤖 AI Analysis (NEW!)
+```bash
+# Video Analysis
+python video_audio_utils.py analyze-videos      # Comprehensive AI analysis with multiple options
+python video_audio_utils.py transcribe-videos   # Quick speech-to-text transcription
+python video_audio_utils.py describe-videos     # AI-powered video description
+
+# Audio Analysis
+python video_audio_utils.py analyze-audio       # Comprehensive audio analysis with multiple options
+python video_audio_utils.py transcribe-audio    # Quick audio transcription with speaker ID
+python video_audio_utils.py describe-audio      # AI-powered audio description
 ```
 
 ## 🔧 Requirements
 
-### FFmpeg Installation
+### System Dependencies
+- **ffmpeg** - Video/audio processing engine
+- **Python 3.8+** - Runtime environment
 
-**Windows:**
-1. Download from https://ffmpeg.org/download.html
-2. Extract and add to PATH
-3. Or use: `winget install FFmpeg`
-
-**macOS:**
+### Python Dependencies
 ```bash
-brew install ffmpeg
+# Core functionality (no additional dependencies needed)
+
+# AI functionality (optional)
+pip install google-generativeai  # For Gemini video understanding
 ```
 
-**Linux (Ubuntu/Debian):**
+## 🎯 Detailed Features
+
+### Video Operations
+- **Smart Cutting**: Extract precise durations with stream copy for speed
+- **Format Support**: Universal support for major video formats
+- **Batch Processing**: Automatically processes all videos in directory
+- **Quality Preservation**: Maintains original quality when possible
+
+### Audio Operations
+- **Silent Video Detection**: Automatically identifies videos without audio
+- **Audio Mixing**: Combine multiple tracks with automatic normalization
+- **Audio Concatenation**: Join audio files in sequence
+- **Format Conversion**: Support for all major audio formats
+
+### Subtitle Generation
+- **SRT Format**: Universal subtitle format for most players
+- **WebVTT Format**: Web-optimized subtitles for browsers
+- **Auto-Timing**: Intelligent timing based on words per second
+- **Player Compatible**: Files load automatically in VLC, Media Player, etc.
+
+### 🤖 AI Video & Audio Understanding
+- **Multi-Model Support**: Powered by Google Gemini 2.0/2.5
+- **Comprehensive Analysis**: Description, transcription, scene detection, content analysis
+- **Audio Features**: Event detection, acoustic analysis, speaker identification
+- **Question Answering**: Ask specific questions about video or audio content
+- **Timestamp Support**: Precise timing information for all analysis
+- **Multiple Formats**: Results saved as both JSON and text files
+
+## 📖 Documentation
+
+- **[Complete AI Setup Guide](GEMINI_SETUP.md)** - Step-by-step Gemini configuration
+- **[Test Scripts](test_video_understanding.py)** - Comprehensive functionality tests
+- **[Package API](video_utils/)** - Modular component documentation
+
+## 🎯 Use Cases
+
+### Content Creation
+- Extract highlights from long videos
+- Add background music to silent clips
+- Generate professional subtitles
+- Create video descriptions automatically
+
+### Video Analysis & Research
+- Transcribe interviews and meetings with timestamps
+- Extract key information from educational content
+- Analyze video content for indexing and search
+- Generate metadata for video libraries
+
+### Accessibility & Compliance
+- Create subtitle files for deaf/hard-of-hearing viewers
+- Generate video descriptions for visually impaired users
+- Provide multiple subtitle formats for broad compatibility
+- Meet accessibility standards for web content
+
+### Business & Education
+- Process training videos for searchable transcripts
+- Analyze marketing content for key messaging
+- Create summaries of long presentations
+- Extract actionable insights from video conferences
+
+## 🔒 Security & Privacy
+
+- **Local Processing**: Core video operations run entirely offline
+- **Secure API Handling**: Environment variables for API keys
+- **No Data Retention**: AI services don't store video content
+- **File Cleanup**: Automatic cleanup of temporary files
+- **Safe Operations**: Existing file protection and validation
+
+## 🚀 Getting Started
+
+### 1. Clone and Setup
 ```bash
-sudo apt install ffmpeg
+cd video_tools
+python --version  # Ensure Python 3.8+
+ffmpeg -version   # Ensure ffmpeg is installed
 ```
 
-**Verify Installation:**
+### 2. Basic Operations
 ```bash
-ffmpeg -version
+# Test with sample video
+python video_audio_utils.py cut 3
+
+# Generate subtitles
+python video_audio_utils.py generate-subtitles
 ```
 
-## 📝 Usage Tips
+### 3. AI Analysis (Optional)
+```bash
+# Install AI dependencies
+pip install -r requirements_gemini.txt
 
-1. **Always backup original videos** before processing
-2. **Test on a single file first** before batch processing
-3. **Check available disk space** for output files
-4. **Use stream copy** (`-c copy`) when possible for faster processing
-5. **Monitor file sizes** to ensure expected results
+# Configure API key (see GEMINI_SETUP.md)
+export GEMINI_API_KEY=your_api_key
 
-## 🎯 Future Tools
+# Test AI features
+python video_audio_utils.py describe-videos
+```
 
-Planned additions to this toolkit:
-- Video trimming by time range
-- Video format conversion
-- Video compression/quality adjustment
-- Audio extraction from videos
-- Video concatenation
-- Batch video processing
-- Video metadata extraction
+### 4. Run Tests
+```bash
+# Test core functionality
+python test_subtitles.py
 
-## 📊 Performance Notes
+# Test AI functionality
+python test_video_understanding.py
+```
 
-- **Stream Copy**: Fastest method, preserves quality, limited editing options
-- **Re-encoding**: Slower but allows format changes and quality adjustments
-- **File Sizes**: Typically 5-second clips are 5-10% of original file size
+## 📊 Performance & Optimization
 
-## 🚨 Important Notes
+- **Stream Copy**: Default mode for maximum speed and quality
+- **Batch Processing**: Efficient handling of multiple files
+- **Memory Efficient**: Optimized for large video files
+- **Progress Tracking**: Real-time feedback for long operations
+- **Error Handling**: Robust error recovery and reporting
 
-- Scripts use FFmpeg's stream copy by default for speed
-- Output files will overwrite existing files with same name
-- Some video formats may require re-encoding for certain operations
-- Always verify output quality matches expectations 
+## 🔄 Architecture
+
+The video tools are built with a modular architecture:
+
+- **Core Layer**: Basic video/audio operations (ffmpeg integration)
+- **Processing Layer**: Specialized operations (cutting, mixing, subtitles)
+- **AI Layer**: Machine learning analysis (Gemini integration)
+- **Interface Layer**: CLI commands and user interaction
+- **Test Layer**: Comprehensive validation and testing
+
+This design ensures maintainability, testability, and easy extension for new features.
+
+---
+
+**🎉 Ready to process your videos with both traditional and AI-powered tools!**

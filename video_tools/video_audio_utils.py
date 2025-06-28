@@ -9,6 +9,7 @@ This script provides multiple video and audio manipulation utilities:
 4. Extract audio from videos
 5. Generate subtitle files (.srt/.vtt) for video players
 6. Burn subtitles permanently into video files
+7. AI-powered video understanding with Google Gemini
 
 Requirements:
 - ffmpeg must be installed and available in PATH
@@ -42,7 +43,13 @@ from video_utils.commands import (
     cmd_mix_audio,
     cmd_concat_audio,
     cmd_generate_subtitles,
-    cmd_burn_subtitles
+    cmd_burn_subtitles,
+    cmd_analyze_videos,
+    cmd_transcribe_videos,
+    cmd_describe_videos,
+    cmd_analyze_audio,
+    cmd_transcribe_audio,
+    cmd_describe_audio
 )
 
 
@@ -62,6 +69,12 @@ Examples:
   python video_audio_utils.py concat-audio        # Concatenate multiple audio files and add to videos
   python video_audio_utils.py generate-subtitles  # Generate .srt/.vtt subtitle files for video players
   python video_audio_utils.py burn-subtitles      # Burn subtitles permanently into video files
+  python video_audio_utils.py analyze-videos      # AI-powered video analysis with Google Gemini
+  python video_audio_utils.py transcribe-videos   # AI transcription of video audio
+  python video_audio_utils.py describe-videos     # AI description and summarization
+  python video_audio_utils.py analyze-audio       # AI-powered audio analysis with Google Gemini
+  python video_audio_utils.py transcribe-audio    # AI transcription of audio files
+  python video_audio_utils.py describe-audio      # AI description of audio content
 
 Requirements:
   - ffmpeg must be installed and available in PATH
@@ -71,7 +84,7 @@ Requirements:
     )
     
     parser.add_argument('command', 
-                       choices=['cut', 'add-audio', 'replace-audio', 'extract-audio', 'mix-audio', 'concat-audio', 'generate-subtitles', 'burn-subtitles'],
+                       choices=['cut', 'add-audio', 'replace-audio', 'extract-audio', 'mix-audio', 'concat-audio', 'generate-subtitles', 'burn-subtitles', 'analyze-videos', 'transcribe-videos', 'describe-videos', 'analyze-audio', 'transcribe-audio', 'describe-audio'],
                        help='Command to execute')
     parser.add_argument('duration', type=int, nargs='?', default=5,
                        help='Duration in seconds for cut command (default: 5)')
@@ -119,6 +132,18 @@ Requirements:
             cmd_generate_subtitles()
         elif args.command == 'burn-subtitles':
             cmd_burn_subtitles()
+        elif args.command == 'analyze-videos':
+            cmd_analyze_videos()
+        elif args.command == 'transcribe-videos':
+            cmd_transcribe_videos()
+        elif args.command == 'describe-videos':
+            cmd_describe_videos()
+        elif args.command == 'analyze-audio':
+            cmd_analyze_audio()
+        elif args.command == 'transcribe-audio':
+            cmd_transcribe_audio()
+        elif args.command == 'describe-audio':
+            cmd_describe_audio()
     except KeyboardInterrupt:
         print("\n👋 Operation cancelled by user")
     except Exception as e:

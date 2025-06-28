@@ -25,6 +25,13 @@ from .subtitle_generator import (
     add_text_subtitles_to_video
 )
 from .interactive import interactive_audio_selection, interactive_multiple_audio_selection
+from .video_understanding import (
+    check_gemini_requirements,
+    analyze_video_file,
+    analyze_audio_file,
+    save_analysis_result,
+    GeminiVideoAnalyzer
+)
 
 __all__ = [
     # Core utilities
@@ -40,5 +47,7 @@ __all__ = [
     'generate_srt_subtitle_file', 'generate_vtt_subtitle_file',
     'generate_subtitle_for_video', 'add_subtitles_to_video', 'add_text_subtitles_to_video',
     # Interactive utilities
-    'interactive_audio_selection', 'interactive_multiple_audio_selection'
+    'interactive_audio_selection', 'interactive_multiple_audio_selection',
+    # Video understanding
+    'check_gemini_requirements', 'analyze_video_file', 'analyze_audio_file', 'save_analysis_result', 'GeminiVideoAnalyzer'
 ]
