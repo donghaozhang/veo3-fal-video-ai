@@ -1,12 +1,13 @@
 """
-FAL AI Image-to-Image Generator with Dual Model Support
+FAL AI Image-to-Image Generator with Multi-Model Support
 
-This module provides a Python interface for modifying images using two FAL AI models:
+This module provides a Python interface for modifying images using multiple FAL AI models:
 1. Luma Photon Flash - Creative image modification and personalization
 2. FLUX Kontext Dev - Contextual image editing with precise control
+3. ByteDance SeedEdit v3 - Accurate editing with content preservation
 
 Features:
-- Dual model support for different editing needs
+- Multi-model support for different editing needs
 - Image modification with text prompts
 - Adjustable parameters per model
 - Multiple aspect ratio support (Photon only)
@@ -16,6 +17,7 @@ Features:
 API Endpoints:
 - fal-ai/luma-photon/flash/modify (Photon Flash)
 - fal-ai/flux-kontext/dev (FLUX Kontext)
+- fal-ai/bytedance/seededit/v3/edit-image (SeedEdit v3)
 
 Author: AI Assistant
 Date: 2024
@@ -33,32 +35,34 @@ from pathlib import Path
 load_dotenv()
 
 # Supported models
-ModelType = Literal["photon", "photon_base", "kontext"]
+ModelType = Literal["photon", "photon_base", "kontext", "seededit"]
 
 # Supported aspect ratios (Photon Flash only)
 AspectRatio = Literal["1:1", "16:9", "9:16", "4:3", "3:4", "21:9", "9:21"]
 
 ASPECT_RATIOS = ["1:1", "16:9", "9:16", "4:3", "3:4", "21:9", "9:21"]
-SUPPORTED_MODELS = ["photon", "photon_base", "kontext", "kontext_multi"]
+SUPPORTED_MODELS = ["photon", "photon_base", "kontext", "kontext_multi", "seededit"]
 
 # Supported aspect ratios for FLUX Kontext Multi
 KONTEXT_MULTI_ASPECT_RATIOS = ["21:9", "16:9", "4:3", "3:2", "1:1", "2:3", "3:4", "9:16", "9:21"]
 
 class FALImageToImageGenerator:
     """
-    FAL AI Image-to-Image Generator with Dual Model Support
+    FAL AI Image-to-Image Generator with Multi-Model Support
     
     This class provides methods to modify existing images using text prompts
-    with two FAL AI models:
+    with multiple FAL AI models:
     - Luma Photon Flash: Creative modifications with aspect ratio control
     - FLUX Kontext Dev: Contextual editing with precise control
+    - ByteDance SeedEdit v3: Accurate editing with content preservation
     """
     
     MODEL_ENDPOINTS = {
         "photon": "fal-ai/luma-photon/flash/modify",
         "photon_base": "fal-ai/luma-photon/modify",
         "kontext": "fal-ai/flux-kontext/dev",
-        "kontext_multi": "fal-ai/flux-pro/kontext/max/multi"
+        "kontext_multi": "fal-ai/flux-pro/kontext/max/multi",
+        "seededit": "fal-ai/bytedance/seededit/v3/edit-image"
     }
     
     def __init__(self, api_key: Optional[str] = None):
@@ -157,6 +161,22 @@ class FALImageToImageGenerator:
             ]
         }
         
+        seededit_info = {
+            "model_name": "ByteDance SeedEdit v3",
+            "endpoint": self.MODEL_ENDPOINTS["seededit"],
+            "description": "Accurate image editing model with excellent content preservation",
+            "guidance_scale_range": "0.0 - 1.0 (default: 0.5)",
+            "seed_support": "Yes (optional)",
+            "features": [
+                "Accurate editing instruction following",
+                "Effective content preservation",
+                "Commercial use ready",
+                "Simple parameter set",
+                "High-quality results",
+                "ByteDance developed"
+            ]
+        }
+        
         if model == "photon":
             return photon_info
         elif model == "photon_base":
@@ -165,12 +185,15 @@ class FALImageToImageGenerator:
             return kontext_info
         elif model == "kontext_multi":
             return kontext_multi_info
+        elif model == "seededit":
+            return seededit_info
         else:
             return {
                 "photon": photon_info,
                 "photon_base": photon_base_info,
                 "kontext": kontext_info,
-                "kontext_multi": kontext_multi_info
+                "kontext_multi": kontext_multi_info,
+                "seededit": seededit_info
             }
     
     def validate_model(self, model: str) -> str:
@@ -305,17 +328,17 @@ class FALImageToImageGenerator:
         output_dir: Optional[str] = None
     ) -> Dict[str, Any]:
         """
-        Modify an image using text prompt with either Photon Flash or FLUX Kontext.
+        Modify an image using text prompt with multiple model options.
         
         Args:
             prompt: Text instruction for modifying the image
             image_url: URL of the input image
-            model: Model to use ("photon" or "kontext", default: "photon")
+            model: Model to use ("photon", "kontext", "seededit", default: "photon")
             strength: Modification intensity for Photon (0-1, default: 0.8)
             aspect_ratio: Output aspect ratio for Photon (default: "1:1")
             num_inference_steps: Inference steps for Kontext (1-50, default: 28)
-            guidance_scale: Guidance scale for Kontext (1.0-20.0, default: 2.5)
-            seed: Random seed for reproducible results (Kontext only)
+            guidance_scale: Guidance scale for Kontext (1.0-20.0, default: 2.5) or SeedEdit (0.0-1.0, default: 0.5)
+            seed: Random seed for reproducible results (Kontext and SeedEdit)
             resolution_mode: Resolution mode for Kontext ("auto" or "match_input")
             output_dir: Custom output directory (optional)
             
@@ -349,6 +372,31 @@ class FALImageToImageGenerator:
             print(f"   Prompt: {prompt}")
             print(f"   Strength: {strength}")
             print(f"   Aspect Ratio: {aspect_ratio}")
+            
+        elif model == "seededit":
+            # Set SeedEdit defaults
+            if guidance_scale == 2.5:  # Default Kontext value, change for SeedEdit
+                guidance_scale = 0.5
+            
+            # Validate SeedEdit parameters
+            if not 0.0 <= guidance_scale <= 1.0:
+                raise ValueError(f"SeedEdit guidance scale must be between 0.0 and 1.0, got: {guidance_scale}")
+            
+            # Prepare SeedEdit arguments
+            arguments = {
+                "prompt": prompt,
+                "image_url": image_url,
+                "guidance_scale": guidance_scale
+            }
+            
+            if seed is not None:
+                arguments["seed"] = seed
+            
+            print(f"🎨 Modifying image with ByteDance SeedEdit v3...")
+            print(f"   Prompt: {prompt}")
+            print(f"   Guidance Scale: {guidance_scale}")
+            if seed is not None:
+                print(f"   Seed: {seed}")
             
         else:  # kontext
             # Validate Kontext parameters
@@ -386,8 +434,15 @@ class FALImageToImageGenerator:
             processing_time = end_time - start_time
             print(f"✅ Generation completed in {processing_time:.2f} seconds")
             
-            # Process results
-            images = result.get("images", [])
+            # Process results - handle different response formats
+            images = []
+            if "images" in result:
+                # Standard format (Photon, Kontext)
+                images = result.get("images", [])
+            elif "image" in result:
+                # SeedEdit v3 format (single image object)
+                images = [result["image"]]
+            
             if not images:
                 raise Exception("No images generated")
             
@@ -418,7 +473,8 @@ class FALImageToImageGenerator:
             model_display_name = {
                 "photon": "Luma Photon Flash",
                 "photon_base": "Luma Photon Base",
-                "kontext": "FLUX Kontext Dev"
+                "kontext": "FLUX Kontext Dev",
+                "seededit": "ByteDance SeedEdit v3"
             }.get(model, model)
             
             result_dict = {
@@ -437,7 +493,13 @@ class FALImageToImageGenerator:
                     "strength": strength,
                     "aspect_ratio": aspect_ratio
                 })
-            else:
+            elif model == "seededit":
+                result_dict.update({
+                    "guidance_scale": guidance_scale
+                })
+                if seed is not None:
+                    result_dict["seed"] = seed
+            else:  # kontext
                 result_dict.update({
                     "num_inference_steps": num_inference_steps,
                     "guidance_scale": guidance_scale,
@@ -453,7 +515,8 @@ class FALImageToImageGenerator:
             model_display_name = {
                 "photon": "Luma Photon Flash",
                 "photon_base": "Luma Photon Base",
-                "kontext": "FLUX Kontext Dev"
+                "kontext": "FLUX Kontext Dev",
+                "seededit": "ByteDance SeedEdit v3"
             }.get(model, model)
             
             error_dict = {
@@ -469,7 +532,11 @@ class FALImageToImageGenerator:
                     "strength": strength,
                     "aspect_ratio": aspect_ratio
                 })
-            else:
+            elif model == "seededit":
+                error_dict.update({
+                    "guidance_scale": guidance_scale
+                })
+            else:  # kontext
                 error_dict.update({
                     "num_inference_steps": num_inference_steps,
                     "guidance_scale": guidance_scale,
@@ -601,6 +668,36 @@ class FALImageToImageGenerator:
             guidance_scale=guidance_scale,
             seed=seed,
             resolution_mode=resolution_mode,
+            output_dir=output_dir
+        )
+    
+    def modify_image_seededit(
+        self,
+        prompt: str,
+        image_url: str,
+        guidance_scale: float = 0.5,
+        seed: Optional[int] = None,
+        output_dir: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """
+        Convenience method for ByteDance SeedEdit v3 modifications.
+        
+        Args:
+            prompt: Text instruction for modifying the image
+            image_url: URL of the input image
+            guidance_scale: Guidance scale (0.0-1.0, default: 0.5)
+            seed: Random seed for reproducible results (optional)
+            output_dir: Custom output directory (optional)
+            
+        Returns:
+            Dictionary containing generation results and file paths
+        """
+        return self.modify_image(
+            prompt=prompt,
+            image_url=image_url,
+            model="seededit",
+            guidance_scale=guidance_scale,
+            seed=seed,
             output_dir=output_dir
         )
     
@@ -808,6 +905,36 @@ class FALImageToImageGenerator:
                 "downloaded_files": []
             }
     
+    def modify_local_image_seededit(
+        self,
+        prompt: str,
+        image_path: str,
+        guidance_scale: float = 0.5,
+        seed: Optional[int] = None,
+        output_dir: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """
+        Convenience method for ByteDance SeedEdit v3 local image modifications.
+        
+        Args:
+            prompt: Text instruction for modifying the image
+            image_path: Path to local image file
+            guidance_scale: Guidance scale (0.0-1.0, default: 0.5)
+            seed: Random seed for reproducible results (optional)
+            output_dir: Custom output directory (optional)
+            
+        Returns:
+            Dictionary containing generation results and file paths
+        """
+        return self.modify_local_image(
+            prompt=prompt,
+            image_path=image_path,
+            model="seededit",
+            guidance_scale=guidance_scale,
+            seed=seed,
+            output_dir=output_dir
+        )
+    
     def modify_local_image(
         self,
         prompt: str,
@@ -863,7 +990,8 @@ class FALImageToImageGenerator:
             model_display_name = {
                 "photon": "Luma Photon Flash",
                 "photon_base": "Luma Photon Base",
-                "kontext": "FLUX Kontext Dev"
+                "kontext": "FLUX Kontext Dev",
+                "seededit": "ByteDance SeedEdit v3"
             }.get(model, model)
             
             error_dict = {
@@ -880,7 +1008,11 @@ class FALImageToImageGenerator:
                     "strength": strength,
                     "aspect_ratio": aspect_ratio
                 })
-            else:
+            elif model == "seededit":
+                error_dict.update({
+                    "guidance_scale": guidance_scale
+                })
+            else:  # kontext
                 error_dict.update({
                     "num_inference_steps": num_inference_steps,
                     "guidance_scale": guidance_scale,
