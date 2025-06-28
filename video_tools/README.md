@@ -2,6 +2,29 @@
 
 A collection of Python scripts for video processing and manipulation using FFmpeg.
 
+## 📁 Directory Structure
+
+```
+video_tools/
+├── video_audio_utils.py    # Main utility script
+├── README.md               # This documentation
+├── .gitignore             # Git ignore rules
+├── samples/               # Original sample videos/audio (tracked in git)
+│   └── sample_video.mp4   # Main sample video for testing
+├── processed/             # Manual processing outputs (ignored by git)
+└── test_output/           # Test-generated files (ignored by git)
+    ├── sample_video_first_1s.mp4
+    ├── sample_video_first_3s.mp4
+    ├── sample_video_first_5s.mp4
+    ├── sample_video_audio.mp3
+    └── ... (other test outputs)
+```
+
+**Organization Notes:**
+- `samples/` - Contains original input files that serve as test samples
+- `processed/` - For manually processed outputs and production files  
+- `test_output/` - Auto-generated test files (ignored by git to keep repo clean)
+
 ## 📁 Scripts
 
 ### `cut_video_first_5_seconds.py`
@@ -17,11 +40,15 @@ Extracts the first 5 seconds from video files in the current directory.
 
 **Usage:**
 ```bash
-# Navigate to folder with videos
-cd /path/to/videos
+# Navigate to video_tools directory
+cd video_tools
 
-# Run the script
-python /path/to/video_tools/cut_video_first_5_seconds.py
+# Process files in samples/ directory
+python video_audio_utils.py cut 5
+
+# Or process files in any other directory
+cd /path/to/your/videos
+python /path/to/video_tools/video_audio_utils.py cut 5
 ```
 
 **Supported Formats:**

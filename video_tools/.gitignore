@@ -1,32 +1,39 @@
 # Video Tools - Ignore Files
 
-# Generated video outputs
+# All processed outputs (but keep sample inputs)
+processed/
+test_output/
+
+# Temp files and directories
+temp/
+*.tmp
+
+# Backup files
+*.bak
+*~
+
+# Generated outputs if not in organized directories
 *_first_*s.mp4
 *_with_audio.*
 *_new_audio.*
-*_audio.mp3
+*_processed.*
+*_cut.*
+*_trimmed.*
 
-# Common video formats
-*.mp4
-*.avi
-*.mov
-*.mkv
-*.webm
-*.flv
-*.wmv
-
-# Audio files
-*.mp3
-*.wav
-*.aac
-*.ogg
-*.m4a
-*.flac
-
-# Output directories
-output/
-processed/
-temp/
+# Common formats if generated in root (samples/ is tracked)
+/*.mp4
+/*.avi
+/*.mov
+/*.mkv
+/*.webm
+/*.flv
+/*.wmv
+/*.mp3
+/*.wav
+/*.aac
+/*.ogg
+/*.m4a
+/*.flac
 
 # Python
 __pycache__/

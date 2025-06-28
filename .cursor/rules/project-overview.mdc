@@ -26,6 +26,13 @@ This project provides Python utilities for generating videos, images, and avatar
    - **FLUX Schnell** (Ultra-fast generation)
    - **FLUX Dev** (Balanced speed and quality)
 
+## Text-to-Speech Generation
+5. **ElevenLabs TTS Package** (modular architecture, comprehensive features)
+   - **3000+ Voice Library**: Popular presets and custom voice cloning
+   - **AI Content Pipeline**: OpenRouter AI integration with top 10 models
+   - **Advanced Features**: Timing control, multi-speaker dialogue, emotional tags
+   - **Professional Package**: Modular design with setup.py and proper imports
+
 ## Main Components
 
 ### Google Veo Implementation
@@ -78,6 +85,34 @@ Located in [fal_text_to_image/](mdc:fal_text_to_image) directory with consolidat
   - [test_setup.py](mdc:fal_text_to_image/test_setup.py) - **FREE environment and API validation**
   - [test_generation.py](mdc:fal_text_to_image/test_generation.py) - **PAID image generation tests** (includes `--dragon` flag)
 - [README.md](mdc:fal_text_to_image/README.md) - Complete FAL AI text-to-image documentation
+
+### ElevenLabs Text-to-Speech Package (Modular Architecture)
+Located in [text_to_speech/](mdc:text_to_speech) directory with comprehensive TTS capabilities and AI content pipeline.
+
+**Key Components:**
+- [__init__.py](mdc:text_to_speech/__init__.py) - Main package interface with clean imports
+- **Core TTS System:**
+  - [tts/controller.py](mdc:text_to_speech/tts/controller.py) - Main TTS controller class
+  - [tts/voice_manager.py](mdc:text_to_speech/tts/voice_manager.py) - Voice selection and management (3000+ voices)
+  - [tts/audio_processor.py](mdc:text_to_speech/tts/audio_processor.py) - Audio format handling and processing
+- **AI Content Pipeline:**
+  - [pipeline/core.py](mdc:text_to_speech/pipeline/core.py) - OpenRouter AI integration with top 10 models
+- **Configuration System:**
+  - [config/voices.py](mdc:text_to_speech/config/voices.py) - Voice presets and configurations
+  - [config/models.py](mdc:text_to_speech/config/models.py) - AI model settings and recommendations
+  - [config/defaults.py](mdc:text_to_speech/config/defaults.py) - Default values and settings
+- **CLI Tools:**
+  - [cli/interactive.py](mdc:text_to_speech/cli/interactive.py) - Interactive pipeline interface
+  - [cli/quick_start.py](mdc:text_to_speech/cli/quick_start.py) - Quick demo runner
+- [README.md](mdc:text_to_speech/README.md) - Complete package documentation
+- [MIGRATION_GUIDE.md](mdc:text_to_speech/MIGRATION_GUIDE.md) - Migration from old monolithic structure
+
+**Key Features:**
+- **3000+ Voice Library**: Popular presets (Rachel, Drew, Bella) and custom voice cloning
+- **AI Content Pipeline**: Generate content using Claude Sonnet 4, Gemini 2.0 Flash, DeepSeek V3, etc.
+- **Advanced Voice Control**: Timing, speed control, pause insertion, emotional context tags
+- **Multi-Speaker Dialogue**: Natural conversation generation with multiple voices
+- **Professional Package**: Modular architecture with setup.py, proper imports, and comprehensive testing
 
 **Supported Video Models:**
 - **MiniMax Hailuo-02**: `fal-ai/minimax/hailuo-02/standard/image-to-video`
@@ -148,16 +183,55 @@ veo3/
 │   ├── .env                         # FAL AI configuration
 │   ├── output/                      # Generated avatar videos
 │   └── test_output/                 # Test-generated avatar videos
-└── fal_text_to_image/               # FAL AI quad-model text-to-image implementation
-    ├── fal_text_to_image_generator.py # FAL AI text-to-image generator class
-    ├── demo.py                      # Cost-conscious interactive demo
-    ├── test_setup.py               # FREE environment and API validation
-    ├── test_generation.py          # PAID image generation tests (includes --dragon)
-    ├── README.md                    # FAL AI text-to-image documentation
-    ├── requirements.txt             # FAL AI dependencies
-    ├── .env                         # FAL AI configuration
-    ├── output/                      # Generated images
-    └── test_output/                 # Test-generated images
+├── fal_text_to_image/               # FAL AI quad-model text-to-image implementation
+│   ├── fal_text_to_image_generator.py # FAL AI text-to-image generator class
+│   ├── demo.py                      # Cost-conscious interactive demo
+│   ├── test_setup.py               # FREE environment and API validation
+│   ├── test_generation.py          # PAID image generation tests (includes --dragon)
+│   ├── README.md                    # FAL AI text-to-image documentation
+│   ├── requirements.txt             # FAL AI dependencies
+│   ├── .env                         # FAL AI configuration
+│   ├── .gitignore                   # Ignore generated images and outputs
+│   ├── output/                      # Generated images
+│   └── test_output/                 # Test-generated images
+├── text_to_speech/                  # ElevenLabs TTS package (modular architecture)
+│   ├── __init__.py                  # Main package interface
+│   ├── setup.py                     # Professional package setup
+│   ├── README.md                    # Complete package documentation
+│   ├── MIGRATION_GUIDE.md          # Migration from old monolithic structure
+│   ├── requirements.txt             # TTS dependencies
+│   ├── .env                         # ElevenLabs configuration
+│   ├── .gitignore                   # Ignore generated audio and cache
+│   ├── activate_env.sh             # Environment activation script
+│   ├── models/                      # Data models and enums
+│   │   ├── common.py               # Shared models (VoiceSettings, AudioFormat)
+│   │   └── pipeline.py             # Pipeline-specific models
+│   ├── tts/                         # Core TTS functionality
+│   │   ├── controller.py           # Main TTS controller class
+│   │   ├── voice_manager.py        # Voice selection and management (3000+)
+│   │   └── audio_processor.py      # Audio format handling
+│   ├── pipeline/                    # OpenRouter AI integration
+│   │   └── core.py                 # Complete pipeline orchestration
+│   ├── config/                      # Configuration management
+│   │   ├── voices.py               # Voice presets and configurations
+│   │   ├── models.py               # AI model settings and recommendations
+│   │   └── defaults.py             # Default values and settings
+│   ├── utils/                       # Utility functions
+│   │   ├── file_manager.py         # File operations
+│   │   ├── api_helpers.py          # API utilities
+│   │   └── validators.py           # Input validation
+│   ├── cli/                         # Command line tools
+│   │   ├── interactive.py          # Interactive pipeline interface
+│   │   └── quick_start.py          # Quick demo runner
+│   ├── examples/                    # Usage examples
+│   │   └── basic_usage.py          # Basic TTS examples
+│   ├── dialogue/                    # Multi-speaker dialogue features
+│   └── output/                      # Generated audio files
+└── video_tools/                     # Video processing utilities
+    ├── video_audio_utils.py         # Video/audio processing functions
+    ├── README.md                    # Video tools documentation
+    ├── .gitignore                   # Ignore generated videos and audio
+    └── sample_video.*               # Sample files for testing
 ```
 
 ## Configuration Requirements
@@ -176,6 +250,13 @@ veo3/
   - [fal_text_to_image/.env](mdc:fal_text_to_image/.env)
 - Python dependencies: fal-client, requests, python-dotenv
 - Single API key works for all FAL AI models (video, avatar, image)
+
+### ElevenLabs TTS Setup (Professional Package)
+- ElevenLabs API key in [text_to_speech/.env](mdc:text_to_speech/.env)
+- Optional: OpenRouter API key for AI content pipeline
+- Package installation: `pip install -r text_to_speech/requirements.txt`
+- Environment activation: `source text_to_speech/activate_env.sh`
+- Professional package structure with setup.py and modular imports
 
 ## Model Selection Guidelines
 
@@ -201,6 +282,13 @@ veo3/
 - You want multi-person conversation videos
 - You need natural facial expressions and movements
 
+### Choose ElevenLabs TTS when:
+- You need high-quality text-to-speech with 3000+ voices
+- You want AI-generated content with automatic speech conversion
+- You need multi-speaker dialogue and conversation generation
+- You want advanced voice control (timing, emotional tags, custom cloning)
+- You need a complete AI content pipeline from text generation to audio
+
 ## Usage Recommendations
 
 ### Video Generation
@@ -224,6 +312,15 @@ veo3/
 - **Dragon Generation**: Use `python test_generation.py --dragon` for dragon image testing (~$0.015)
 - **Production**: Use batch generation for efficiency (`python test_generation.py --batch 1,3`)
 - **Comparison**: Use comparison tools carefully - remember comparison tests generate 4 images (~$0.060)
+
+### Text-to-Speech Generation
+- **Package Testing**: Use `python -c "from text_to_speech import ElevenLabsTTSController; print('✅ Package working!')"` for FREE import validation
+- **Quick Start**: Use `python cli/quick_start.py` for interactive demos and basic testing
+- **Interactive Pipeline**: Use `python cli/interactive.py` for full AI content generation pipeline
+- **Basic TTS**: Use `python examples/basic_usage.py` for simple text-to-speech examples
+- **Voice Testing**: Test specific voices before production use with dummy API keys for structure validation
+- **AI Pipeline**: Combine OpenRouter AI content generation with TTS for complete automation
+- **Production**: Use modular imports (`from text_to_speech import ElevenLabsTTSController`) for clean integration
 
 ## ⚠️ CRITICAL: Cost Protection Rules
 **See [cost-protection.mdc](mdc:.cursor/rules/cost-protection.mdc) for complete cost protection guidelines**
@@ -250,6 +347,14 @@ veo3/
 - **Use dragon generation** (`--dragon`) for testing specific scenarios
 - **Avoid comparison tests** (`--compare`) during development unless specifically needed
 - **Monitor costs** - each image generation costs ~$0.015
+
+### Text-to-Speech Generation
+- **Always validate package structure first** with FREE import tests before API calls
+- **Use dummy API keys** for development and structure testing
+- **Monitor ElevenLabs costs** - speech generation costs vary by character count and voice quality
+- **OpenRouter AI costs** - AI content generation costs vary by model (Claude Sonnet 4, Gemini 2.0 Flash, etc.)
+- **Start with basic examples** before using advanced AI pipeline features
+- **Test voice selection** with short text samples before long-form content
 
 
 

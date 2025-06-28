@@ -22,6 +22,7 @@ This project provides comprehensive AI content generation capabilities:
 1. **Video Generation** (Google Veo + FAL AI Dual-Model)
 2. **Avatar Generation** (FAL AI Triple-Mode with lip-sync)
 3. **Text-to-Image Generation** (FAL AI Quad-Model)
+4. **Text-to-Speech Generation** (ElevenLabs TTS Package with modular architecture)
 
 ### Directory Structure Standards
 ```
@@ -150,6 +151,42 @@ generator.batch_generate(
 )
 ```
 
+### ElevenLabs Text-to-Speech Generation (Modular Package)
+**Location**: `text_to_speech/`
+**Features**: Professional modular architecture, 3000+ voices, AI content pipeline
+**Key Benefits**: Clean imports, comprehensive TTS capabilities, OpenRouter AI integration
+
+```python
+# Professional modular imports
+from text_to_speech import ElevenLabsTTSController, VoiceSettings
+from text_to_speech.pipeline.core import OpenRouterTTSPipeline
+from text_to_speech.models.common import ElevenLabsModel
+
+# Basic TTS usage
+controller = ElevenLabsTTSController()
+result = controller.text_to_speech_with_timing_control(
+    text="Hello! This demonstrates voice and timing control.",
+    voice_name="rachel",
+    speed=1.0,
+    output_file="hello.mp3"
+)
+
+# AI content pipeline usage
+pipeline = OpenRouterTTSPipeline()
+result = pipeline.generate_content_and_speech(
+    person_description="A tech expert explaining AI",
+    desired_length_minutes=2,
+    model="claude_sonnet_4",
+    voice="rachel"
+)
+
+# Multi-speaker dialogue
+dialogue_result = controller.generate_dialogue([
+    {"text": "[cheerfully] Hello, how are you?", "voice": "aria"},
+    {"text": "[stuttering] I'm... I'm doing well", "voice": "paul"}
+])
+```
+
 ### Google Veo Video Generation
 **Location**: `veo3_video_generation/`
 **Features**: High-resolution, complex setup with automated permission fixes
@@ -227,8 +264,9 @@ veo3/
 ├── fal_video_generation/      # FAL AI video (dual-model)
 ├── fal_avatar_generation/     # FAL AI avatar (triple-mode)  
 ├── fal_text_to_image/         # FAL AI text-to-image (quad-model)
+├── text_to_speech/            # ElevenLabs TTS package (modular architecture)
 ├── veo3_video_generation/     # Google Veo video
-└── video_tools/               # Utility tools
+└── video_tools/               # Video processing utilities with .gitignore
 ```
 
 ## API Design Standards

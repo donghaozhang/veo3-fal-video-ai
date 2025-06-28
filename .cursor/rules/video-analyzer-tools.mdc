@@ -3,9 +3,15 @@ description:
 globs: 
 alwaysApply: false
 ---
-# Video Analyzer Tools (Legacy)
+# Video Tools and Legacy Analyzer Components
 
-## Overview
+## Current Video Tools
+The [video_tools/](mdc:video_tools) directory contains active video processing utilities:
+- **[video_audio_utils.py](mdc:video_tools/video_audio_utils.py)**: Current video/audio processing functions
+- **Sample files**: Testing videos and audio for utility functions
+- **[.gitignore](mdc:video_tools/.gitignore)**: Properly ignores generated videos and audio outputs
+
+## Legacy Video Analyzer Tools
 The video analyzer tools have been moved to [archive/video_analyzer/](mdc:archive/video_analyzer) and are now considered legacy components. The main project focuses on video generation using [veo_video_generation.py](mdc:veo_video_generation.py).
 
 ## Legacy Tools Location

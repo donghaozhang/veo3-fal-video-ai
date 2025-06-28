@@ -38,6 +38,14 @@ python test_generation.py --dragon       # ~$0.015 per test
 python test_generation.py --compare      # ~$0.060 per test (4 images)
 python demo.py                           # Variable cost per generation
 
+# EXPENSIVE Text-to-Speech Generation - These generate real speech and cost money
+python text_to_speech/cli/interactive.py  # ~$0.005-0.05 per generation (varies by length/voice)
+python text_to_speech/examples/basic_usage.py  # ~$0.005-0.02 per test (ElevenLabs costs)
+# OpenRouter AI Pipeline costs (additional to TTS costs):
+# - Claude Sonnet 4: ~$0.015-0.075 per generation
+# - Gemini 2.0 Flash: ~$0.000375-0.00075 per generation  
+# - DeepSeek V3: Often free or very low cost
+
 # Google Veo tests (also expensive)
 python veo3_video_generation/test_veo.py --video    # Costs money
 python veo3_video_generation/demo.py               # Costs money
@@ -58,6 +66,11 @@ python fal_avatar_generation/test_generation.py    # FREE - setup test only (no 
 # Text-to-Image Generation - FREE Tests
 python fal_text_to_image/test_setup.py             # FREE - environment and API validation
 python fal_text_to_image/test_generation.py        # FREE - setup test only (no image generation)
+
+# Text-to-Speech Generation - FREE Tests
+python -c "from text_to_speech import ElevenLabsTTSController; print('✅ Package working!')"  # FREE - import test
+python text_to_speech/cli/quick_start.py           # FREE - package structure validation (dummy API keys)
+python text_to_speech/utils/validators.py          # FREE - validation utilities test
 
 # Google Veo - FREE Tests
 python veo3_video_generation/test_veo.py          # FREE - setup test only (no video generation)
@@ -169,6 +182,18 @@ If you accidentally suggest or run a paid test:
 - **Comparison test**: ~$0.060 (generates 4 images)  
 - **Use**: `--imagen4`, `--seedream`, `--flux-schnell`, or `--flux-dev` for single model testing
 - **Dragon test**: `--dragon` flag for specific dragon image testing
+
+### Text-to-Speech Generation Costs
+- **ElevenLabs TTS costs**: ~$0.005-0.05 per generation (varies by character count and voice quality)
+- **Short text samples**: ~$0.005-0.01 (testing voices, basic examples)
+- **Long-form content**: ~$0.02-0.05+ (multi-minute audio, dialogue generation)
+- **OpenRouter AI Pipeline costs** (additional to TTS):
+  - **Claude Sonnet 4**: ~$0.015-0.075 per content generation
+  - **Gemini 2.0 Flash**: ~$0.000375-0.00075 per content generation
+  - **DeepSeek V3**: Often free or very low cost
+- **Voice quality impact**: Premium voices cost more than standard voices
+- **Character count**: Costs scale linearly with text length
+- **Use FREE package tests first**: Always validate structure before API calls
 
 Remember: **Every AI content generation test costs real money from the user's account. Treat it like spending the user's cash directly.**
 
