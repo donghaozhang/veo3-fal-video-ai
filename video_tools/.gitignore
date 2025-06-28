@@ -1,0 +1,37 @@
+# Video Tools - Ignore Files
+
+# Generated video outputs
+*_first_*s.mp4
+*_with_audio.*
+*_new_audio.*
+*_audio.mp3
+
+# Common video formats
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+*.flv
+*.wmv
+
+# Audio files
+*.mp3
+*.wav
+*.aac
+*.ogg
+*.m4a
+*.flac
+
+# Output directories
+output/
+processed/
+temp/
+
+# Python
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store
+Thumbs.db

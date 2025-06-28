@@ -9,8 +9,17 @@ import io
 import time
 from typing import Dict, List, Optional, Union, Any
 from pathlib import Path
-from ..models.common import AudioFormat
-from ..utils.file_manager import save_audio_file, ensure_output_dir
+
+try:
+    from ..models.common import AudioFormat
+    from ..utils.file_manager import save_audio_file, ensure_output_dir
+except ImportError:
+    # Fallback for direct execution
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from models.common import AudioFormat
+    from utils.file_manager import save_audio_file, ensure_output_dir
 
 
 class AudioProcessor:

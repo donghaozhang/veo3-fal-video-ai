@@ -4,7 +4,14 @@ Default Configuration Settings
 Default values and settings for the text-to-speech package.
 """
 
-from ..models.common import VoiceSettings, AudioFormat, ElevenLabsModel
+try:
+    from ..models.common import VoiceSettings, AudioFormat, ElevenLabsModel
+except ImportError:
+    # Fallback for direct execution
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from models.common import VoiceSettings, AudioFormat, ElevenLabsModel
 
 
 # Default voice settings

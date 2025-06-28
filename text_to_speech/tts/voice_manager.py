@@ -6,9 +6,19 @@ Voice selection, management, and retrieval functionality.
 
 import requests
 from typing import Dict, List, Optional, Union
-from ..models.common import VoiceInfo, POPULAR_VOICE_IDS
-from ..config.voices import POPULAR_VOICES, get_voice_preset
-from ..utils.api_helpers import make_request_with_retry, build_headers
+
+try:
+    from ..models.common import VoiceInfo, POPULAR_VOICE_IDS
+    from ..config.voices import POPULAR_VOICES, get_voice_preset
+    from ..utils.api_helpers import make_request_with_retry, build_headers
+except ImportError:
+    # Fallback for direct execution
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from models.common import VoiceInfo, POPULAR_VOICE_IDS
+    from config.voices import POPULAR_VOICES, get_voice_preset
+    from utils.api_helpers import make_request_with_retry, build_headers
 
 
 class VoiceManager:

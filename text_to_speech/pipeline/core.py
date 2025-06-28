@@ -14,19 +14,38 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-from ..models.pipeline import (
-    OpenRouterModel, 
-    ContentType, 
-    VoiceStyle, 
-    PipelineInput, 
-    GeneratedContent, 
-    PipelineResult,
-    LengthCalculation
-)
-from ..tts.controller import ElevenLabsTTSController
-from ..models.common import ElevenLabsModel, VoiceSettings
-from ..config.voices import get_voice_style_preset
-from ..utils.validators import validate_text_input
+try:
+    from ..models.pipeline import (
+        OpenRouterModel, 
+        ContentType, 
+        VoiceStyle, 
+        PipelineInput, 
+        GeneratedContent, 
+        PipelineResult,
+        LengthCalculation
+    )
+    from ..tts.controller import ElevenLabsTTSController
+    from ..models.common import ElevenLabsModel, VoiceSettings
+    from ..config.voices import get_voice_style_preset
+    from ..utils.validators import validate_text_input
+except ImportError:
+    # Fallback for direct execution
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from models.pipeline import (
+        OpenRouterModel, 
+        ContentType, 
+        VoiceStyle, 
+        PipelineInput, 
+        GeneratedContent, 
+        PipelineResult,
+        LengthCalculation
+    )
+    from tts.controller import ElevenLabsTTSController
+    from models.common import ElevenLabsModel, VoiceSettings
+    from config.voices import get_voice_style_preset
+    from utils.validators import validate_text_input
 
 
 class OpenRouterTTSPipeline:

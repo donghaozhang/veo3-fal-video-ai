@@ -5,7 +5,15 @@ Voice presets, configurations, and helper functions for voice selection.
 """
 
 from typing import Dict, List, Optional
-from ..models.common import VoiceInfo, POPULAR_VOICE_IDS
+
+try:
+    from ..models.common import VoiceInfo, POPULAR_VOICE_IDS
+except ImportError:
+    # Fallback for direct execution
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from models.common import VoiceInfo, POPULAR_VOICE_IDS
 
 
 # Popular voice configurations with detailed information

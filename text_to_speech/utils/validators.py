@@ -5,7 +5,15 @@ Validation functions for user inputs and API parameters.
 """
 
 from typing import Union, List, Dict, Any
-from ..models.common import VoiceSettings, ElevenLabsModel, AudioFormat
+
+try:
+    from ..models.common import VoiceSettings, ElevenLabsModel, AudioFormat
+except ImportError:
+    # Fallback for direct execution
+    import sys
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from models.common import VoiceSettings, ElevenLabsModel, AudioFormat
 
 
 def validate_voice_settings(settings: VoiceSettings) -> tuple[bool, str]:
