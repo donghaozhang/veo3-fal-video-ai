@@ -10,7 +10,13 @@ This demonstrates the complete workflow combining:
 Author: AI Assistant
 """
 
+import sys
+import os
 from pathlib import Path
+
+# Add parent directory to path so we can import modules
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from image_modify_verify import ImageModifyVerifySystem
 
 def test_system_availability():
@@ -35,8 +41,8 @@ def test_image_understanding():
     
     # Look for sample images
     test_images = [
-        Path("samples/sample_image.jpg"),
-        Path("samples/sample_image.png"),
+        Path("input/sample_image.jpg"),
+        Path("input/sample_image.png"),
         Path("../fal_image_to_image/assets/sample_images/original_ai_image.jpg"),
         Path("../fal_image_to_image/assets/sample_images/test_ai_image.jpg")
     ]

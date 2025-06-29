@@ -5,7 +5,12 @@ Test script for Google Gemini video understanding functionality.
 This script tests the video analysis capabilities without requiring actual API calls.
 """
 
+import sys
+import os
 from pathlib import Path
+
+# Add parent directory to path so we can import video_utils
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 def test_gemini_import():
     """Test if Gemini modules can be imported."""
@@ -92,7 +97,7 @@ def test_save_functionality():
             'detailed': False
         }
         
-        output_path = Path("test_output/test_analysis_result.json")
+        output_path = Path("output/test_analysis_result.json")
         output_path.parent.mkdir(exist_ok=True)
         
         success = save_analysis_result(test_result, output_path)
@@ -182,7 +187,7 @@ def run_mock_analysis():
     
     try:
         # Create a fake video file for testing
-        test_video = Path("test_output/fake_video.mp4")
+        test_video = Path("output/fake_video.mp4")
         test_video.parent.mkdir(exist_ok=True)
         test_video.touch()  # Create empty file
         

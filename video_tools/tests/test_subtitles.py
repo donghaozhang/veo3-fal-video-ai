@@ -6,7 +6,12 @@ This script tests the subtitle generation and video overlay functions.
 """
 
 import sys
+import os
 from pathlib import Path
+
+# Add parent directory to path so we can import video_utils
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from video_utils import (
     generate_srt_subtitle_file,
     generate_vtt_subtitle_file, 
@@ -25,7 +30,7 @@ def test_srt_generation():
 This is the second line of subtitles.
 And this is the third line."""
     
-    output_path = Path("test_output/test_subtitles.srt")
+    output_path = Path("output/test_subtitles.srt")
     output_path.parent.mkdir(exist_ok=True)
     
     # Test with automatic duration
@@ -50,7 +55,7 @@ def test_vtt_generation():
 This format is perfect for web players.
 It supports styling and positioning."""
     
-    output_path = Path("test_output/test_subtitles.vtt")
+    output_path = Path("output/test_subtitles.vtt")
     output_path.parent.mkdir(exist_ok=True)
     
     # Test with automatic duration
@@ -120,7 +125,7 @@ def test_subtitle_validation():
     print("\n🧪 Testing subtitle file format validation...")
     
     # Test SRT format validation
-    srt_path = Path("test_output/test_subtitles.srt")
+    srt_path = Path("output/test_subtitles.srt")
     if srt_path.exists():
         with open(srt_path, 'r', encoding='utf-8') as f:
             content = f.read()
@@ -141,7 +146,7 @@ def test_subtitle_validation():
         srt_valid = False
     
     # Test VTT format validation
-    vtt_path = Path("test_output/test_subtitles.vtt")
+    vtt_path = Path("output/test_subtitles.vtt")
     if vtt_path.exists():
         with open(vtt_path, 'r', encoding='utf-8') as f:
             content = f.read()

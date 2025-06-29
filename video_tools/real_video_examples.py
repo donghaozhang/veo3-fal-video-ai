@@ -79,7 +79,7 @@ if result:
 """)
     
     # Live example if video exists
-    video_path = Path('samples/sample_video.mp4')
+    video_path = Path('input/sample_video.mp4')
     if video_path.exists():
         print(f"\n🎬 Live Example with {video_path}:")
         try:
