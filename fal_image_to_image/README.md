@@ -63,7 +63,7 @@ if result['success']:
 # Process local image files
 result = generator.modify_local_image_seededit(
     prompt="Make it more photorealistic",
-    image_path="my_image.jpg",
+    image_path="input/my_image.jpg",  # Images from input/ folder
     guidance_scale=0.6
 )
 ```
@@ -85,12 +85,14 @@ fal_image_to_image/
 │   │   └── validators.py       # Parameter validation
 │   └── config/                  # Configuration
 │       └── constants.py        # Model constants
-├── examples/                    # Usage examples
+├── examples/                    # Usage examples & interactive demo
 │   ├── basic_usage.py          # Getting started
-│   └── model_comparison.py     # Model comparison
+│   ├── model_comparison.py     # Model comparison
+│   └── demo.py                 # Interactive CLI demo
 ├── tests/                       # Test suite
 ├── docs/                        # Documentation
-├── assets/                      # Test images
+├── archive/                     # Legacy v1.x files
+├── input/                       # Sample test images
 └── output/                      # Generated images
 ```
 
@@ -193,7 +195,7 @@ print(f"Available: {models}")
 result = generator.modify_image_seededit(
     prompt="Enhance image",
     image_url=image_url,
-    output_dir="custom_output/"
+    output_dir="output/"  # Default output directory
 )
 ```
 
@@ -217,6 +219,7 @@ pip install -r requirements.txt
 ```bash
 python examples/basic_usage.py
 python examples/model_comparison.py
+python examples/demo.py              # Interactive CLI demo
 ```
 
 ## 📖 Documentation

@@ -73,7 +73,7 @@ setup(
             "config/*.json",
             "*.md",
         ],
-        "": ["docs/*.md", "examples/*.py", "assets/sample_images/*"]
+        "": ["docs/*.md", "examples/*.py", "input/*"]
     },
     project_urls={
         "Bug Reports": "https://github.com/your-username/fal-image-to-image/issues",

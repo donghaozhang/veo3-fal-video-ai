@@ -59,7 +59,7 @@ def test_basic_modification() -> Dict[str, Any]:
             image_url=image_url,
             strength=0.7,
             aspect_ratio="1:1",
-            output_dir="test_output"
+            output_dir="output"
         )
         
         print(f"✅ Basic Photon modification test: {'PASSED' if result['success'] else 'FAILED'}")
@@ -96,7 +96,7 @@ def test_kontext_modification() -> Dict[str, Any]:
             num_inference_steps=25,
             guidance_scale=3.0,
             resolution_mode="auto",
-            output_dir="test_output"
+            output_dir="output"
         )
         
         print(f"✅ Kontext modification test: {'PASSED' if result['success'] else 'FAILED'}")
@@ -139,7 +139,7 @@ def test_strength_variations() -> List[Dict[str, Any]]:
                 image_url=image_url,
                 strength=strength,
                 aspect_ratio="1:1",
-                output_dir="test_output"
+                output_dir="output"
             )
             
             results.append(result)
@@ -185,7 +185,7 @@ def test_aspect_ratios() -> List[Dict[str, Any]]:
                 image_url=image_url,
                 strength=0.6,
                 aspect_ratio=ratio,
-                output_dir="test_output"
+                output_dir="output"
             )
             
             results.append(result)
@@ -235,7 +235,7 @@ def test_batch_processing() -> Dict[str, Any]:
             image_urls=image_urls,
             strength=0.7,
             aspect_ratio="1:1",
-            output_dir="test_output"
+            output_dir="output"
         )
         
         successful = sum(1 for r in results if r['success'])
@@ -267,7 +267,7 @@ def test_quick_generation() -> Dict[str, Any]:
             image_url="https://picsum.photos/512/512",
             strength=0.4,  # Lower strength for subtle changes
             aspect_ratio="1:1",
-            output_dir="test_output"
+            output_dir="output"
         )
         
         if result['success']:
@@ -337,7 +337,7 @@ def test_model_comparison() -> Dict[str, Any]:
             image_url=image_url,
             strength=0.7,
             aspect_ratio="1:1",
-            output_dir="test_output"
+            output_dir="output"
         )
         
         # Brief pause between models
@@ -350,7 +350,7 @@ def test_model_comparison() -> Dict[str, Any]:
             num_inference_steps=28,
             guidance_scale=2.5,
             resolution_mode="auto",
-            output_dir="test_output"
+            output_dir="output"
         )
         
         # Compare results
@@ -390,7 +390,7 @@ def test_photon_base() -> Dict[str, Any]:
             image_url="https://picsum.photos/512/512?random=photon_base",
             strength=0.8,
             aspect_ratio="1:1",
-            output_dir="test_output"
+            output_dir="output"
         )
         
         if result.get('success'):
@@ -428,7 +428,7 @@ def test_kontext_multi() -> Dict[str, Any]:
             guidance_scale=3.5,
             num_images=1,
             aspect_ratio="1:1",
-            output_dir="test_output"
+            output_dir="output"
         )
         
         if result.get('success'):
@@ -470,10 +470,10 @@ def main():
         print_cost_warning()
     
     # Setup output directory
-    os.makedirs("test_output", exist_ok=True)
+    os.makedirs("output", exist_ok=True)
     
     print("\n🚀 Starting FAL AI Image-to-Image Generation Tests...")
-    print(f"📁 Output directory: {Path('test_output').absolute()}")
+    print(f"📁 Output directory: {Path('output').absolute()}")
     
     results = {}
     

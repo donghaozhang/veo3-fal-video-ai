@@ -55,6 +55,7 @@ def print_cost_warning():
 def print_model_info():
     """Print model information."""
     try:
+        sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         from fal_image_to_image_generator import FALImageToImageGenerator
         
         generator = FALImageToImageGenerator()
@@ -192,6 +193,7 @@ def single_image_demo():
     print("-" * 40)
     
     try:
+        sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         from fal_image_to_image_generator import FALImageToImageGenerator
         
         generator = FALImageToImageGenerator()
@@ -327,6 +329,7 @@ def multi_image_demo():
     print("-" * 40)
     
     try:
+        sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         from fal_image_to_image_generator import FALImageToImageGenerator, KONTEXT_MULTI_ASPECT_RATIOS
         
         generator = FALImageToImageGenerator()
@@ -445,6 +448,7 @@ def batch_demo():
     print("-" * 40)
     
     try:
+        sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         from fal_image_to_image_generator import FALImageToImageGenerator
         
         generator = FALImageToImageGenerator()
@@ -581,6 +585,7 @@ def model_comparison_demo():
     print("-" * 40)
     
     try:
+        sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         from fal_image_to_image_generator import FALImageToImageGenerator
         
         generator = FALImageToImageGenerator()
@@ -729,6 +734,7 @@ def main():
         
         # Quick setup check
         try:
+            sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
             from fal_image_to_image_generator import FALImageToImageGenerator
             generator = FALImageToImageGenerator()
             print("\n✅ Setup validated - ready to generate!")

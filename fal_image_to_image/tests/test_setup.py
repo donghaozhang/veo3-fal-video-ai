@@ -242,7 +242,7 @@ def test_output_directories() -> bool:
     print("\n📁 Testing Output Directories...")
     
     try:
-        directories = ["output", "test_output"]
+        directories = ["output"]
         
         for output_dir in directories:
             os.makedirs(output_dir, exist_ok=True)
