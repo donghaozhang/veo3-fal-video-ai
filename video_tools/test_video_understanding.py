@@ -16,6 +16,7 @@ def test_gemini_import():
             check_gemini_requirements,
             analyze_video_file,
             analyze_audio_file,
+            analyze_image_file,
             save_analysis_result,
             GeminiVideoAnalyzer
         )
@@ -153,7 +154,8 @@ def test_package_integration():
         expected_exports = [
             'check_gemini_requirements',
             'analyze_video_file',
-            'analyze_audio_file', 
+            'analyze_audio_file',
+            'analyze_image_file', 
             'save_analysis_result',
             'GeminiVideoAnalyzer'
         ]
@@ -200,6 +202,14 @@ def run_mock_analysis():
         print("   - events: Audio event and segment detection")
         print("   - qa: Question and answer analysis")
         
+        print("🎯 Image analysis types available:")
+        print("   - description: Image content description")
+        print("   - classification: Image categorization")
+        print("   - objects: Object detection and identification")
+        print("   - text: Text extraction (OCR)")
+        print("   - composition: Artistic and technical analysis")
+        print("   - qa: Question and answer analysis")
+        
         print("✅ Mock analysis workflow validated")
         
         # Clean up
@@ -210,35 +220,47 @@ def run_mock_analysis():
         print(f"❌ Mock analysis failed: {e}")
         return False
 
-def test_audio_commands():
-    """Test audio CLI command availability."""
-    print("\n🧪 Testing audio CLI command imports...")
+def test_audio_image_commands():
+    """Test audio and image CLI command availability."""
+    print("\n🧪 Testing audio and image CLI command imports...")
     
     try:
         from video_utils.commands import (
             cmd_analyze_audio,
             cmd_transcribe_audio,
-            cmd_describe_audio
+            cmd_describe_audio,
+            cmd_analyze_images,
+            cmd_describe_images,
+            cmd_extract_text
         )
-        print("✅ All audio CLI commands imported successfully")
+        print("✅ All audio and image CLI commands imported successfully")
         
         # Test that they're callable
-        if all(callable(cmd) for cmd in [cmd_analyze_audio, cmd_transcribe_audio, cmd_describe_audio]):
+        audio_commands = [cmd_analyze_audio, cmd_transcribe_audio, cmd_describe_audio]
+        image_commands = [cmd_analyze_images, cmd_describe_images, cmd_extract_text]
+        
+        if all(callable(cmd) for cmd in audio_commands):
             print("✅ All audio commands are callable")
-            return True
         else:
             print("❌ Some audio commands are not callable")
             return False
             
+        if all(callable(cmd) for cmd in image_commands):
+            print("✅ All image commands are callable")
+            return True
+        else:
+            print("❌ Some image commands are not callable")
+            return False
+            
     except ImportError as e:
-        print(f"❌ Audio CLI command import failed: {e}")
+        print(f"❌ Audio/Image CLI command import failed: {e}")
         return False
 
 def main():
     """Run all video understanding tests."""
-    print("🤖 GOOGLE GEMINI VIDEO & AUDIO UNDERSTANDING TESTS")
+    print("🤖 GOOGLE GEMINI MULTIMODAL UNDERSTANDING TESTS")
     print("=" * 50)
-    print("💡 Testing video and audio analysis functionality")
+    print("💡 Testing video, audio, and image analysis functionality")
     
     tests = [
         ("Module Import", test_gemini_import),
@@ -246,7 +268,7 @@ def main():
         ("Analyzer Initialization", test_analyzer_initialization),
         ("Result Saving", test_save_functionality),
         ("CLI Commands", test_cli_commands),
-        ("Audio Commands", test_audio_commands),
+        ("Audio & Image Commands", test_audio_image_commands),
         ("Package Integration", test_package_integration),
         ("Mock Analysis", run_mock_analysis)
     ]
@@ -268,13 +290,14 @@ def main():
     print(f"\n📊 TEST RESULTS: {passed}/{total} tests passed")
     
     if passed == total:
-        print("🎉 All tests passed! Video & audio understanding functionality is ready.")
+        print("🎉 All tests passed! Video, audio & image understanding functionality is ready.")
         print("\n💡 Next steps:")
         print("   1. Install dependencies: pip install google-generativeai")
         print("   2. Get API key: https://aistudio.google.com/app/apikey")
         print("   3. Set environment: export GEMINI_API_KEY=your_key")
         print("   4. Test with video: python video_audio_utils.py analyze-videos")
         print("   5. Test with audio: python video_audio_utils.py analyze-audio")
+        print("   6. Test with images: python video_audio_utils.py analyze-images")
     else:
         print("⚠️  Some tests failed. Check the output above for details.")
     

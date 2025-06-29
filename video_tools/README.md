@@ -10,15 +10,19 @@ A comprehensive collection of Python utilities for video and audio processing, i
 - **Subtitle Generation**: Create SRT/VTT files for video players
 - **Format Support**: MP4, AVI, MOV, MKV, WebM, and more
 
-### 🤖 AI-Powered Video & Audio Understanding (NEW!)
-- **Smart Analysis**: Google Gemini AI video and audio understanding
+### 🤖 AI-Powered Multimodal Understanding (NEW!)
+- **Smart Analysis**: Google Gemini AI for video, audio, and image understanding
 - **Transcription**: Speech-to-text with timestamps and speaker identification
-- **Description**: Automated video/audio summarization
-- **Scene Analysis**: Timeline breakdown and key moments
+- **Description**: Automated video/audio/image summarization
+- **Scene Analysis**: Timeline breakdown and key moments for video
 - **Content Analysis**: Comprehensive audio quality and acoustic features
 - **Event Detection**: Audio events, segments, and sound identification
-- **Q&A**: Ask specific questions about video or audio content
-- **Information Extraction**: Identify people, places, facts
+- **Object Detection**: Identify and locate objects in images
+- **OCR**: Extract text from images with context and positioning
+- **Classification**: Categorize and classify image content
+- **Composition Analysis**: Artistic and technical image analysis
+- **Q&A**: Ask specific questions about any media content
+- **Information Extraction**: Identify people, places, facts across all media types
 
 ## 🚀 Quick Start
 
@@ -35,9 +39,12 @@ python video_audio_utils.py analyze-videos
 
 # AI audio analysis (requires Google Gemini API)
 python video_audio_utils.py analyze-audio
+
+# AI image analysis (requires Google Gemini API)
+python video_audio_utils.py analyze-images
 ```
 
-### AI Video & Audio Understanding Setup
+### AI Multimodal Understanding Setup
 ```bash
 # Install Gemini dependencies
 pip install google-generativeai
@@ -50,6 +57,9 @@ python video_audio_utils.py describe-videos
 
 # Test audio analysis
 python video_audio_utils.py describe-audio
+
+# Test image analysis
+python video_audio_utils.py describe-images
 ```
 
 ## 📁 Directory Structure
@@ -62,7 +72,7 @@ video_tools/
 │   ├── video_processor.py        # Video cutting and processing
 │   ├── audio_processor.py        # Audio manipulation
 │   ├── subtitle_generator.py     # Subtitle creation (SRT/VTT)
-│   ├── video_understanding.py    # AI video/audio analysis (NEW!)
+│   ├── video_understanding.py    # AI multimodal analysis (NEW!)
 │   ├── interactive.py            # User interaction
 │   └── commands.py               # CLI command implementations
 ├── test_subtitles.py             # Subtitle functionality tests
@@ -107,6 +117,11 @@ python video_audio_utils.py describe-videos     # AI-powered video description
 python video_audio_utils.py analyze-audio       # Comprehensive audio analysis with multiple options
 python video_audio_utils.py transcribe-audio    # Quick audio transcription with speaker ID
 python video_audio_utils.py describe-audio      # AI-powered audio description
+
+# Image Analysis
+python video_audio_utils.py analyze-images      # Comprehensive image analysis with 6 analysis types
+python video_audio_utils.py describe-images     # Quick image description and analysis
+python video_audio_utils.py extract-text        # Extract text from images (OCR)
 ```
 
 ## 🔧 Requirements
@@ -143,12 +158,13 @@ pip install google-generativeai  # For Gemini video understanding
 - **Auto-Timing**: Intelligent timing based on words per second
 - **Player Compatible**: Files load automatically in VLC, Media Player, etc.
 
-### 🤖 AI Video & Audio Understanding
-- **Multi-Model Support**: Powered by Google Gemini 2.0/2.5
+### 🤖 AI Multimodal Understanding
+- **Multi-Model Support**: Powered by Google Gemini 2.0/2.5 with multimodal capabilities
 - **Comprehensive Analysis**: Description, transcription, scene detection, content analysis
 - **Audio Features**: Event detection, acoustic analysis, speaker identification
-- **Question Answering**: Ask specific questions about video or audio content
-- **Timestamp Support**: Precise timing information for all analysis
+- **Image Features**: Object detection, OCR, classification, composition analysis
+- **Question Answering**: Ask specific questions about video, audio, or image content
+- **Timestamp Support**: Precise timing information for all video/audio analysis
 - **Multiple Formats**: Results saved as both JSON and text files
 
 ## 📖 Documentation

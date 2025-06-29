@@ -49,7 +49,13 @@ from video_utils.commands import (
     cmd_describe_videos,
     cmd_analyze_audio,
     cmd_transcribe_audio,
-    cmd_describe_audio
+    cmd_describe_audio,
+    cmd_analyze_images,
+    cmd_describe_images,
+    cmd_extract_text,
+    cmd_whisper_transcribe,
+    cmd_whisper_compare,
+    cmd_whisper_batch
 )
 
 
@@ -75,16 +81,22 @@ Examples:
   python video_audio_utils.py analyze-audio       # AI-powered audio analysis with Google Gemini
   python video_audio_utils.py transcribe-audio    # AI transcription of audio files
   python video_audio_utils.py describe-audio      # AI description of audio content
+  python video_audio_utils.py analyze-images      # AI-powered image analysis with Google Gemini
+  python video_audio_utils.py describe-images     # AI description of images
+  python video_audio_utils.py extract-text        # Extract text from images (OCR)
+  python video_audio_utils.py whisper-transcribe  # Transcribe with OpenAI Whisper (API or local)
+  python video_audio_utils.py whisper-compare     # Compare Whisper vs Gemini transcription
+  python video_audio_utils.py whisper-batch       # Batch Whisper transcription with advanced options
 
 Requirements:
   - ffmpeg must be installed and available in PATH
-  - Video files and audio files in current directory
+  - Video files, audio files, and image files in current directory
   - For mix-audio and concat-audio: at least 2 audio files needed
         """
     )
     
     parser.add_argument('command', 
-                       choices=['cut', 'add-audio', 'replace-audio', 'extract-audio', 'mix-audio', 'concat-audio', 'generate-subtitles', 'burn-subtitles', 'analyze-videos', 'transcribe-videos', 'describe-videos', 'analyze-audio', 'transcribe-audio', 'describe-audio'],
+                       choices=['cut', 'add-audio', 'replace-audio', 'extract-audio', 'mix-audio', 'concat-audio', 'generate-subtitles', 'burn-subtitles', 'analyze-videos', 'transcribe-videos', 'describe-videos', 'analyze-audio', 'transcribe-audio', 'describe-audio', 'analyze-images', 'describe-images', 'extract-text', 'whisper-transcribe', 'whisper-compare', 'whisper-batch'],
                        help='Command to execute')
     parser.add_argument('duration', type=int, nargs='?', default=5,
                        help='Duration in seconds for cut command (default: 5)')
@@ -144,6 +156,18 @@ Requirements:
             cmd_transcribe_audio()
         elif args.command == 'describe-audio':
             cmd_describe_audio()
+        elif args.command == 'analyze-images':
+            cmd_analyze_images()
+        elif args.command == 'describe-images':
+            cmd_describe_images()
+        elif args.command == 'extract-text':
+            cmd_extract_text()
+        elif args.command == 'whisper-transcribe':
+            cmd_whisper_transcribe()
+        elif args.command == 'whisper-compare':
+            cmd_whisper_compare()
+        elif args.command == 'whisper-batch':
+            cmd_whisper_batch()
     except KeyboardInterrupt:
         print("\n👋 Operation cancelled by user")
     except Exception as e:

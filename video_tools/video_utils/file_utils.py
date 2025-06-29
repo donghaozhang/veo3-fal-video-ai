@@ -1,7 +1,7 @@
 """
 File discovery and management utilities.
 
-Provides functions for finding video and audio files in directories.
+Provides functions for finding video, audio, and image files in directories.
 """
 
 from pathlib import Path
@@ -30,3 +30,15 @@ def find_audio_files(directory: Path) -> List[Path]:
             audio_files.append(file_path)
     
     return sorted(audio_files)
+
+
+def find_image_files(directory: Path) -> List[Path]:
+    """Find all image files in directory."""
+    image_extensions = {'.jpg', '.jpeg', '.png', '.webp', '.heic', '.heif', '.bmp', '.tiff', '.gif'}
+    image_files = []
+    
+    for file_path in directory.iterdir():
+        if file_path.is_file() and file_path.suffix.lower() in image_extensions:
+            image_files.append(file_path)
+    
+    return sorted(image_files)

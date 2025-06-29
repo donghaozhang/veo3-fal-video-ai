@@ -9,7 +9,7 @@ This package provides modular utilities for:
 """
 
 from .core import check_ffmpeg, check_ffprobe, get_video_info
-from .file_utils import find_video_files, find_audio_files
+from .file_utils import find_video_files, find_audio_files, find_image_files
 from .video_processor import cut_video_duration
 from .audio_processor import (
     add_audio_to_video, 
@@ -29,15 +29,20 @@ from .video_understanding import (
     check_gemini_requirements,
     analyze_video_file,
     analyze_audio_file,
+    analyze_image_file,
     save_analysis_result,
-    GeminiVideoAnalyzer
+    GeminiVideoAnalyzer,
+    check_whisper_requirements,
+    transcribe_with_whisper,
+    batch_transcribe_whisper,
+    WhisperTranscriber
 )
 
 __all__ = [
     # Core utilities
     'check_ffmpeg', 'check_ffprobe', 'get_video_info',
     # File utilities
-    'find_video_files', 'find_audio_files',
+    'find_video_files', 'find_audio_files', 'find_image_files',
     # Video processing
     'cut_video_duration',
     # Audio processing
@@ -49,5 +54,5 @@ __all__ = [
     # Interactive utilities
     'interactive_audio_selection', 'interactive_multiple_audio_selection',
     # Video understanding
-    'check_gemini_requirements', 'analyze_video_file', 'analyze_audio_file', 'save_analysis_result', 'GeminiVideoAnalyzer'
+    'check_gemini_requirements', 'analyze_video_file', 'analyze_audio_file', 'analyze_image_file', 'save_analysis_result', 'GeminiVideoAnalyzer'
 ]

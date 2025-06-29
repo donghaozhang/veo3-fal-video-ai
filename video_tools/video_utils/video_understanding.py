@@ -1,12 +1,13 @@
 """
-Google Gemini video understanding utilities.
+Google Gemini video, audio, and image understanding utilities.
 
-Provides AI-powered video analysis including:
-- Video description and summarization
-- Audio transcription and extraction
-- Visual content analysis
-- Question answering about video content
-- Scene detection and timestamps
+Provides AI-powered multimodal analysis including:
+- Video description, transcription, and scene analysis
+- Audio transcription, content analysis, and event detection
+- Image description, classification, and object detection
+- OCR text extraction from images
+- Question answering about any media content
+- Composition and technical analysis
 """
 
 import json
@@ -22,9 +23,21 @@ try:
 except ImportError:
     GEMINI_AVAILABLE = False
 
+try:
+    from openai import OpenAI
+    OPENAI_WHISPER_API_AVAILABLE = True
+except ImportError:
+    OPENAI_WHISPER_API_AVAILABLE = False
+
+try:
+    import whisper
+    WHISPER_LOCAL_AVAILABLE = True
+except ImportError:
+    WHISPER_LOCAL_AVAILABLE = False
+
 
 class GeminiVideoAnalyzer:
-    """Google Gemini video and audio understanding analyzer."""
+    """Google Gemini video, audio, and image understanding analyzer."""
     
     def __init__(self, api_key: Optional[str] = None):
         """Initialize with API key."""
@@ -530,6 +543,618 @@ Format as a timeline with precise timestamps and descriptions."""
         except Exception as e:
             print(f"❌ Audio event detection failed: {e}")
             raise
+    
+    def upload_image(self, image_path: Path) -> str:
+        """Upload image to Gemini and return file ID."""
+        try:
+            print(f"📤 Uploading image: {image_path.name}")
+            
+            # Check file size (20MB limit for inline)
+            file_size = image_path.stat().st_size / (1024 * 1024)  # MB
+            print(f"📊 File size: {file_size:.1f} MB")
+            
+            if file_size > 20:
+                print("📁 Large file detected, using File API...")
+            
+            # Upload file
+            image_file = genai.upload_file(str(image_path))
+            print(f"✅ Upload complete. File ID: {image_file.name}")
+            
+            # Wait for processing
+            while image_file.state.name == "PROCESSING":
+                print("⏳ Processing image...")
+                time.sleep(1)
+                image_file = genai.get_file(image_file.name)
+            
+            if image_file.state.name == "FAILED":
+                raise Exception(f"Image processing failed: {image_file.state}")
+            
+            print("🎯 Image ready for analysis")
+            return image_file.name
+            
+        except Exception as e:
+            print(f"❌ Upload failed: {e}")
+            raise
+    
+    def describe_image(self, image_path: Path, detailed: bool = False) -> Dict[str, Any]:
+        """Generate comprehensive image description and analysis."""
+        try:
+            file_id = self.upload_image(image_path)
+            image_file = genai.get_file(file_id)
+            
+            if detailed:
+                prompt = """Analyze this image in detail and provide:
+1. Overall description and main subject
+2. Visual composition (layout, colors, lighting, style)
+3. Objects and people (detailed descriptions and positions)
+4. Setting and environment (location, background, context)
+5. Activities and actions (what's happening)
+6. Mood and atmosphere (emotional tone, feeling)
+7. Technical aspects (quality, perspective, artistic elements)
+8. Notable details and interesting features
+
+Provide structured analysis with clear sections and specific details."""
+            else:
+                prompt = """Describe this image including:
+- Main subject and content
+- Key visual elements and objects
+- Setting and environment
+- Overall composition and style
+- Notable details or interesting aspects
+
+Provide a clear, concise description."""
+            
+            print("🤖 Generating image description...")
+            response = self.model.generate_content([image_file, prompt])
+            
+            result = {
+                'file_id': file_id,
+                'description': response.text,
+                'detailed': detailed,
+                'analysis_type': 'image_description'
+            }
+            
+            # Clean up uploaded file
+            genai.delete_file(file_id)
+            print("🗑️ Cleaned up uploaded file")
+            
+            return result
+            
+        except Exception as e:
+            print(f"❌ Image description failed: {e}")
+            raise
+    
+    def classify_image(self, image_path: Path) -> Dict[str, Any]:
+        """Classify and categorize image content."""
+        try:
+            file_id = self.upload_image(image_path)
+            image_file = genai.get_file(file_id)
+            
+            prompt = """Analyze and classify this image:
+
+1. Primary Category:
+   - Determine the main type/category of this image
+   - Examples: photograph, artwork, diagram, screenshot, document, etc.
+
+2. Content Classification:
+   - Subject matter (people, animals, objects, landscapes, etc.)
+   - Scene type (indoor/outdoor, urban/natural, etc.)
+   - Activity or event depicted
+
+3. Style and Format:
+   - Artistic style or photographic type
+   - Color scheme and visual characteristics
+   - Technical format observations
+
+4. Context and Purpose:
+   - Likely purpose or use case
+   - Professional vs casual context
+   - Informational vs artistic intent
+
+5. Key Features:
+   - Most prominent elements
+   - Distinctive characteristics
+   - Quality and technical aspects
+
+Provide clear categorization with confidence levels where appropriate."""
+            
+            print("🏷️ Classifying image content...")
+            response = self.model.generate_content([image_file, prompt])
+            
+            result = {
+                'file_id': file_id,
+                'classification': response.text,
+                'analysis_type': 'image_classification'
+            }
+            
+            # Clean up uploaded file
+            genai.delete_file(file_id)
+            print("🗑️ Cleaned up uploaded file")
+            
+            return result
+            
+        except Exception as e:
+            print(f"❌ Image classification failed: {e}")
+            raise
+    
+    def detect_objects(self, image_path: Path, detailed: bool = False) -> Dict[str, Any]:
+        """Detect and identify objects in the image."""
+        try:
+            file_id = self.upload_image(image_path)
+            image_file = genai.get_file(file_id)
+            
+            if detailed:
+                prompt = """Perform detailed object detection on this image:
+
+1. Object Identification:
+   - List all visible objects with precise names
+   - Include size estimates (small, medium, large)
+   - Note object conditions and states
+
+2. Location and Positioning:
+   - Describe where each object is located in the image
+   - Spatial relationships between objects
+   - Approximate positions (left, right, center, foreground, background)
+
+3. Object Characteristics:
+   - Colors, textures, materials
+   - Shapes and forms
+   - Notable features or details
+
+4. People and Faces:
+   - Number of people visible
+   - Approximate ages, genders if discernible
+   - Clothing and appearance
+   - Actions and poses
+
+5. Text and Signage:
+   - Any visible text or writing
+   - Signs, labels, or captions
+   - Readable information
+
+6. Contextual Elements:
+   - Setting and environment objects
+   - Architectural elements
+   - Natural features
+
+Provide systematic object-by-object analysis with specific details."""
+            else:
+                prompt = """Identify and list the main objects visible in this image:
+
+- Primary objects and subjects
+- People (if any) with basic descriptions
+- Notable items and elements
+- Text or signage (if readable)
+- Environmental objects and features
+
+Provide a clear list with brief descriptions of each detected object."""
+            
+            print("🔍 Detecting objects in image...")
+            response = self.model.generate_content([image_file, prompt])
+            
+            result = {
+                'file_id': file_id,
+                'objects': response.text,
+                'detailed': detailed,
+                'analysis_type': 'object_detection'
+            }
+            
+            # Clean up uploaded file
+            genai.delete_file(file_id)
+            print("🗑️ Cleaned up uploaded file")
+            
+            return result
+            
+        except Exception as e:
+            print(f"❌ Object detection failed: {e}")
+            raise
+    
+    def answer_image_questions(self, image_path: Path, questions: List[str]) -> Dict[str, Any]:
+        """Answer specific questions about the image content."""
+        try:
+            file_id = self.upload_image(image_path)
+            image_file = genai.get_file(file_id)
+            
+            questions_text = "\n".join([f"{i+1}. {q}" for i, q in enumerate(questions)])
+            prompt = f"""Examine this image carefully and answer the following questions with specific details:
+
+{questions_text}
+
+For each question, provide:
+- A direct, specific answer based on what you can see
+- Supporting visual evidence from the image
+- Location details if relevant (where in the image)
+- Confidence level in your answer
+- Any additional relevant context
+
+Base your answers only on what is clearly visible in the image."""
+            
+            print(f"❓ Answering {len(questions)} questions about image...")
+            response = self.model.generate_content([image_file, prompt])
+            
+            result = {
+                'file_id': file_id,
+                'questions': questions,
+                'answers': response.text,
+                'analysis_type': 'image_qa'
+            }
+            
+            # Clean up uploaded file
+            genai.delete_file(file_id)
+            print("🗑️ Cleaned up uploaded file")
+            
+            return result
+            
+        except Exception as e:
+            print(f"❌ Image Q&A failed: {e}")
+            raise
+    
+    def extract_text_from_image(self, image_path: Path) -> Dict[str, Any]:
+        """Extract and transcribe text visible in the image (OCR)."""
+        try:
+            file_id = self.upload_image(image_path)
+            image_file = genai.get_file(file_id)
+            
+            prompt = """Extract all text visible in this image:
+
+1. Text Content:
+   - Transcribe all readable text exactly as it appears
+   - Include headers, body text, captions, labels
+   - Preserve formatting and structure where possible
+
+2. Text Location and Context:
+   - Describe where each text element is located
+   - Note the type of text (sign, document, label, etc.)
+   - Identify different text sections or groupings
+
+3. Text Characteristics:
+   - Font styles and sizes (if notable)
+   - Colors and formatting
+   - Language(s) used
+
+4. Readability Assessment:
+   - Which text is clearly readable
+   - Which text is partially obscured or unclear
+   - Overall text quality and clarity
+
+5. Contextual Information:
+   - Purpose of the text (informational, decorative, etc.)
+   - Relationship to other image elements
+   - Any important semantic meaning
+
+If no text is visible, clearly state that no readable text was found."""
+            
+            print("📝 Extracting text from image...")
+            response = self.model.generate_content([image_file, prompt])
+            
+            result = {
+                'file_id': file_id,
+                'extracted_text': response.text,
+                'analysis_type': 'text_extraction'
+            }
+            
+            # Clean up uploaded file
+            genai.delete_file(file_id)
+            print("🗑️ Cleaned up uploaded file")
+            
+            return result
+            
+        except Exception as e:
+            print(f"❌ Text extraction failed: {e}")
+            raise
+    
+    def analyze_image_composition(self, image_path: Path) -> Dict[str, Any]:
+        """Analyze artistic and technical composition of the image."""
+        try:
+            file_id = self.upload_image(image_path)
+            image_file = genai.get_file(file_id)
+            
+            prompt = """Analyze the artistic and technical composition of this image:
+
+1. Visual Composition:
+   - Rule of thirds and compositional guidelines
+   - Balance and symmetry
+   - Leading lines and focal points
+   - Depth and perspective
+
+2. Color Analysis:
+   - Color palette and scheme
+   - Dominant colors and accents
+   - Color harmony and contrast
+   - Mood created by colors
+
+3. Lighting and Exposure:
+   - Light source and direction
+   - Shadows and highlights
+   - Overall exposure quality
+   - Mood created by lighting
+
+4. Technical Quality:
+   - Sharpness and focus
+   - Image resolution and clarity
+   - Noise or artifacts
+   - Professional vs amateur quality
+
+5. Artistic Elements:
+   - Style and aesthetic approach
+   - Framing and cropping
+   - Artistic techniques used
+   - Overall visual impact
+
+6. Mood and Atmosphere:
+   - Emotional tone conveyed
+   - Atmosphere and feeling
+   - Artistic intent or message
+
+Provide detailed analysis focusing on both technical and artistic aspects."""
+            
+            print("🎨 Analyzing image composition...")
+            response = self.model.generate_content([image_file, prompt])
+            
+            result = {
+                'file_id': file_id,
+                'composition_analysis': response.text,
+                'analysis_type': 'composition_analysis'
+            }
+            
+            # Clean up uploaded file
+            genai.delete_file(file_id)
+            print("🗑️ Cleaned up uploaded file")
+            
+            return result
+            
+        except Exception as e:
+            print(f"❌ Composition analysis failed: {e}")
+            raise
+
+
+class WhisperTranscriber:
+    """OpenAI Whisper speech-to-text transcriber supporting both API and local models."""
+    
+    def __init__(self, api_key: Optional[str] = None, use_local: bool = False):
+        """Initialize Whisper transcriber with API key or local model."""
+        self.use_local = use_local
+        
+        if use_local:
+            if not WHISPER_LOCAL_AVAILABLE:
+                raise ImportError(
+                    "Local Whisper not installed. Run: pip install openai-whisper"
+                )
+            self.model = None  # Will be loaded on first use
+        else:
+            if not OPENAI_WHISPER_API_AVAILABLE:
+                raise ImportError(
+                    "OpenAI package not installed. Run: pip install openai"
+                )
+            
+            self.api_key = api_key or os.getenv('OPENAI_API_KEY')
+            if not self.api_key:
+                raise ValueError(
+                    "OpenAI API key required. Set OPENAI_API_KEY environment variable or pass api_key parameter"
+                )
+            
+            self.client = OpenAI(api_key=self.api_key)
+    
+    def _load_local_model(self, model_size: str = "turbo"):
+        """Load local Whisper model on demand."""
+        if self.model is None:
+            print(f"🔄 Loading Whisper {model_size} model...")
+            self.model = whisper.load_model(model_size)
+            print(f"✅ Whisper {model_size} model loaded")
+        return self.model
+    
+    def transcribe_audio_file(self, audio_path: Path, 
+                             language: Optional[str] = None,
+                             model_size: str = "turbo",
+                             include_timestamps: bool = True,
+                             response_format: str = "json") -> Dict[str, Any]:
+        """Transcribe audio file using Whisper API or local model."""
+        try:
+            print(f"🎤 Transcribing: {audio_path.name}")
+            
+            # Check file size (25MB limit for API)
+            file_size = audio_path.stat().st_size / (1024 * 1024)  # MB
+            print(f"📊 File size: {file_size:.1f} MB")
+            
+            if not self.use_local and file_size > 25:
+                print("⚠️  File exceeds 25MB API limit, switching to local model...")
+                if not WHISPER_LOCAL_AVAILABLE:
+                    raise Exception("File too large for API and local Whisper not available")
+                self.use_local = True
+            
+            if self.use_local:
+                return self._transcribe_local(audio_path, model_size, include_timestamps)
+            else:
+                return self._transcribe_api(audio_path, language, response_format)
+                
+        except Exception as e:
+            print(f"❌ Transcription failed: {e}")
+            raise
+    
+    def _transcribe_api(self, audio_path: Path, language: Optional[str], response_format: str) -> Dict[str, Any]:
+        """Transcribe using OpenAI API."""
+        try:
+            print("🌐 Using OpenAI Whisper API...")
+            
+            with open(audio_path, "rb") as audio_file:
+                kwargs = {
+                    "model": "whisper-1",
+                    "file": audio_file,
+                    "response_format": response_format
+                }
+                
+                if language:
+                    kwargs["language"] = language
+                
+                if response_format == "verbose_json":
+                    kwargs["timestamp_granularities"] = ["word", "segment"]
+                
+                transcription = self.client.audio.transcriptions.create(**kwargs)
+            
+            # Process response based on format
+            if response_format == "json" or response_format == "verbose_json":
+                if hasattr(transcription, 'text'):
+                    result = {
+                        'text': transcription.text,
+                        'method': 'openai_api',
+                        'model': 'whisper-1',
+                        'language': getattr(transcription, 'language', language),
+                        'duration': getattr(transcription, 'duration', None)
+                    }
+                    
+                    # Add segments and words if available
+                    if hasattr(transcription, 'segments'):
+                        result['segments'] = transcription.segments
+                    if hasattr(transcription, 'words'):
+                        result['words'] = transcription.words
+                else:
+                    # Handle string response
+                    result = {
+                        'text': str(transcription),
+                        'method': 'openai_api',
+                        'model': 'whisper-1',
+                        'language': language
+                    }
+            else:
+                # Handle other formats (srt, vtt, etc.)
+                result = {
+                    'text': str(transcription),
+                    'method': 'openai_api',
+                    'model': 'whisper-1',
+                    'format': response_format,
+                    'language': language
+                }
+            
+            print("✅ API transcription complete")
+            return result
+            
+        except Exception as e:
+            print(f"❌ API transcription failed: {e}")
+            raise
+    
+    def _transcribe_local(self, audio_path: Path, model_size: str, include_timestamps: bool) -> Dict[str, Any]:
+        """Transcribe using local Whisper model."""
+        try:
+            print(f"💻 Using local Whisper {model_size} model...")
+            
+            model = self._load_local_model(model_size)
+            
+            # Transcribe with options
+            options = {
+                "fp16": False,  # Use fp32 for better compatibility
+                "language": None,  # Auto-detect language
+            }
+            
+            result = model.transcribe(str(audio_path), **options)
+            
+            # Structure the response
+            transcription_result = {
+                'text': result['text'],
+                'method': 'local_whisper',
+                'model': model_size,
+                'language': result.get('language'),
+                'duration': None
+            }
+            
+            if include_timestamps and 'segments' in result:
+                transcription_result['segments'] = [
+                    {
+                        'start': seg['start'],
+                        'end': seg['end'],
+                        'text': seg['text']
+                    }
+                    for seg in result['segments']
+                ]
+                
+                # Calculate total duration from segments
+                if result['segments']:
+                    transcription_result['duration'] = result['segments'][-1]['end']
+            
+            print("✅ Local transcription complete")
+            return transcription_result
+            
+        except Exception as e:
+            print(f"❌ Local transcription failed: {e}")
+            raise
+    
+    def transcribe_video_audio(self, video_path: Path, 
+                              extract_audio: bool = True,
+                              **kwargs) -> Dict[str, Any]:
+        """Transcribe audio from video file."""
+        try:
+            if extract_audio:
+                # Extract audio from video first
+                audio_path = self._extract_audio_from_video(video_path)
+                result = self.transcribe_audio_file(audio_path, **kwargs)
+                
+                # Clean up temporary audio file
+                if audio_path.exists():
+                    audio_path.unlink()
+                    print("🗑️ Cleaned up temporary audio file")
+                
+                result['source'] = 'video'
+                result['video_file'] = str(video_path)
+                return result
+            else:
+                # Try to transcribe video directly (API only)
+                if self.use_local:
+                    raise ValueError("Local Whisper requires audio extraction from video")
+                
+                return self.transcribe_audio_file(video_path, **kwargs)
+                
+        except Exception as e:
+            print(f"❌ Video transcription failed: {e}")
+            raise
+    
+    def _extract_audio_from_video(self, video_path: Path) -> Path:
+        """Extract audio from video using ffmpeg."""
+        import subprocess
+        
+        audio_path = video_path.parent / f"{video_path.stem}_temp_audio.wav"
+        
+        try:
+            print(f"🎵 Extracting audio from video...")
+            
+            cmd = [
+                'ffmpeg', '-i', str(video_path), 
+                '-vn', '-acodec', 'pcm_s16le', '-ar', '16000', '-ac', '1',
+                '-y', str(audio_path)
+            ]
+            
+            result = subprocess.run(cmd, capture_output=True, text=True)
+            
+            if result.returncode != 0:
+                raise Exception(f"ffmpeg failed: {result.stderr}")
+            
+            print(f"✅ Audio extracted to: {audio_path.name}")
+            return audio_path
+            
+        except Exception as e:
+            print(f"❌ Audio extraction failed: {e}")
+            raise
+
+
+def check_whisper_requirements(check_api: bool = True, check_local: bool = True) -> Dict[str, tuple[bool, str]]:
+    """Check if Whisper requirements are met."""
+    results = {}
+    
+    if check_api:
+        if not OPENAI_WHISPER_API_AVAILABLE:
+            results['api'] = (False, "openai package not installed")
+        else:
+            api_key = os.getenv('OPENAI_API_KEY')
+            if not api_key:
+                results['api'] = (False, "OPENAI_API_KEY environment variable not set")
+            else:
+                results['api'] = (True, "OpenAI Whisper API ready")
+    
+    if check_local:
+        if not WHISPER_LOCAL_AVAILABLE:
+            results['local'] = (False, "whisper package not installed")
+        else:
+            results['local'] = (True, "Local Whisper ready")
+    
+    return results
 
 
 def check_gemini_requirements() -> tuple[bool, str]:
@@ -612,3 +1237,128 @@ def analyze_audio_file(audio_path: Path, analysis_type: str = "description",
     except Exception as e:
         print(f"❌ Audio analysis failed: {e}")
         return None
+
+
+def analyze_image_file(image_path: Path, analysis_type: str = "description", 
+                      questions: Optional[List[str]] = None, 
+                      detailed: bool = False) -> Optional[Dict[str, Any]]:
+    """Convenience function to analyze an image file."""
+    try:
+        analyzer = GeminiVideoAnalyzer()
+        
+        if analysis_type == "description":
+            return analyzer.describe_image(image_path, detailed)
+        elif analysis_type == "classification":
+            return analyzer.classify_image(image_path)
+        elif analysis_type == "objects":
+            return analyzer.detect_objects(image_path, detailed)
+        elif analysis_type == "qa":
+            if not questions:
+                questions = ["What is the main subject of this image?", 
+                           "What can you tell me about this image?"]
+            return analyzer.answer_image_questions(image_path, questions)
+        elif analysis_type == "text":
+            return analyzer.extract_text_from_image(image_path)
+        elif analysis_type == "composition":
+            return analyzer.analyze_image_composition(image_path)
+        else:
+            raise ValueError(f"Unknown image analysis type: {analysis_type}")
+            
+    except Exception as e:
+        print(f"❌ Image analysis failed: {e}")
+        return None
+
+
+def transcribe_with_whisper(file_path: Path, 
+                           use_local: bool = False,
+                           model_size: str = "turbo",
+                           language: Optional[str] = None,
+                           include_timestamps: bool = True) -> Optional[Dict[str, Any]]:
+    """Convenience function to transcribe audio or video using Whisper."""
+    try:
+        transcriber = WhisperTranscriber(use_local=use_local)
+        
+        # Check if it's a video file
+        video_extensions = {'.mp4', '.avi', '.mov', '.mkv', '.webm', '.flv', '.wmv'}
+        if file_path.suffix.lower() in video_extensions:
+            result = transcriber.transcribe_video_audio(
+                file_path,
+                model_size=model_size,
+                language=language,
+                include_timestamps=include_timestamps
+            )
+        else:
+            result = transcriber.transcribe_audio_file(
+                file_path,
+                model_size=model_size,
+                language=language,
+                include_timestamps=include_timestamps
+            )
+        
+        return result
+        
+    except Exception as e:
+        print(f"❌ Whisper transcription failed: {e}")
+        return None
+
+
+def batch_transcribe_whisper(file_paths: List[Path],
+                            use_local: bool = False,
+                            model_size: str = "turbo",
+                            language: Optional[str] = None,
+                            save_results: bool = True) -> List[Dict[str, Any]]:
+    """Batch transcribe multiple files with Whisper."""
+    results = []
+    
+    try:
+        transcriber = WhisperTranscriber(use_local=use_local)
+        
+        for i, file_path in enumerate(file_paths, 1):
+            print(f"\n📁 Processing file {i}/{len(file_paths)}: {file_path.name}")
+            
+            try:
+                # Check if it's a video file
+                video_extensions = {'.mp4', '.avi', '.mov', '.mkv', '.webm', '.flv', '.wmv'}
+                if file_path.suffix.lower() in video_extensions:
+                    result = transcriber.transcribe_video_audio(
+                        file_path,
+                        model_size=model_size,
+                        language=language,
+                        include_timestamps=True
+                    )
+                else:
+                    result = transcriber.transcribe_audio_file(
+                        file_path,
+                        model_size=model_size,
+                        language=language,
+                        include_timestamps=True
+                    )
+                
+                result['file_path'] = str(file_path)
+                results.append(result)
+                
+                # Save individual result if requested
+                if save_results:
+                    output_file = file_path.parent / f"{file_path.stem}_whisper_transcription.json"
+                    save_analysis_result(result, output_file)
+                    
+                    # Also save text version
+                    txt_file = file_path.parent / f"{file_path.stem}_whisper_transcription.txt"
+                    with open(txt_file, 'w', encoding='utf-8') as f:
+                        f.write(result['text'])
+                
+                print(f"✅ Successfully transcribed: {file_path.name}")
+                
+            except Exception as e:
+                print(f"❌ Failed to transcribe {file_path.name}: {e}")
+                results.append({
+                    'file_path': str(file_path),
+                    'error': str(e),
+                    'text': None
+                })
+        
+        return results
+        
+    except Exception as e:
+        print(f"❌ Batch transcription failed: {e}")
+        return results
