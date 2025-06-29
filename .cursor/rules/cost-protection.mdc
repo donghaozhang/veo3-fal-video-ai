@@ -56,8 +56,8 @@ python veo3_video_generation/demo.py               # Costs money
 # These are completely FREE and safe to run automatically
 
 # Video Generation - FREE Tests
-python fal_video_generation/test_api_only.py       # FREE - API connection test only
-python fal_video_generation/test_fal_ai.py         # FREE - setup test only (no video generation)
+python fal_image_to_video/test_api_only.py         # FREE - API connection test only
+python fal_image_to_video/test_fal_ai.py           # FREE - setup test only (no video generation)
 
 # Avatar Generation - FREE Tests  
 python fal_avatar_generation/test_setup.py         # FREE - environment and API validation
@@ -66,6 +66,10 @@ python fal_avatar_generation/test_generation.py    # FREE - setup test only (no 
 # Text-to-Image Generation - FREE Tests
 python fal_text_to_image/test_setup.py             # FREE - environment and API validation
 python fal_text_to_image/test_generation.py        # FREE - setup test only (no image generation)
+
+# Image-to-Image Generation - FREE Tests
+python fal_image_to_image/tests/test_setup.py      # FREE - environment and API validation
+python -m fal_image_to_image.tests.test_imports    # FREE - package structure validation
 
 # Text-to-Speech Generation - FREE Tests
 python -c "from text_to_speech import ElevenLabsTTSController; print('✅ Package working!')"  # FREE - import test
@@ -182,6 +186,15 @@ If you accidentally suggest or run a paid test:
 - **Comparison test**: ~$0.060 (generates 4 images)  
 - **Use**: `--imagen4`, `--seedream`, `--flux-schnell`, or `--flux-dev` for single model testing
 - **Dragon test**: `--dragon` flag for specific dragon image testing
+
+### Image-to-Image Generation Costs
+- **Single enhancement test**: Cost varies by complexity and enhancement type
+- **Style transfer**: Generally higher cost due to FLUX model complexity
+- **Upscaling**: Moderate cost depending on scale factor (2x, 4x)
+- **Artistic transformation**: Variable cost based on transformation complexity
+- **Batch processing**: Costs multiply by number of images processed
+- **Use**: `--style_transfer`, `--upscale`, or `--artistic` for single enhancement testing
+- **Professional package structure**: Always use FREE tests first for validation
 
 ### Text-to-Speech Generation Costs
 - **ElevenLabs TTS costs**: ~$0.005-0.05 per generation (varies by character count and voice quality)

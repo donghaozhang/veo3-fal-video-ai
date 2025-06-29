@@ -15,7 +15,7 @@ This document covers the cost-conscious testing and demonstration capabilities f
 ## Cost-Conscious Test Suite Overview
 
 ### FAL AI Video Generation Tests
-Located in [fal_video_generation/test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py) and [fal_video_generation/test_api_only.py](mdc:fal_video_generation/test_api_only.py)
+Located in [fal_image_to_video/test_fal_ai.py](mdc:fal_image_to_video/test_fal_ai.py) and [fal_image_to_video/test_api_only.py](mdc:fal_image_to_video/test_api_only.py)
 
 ### FAL AI Avatar Generation Tests (TRIPLE-MODE)
 Located in [fal_avatar_generation/](mdc:fal_avatar_generation/) with comprehensive triple-mode test structure:
@@ -27,6 +27,12 @@ Located in [fal_avatar_generation/](mdc:fal_avatar_generation/) with comprehensi
 Located in [fal_text_to_image/](mdc:fal_text_to_image/) with consolidated test structure:
 - **[test_setup.py](mdc:fal_text_to_image/test_setup.py)** - FREE environment and API validation
 - **[test_generation.py](mdc:fal_text_to_image/test_generation.py)** - PAID image generation tests (includes `--dragon` flag)
+
+### FAL AI Image-to-Image Tests (PROFESSIONAL PACKAGE)
+Located in [fal_image_to_image/tests/](mdc:fal_image_to_image/tests/) with professional package test structure:
+- **[test_setup.py](mdc:fal_image_to_image/tests/test_setup.py)** - FREE environment and API validation
+- **[test_imports.py](mdc:fal_image_to_image/tests/test_imports.py)** - FREE package structure validation
+- **[test_enhancement.py](mdc:fal_image_to_image/tests/test_enhancement.py)** - PAID image enhancement tests (includes `--style_transfer`, `--upscale`, `--artistic` flags)
 
 The test suites provide comprehensive validation with cost warnings and confirmation prompts to prevent unexpected charges.
 
@@ -57,6 +63,15 @@ python test_setup.py
 
 # Basic setup and dependency validation - FREE (no image generation)
 python test_generation.py
+```
+
+#### Image-to-Image Generation (FAL AI)
+```bash
+# Environment and API setup test - completely FREE
+python tests/test_setup.py
+
+# Package structure validation - FREE (no image enhancement)
+python -m fal_image_to_image.tests.test_imports
 ```
 
 ### Paid Test Command Options (Generates Real Content)
@@ -119,6 +134,20 @@ python test_generation.py --batch 1,3   # Test selected models
 python test_generation.py --compare     # Generates 4 images
 ```
 
+#### Image-to-Image Generation (FAL AI)
+```bash
+# Test single enhancement mode - cost varies by complexity
+python tests/test_enhancement.py --style_transfer    # Test style transfer
+python tests/test_enhancement.py --upscale          # Test upscaling
+python tests/test_enhancement.py --artistic         # Test artistic transformation
+
+# Batch enhancement testing - cost varies by image count and complexity
+python tests/test_batch.py --count 3               # Test batch processing
+
+# Full enhancement pipeline test - cost varies
+python tests/test_full_pipeline.py                 # Test complete workflow
+```
+
 ### Cost Safety Features
 - **Cost warnings** displayed prominently before any paid operations
 - **Confirmation prompts** before generating content
@@ -130,7 +159,7 @@ python test_generation.py --compare     # Generates 4 images
 ## FREE Testing Scripts
 
 ### Video Generation
-Located in [fal_video_generation/test_api_only.py](mdc:fal_video_generation/test_api_only.py)
+Located in [fal_image_to_video/test_api_only.py](mdc:fal_image_to_video/test_api_only.py)
 
 A completely FREE testing script that validates your setup without generating any videos:
 
@@ -176,6 +205,37 @@ Tests environment and API connectivity without generating avatars
 Located in [fal_text_to_image/test_setup.py](mdc:fal_text_to_image/test_setup.py)
 
 A completely FREE testing script for text-to-image setup validation.
+
+### Image-to-Image Generation
+Located in [fal_image_to_image/tests/test_setup.py](mdc:fal_image_to_image/tests/test_setup.py)
+
+A completely FREE testing script that validates your image enhancement setup:
+
+#### Features
+- **No image enhancement** - completely free to run
+- **API key validation** without triggering charges
+- **Dependencies check** for all required packages
+- **Environment validation** for .env configuration
+- **Professional package structure** validation
+- **Enhancement modes testing** (style transfer, upscaling, artistic)
+
+#### Usage
+```bash
+python tests/test_setup.py
+```
+
+#### Output Example
+```
+🆓 FAL AI Image-to-Image Setup Test - FREE
+Tests environment and API connectivity without enhancing images
+============================================================
+✅ Dependencies: All required packages installed
+✅ Environment: FAL_KEY configured properly
+✅ API Connection: Successfully connected to FAL AI
+✅ Package Structure: Professional package imports working
+✅ Enhancement Modes: All enhancement types available
+🆓 This test was completely FREE - no images were enhanced
+```
 
 ## Test Components
 

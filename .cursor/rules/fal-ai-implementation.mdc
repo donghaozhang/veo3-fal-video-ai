@@ -26,8 +26,8 @@ All modules provide production-ready API access with cost-conscious testing fram
 
 ## Core Components
 
-### FALVideoGenerator Class
-Located in [fal_video_generation/fal_video_generator.py](mdc:fal_video_generation/fal_video_generator.py)
+### FALImageToVideoGenerator Class
+Located in [fal_image_to_video/fal_image_to_video_generator.py](mdc:fal_image_to_video/fal_image_to_video_generator.py)
 
 **Dual-Model Support:**
 - Single class supports both models
@@ -168,10 +168,47 @@ generator.generate_image_with_flux_schnell(
 - Auto-download option for generated images
 - Progress tracking with numbered steps
 
+### FALImageToImageGenerator Class
+Located in [fal_image_to_image/fal_image_to_image/](mdc:fal_image_to_image/fal_image_to_image/) directory with comprehensive image transformation capabilities.
+
+**Enhancement Pipeline Support:**
+- Single class supports multiple image transformation modes
+- FLUX model integration for high-quality enhancements
+- Batch processing with cost-conscious design
+- Professional package structure with setup.py
+
+**Universal Methods:**
+```python
+# Image enhancement with style transfer
+generator.enhance_image(
+    input_image="path/to/input.jpg",
+    prompt="Transform into artistic style",
+    enhancement_type="style_transfer",  # "style_transfer", "upscale", "artistic"
+    output_folder="output"
+)
+
+# Batch image processing
+results = generator.batch_enhance(
+    input_images=["image1.jpg", "image2.jpg"],
+    prompt="Enhance with artistic style",
+    enhancement_type="upscale",
+    auto_confirm=False,  # Prompt for cost confirmation
+    download_images=True  # Download to local folder
+)
+```
+
+**Enhancement Features:**
+- FLUX model integration for high-quality transformations
+- Multiple enhancement modes (style transfer, upscaling, artistic)
+- Cost estimation and confirmation prompts
+- Batch processing with progress tracking
+- Professional package structure with proper imports
+- Comprehensive testing framework
+
 ### Cost-Conscious Testing Framework
 
 **Video Generation Testing:**
-Located in [fal_video_generation/test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py)
+Located in [fal_image_to_video/test_fal_ai.py](mdc:fal_image_to_video/test_fal_ai.py)
 
 **FREE Testing Commands (No Cost):**
 ```bash
@@ -261,17 +298,44 @@ python test_generation.py --batch 2,4  # Test seedream + flux_dev
 python test_generation.py --all        # Generates 4 images
 ```
 
+**Image-to-Image Testing:**
+Located in [fal_image_to_image/tests/](mdc:fal_image_to_image/tests/) directory
+
+**FREE Testing Commands (No Cost):**
+```bash
+# Environment and API validation - completely FREE
+python tests/test_setup.py
+
+# Package structure validation - FREE
+python -m fal_image_to_image.tests.test_imports
+```
+
+**Paid Testing Commands (Generates Real Enhanced Images):**
+```bash
+# Test single enhancement mode - cost varies by complexity
+python tests/test_enhancement.py --style_transfer    # Test style transfer
+python tests/test_enhancement.py --upscale          # Test upscaling
+python tests/test_enhancement.py --artistic         # Test artistic transformation
+
+# Batch enhancement testing - cost varies by image count and complexity
+python tests/test_batch.py --count 3               # Test batch processing
+
+# Full enhancement pipeline test - cost varies
+python tests/test_full_pipeline.py                 # Test complete workflow
+```
+
 **Cost-Conscious Features:**
 - Cost warnings displayed prominently
 - Confirmation prompts before paid operations
 - Model-specific testing to avoid unnecessary costs
 - Clear cost estimates for each operation
 - Batch testing with selective model combinations
+- Professional package structure with proper testing framework
 
 ### Interactive Demos
 
 **Video Generation Demo:**
-Located in [fal_video_generation/demo.py](mdc:fal_video_generation/demo.py)
+Located in [fal_image_to_video/demo.py](mdc:fal_image_to_video/demo.py)
 - Cost warnings and confirmation prompts
 - Model selection menu with cost estimates
 - Side-by-side model comparison (with expensive operation warning)
@@ -291,6 +355,15 @@ Located in [fal_text_to_image/demo.py](mdc:fal_text_to_image/demo.py)
 - Cost estimation and confirmation
 - Detailed results display with timing
 - Support for negative prompts and custom parameters
+
+**Image-to-Image Demo:**
+Located in [fal_image_to_image/demo.py](mdc:fal_image_to_image/demo.py)
+- Interactive enhancement mode selection
+- Batch processing with image picker
+- Cost estimation and confirmation
+- Professional package integration
+- Support for multiple enhancement types (style transfer, upscaling, artistic)
+- Progress tracking and results display
 
 ## Direct Python API Usage
 
@@ -332,6 +405,26 @@ Direct Python API for text-to-image generation with multiple models and cost-con
 - Batch processing capabilities
 - Error handling and validation
 - Local image downloading and management
+
+### FAL AI Image-to-Image Generator
+Direct Python API for image enhancement and transformation with professional package structure.
+
+**Core Functions:**
+1. **`enhance_image()`** - Enhance single image with specified enhancement type
+2. **`batch_enhance()`** - Enhance multiple images with batch processing
+3. **`get_enhancement_modes()`** - Get available enhancement types and specifications
+4. **`download_enhanced_image()`** - Download enhanced image to local storage
+5. **`compare_enhancements()`** - Compare different enhancement modes on same image
+
+**Key Features:**
+- Professional package structure with setup.py and proper imports
+- Multiple enhancement modes (style transfer, upscaling, artistic transformation)
+- FLUX model integration for high-quality results
+- Batch processing capabilities with progress tracking
+- Cost estimation and confirmation prompts
+- Comprehensive testing framework
+- Error handling and validation
+- Local image management and organization
 
 **Installation and Setup:**
 ```bash

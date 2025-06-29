@@ -26,8 +26,14 @@ This project provides Python utilities for generating videos, images, and avatar
    - **FLUX Schnell** (Ultra-fast generation)
    - **FLUX Dev** (Balanced speed and quality)
 
+## Image-to-Image Generation
+5. **FAL AI Image Enhancement** (comprehensive image transformation pipeline)
+   - **FLUX Image Enhancement**: High-quality image refinement and style transfer
+   - **Batch Processing**: Multiple image transformations with cost-conscious design
+   - **Professional Package**: Modular architecture with setup.py and proper testing
+
 ## Text-to-Speech Generation
-5. **ElevenLabs TTS Package** (modular architecture, comprehensive features)
+6. **ElevenLabs TTS Package** (modular architecture, comprehensive features)
    - **3000+ Voice Library**: Popular presets and custom voice cloning
    - **AI Content Pipeline**: OpenRouter AI integration with top 10 models
    - **Advanced Features**: Timing control, multi-speaker dialogue, emotional tags
@@ -54,15 +60,15 @@ Located in [veo3_video_generation/](mdc:veo3_video_generation) directory with au
 **Quick Setup**: Run `python fix_permissions.py` to automatically configure Google Cloud permissions
 
 ### FAL AI Video Generation (Dual-Model)
-Located in [fal_video_generation/](mdc:fal_video_generation) directory with simplified API-based approach supporting two models and cost-conscious testing.
+Located in [fal_image_to_video/](mdc:fal_image_to_video) directory with simplified API-based approach supporting two models and cost-conscious testing.
 
 **Key Components:**
-- [fal_video_generator.py](mdc:fal_video_generation/fal_video_generator.py) - Main FALVideoGenerator class with full endpoint names
-- [demo.py](mdc:fal_video_generation/demo.py) - Cost-conscious interactive demo with confirmation prompts
-- [test_fal_ai.py](mdc:fal_video_generation/test_fal_ai.py) - Cost-conscious test suite with model-specific flags
-- [test_api_only.py](mdc:fal_video_generation/test_api_only.py) - **FREE API connection test** (no video generation)
-- [README.md](mdc:fal_video_generation/README.md) - Complete FAL AI dual-model documentation
-- [COST_CONSCIOUS_TESTING.md](mdc:fal_video_generation/COST_CONSCIOUS_TESTING.md) - Cost-conscious testing guide
+- [fal_image_to_video_generator.py](mdc:fal_image_to_video/fal_image_to_video_generator.py) - Main FALImageToVideoGenerator class with full endpoint names
+- [demo.py](mdc:fal_image_to_video/demo.py) - Cost-conscious interactive demo with confirmation prompts
+- [test_fal_ai.py](mdc:fal_image_to_video/test_fal_ai.py) - Cost-conscious test suite with model-specific flags
+- [test_api_only.py](mdc:fal_image_to_video/test_api_only.py) - **FREE API connection test** (no video generation)
+- [README.md](mdc:fal_image_to_video/README.md) - Complete FAL AI dual-model documentation
+- [COST_CONSCIOUS_TESTING.md](mdc:fal_image_to_video/COST_CONSCIOUS_TESTING.md) - Cost-conscious testing guide
 
 ### FAL AI Avatar Generation (Triple-Mode)
 Located in [fal_avatar_generation/](mdc:fal_avatar_generation) directory with comprehensive avatar video generation using official FAL AI examples.
@@ -85,6 +91,27 @@ Located in [fal_text_to_image/](mdc:fal_text_to_image) directory with consolidat
   - [test_setup.py](mdc:fal_text_to_image/test_setup.py) - **FREE environment and API validation**
   - [test_generation.py](mdc:fal_text_to_image/test_generation.py) - **PAID image generation tests** (includes `--dragon` flag)
 - [README.md](mdc:fal_text_to_image/README.md) - Complete FAL AI text-to-image documentation
+
+### FAL AI Image-to-Image Generation (Enhancement Pipeline)
+Located in [fal_image_to_image/](mdc:fal_image_to_image) directory with comprehensive image transformation capabilities and professional package structure.
+
+**Key Components:**
+- [fal_image_to_image/](mdc:fal_image_to_image/fal_image_to_image/) - Main image enhancement package
+- [setup.py](mdc:fal_image_to_image/setup.py) - Professional package setup
+- [demo.py](mdc:fal_image_to_image/demo.py) - Cost-conscious interactive demo
+- **Comprehensive Test Suite:**
+  - [tests/](mdc:fal_image_to_image/tests/) - Complete testing framework
+- **Documentation:**
+  - [README.md](mdc:fal_image_to_image/README.md) - Complete FAL AI image-to-image documentation
+  - [docs/](mdc:fal_image_to_image/docs/) - Detailed documentation
+- **Examples:**
+  - [examples/](mdc:fal_image_to_image/examples/) - Usage examples and tutorials
+
+**Key Features:**
+- **FLUX Image Enhancement**: High-quality image refinement and style transfer
+- **Batch Processing**: Multiple image transformations with cost-conscious design
+- **Professional Package**: Modular architecture with setup.py and proper testing
+- **Multiple Enhancement Modes**: Style transfer, upscaling, and artistic transformations
 
 ### ElevenLabs Text-to-Speech Package (Modular Architecture)
 Located in [text_to_speech/](mdc:text_to_speech) directory with comprehensive TTS capabilities and AI content pipeline.
@@ -161,17 +188,16 @@ veo3/
 │   ├── .env                        # Veo configuration
 │   ├── images/                     # Input images (smiling_woman.jpg, bet.png)
 │   └── result_folder/              # Veo output videos
-├── fal_video_generation/            # FAL AI dual-model video implementation
-│   ├── fal_video_generator.py       # FAL AI video generator class (dual-model)
+├── fal_image_to_video/              # FAL AI dual-model video implementation
+│   ├── fal_image_to_video_generator.py # FAL AI image-to-video generator class (dual-model)
 │   ├── demo.py                      # Cost-conscious interactive demo
 │   ├── test_fal_ai.py              # Cost-conscious test suite (both models)
 │   ├── test_api_only.py            # FREE API connection test
 │   ├── README.md                    # FAL AI dual-model documentation
 │   ├── COST_CONSCIOUS_TESTING.md   # Cost-conscious testing guide
 │   ├── requirements.txt             # FAL AI dependencies
-│   ├── .env                         # FAL AI configuration
-│   ├── output/                      # FAL AI generated videos
-│   └── test_output/                 # Test-generated videos
+│   ├── .env.example                 # FAL AI configuration template
+│   └── output/                      # FAL AI generated videos
 ├── fal_avatar_generation/           # FAL AI triple-mode avatar implementation
 │   ├── fal_avatar_generator.py      # FAL AI avatar generator class (triple-mode)
 │   ├── demo.py                      # Cost-conscious interactive demo with mode selection
@@ -194,6 +220,18 @@ veo3/
 │   ├── .gitignore                   # Ignore generated images and outputs
 │   ├── output/                      # Generated images
 │   └── test_output/                 # Test-generated images
+├── fal_image_to_image/              # FAL AI image enhancement implementation
+│   ├── fal_image_to_image/          # Main image enhancement package
+│   ├── setup.py                     # Professional package setup
+│   ├── README.md                    # Complete FAL AI image-to-image documentation
+│   ├── requirements.txt             # FAL AI dependencies
+│   ├── .env                         # FAL AI configuration
+│   ├── input/                       # Input images for transformation
+│   ├── output/                      # Enhanced/transformed images
+│   ├── examples/                    # Usage examples and tutorials
+│   ├── docs/                        # Detailed documentation
+│   ├── tests/                       # Complete testing framework
+│   └── archive/                     # Archived transformations
 ├── text_to_speech/                  # ElevenLabs TTS package (modular architecture)
 │   ├── __init__.py                  # Main package interface
 │   ├── setup.py                     # Professional package setup
@@ -245,11 +283,12 @@ veo3/
 
 ### FAL AI Setup (Simpler)
 - FAL AI API key in respective `.env` files:
-  - [fal_video_generation/.env](mdc:fal_video_generation/.env)
+  - [fal_image_to_video/.env.example](mdc:fal_image_to_video/.env.example) (copy to `.env`)
   - [fal_avatar_generation/.env](mdc:fal_avatar_generation/.env)  
   - [fal_text_to_image/.env](mdc:fal_text_to_image/.env)
+  - [fal_image_to_image/.env](mdc:fal_image_to_image/.env)
 - Python dependencies: fal-client, requests, python-dotenv
-- Single API key works for all FAL AI models (video, avatar, image)
+- Single API key works for all FAL AI models (video, avatar, text-to-image, image-to-image)
 
 ### ElevenLabs TTS Setup (Professional Package)
 - ElevenLabs API key in [text_to_speech/.env](mdc:text_to_speech/.env)
@@ -282,6 +321,13 @@ veo3/
 - You want multi-person conversation videos
 - You need natural facial expressions and movements
 
+### Choose FAL AI Image-to-Image when:
+- You need image enhancement and style transfer
+- You want to refine or transform existing images
+- You need batch processing of multiple images
+- You want professional-grade image modifications with FLUX models
+- You need upscaling or artistic transformations
+
 ### Choose ElevenLabs TTS when:
 - You need high-quality text-to-speech with 3000+ voices
 - You want AI-generated content with automatic speech conversion
@@ -312,6 +358,14 @@ veo3/
 - **Dragon Generation**: Use `python test_generation.py --dragon` for dragon image testing (~$0.015)
 - **Production**: Use batch generation for efficiency (`python test_generation.py --batch 1,3`)
 - **Comparison**: Use comparison tools carefully - remember comparison tests generate 4 images (~$0.060)
+
+### Image-to-Image Generation
+- **Testing Setup**: Use `python tests/test_setup.py` for FREE environment validation
+- **Prototyping**: Start with single image transformations to avoid unnecessary costs
+- **Batch Processing**: Use batch transformation features for multiple images
+- **Enhancement**: Focus on specific enhancement modes (style transfer, upscaling, artistic)
+- **Production**: Use professional package structure with proper imports and testing
+- **Monitor costs** - each image transformation costs vary by complexity
 
 ### Text-to-Speech Generation
 - **Package Testing**: Use `python -c "from text_to_speech import ElevenLabsTTSController; print('✅ Package working!')"` for FREE import validation
@@ -347,6 +401,14 @@ veo3/
 - **Use dragon generation** (`--dragon`) for testing specific scenarios
 - **Avoid comparison tests** (`--compare`) during development unless specifically needed
 - **Monitor costs** - each image generation costs ~$0.015
+
+### Image-to-Image Generation
+- **NEVER run image transformation tests without explicit user confirmation**
+- **Always start with FREE tests** (`python tests/test_setup.py`) to validate setup
+- **Use professional package structure** with proper imports and testing framework
+- **Start with single transformations** before batch processing
+- **Monitor costs** - each image transformation costs vary by complexity and model
+- **Use examples** (`python -m examples.basic_usage`) for testing structure
 
 ### Text-to-Speech Generation
 - **Always validate package structure first** with FREE import tests before API calls

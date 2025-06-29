@@ -75,14 +75,14 @@ download_gcs_file(
 **Returns**: Local file path or None on error
 
 ## FAL AI Video Generation API Class
-Located in [fal_video_generation/fal_video_generator.py](mdc:fal_video_generation/fal_video_generator.py).
+Located in [fal_image_to_video/fal_image_to_video_generator.py](mdc:fal_image_to_video/fal_image_to_video_generator.py).
 
-### FALVideoGenerator Class
+### FALImageToVideoGenerator Class
 ```python
-from fal_video_generator import FALVideoGenerator
+from fal_image_to_video_generator import FALImageToVideoGenerator
 
 # Initialize with API key (from .env or parameter)
-generator = FALVideoGenerator(api_key=None)  # Uses FAL_KEY from .env
+generator = FALImageToVideoGenerator(api_key=None)  # Uses FAL_KEY from .env
 ```
 
 ### Universal Methods (Model Selection)
@@ -331,6 +331,93 @@ generator.generate_image_with_flux_schnell(
 ```
 **Purpose**: Generate image using FLUX Schnell for ultra-fast results  
 **Returns**: Dictionary with image URL, metadata, and local path
+
+## FAL AI Image-to-Image Generation API Class
+Located in [fal_image_to_image/fal_image_to_image/](mdc:fal_image_to_image/fal_image_to_image/) directory with professional package structure.
+
+### FALImageToImageGenerator Class
+```python
+from fal_image_to_image import FALImageToImageGenerator
+
+# Initialize with API key (from .env or parameter)
+generator = FALImageToImageGenerator(api_key=None)  # Uses FAL_KEY from .env
+```
+
+### Universal Methods (Enhancement Selection)
+
+#### Enhance Single Image
+```python
+generator.enhance_image(
+    input_image: str,               # Input image path or URL
+    prompt: str,                    # Enhancement description
+    enhancement_type: str = "style_transfer",  # "style_transfer", "upscale", "artistic"
+    output_folder: str = "output",  # Local download folder
+    auto_confirm: bool = False      # Skip cost confirmation prompt
+) -> Optional[Dict[str, Any]]
+```
+**Purpose**: Enhance single image with specified enhancement type  
+**Returns**: Dictionary with enhanced image URL, metadata, and local path
+
+#### Batch Enhancement Processing
+```python
+generator.batch_enhance(
+    input_images: List[str],        # List of input image paths or URLs
+    prompt: str,                    # Enhancement description
+    enhancement_type: str = "upscale",  # Enhancement mode
+    output_folder: str = "output",  # Local download folder
+    auto_confirm: bool = False,     # Skip cost confirmation prompt
+    download_images: bool = True    # Auto-download enhanced images
+) -> Dict[str, Any]
+```
+**Purpose**: Enhance multiple images with batch processing  
+**Returns**: Dictionary with results summary and individual enhancement results
+
+### Enhancement-Specific Methods
+
+#### Style Transfer Enhancement
+```python
+generator.enhance_with_style_transfer(
+    input_image: str,               # Input image path or URL
+    style_prompt: str,              # Style description
+    strength: float = 0.8,          # Enhancement strength (0.1-1.0)
+    output_folder: str = "output"   # Local download folder
+) -> Optional[Dict[str, Any]]
+```
+**Purpose**: Apply style transfer to input image with FLUX models  
+**Returns**: Dictionary with enhanced image URL, metadata, and local path
+
+#### Image Upscaling Enhancement
+```python
+generator.enhance_with_upscaling(
+    input_image: str,               # Input image path or URL
+    scale_factor: int = 2,          # Upscaling factor (2x, 4x)
+    quality_mode: str = "high",     # "high", "balanced", "fast"
+    output_folder: str = "output"   # Local download folder
+) -> Optional[Dict[str, Any]]
+```
+**Purpose**: Upscale image while maintaining quality with AI enhancement  
+**Returns**: Dictionary with enhanced image URL, metadata, and local path
+
+### Utility Methods
+
+#### Get Enhancement Modes
+```python
+generator.get_enhancement_modes() -> List[str]
+```
+**Purpose**: Get list of all available enhancement types  
+**Returns**: List of enhancement mode names
+
+#### Compare Enhancement Results
+```python
+generator.compare_enhancements(
+    input_image: str,               # Input image path or URL
+    enhancement_types: List[str],   # List of enhancement types to compare
+    prompt: str,                    # Enhancement description
+    output_folder: str = "output"   # Local download folder
+) -> Dict[str, Any]
+```
+**Purpose**: Compare different enhancement modes on the same image  
+**Returns**: Dictionary with comparison results and individual enhancements
 
 ## Configuration Objects
 
