@@ -18,8 +18,8 @@ import sys
 from pathlib import Path
 from typing import List, Optional
 
-# Add current directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent))
+# Add video_tools directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 def setup_environment():
     """Setup and verify environment for Gemini API."""
@@ -28,7 +28,7 @@ def setup_environment():
     # Load environment variables
     try:
         from dotenv import load_dotenv
-        env_file = Path(__file__).parent / '.env'
+        env_file = Path(__file__).parent.parent / '.env'
         if env_file.exists():
             load_dotenv(env_file)
             print("✅ .env file loaded")
@@ -56,7 +56,7 @@ def example_1_basic_video_description():
     
     print("Command Line Usage:")
     print("cd /path/to/your/videos")
-    print("python video_audio_utils.py describe-videos")
+    print("python ../video_audio_utils.py describe-videos")
     print("# Choose 'N' for basic description")
     
     print("\nPython Function Usage:")
@@ -79,7 +79,7 @@ if result:
 """)
     
     # Live example if video exists
-    video_path = Path('input/sample_video.mp4')
+    video_path = Path(__file__).parent.parent / 'input/sample_video.mp4'
     if video_path.exists():
         print(f"\n🎬 Live Example with {video_path}:")
         try:
@@ -101,7 +101,7 @@ def example_2_detailed_video_analysis():
     print("="*60)
     
     print("Command Line Usage:")
-    print("python video_audio_utils.py analyze-videos")
+    print("python ../video_audio_utils.py analyze-videos")
     print("# Choose option 1-5:")
     print("# 1. Video Description (detailed)")
     print("# 2. Audio Transcription") 
@@ -154,7 +154,7 @@ def example_3_batch_video_processing():
     print("Command Line Usage:")
     print("# Put all videos in one directory, then run:")
     print("cd /path/to/video/directory")
-    print("python video_audio_utils.py describe-videos")
+    print("python ../video_audio_utils.py describe-videos")
     print("# This will process ALL video files in the directory")
     
     print("\nPython Function Usage:")
@@ -197,9 +197,9 @@ def example_4_audio_analysis():
     
     print("Command Line Usage:")
     print("cd /path/to/audio/files")
-    print("python video_audio_utils.py analyze-audio")
-    print("python video_audio_utils.py transcribe-audio")
-    print("python video_audio_utils.py describe-audio")
+    print("python ../video_audio_utils.py analyze-audio")
+    print("python ../video_audio_utils.py transcribe-audio")
+    print("python ../video_audio_utils.py describe-audio")
     
     print("\nPython Function Usage:")
     print("""
@@ -243,9 +243,9 @@ def example_5_image_analysis():
     
     print("Command Line Usage:")
     print("cd /path/to/images")
-    print("python video_audio_utils.py analyze-images")
-    print("python video_audio_utils.py describe-images") 
-    print("python video_audio_utils.py extract-text")
+    print("python ../video_audio_utils.py analyze-images")
+    print("python ../video_audio_utils.py describe-images") 
+    print("python ../video_audio_utils.py extract-text")
     
     print("\nPython Function Usage:")
     print("""
@@ -296,9 +296,9 @@ def example_6_whisper_integration():
     print("="*60)
     
     print("Command Line Usage:")
-    print("python video_audio_utils.py whisper-transcribe")
-    print("python video_audio_utils.py whisper-compare")
-    print("python video_audio_utils.py whisper-batch")
+    print("python ../video_audio_utils.py whisper-transcribe")
+    print("python ../video_audio_utils.py whisper-compare")
+    print("python ../video_audio_utils.py whisper-batch")
     
     print("\nPython Function Usage:")
     print("""
@@ -416,15 +416,15 @@ def example_8_output_formats():
     print("The system automatically saves results in multiple formats:")
     print("""
 # When you run CLI commands, files are automatically saved:
-python video_audio_utils.py describe-videos
+python ../video_audio_utils.py describe-videos
 # Creates: video_name_description.json (structured data)
 # Creates: video_name_description.txt (readable text)
 
-python video_audio_utils.py transcribe-videos  
+python ../video_audio_utils.py transcribe-videos  
 # Creates: video_name_transcription.json (with metadata)
 # Creates: video_name_transcription.txt (clean text)
 
-python video_audio_utils.py whisper-batch
+python ../video_audio_utils.py whisper-batch
 # Options for: JSON, TXT, and SRT subtitle files
 """)
     
@@ -496,12 +496,12 @@ def main():
     print("🎉 EXAMPLES COMPLETE!")
     print("="*70)
     print("\n💡 Quick Start Commands:")
-    print("   python video_audio_utils.py describe-videos")
-    print("   python video_audio_utils.py analyze-videos") 
-    print("   python video_audio_utils.py transcribe-videos")
-    print("   python video_audio_utils.py analyze-audio")
-    print("   python video_audio_utils.py analyze-images")
-    print("\n📖 For more help: python video_audio_utils.py --help")
+    print("   python ../video_audio_utils.py describe-videos")
+    print("   python ../video_audio_utils.py analyze-videos") 
+    print("   python ../video_audio_utils.py transcribe-videos")
+    print("   python ../video_audio_utils.py analyze-audio")
+    print("   python ../video_audio_utils.py analyze-images")
+    print("\n📖 For more help: python ../video_audio_utils.py --help")
 
 if __name__ == "__main__":
     main()

@@ -30,8 +30,9 @@ from datetime import datetime
 
 # Add paths for both systems
 current_dir = Path(__file__).parent
-fal_image_dir = current_dir.parent / "fal_image_to_image"
-sys.path.insert(0, str(current_dir))
+video_tools_dir = current_dir.parent
+fal_image_dir = video_tools_dir.parent / "fal_image_to_image"
+sys.path.insert(0, str(video_tools_dir))
 sys.path.insert(0, str(fal_image_dir))
 
 # Import video_tools components (Gemini understanding)
@@ -40,8 +41,6 @@ from video_utils.video_understanding import GeminiVideoAnalyzer, save_analysis_r
 # Import fal_image_to_image components (FAL modification)
 try:
     # Try to import from the fal_image_to_image directory
-    import sys
-    sys.path.insert(0, str(fal_image_dir))
     from fal_image_to_image_generator import FALImageToImageGenerator
     FAL_AVAILABLE = True
 except ImportError:
@@ -62,7 +61,7 @@ class ImageModifyVerifySystem:
         Args:
             output_dir: Directory for saving results (default: current/output)
         """
-        self.output_dir = output_dir or Path("output")
+        self.output_dir = output_dir or (Path(__file__).parent.parent / "output")
         self.output_dir.mkdir(exist_ok=True)
         
         # Initialize analyzers

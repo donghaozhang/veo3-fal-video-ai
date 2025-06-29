@@ -159,8 +159,8 @@ All FAL AI modules require the same setup:
 - `fal_video_generation/test_fal_ai.py` - Unified FAL AI dual-model testing
 - `fal_avatar_generation/test_setup.py` - FREE setup validation
 - `fal_avatar_generation/test_generation.py` - Avatar generation testing
-- `fal_text_to_image/test_setup.py` - FREE setup validation
-- `fal_text_to_image/test_generation.py` - Image generation testing
+- `fal_text_to_image/test/test_setup.py` - FREE setup validation
+- `fal_text_to_image/test/test_generation.py` - Image generation testing
 - `fal_image_to_image/test_setup.py` - FREE setup validation
 - `fal_image_to_image/test_generation.py` - Image modification testing
 

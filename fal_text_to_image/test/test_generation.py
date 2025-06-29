@@ -30,6 +30,9 @@ import argparse
 import time
 import asyncio
 from typing import Dict, Any, List
+
+# Add parent directory to path to import the generator
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from fal_text_to_image_generator import FALTextToImageGenerator
 
 def print_banner():
@@ -134,7 +137,7 @@ def test_single_model(generator: FALTextToImageGenerator, model: str, prompt: st
             local_path = None
             if download:
                 try:
-                    local_path = generator.download_image(result['image_url'], output_folder="test_output")
+                    local_path = generator.download_image(result['image_url'], output_folder=test_output_dir)
                     print(f"📁 Image downloaded to: {local_path}")
                 except Exception as e:
                     print(f"❌ Error downloading image: {e}")
@@ -203,7 +206,7 @@ def test_all_models(generator: FALTextToImageGenerator, download: bool = False) 
                 prompt=prompt,
                 model=model,
                 negative_prompt=negative_prompt if model in ["seedream", "flux_dev"] else None,
-                output_folder="test_output"
+                output_folder=test_output_dir
             )
             generation_time = time.time() - start_time
             
@@ -248,7 +251,7 @@ def test_batch_models(generator: FALTextToImageGenerator, selected_models: List[
             prompt=prompt,
             models=selected_models,
             negative_prompt=negative_prompt,
-            output_folder="test_output",
+            output_folder=test_output_dir,
             download_images=True,
             auto_confirm=True  # We already confirmed above
         )
@@ -359,8 +362,10 @@ def main():
     try:
         generator = FALTextToImageGenerator()
         
-        # Create test output directory
-        os.makedirs("test_output", exist_ok=True)
+        # Create test output directory in parent folder
+        parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        test_output_dir = os.path.join(parent_dir, "test_output")
+        os.makedirs(test_output_dir, exist_ok=True)
         
         # Run specific tests based on flags
         if args.dragon:

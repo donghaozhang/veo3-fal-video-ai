@@ -34,11 +34,12 @@ def test_environment_variables() -> bool:
     """Test environment variable setup."""
     print("\n🔍 Testing Environment Variables...")
     
-    # Load environment variables
-    load_dotenv()
+    # Load environment variables from parent directory
+    parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    env_file = os.path.join(parent_dir, ".env")
+    load_dotenv(env_file)
     
     # Check .env file
-    env_file = ".env"
     if os.path.exists(env_file):
         print(f"✅ Found {env_file} file")
     else:
@@ -91,6 +92,7 @@ def test_generator_initialization() -> bool:
     print("\n🎨 Testing Generator Initialization...")
     
     try:
+        sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         from fal_text_to_image_generator import FALTextToImageGenerator
         print("✅ FALTextToImageGenerator imported successfully")
         
@@ -120,6 +122,7 @@ def test_model_endpoints() -> bool:
     print("\n🔗 Testing Model Endpoints...")
     
     try:
+        sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         from fal_text_to_image_generator import FALTextToImageGenerator
         
         generator = FALTextToImageGenerator()
@@ -149,15 +152,17 @@ def test_output_directories() -> bool:
     print("\n📁 Testing Output Directories...")
     
     try:
-        directories = ["output", "test_output"]
+        parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        directories = ["output", "input"]
         
-        for output_dir in directories:
-            os.makedirs(output_dir, exist_ok=True)
+        for dir_name in directories:
+            full_path = os.path.join(parent_dir, dir_name)
+            os.makedirs(full_path, exist_ok=True)
             
-            if os.path.exists(output_dir) and os.path.isdir(output_dir):
-                print(f"✅ Directory '{output_dir}' ready")
+            if os.path.exists(full_path) and os.path.isdir(full_path):
+                print(f"✅ Directory '{dir_name}' ready")
             else:
-                print(f"❌ Could not create directory '{output_dir}'")
+                print(f"❌ Could not create directory '{dir_name}'")
                 return False
         
         return True
