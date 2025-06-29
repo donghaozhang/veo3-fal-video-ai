@@ -4,15 +4,19 @@ Test script to verify .env configuration and API key setup.
 """
 
 import os
+import sys
 from pathlib import Path
+
+# Add parent directory to path so we can import modules
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 def test_env_setup():
     """Test environment variable loading."""
     print("🔧 Video Tools Environment Setup Test")
     print("=" * 50)
     
-    # Check for .env file
-    env_file = Path(__file__).parent / '.env'
+    # Check for .env file (in parent directory)
+    env_file = Path(__file__).parent.parent / '.env'
     if env_file.exists():
         print("✅ .env file found")
         

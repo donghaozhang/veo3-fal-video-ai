@@ -10,56 +10,185 @@ This project provides comprehensive Python implementations for generating videos
 - **Quality**: High-resolution, cinematic quality
 - **Setup**: Requires Google Cloud authentication and configuration
 
-### 2. FAL AI Implementations
-- **`fal_text_to_image/`**: Generates images from text prompts.
-- **`fal_image_to_image/`**: Modifies existing images based on text prompts.
-- **`fal_image_to_video/`**: Creates videos from images.
-- **`fal_avatar_generation/`**: Creates avatar videos with text-to-speech and lip-sync.
-- **Setup**: Simple API key authentication for all FAL AI services.
-- **⚠️ Cost Warning**: FAL AI services cost money.
+### 2. FAL AI Dual-Model Generation (`fal_video_generation/`)
+- **Models**: MiniMax Hailuo-02 and Kling Video 2.1
+- **Features**: Production-ready API, dual model support, cost-conscious testing
+- **Quality**: 768p (Hailuo) and high-quality (Kling)
+- **Setup**: Simple API key authentication
+- **⚠️ Cost Warning**: Video generation costs money (~$0.02-0.05 per video)
 
-### 3. ✨ **NEW!** ElevenLabs Text-to-Speech Package (`text_to_speech/`)
-- **Features**: Comprehensive modular TTS package with OpenRouter AI integration.
-- **Architecture**: Recently refactored from monolithic to professional modular structure.
-- **Capabilities**: Voice control, dialogue generation, timing control, 3000+ voices.
-- **Pipeline**: Complete AI content generation (OpenRouter → ElevenLabs TTS).
-- **Models**: Support for top 10 OpenRouter models (Claude, Gemini, DeepSeek, etc.).
-- **Setup**: Simple API key authentication (ElevenLabs + OpenRouter).
+### 3. FAL AI Avatar Generation (`fal_avatar_generation/`)
+- **Model**: AI Avatar Single-Text (MultiTalk)
+- **Features**: Text-to-speech avatar videos with lip-sync
+- **Quality**: Talking avatars with natural expressions
+- **Voices**: 20 different voice options
+- **Setup**: Simple API key authentication
+- **⚠️ Cost Warning**: Avatar generation costs money (~$0.02-0.05 per video)
 
-### 4. Video Tools (`video_tools/`)
-- A collection of utilities for video and audio manipulation, including:
-    - Cutting/trimming videos
-    - Adding, replacing, and extracting audio
-    - Generating and burning subtitles
-    - AI-powered analysis with Google Gemini (video/audio/image understanding, transcription, etc.)
+### 4. ✨ **NEW!** ElevenLabs Text-to-Speech Package (`text_to_speech/`)
+- **Features**: Comprehensive modular TTS package with OpenRouter AI integration
+- **Architecture**: Recently refactored from monolithic to professional modular structure
+- **Capabilities**: Voice control, dialogue generation, timing control, 3000+ voices
+- **Pipeline**: Complete AI content generation (OpenRouter → ElevenLabs TTS)
+- **Models**: Support for top 10 OpenRouter models (Claude, Gemini, DeepSeek, etc.)
+- **Setup**: Simple API key authentication (ElevenLabs + OpenRouter)
 
 ## 📁 Project Structure
 
 ```
 veo3-video-generation/
 ├── README.md                           # This overview
+├── CLAUDE.md                          # Claude Code project instructions
 ├── requirements.txt                    # Global dependencies
-├──
+├── 
 ├── veo3_video_generation/             # Google Veo Implementation
-│   ├── ...
+│   ├── veo_video_generation.py        # Main Veo implementation
+│   ├── demo.py                        # Interactive Veo demo
+│   ├── test_veo.py                    # Comprehensive test suite
+│   ├── fix_permissions.py             # GCP permissions helper
+│   ├── README.md                      # Veo-specific documentation
+│   └── requirements.txt               # Veo dependencies
 │
-├── fal_text_to_image/                # FAL AI Text-to-Image
-│   ├── ...
+├── fal_avatar_generation/             # FAL AI Avatar Implementation
+│   ├── fal_avatar_generator.py        # Avatar video generator class
+│   ├── demo.py                        # Cost-conscious interactive demo
+│   ├── test_setup.py                  # FREE environment tests
+│   ├── test_generation.py             # PAID avatar generation tests
+│   ├── test_official_example.py       # Official FAL examples test
+│   ├── README.md                      # Avatar generation documentation
+│   └── requirements.txt               # Avatar dependencies
 │
-├── fal_image_to_image/               # FAL AI Image-to-Image
-│   ├── ...
+├── fal_text_to_image/                 # FAL AI Text-to-Image Implementation
+│   ├── fal_text_to_image_generator.py # Multi-model image generator class
+│   ├── demo.py                        # Interactive image generation demo
+│   ├── test_setup.py                  # FREE environment validation
+│   ├── test_generation.py             # PAID image generation tests
+│   ├── README.md                      # Text-to-image documentation
+│   ├── requirements.txt               # Text-to-image dependencies
+│   ├── output/                        # Generated images output
+│   └── test_output/                   # Test images output
 │
-├── fal_image_to_video/               # FAL AI Image-to-Video
-│   ├── ...
+├── fal_image_to_image/                # FAL AI Image-to-Image Implementation
+│   ├── fal_image_to_image/            # Main package directory
+│   │   ├── __init__.py                # Package initialization
+│   │   ├── generator.py               # Core image modification logic
+│   │   ├── models/                    # Model implementations
+│   │   │   ├── __init__.py
+│   │   │   ├── base.py                # Base model interface
+│   │   │   ├── photon.py              # Luma Photon Flash model
+│   │   │   ├── seededit.py            # SeedEdit model
+│   │   │   └── kontext.py             # Kontext model
+│   │   ├── config/                    # Configuration management
+│   │   │   ├── __init__.py
+│   │   │   └── constants.py           # Model constants and settings
+│   │   └── utils/                     # Utility functions
+│   │       ├── __init__.py
+│   │       ├── file_utils.py          # File handling utilities
+│   │       └── validators.py          # Input validation
+│   ├── examples/                      # Usage examples and demos
+│   │   ├── __init__.py
+│   │   ├── basic_usage.py             # Basic usage examples
+│   │   ├── demo.py                    # Interactive demo
+│   │   ├── model_comparison.py        # Compare different models
+│   │   ├── output/                    # Example output directory
+│   │   └── test_output/               # Test output directory
+│   ├── tests/                         # Test suite
+│   │   ├── __init__.py
+│   │   ├── test_setup.py              # FREE environment tests
+│   │   ├── test_generation.py         # PAID generation tests
+│   │   ├── test_package_structure.py  # Package structure validation
+│   │   └── test_models/               # Model-specific tests
+│   ├── docs/                          # Documentation
+│   │   ├── API_REFERENCE.md           # API documentation
+│   │   └── README_SEEDEDIT.md         # SeedEdit model documentation
+│   ├── input/                         # Input images for testing
+│   ├── output/                        # Generated images output
+│   ├── setup.py                       # Package installation
+│   ├── requirements.txt               # Image-to-image dependencies
+│   ├── README.md                      # Image-to-image documentation
+│   └── archive/                       # Legacy implementations
 │
-├── fal_avatar_generation/           # FAL AI Avatar Implementation
-│   ├── ...
+├── fal_image_to_video/                # FAL AI Image-to-Video Implementation
+│   ├── fal_image_to_video_generator.py # Image-to-video generator class
+│   ├── demo.py                        # Cost-conscious interactive demo
+│   ├── test_fal_ai.py                 # Cost-conscious test suite
+│   ├── test_api_only.py               # FREE API connection test
+│   ├── README.md                      # Image-to-video documentation
+│   ├── COST_CONSCIOUS_TESTING.md      # Cost protection guide
+│   └── requirements.txt               # Image-to-video dependencies
 │
-├── text_to_speech/                 # ✨ NEW! Modular TTS Package
-│   ├── ...
+├── text_to_speech/                    # ✨ Modular TTS Package
+│   ├── __init__.py                    # Package initialization
+│   ├── README.md                      # TTS package documentation
+│   ├── MIGRATION_GUIDE.md             # Migration from old structure
+│   ├── setup.py                       # Package installation
+│   ├── requirements.txt               # TTS dependencies
+│   ├── models/                        # Data models and enums
+│   │   ├── __init__.py
+│   │   ├── common.py                  # Common data models
+│   │   └── pipeline.py                # Pipeline models
+│   ├── tts/                           # Core TTS functionality
+│   │   ├── __init__.py
+│   │   ├── controller.py              # Main TTS controller
+│   │   ├── voice_manager.py           # Voice management
+│   │   └── audio_processor.py         # Audio processing utilities
+│   ├── pipeline/                      # OpenRouter AI integration
+│   │   ├── __init__.py
+│   │   └── core.py                    # AI content generation pipeline
+│   ├── utils/                         # Utility functions
+│   │   ├── __init__.py
+│   │   ├── validators.py              # Input validation
+│   │   ├── file_manager.py            # File management
+│   │   └── api_helpers.py             # API helper functions
+│   ├── config/                        # Configuration management
+│   │   ├── __init__.py
+│   │   ├── defaults.py                # Default settings
+│   │   ├── voices.py                  # Voice configurations
+│   │   └── models.py                  # Model configurations
+│   ├── examples/                      # Usage examples
+│   │   ├── __init__.py
+│   │   └── basic_usage.py             # Basic TTS examples
+│   ├── cli/                           # Command line tools
+│   │   ├── __init__.py
+│   │   ├── interactive.py             # Interactive pipeline
+│   │   └── quick_start.py             # Quick start demo
+│   ├── dialogue/                      # Dialogue generation (placeholder)
+│   │   └── __init__.py
+│   └── output/                        # Generated audio files
 │
-└── video_tools/                      # Video and audio utilities
-    ├── ...
+├── video_tools/                       # Video Processing Utilities
+│   ├── README.md                      # Video tools documentation
+│   ├── video_audio_utils.py           # Audio processing utilities
+│   ├── image_modify_verify.py         # Image modification and verification
+│   ├── real_video_examples.py         # Real video processing examples
+│   ├── requirements_gemini.txt        # Gemini-specific requirements
+│   ├── video_utils/                   # Core video processing modules
+│   │   ├── __init__.py
+│   │   ├── core.py                    # Core video processing
+│   │   ├── commands.py                # Command utilities
+│   │   ├── interactive.py             # Interactive video tools
+│   │   ├── file_utils.py              # File management utilities
+│   │   ├── video_processor.py         # Video processing engine
+│   │   ├── audio_processor.py         # Audio processing engine
+│   │   ├── subtitle_generator.py      # Subtitle generation
+│   │   ├── video_understanding.py     # Video analysis and understanding
+│   │   ├── video_commands.py          # Video manipulation commands
+│   │   ├── audio_commands.py          # Audio manipulation commands
+│   │   ├── subtitle_commands.py       # Subtitle commands
+│   │   ├── whisper_commands.py        # Whisper integration
+│   │   └── ai_analysis_commands.py    # AI-powered analysis
+│   ├── docs/                          # Documentation
+│   │   ├── API_REFERENCE.md           # API documentation
+│   │   ├── BETTER_IMPLEMENTATION_ANALYSIS.md # Implementation analysis
+│   │   ├── COMMAND_LINE_EXAMPLES.md   # Command line examples
+│   │   └── GEMINI_SETUP.md            # Gemini setup instructions
+│   ├── input/                         # Input files for testing
+│   ├── output/                        # Processed output files
+│   └── tests/                         # Test suite
+│       ├── test_env_setup.py          # Environment setup tests
+│       ├── test_image_workflow.py     # Image workflow tests
+│       ├── test_subtitles.py          # Subtitle generation tests
+│       └── test_video_understanding.py # Video understanding tests
 ```
 
 ## 🚀 Quick Start
