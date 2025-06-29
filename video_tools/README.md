@@ -45,12 +45,39 @@ python video_audio_utils.py analyze-images
 ```
 
 ### AI Multimodal Understanding Setup
-```bash
-# Install Gemini dependencies
-pip install google-generativeai
 
-# Set API key
-export GEMINI_API_KEY=your_api_key_here
+1. **Install Dependencies**
+```bash
+# Install required packages
+pip install google-generativeai python-dotenv
+
+# Or install from requirements file
+pip install -r requirements_gemini.txt
+```
+
+2. **Configure API Keys**
+```bash
+# Copy the example environment file
+cp .env.example .env
+
+# Edit .env file with your API keys
+# Get your Gemini API key from: https://aistudio.google.com/app/apikey
+```
+
+3. **Test Your Setup**
+```bash
+# Verify everything is configured correctly
+python test_env_setup.py
+```
+
+Your `.env` file should look like this:
+```env
+# Google Gemini API Configuration
+GEMINI_API_KEY=your_actual_api_key_here
+
+# OpenAI API Configuration (Optional)
+OPENAI_API_KEY=your_openai_api_key_here
+```
 
 # Test analysis
 python video_audio_utils.py describe-videos

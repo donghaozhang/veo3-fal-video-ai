@@ -5,4 +5,4 @@ google-generativeai>=0.8.0
 # ffmpeg (system dependency - install separately)
 
 # Optional: For enhanced analysis
-# python-dotenv  # For .env file support
+python-dotenv  # For .env file support

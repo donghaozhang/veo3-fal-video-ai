@@ -33,6 +33,19 @@ Date: 2024
 
 import argparse
 import sys
+import os
+from pathlib import Path
+
+# Load environment variables from .env file if available
+try:
+    from dotenv import load_dotenv
+    # Load .env from the script's directory
+    env_path = Path(__file__).parent / '.env'
+    if env_path.exists():
+        load_dotenv(env_path)
+except ImportError:
+    # python-dotenv not installed, environment variables can still be set manually
+    pass
 
 from video_utils.core import check_ffmpeg, check_ffprobe
 from video_utils.commands import (

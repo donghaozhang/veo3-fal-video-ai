@@ -42,6 +42,11 @@ temp_audio_list.txt
 /*.m4a
 /*.flac
 
+# Environment files (contains sensitive API keys)
+.env
+.env.local
+.env.*.local
+
 # Python
 __pycache__/
 *.pyc
