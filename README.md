@@ -10,28 +10,28 @@ This project provides comprehensive Python implementations for generating videos
 - **Quality**: High-resolution, cinematic quality
 - **Setup**: Requires Google Cloud authentication and configuration
 
-### 2. FAL AI Dual-Model Generation (`fal_video_generation/`)
-- **Models**: MiniMax Hailuo-02 and Kling Video 2.1
-- **Features**: Production-ready API, dual model support, cost-conscious testing
-- **Quality**: 768p (Hailuo) and high-quality (Kling)
-- **Setup**: Simple API key authentication
-- **⚠️ Cost Warning**: Video generation costs money (~$0.02-0.05 per video)
+### 2. FAL AI Implementations
+- **`fal_text_to_image/`**: Generates images from text prompts.
+- **`fal_image_to_image/`**: Modifies existing images based on text prompts.
+- **`fal_image_to_video/`**: Creates videos from images.
+- **`fal_avatar_generation/`**: Creates avatar videos with text-to-speech and lip-sync.
+- **Setup**: Simple API key authentication for all FAL AI services.
+- **⚠️ Cost Warning**: FAL AI services cost money.
 
-### 3. FAL AI Avatar Generation (`fal_avatar_generation/`)
-- **Model**: AI Avatar Single-Text (MultiTalk)
-- **Features**: Text-to-speech avatar videos with lip-sync
-- **Quality**: Talking avatars with natural expressions
-- **Voices**: 20 different voice options
-- **Setup**: Simple API key authentication
-- **⚠️ Cost Warning**: Avatar generation costs money (~$0.02-0.05 per video)
+### 3. ✨ **NEW!** ElevenLabs Text-to-Speech Package (`text_to_speech/`)
+- **Features**: Comprehensive modular TTS package with OpenRouter AI integration.
+- **Architecture**: Recently refactored from monolithic to professional modular structure.
+- **Capabilities**: Voice control, dialogue generation, timing control, 3000+ voices.
+- **Pipeline**: Complete AI content generation (OpenRouter → ElevenLabs TTS).
+- **Models**: Support for top 10 OpenRouter models (Claude, Gemini, DeepSeek, etc.).
+- **Setup**: Simple API key authentication (ElevenLabs + OpenRouter).
 
-### 4. ✨ **NEW!** ElevenLabs Text-to-Speech Package (`text_to_speech/`)
-- **Features**: Comprehensive modular TTS package with OpenRouter AI integration
-- **Architecture**: Recently refactored from monolithic to professional modular structure
-- **Capabilities**: Voice control, dialogue generation, timing control, 3000+ voices
-- **Pipeline**: Complete AI content generation (OpenRouter → ElevenLabs TTS)
-- **Models**: Support for top 10 OpenRouter models (Claude, Gemini, DeepSeek, etc.)
-- **Setup**: Simple API key authentication (ElevenLabs + OpenRouter)
+### 4. Video Tools (`video_tools/`)
+- A collection of utilities for video and audio manipulation, including:
+    - Cutting/trimming videos
+    - Adding, replacing, and extracting audio
+    - Generating and burning subtitles
+    - AI-powered analysis with Google Gemini (video/audio/image understanding, transcription, etc.)
 
 ## 📁 Project Structure
 
@@ -39,56 +39,27 @@ This project provides comprehensive Python implementations for generating videos
 veo3-video-generation/
 ├── README.md                           # This overview
 ├── requirements.txt                    # Global dependencies
-├── .env                               # Global environment variables
-├── 
+├──
 ├── veo3_video_generation/             # Google Veo Implementation
-│   ├── veo_video_generation.py        # Main Veo implementation
-│   ├── demo.py                        # Interactive Veo demo
-│   ├── test_veo.py                    # Comprehensive test suite
-│   ├── README.md                      # Veo-specific documentation
-│   ├── requirements.txt               # Veo dependencies
-│   ├── .env                          # Veo configuration
-│   ├── images/                       # Input images for testing
-│   └── result_folder/                # Generated videos output
+│   ├── ...
 │
-├── fal_video_generation/             # FAL AI Video Implementation
-│   ├── fal_video_generator.py        # Dual-model FAL AI class
-│   ├── demo.py                       # Cost-conscious interactive demo
-│   ├── test_fal_ai.py               # Cost-conscious test suite
-│   ├── test_api_only.py             # FREE API connection test
-│   ├── README.md                     # FAL AI documentation
-│   ├── COST_CONSCIOUS_TESTING.md    # Cost protection guide
-│   ├── requirements.txt              # FAL AI dependencies
-│   ├── .env                         # FAL AI configuration
-│   ├── output/                      # Generated videos output
-│   └── test_output/                 # Test videos output
+├── fal_text_to_image/                # FAL AI Text-to-Image
+│   ├── ...
+│
+├── fal_image_to_image/               # FAL AI Image-to-Image
+│   ├── ...
+│
+├── fal_image_to_video/               # FAL AI Image-to-Video
+│   ├── ...
 │
 ├── fal_avatar_generation/           # FAL AI Avatar Implementation
-│   ├── fal_avatar_generator.py      # Avatar video generator class
-│   ├── demo.py                      # Cost-conscious interactive demo
-│   ├── test_setup.py               # FREE environment tests
-│   ├── test_generation.py          # PAID avatar generation tests
-│   ├── README.md                    # Avatar generation documentation
-│   ├── requirements.txt             # Avatar dependencies
-│   ├── .env                        # Avatar configuration
-│   ├── output/                     # Generated avatar videos
-│   └── test_output/                # Test avatar videos
+│   ├── ...
 │
 ├── text_to_speech/                 # ✨ NEW! Modular TTS Package
-│   ├── README.md                    # TTS package documentation
-│   ├── MIGRATION_GUIDE.md          # Migration from old structure
-│   ├── setup.py                    # Package installation
-│   ├── requirements.txt            # TTS dependencies
-│   ├── models/                     # Data models and enums
-│   ├── tts/                        # Core TTS functionality
-│   ├── pipeline/                   # OpenRouter AI integration
-│   ├── utils/                      # Utility functions
-│   ├── config/                     # Configuration management
-│   ├── examples/                   # Usage examples
-│   ├── cli/                        # Command line tools
-│   └── output/                     # Generated audio files
+│   ├── ...
 │
-└── archive/                         # Historical implementations
+└── video_tools/                      # Video and audio utilities
+    ├── ...
 ```
 
 ## 🚀 Quick Start
