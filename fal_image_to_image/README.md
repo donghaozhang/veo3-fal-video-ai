@@ -225,23 +225,102 @@ python examples/model_comparison.py
 - **[SeedEdit Guide](docs/README_SEEDEDIT.md)**: ByteDance SeedEdit v3 details
 - **[Migration Guide](MIGRATION.md)**: Upgrading from v1.x
 
+## 🎨 Prompt Examples
+
+### Artistic Styles
+- "Convert to watercolor painting style"
+- "Transform into oil painting"
+- "Make it look like a pencil sketch"
+- "Apply digital art aesthetic"
+
+### Photo Effects  
+- "Make this look vintage"
+- "Add film grain and warm tones"
+- "Convert to black and white with high contrast"
+- "Apply HDR effect"
+
+### Creative Transformations
+- "Transform into cyberpunk style"
+- "Make it look like a comic book illustration"
+- "Apply steampunk aesthetic"
+- "Convert to anime/manga style"
+
+## 📊 Parameter Guidelines
+
+### SeedEdit v3 - Guidance Scale
+- **0.1-0.3**: Subtle quality improvements
+- **0.4-0.6**: Balanced editing ⭐ **Recommended**
+- **0.7-0.9**: Dramatic transformations
+
+### Photon - Strength
+- **0.0-0.3**: Subtle modifications, preserve original structure
+- **0.4-0.6**: Moderate changes, balanced transformation
+- **0.7-1.0**: Strong transformations, creative reimagining
+
+### Kontext - Inference Steps
+- **1-15**: Fast generation but lower quality
+- **16-35**: Balanced speed and quality (recommended)
+- **36-50**: High quality but slower processing
+
+### Kontext - Guidance Scale
+- **1.0-2.0**: More creative freedom, less prompt adherence
+- **2.1-5.0**: Balanced prompt following (recommended)
+- **5.1-20.0**: Strict prompt adherence, less creativity
+
+## 💰 Cost Information
+
+- **Estimated Cost**: ~$0.01-0.05 per image modification
+- **Setup Tests**: Completely FREE
+- **Cost Controls**: Built-in warnings and confirmations
+- **SeedEdit v3**: Most cost-effective for quality results
+
 ## 🧪 Testing
 
 ```bash
 # Run tests
 python -m pytest tests/
 
-# Test setup (no API calls)
+# Test setup (no API calls) - FREE
 python tests/test_setup.py
 
-# Test with real API (requires FAL_KEY)
-python tests/test_generation.py
+# Test with real API (requires FAL_KEY) - PAID
+python tests/test_generation.py              # Basic tests
+python tests/test_generation.py --quick      # Quick single test
+python tests/test_generation.py --batch      # Batch processing test
+python tests/test_generation.py --compare    # Compare models
 ```
+
+## 🛠️ Troubleshooting
+
+### Common Issues
+
+1. **API Key Not Set**:
+   ```bash
+   echo "FAL_KEY=your_api_key" > .env
+   ```
+
+2. **Missing Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Permission Errors**:
+   ```bash
+   chmod +x *.py
+   ```
+
+### Error Messages
+
+- **"FAL_KEY not found"**: Set your API key in `.env` file
+- **"Unsupported aspect ratio"**: Use one of the supported ratios
+- **"Strength must be between 0.0 and 1.0"**: Check strength parameter
+- **"Inference steps must be between 1 and 50"**: Check inference steps
+- **"File not found"**: Verify local image file path
 
 ## 📈 Performance
 
-- **SeedEdit v3**: ~15-17 seconds per image
-- **Photon Flash**: ~10-15 seconds per image  
+- **SeedEdit v3**: ~15-17 seconds per image ⭐ **Most efficient**
+- **Photon Flash**: ~10-15 seconds per image
 - **Kontext Dev**: ~20-30 seconds per image
 
 ## 🤝 Contributing
