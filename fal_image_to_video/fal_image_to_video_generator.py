@@ -6,6 +6,7 @@ Advanced image-to-video generation using FAL AI's dual models with high-quality 
 import os
 import time
 import traceback
+import uuid
 from typing import Optional, Dict, Any
 import fal_client
 from dotenv import load_dotenv
@@ -48,7 +49,8 @@ class FALImageToVideoGenerator:
         prompt_optimizer: bool = True,
         output_folder: str = "output",
         use_async: bool = False,
-        model: str = "fal-ai/minimax/hailuo-02/standard/image-to-video"
+        model: str = "fal-ai/minimax/hailuo-02/standard/image-to-video",
+        input_filename: Optional[str] = None
     ) -> Optional[Dict[str, Any]]:
         """
         Generate video from image using FAL AI models
@@ -156,7 +158,7 @@ class FALImageToVideoGenerator:
                 file_size = video_info.get('file_size', 0)
                 
                 # Generate custom filename: inputname_taskid.mp4
-                if input_filename:
+                if input_filename and input_filename is not None:
                     base_name = os.path.splitext(input_filename)[0]
                     custom_filename = f"{base_name}_{task_id}.mp4"
                 else:

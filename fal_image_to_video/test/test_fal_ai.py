@@ -10,6 +10,9 @@ import sys
 import traceback
 from dotenv import load_dotenv
 
+# Add parent directory to path for imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 def show_cost_warning():
     """Display cost warning and model selection options"""
     print("💰 COST WARNING:")
@@ -33,13 +36,13 @@ def test_imports():
         ('fal_client', 'fal_client'),
         ('requests', 'requests'),
         ('python-dotenv', 'dotenv'),
-        ('FALImageToVideoGenerator', '../fal_image_to_video_generator')
+        ('FALImageToVideoGenerator', 'fal_image_to_video_generator')
     ]
     
     for name, module in modules:
         try:
             if name == 'FALImageToVideoGenerator':
-                from ..fal_image_to_video_generator import FALImageToVideoGenerator
+                from fal_image_to_video_generator import FALImageToVideoGenerator
             else:
                 __import__(module)
             print(f"✅ {name} imported successfully")
@@ -82,7 +85,7 @@ def test_generator_initialization():
     print("\n🎬 Testing FAL Video Generator initialization...")
     
     try:
-        from ..fal_image_to_video_generator import FALImageToVideoGenerator
+        from fal_image_to_video_generator import FALImageToVideoGenerator
         
         # Try to initialize (this will check for API key)
         generator = FALImageToVideoGenerator()
@@ -154,12 +157,12 @@ def test_video_generation(generator, quick_test=False, model="hailuo"):
     """Test actual video generation with specific model"""
     model_info = {
         "hailuo": {
-            "name": "MiniMax Hailuo-02",
+            "name": "MiniMax Hailuo-02 (Horror Poster)",
             "cost": "~$0.02-0.05",
             "duration": "6"
         },
         "kling": {
-            "name": "Kling Video 2.1", 
+            "name": "Kling Video 2.1 (Horror Poster)", 
             "cost": "~$0.02-0.05",
             "duration": "5"
         }
@@ -187,15 +190,15 @@ def test_video_generation(generator, quick_test=False, model="hailuo"):
         else:
             print("🎯 Running full video generation test...")
         
-        # Use local image and prompt for testing
-        local_image_path = "../input/lily_squid_game.png"
+        # Use horror poster image and prompt for testing
+        local_image_path = "input/horror_poster_strart_notext.jpg"
         
-        # Load default prompt from file
+        # Load horror poster prompt from file
         try:
-            with open("../input/default_prompt.txt", "r") as f:
+            with open("input/horror_poster_starter_nontext.txt", "r") as f:
                 default_prompt = f.read().strip()
         except FileNotFoundError:
-            default_prompt = "Woman in green squid game tracksuit walking and talking, cinematic movie scene"
+            default_prompt = "Horror movie poster comes to life with terrifying creatures emerging, dark atmospheric cinematic scene"
         
         if model == "kling":
             result = generator.generate_video_from_local_image(
@@ -222,7 +225,7 @@ def test_video_generation(generator, quick_test=False, model="hailuo"):
             # Try to download the video
             if video_url and video_url != 'No URL found':
                 print("⬇️  Attempting to download video...")
-                local_path = generator.download_video(video_url, "../output", f"test_{model}_video.mp4")
+                local_path = generator.download_video(video_url, "output", f"test_{model}_video.mp4")
                 if local_path:
                     print(f"✅ Video downloaded to: {local_path}")
                     return True
@@ -262,15 +265,15 @@ def test_both_models(generator):
     # Test Hailuo
     print("\n1️⃣ Testing fal-ai/minimax/hailuo-02/standard/image-to-video...")
     try:
-        # Load default prompt from file
+        # Load horror poster prompt from file
         try:
-            with open("../input/default_prompt.txt", "r") as f:
+            with open("input/horror_poster_starter_nontext.txt", "r") as f:
                 default_prompt = f.read().strip()
         except FileNotFoundError:
-            default_prompt = "Woman in green squid game tracksuit walking and talking, cinematic movie scene"
+            default_prompt = "Horror movie poster comes to life with terrifying creatures emerging, dark atmospheric cinematic scene"
         
         result_hailuo = generator.generate_video_from_local_image(
-            image_path="../input/lily_squid_game.png",
+            image_path="input/horror_poster_strart_notext.jpg",
             prompt=default_prompt,
             duration="6",
             model="fal-ai/minimax/hailuo-02/standard/image-to-video"
@@ -293,7 +296,7 @@ def test_both_models(generator):
     print("\n2️⃣ Testing fal-ai/kling-video/v2.1/standard/image-to-video...")
     try:
         result_kling = generator.generate_video_from_local_image(
-            image_path="../input/lily_squid_game.png",
+            image_path="input/horror_poster_strart_notext.jpg",
             prompt=default_prompt,
             duration="5",
             model="fal-ai/kling-video/v2.1/standard/image-to-video"
@@ -348,12 +351,14 @@ def main():
         print("❌ Invalid arguments. Use one of the options above.")
         return
     
-    # Show cost warning if no arguments (default behavior)
+    # Show cost warning if no arguments (default behavior - quick hailuo test)
     if len(sys.argv) == 1:
         show_cost_warning()
-        print("🆓 Running FREE tests only (setup + API connection)")
-        print("   Add a flag above to test video generation")
+        print("🎯 Running DEFAULT: Quick Hailuo test")
+        print("   Use --api-only for free tests only")
         print()
+        quick_test = True
+        hailuo_test = True
     
     test_results = []
     
