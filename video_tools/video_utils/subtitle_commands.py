@@ -20,11 +20,22 @@ def cmd_generate_subtitles():
     print("=" * 50)
     print("💡 Creates .srt/.vtt files that video players can load")
     
-    current_dir = Path('.')
-    video_files = find_video_files(current_dir)
+    input_dir = Path('input')
+    output_dir = Path('output')
+    
+    # Create output directory
+    output_dir.mkdir(exist_ok=True)
+    
+    # Check if input directory exists
+    if not input_dir.exists():
+        print(f"❌ Input directory '{input_dir}' does not exist")
+        print("💡 Please create the 'input' directory and place your video files there")
+        return
+    
+    video_files = find_video_files(input_dir)
     
     if not video_files:
-        print("📁 No video files found in current directory")
+        print(f"📁 No video files found in '{input_dir}' directory")
         return
     
     print(f"📹 Found {len(video_files)} video file(s):")
@@ -74,8 +85,9 @@ def cmd_generate_subtitles():
         for video_path in video_files:
             print(f"\n📺 Processing: {video_path.name}")
             
-            # Generate subtitle file with same name as video
-            subtitle_path = generate_subtitle_for_video(video_path, subtitle_text, format_type, words_per_second)
+            # Generate subtitle file with same name as video in output directory
+            output_subtitle_path = output_dir / f"{video_path.stem}.{format_type}"
+            subtitle_path = generate_subtitle_for_video(video_path, subtitle_text, format_type, words_per_second, output_subtitle_path)
             
             if subtitle_path:
                 successful += 1
@@ -103,11 +115,22 @@ def cmd_burn_subtitles():
     print("=" * 50)
     print("⚠️  Creates new video files with subtitles permanently embedded")
     
-    current_dir = Path('.')
-    video_files = find_video_files(current_dir)
+    input_dir = Path('input')
+    output_dir = Path('output')
+    
+    # Create output directory
+    output_dir.mkdir(exist_ok=True)
+    
+    # Check if input directory exists
+    if not input_dir.exists():
+        print(f"❌ Input directory '{input_dir}' does not exist")
+        print("💡 Please create the 'input' directory and place your video files there")
+        return
+    
+    video_files = find_video_files(input_dir)
     
     if not video_files:
-        print("📁 No video files found in current directory")
+        print(f"📁 No video files found in '{input_dir}' directory")
         return
     
     print(f"📹 Found {len(video_files)} video file(s):")
@@ -154,10 +177,10 @@ def cmd_burn_subtitles():
         for video_path in video_files:
             print(f"\n📺 Processing: {video_path.name}")
             
-            # Create output filename
+            # Create output filename in output directory
             stem = video_path.stem
             suffix = video_path.suffix
-            output_path = video_path.parent / f"{stem}_with_subtitles{suffix}"
+            output_path = output_dir / f"{stem}_with_subtitles{suffix}"
             
             # Skip if output already exists
             if output_path.exists():

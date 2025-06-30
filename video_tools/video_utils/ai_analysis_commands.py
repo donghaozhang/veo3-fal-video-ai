@@ -37,11 +37,22 @@ def cmd_analyze_videos():
     
     print("✅ Gemini API ready")
     
-    current_dir = Path('.')
-    video_files = find_video_files(current_dir)
+    input_dir = Path('input')
+    output_dir = Path('output')
+    
+    # Create output directory
+    output_dir.mkdir(exist_ok=True)
+    
+    # Check if input directory exists
+    if not input_dir.exists():
+        print("📁 Input directory 'input' not found")
+        print("💡 Create an 'input' directory and place your video files there")
+        return
+    
+    video_files = find_video_files(input_dir)
     
     if not video_files:
-        print("📁 No video files found in current directory")
+        print("📁 No video files found in input directory")
         return
     
     print(f"📹 Found {len(video_files)} video file(s):")
@@ -116,7 +127,7 @@ def cmd_analyze_videos():
                 
                 if result:
                     # Save result
-                    output_file = video_path.parent / f"{video_path.stem}_{analysis_type}_analysis.json"
+                    output_file = output_dir / f"{video_path.stem}_{analysis_type}_analysis.json"
                     if save_analysis_result(result, output_file):
                         successful += 1
                         
@@ -160,11 +171,22 @@ def cmd_transcribe_videos():
         print(f"❌ Gemini not available: {message}")
         return
     
-    current_dir = Path('.')
-    video_files = find_video_files(current_dir)
+    input_dir = Path('input')
+    output_dir = Path('output')
+    
+    # Create output directory
+    output_dir.mkdir(exist_ok=True)
+    
+    # Check if input directory exists
+    if not input_dir.exists():
+        print("📁 Input directory 'input' not found")
+        print("💡 Create an 'input' directory and place your video files there")
+        return
+    
+    video_files = find_video_files(input_dir)
     
     if not video_files:
-        print("📁 No video files found in current directory")
+        print("📁 No video files found in input directory")
         return
     
     print(f"📹 Found {len(video_files)} video file(s)")
@@ -183,8 +205,8 @@ def cmd_transcribe_videos():
             
             if result:
                 # Save as both JSON and text
-                json_file = video_path.parent / f"{video_path.stem}_transcription.json"
-                txt_file = video_path.parent / f"{video_path.stem}_transcription.txt"
+                json_file = output_dir / f"{video_path.stem}_transcription.json"
+                txt_file = output_dir / f"{video_path.stem}_transcription.txt"
                 
                 save_analysis_result(result, json_file)
                 
@@ -215,11 +237,22 @@ def cmd_describe_videos():
         print(f"❌ Gemini not available: {message}")
         return
     
-    current_dir = Path('.')
-    video_files = find_video_files(current_dir)
+    input_dir = Path('input')
+    output_dir = Path('output')
+    
+    # Create output directory
+    output_dir.mkdir(exist_ok=True)
+    
+    # Check if input directory exists
+    if not input_dir.exists():
+        print("📁 Input directory 'input' not found")
+        print("💡 Create an 'input' directory and place your video files there")
+        return
+    
+    video_files = find_video_files(input_dir)
     
     if not video_files:
-        print("📁 No video files found in current directory")
+        print("📁 No video files found in input directory")
         return
     
     print(f"📹 Found {len(video_files)} video file(s)")
@@ -238,8 +271,8 @@ def cmd_describe_videos():
             
             if result:
                 # Save result
-                json_file = video_path.parent / f"{video_path.stem}_description.json"
-                txt_file = video_path.parent / f"{video_path.stem}_description.txt"
+                json_file = output_dir / f"{video_path.stem}_description.json"
+                txt_file = output_dir / f"{video_path.stem}_description.txt"
                 
                 save_analysis_result(result, json_file)
                 
@@ -271,11 +304,22 @@ def cmd_analyze_audio():
         print(f"❌ Gemini not available: {message}")
         return
     
-    current_dir = Path('.')
-    audio_files = find_audio_files(current_dir)
+    input_dir = Path('input')
+    output_dir = Path('output')
+    
+    # Create output directory
+    output_dir.mkdir(exist_ok=True)
+    
+    # Check if input directory exists
+    if not input_dir.exists():
+        print("📁 Input directory 'input' not found")
+        print("💡 Create an 'input' directory and place your audio files there")
+        return
+    
+    audio_files = find_audio_files(input_dir)
     
     if not audio_files:
-        print("📁 No audio files found in current directory")
+        print("📁 No audio files found in input directory")
         return
     
     print(f"🎵 Found {len(audio_files)} audio file(s)")
@@ -338,7 +382,7 @@ def cmd_analyze_audio():
                 
                 if result:
                     # Save result
-                    output_file = audio_path.parent / f"{audio_path.stem}_{analysis_type}_analysis.json"
+                    output_file = output_dir / f"{audio_path.stem}_{analysis_type}_analysis.json"
                     if save_analysis_result(result, output_file):
                         successful += 1
                         
@@ -387,11 +431,22 @@ def cmd_transcribe_audio():
         print(f"❌ Gemini not available: {message}")
         return
     
-    current_dir = Path('.')
-    audio_files = find_audio_files(current_dir)
+    input_dir = Path('input')
+    output_dir = Path('output')
+    
+    # Create output directory
+    output_dir.mkdir(exist_ok=True)
+    
+    # Check if input directory exists
+    if not input_dir.exists():
+        print("📁 Input directory 'input' not found")
+        print("💡 Create an 'input' directory and place your audio files there")
+        return
+    
+    audio_files = find_audio_files(input_dir)
     
     if not audio_files:
-        print("📁 No audio files found in current directory")
+        print("📁 No audio files found in input directory")
         return
     
     print(f"🎵 Found {len(audio_files)} audio file(s)")
@@ -411,8 +466,8 @@ def cmd_transcribe_audio():
             
             if result:
                 # Save as both JSON and text
-                json_file = audio_path.parent / f"{audio_path.stem}_transcription.json"
-                txt_file = audio_path.parent / f"{audio_path.stem}_transcription.txt"
+                json_file = output_dir / f"{audio_path.stem}_transcription.json"
+                txt_file = output_dir / f"{audio_path.stem}_transcription.txt"
                 
                 save_analysis_result(result, json_file)
                 
@@ -443,11 +498,22 @@ def cmd_describe_audio():
         print(f"❌ Gemini not available: {message}")
         return
     
-    current_dir = Path('.')
-    audio_files = find_audio_files(current_dir)
+    input_dir = Path('input')
+    output_dir = Path('output')
+    
+    # Create output directory
+    output_dir.mkdir(exist_ok=True)
+    
+    # Check if input directory exists
+    if not input_dir.exists():
+        print("📁 Input directory 'input' not found")
+        print("💡 Create an 'input' directory and place your audio files there")
+        return
+    
+    audio_files = find_audio_files(input_dir)
     
     if not audio_files:
-        print("📁 No audio files found in current directory")
+        print("📁 No audio files found in input directory")
         return
     
     print(f"🎵 Found {len(audio_files)} audio file(s)")
@@ -466,8 +532,8 @@ def cmd_describe_audio():
             
             if result:
                 # Save result
-                json_file = audio_path.parent / f"{audio_path.stem}_description.json"
-                txt_file = audio_path.parent / f"{audio_path.stem}_description.txt"
+                json_file = output_dir / f"{audio_path.stem}_description.json"
+                txt_file = output_dir / f"{audio_path.stem}_description.txt"
                 
                 save_analysis_result(result, json_file)
                 
@@ -499,11 +565,22 @@ def cmd_analyze_images():
         print(f"❌ Gemini not available: {message}")
         return
     
-    current_dir = Path('.')
-    image_files = find_image_files(current_dir)
+    input_dir = Path('input')
+    output_dir = Path('output')
+    
+    # Create output directory
+    output_dir.mkdir(exist_ok=True)
+    
+    # Check if input directory exists
+    if not input_dir.exists():
+        print("📁 Input directory 'input' not found")
+        print("💡 Create an 'input' directory and place your image files there")
+        return
+    
+    image_files = find_image_files(input_dir)
     
     if not image_files:
-        print("📁 No image files found in current directory")
+        print("📁 No image files found in input directory")
         return
     
     print(f"🖼️ Found {len(image_files)} image file(s)")
@@ -563,7 +640,7 @@ def cmd_analyze_images():
                 
                 if result:
                     # Save result
-                    output_file = image_path.parent / f"{image_path.stem}_{analysis_type}_analysis.json"
+                    output_file = output_dir / f"{image_path.stem}_{analysis_type}_analysis.json"
                     if save_analysis_result(result, output_file):
                         successful += 1
                         
@@ -615,11 +692,22 @@ def cmd_describe_images():
         print(f"❌ Gemini not available: {message}")
         return
     
-    current_dir = Path('.')
-    image_files = find_image_files(current_dir)
+    input_dir = Path('input')
+    output_dir = Path('output')
+    
+    # Create output directory
+    output_dir.mkdir(exist_ok=True)
+    
+    # Check if input directory exists
+    if not input_dir.exists():
+        print("📁 Input directory 'input' not found")
+        print("💡 Create an 'input' directory and place your image files there")
+        return
+    
+    image_files = find_image_files(input_dir)
     
     if not image_files:
-        print("📁 No image files found in current directory")
+        print("📁 No image files found in input directory")
         return
     
     print(f"🖼️ Found {len(image_files)} image file(s)")
@@ -638,8 +726,8 @@ def cmd_describe_images():
             
             if result:
                 # Save result
-                json_file = image_path.parent / f"{image_path.stem}_description.json"
-                txt_file = image_path.parent / f"{image_path.stem}_description.txt"
+                json_file = output_dir / f"{image_path.stem}_description.json"
+                txt_file = output_dir / f"{image_path.stem}_description.txt"
                 
                 save_analysis_result(result, json_file)
                 
@@ -671,11 +759,22 @@ def cmd_extract_text():
         print(f"❌ Gemini not available: {message}")
         return
     
-    current_dir = Path('.')
-    image_files = find_image_files(current_dir)
+    input_dir = Path('input')
+    output_dir = Path('output')
+    
+    # Create output directory
+    output_dir.mkdir(exist_ok=True)
+    
+    # Check if input directory exists
+    if not input_dir.exists():
+        print("📁 Input directory 'input' not found")
+        print("💡 Create an 'input' directory and place your image files there")
+        return
+    
+    image_files = find_image_files(input_dir)
     
     if not image_files:
-        print("📁 No image files found in current directory")
+        print("📁 No image files found in input directory")
         return
     
     print(f"🖼️ Found {len(image_files)} image file(s)")
@@ -692,8 +791,8 @@ def cmd_extract_text():
             
             if result:
                 # Save result
-                json_file = image_path.parent / f"{image_path.stem}_text.json"
-                txt_file = image_path.parent / f"{image_path.stem}_text.txt"
+                json_file = output_dir / f"{image_path.stem}_text.json"
+                txt_file = output_dir / f"{image_path.stem}_text.txt"
                 
                 save_analysis_result(result, json_file)
                 

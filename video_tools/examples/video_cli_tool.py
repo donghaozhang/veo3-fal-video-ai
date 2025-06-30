@@ -47,6 +47,9 @@ except ImportError:
     # python-dotenv not installed, environment variables can still be set manually
     pass
 
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 from video_utils.core import check_ffmpeg, check_ffprobe
 from video_utils.commands import (
     cmd_cut_videos,

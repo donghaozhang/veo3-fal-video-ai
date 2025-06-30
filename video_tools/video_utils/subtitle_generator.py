@@ -87,17 +87,23 @@ def generate_vtt_subtitle_file(text: str, output_path: Path, duration: Optional[
 
 
 def generate_subtitle_for_video(video_path: Path, text: str, format_type: str = "srt",
-                              words_per_second: float = 2.0) -> Optional[Path]:
+                              words_per_second: float = 2.0, output_path: Optional[Path] = None) -> Optional[Path]:
     """Generate subtitle file for a specific video."""
     try:
         info = get_video_info(video_path)
         video_duration = info.get('duration', 10.0)
         
+        if output_path is None:
+            if format_type.lower() == "vtt":
+                subtitle_path = video_path.with_suffix('.vtt')
+            else:  # Default to SRT
+                subtitle_path = video_path.with_suffix('.srt')
+        else:
+            subtitle_path = output_path
+        
         if format_type.lower() == "vtt":
-            subtitle_path = video_path.with_suffix('.vtt')
             success = generate_vtt_subtitle_file(text, subtitle_path, video_duration, 0.0, words_per_second)
         else:  # Default to SRT
-            subtitle_path = video_path.with_suffix('.srt')
             success = generate_srt_subtitle_file(text, subtitle_path, video_duration, 0.0, words_per_second)
         
         if success:
@@ -148,7 +154,9 @@ def add_text_subtitles_to_video(video_path: Path, text: str, output_path: Path,
         info = get_video_info(video_path)
         video_duration = info.get('duration', 10.0)
         
-        subtitle_path = video_path.parent / f"{video_path.stem}_subtitles.srt"
+        # Create temporary subtitle file in output directory
+        output_dir = output_path.parent
+        subtitle_path = output_dir / f"{video_path.stem}_subtitles.srt"
         
         if not generate_srt_subtitle_file(text, subtitle_path, video_duration, 0.0, words_per_second):
             return False

@@ -23,17 +23,24 @@ def cmd_add_audio():
     print("🎵 ADD AUDIO TO SILENT VIDEOS")
     print("=" * 50)
     
-    current_dir = Path('.')
-    video_files = find_video_files(current_dir)
-    audio_files = find_audio_files(current_dir)
+    input_dir = Path('input')
+    output_dir = Path('output')
+    output_dir.mkdir(exist_ok=True)
+    
+    if not input_dir.exists():
+        print("📁 Input folder not found. Please create an 'input' folder with video and audio files.")
+        return
+    
+    video_files = find_video_files(input_dir)
+    audio_files = find_audio_files(input_dir)
     
     if not video_files:
-        print("📁 No video files found in current directory")
+        print("📁 No video files found in input folder")
         return
     
     if not audio_files:
-        print("📁 No audio files found in current directory")
-        print("💡 Add some audio files (.mp3, .wav, .aac, etc.) to the current directory")
+        print("📁 No audio files found in input folder")
+        print("💡 Add some audio files (.mp3, .wav, .aac, etc.) to the input folder")
         return
     
     # Find silent videos
@@ -68,7 +75,7 @@ def cmd_add_audio():
         # Create output filename
         stem = video_path.stem
         suffix = video_path.suffix
-        output_path = video_path.parent / f"{stem}_with_audio{suffix}"
+        output_path = output_dir / f"{stem}_with_audio{suffix}"
         
         # Skip if output already exists
         if output_path.exists():
@@ -89,16 +96,23 @@ def cmd_replace_audio():
     print("🔄 REPLACE AUDIO IN VIDEOS")
     print("=" * 50)
     
-    current_dir = Path('.')
-    video_files = find_video_files(current_dir)
-    audio_files = find_audio_files(current_dir)
+    input_dir = Path('input')
+    output_dir = Path('output')
+    output_dir.mkdir(exist_ok=True)
+    
+    if not input_dir.exists():
+        print("📁 Input folder not found. Please create an 'input' folder with video and audio files.")
+        return
+    
+    video_files = find_video_files(input_dir)
+    audio_files = find_audio_files(input_dir)
     
     if not video_files:
-        print("📁 No video files found in current directory")
+        print("📁 No video files found in input folder")
         return
     
     if not audio_files:
-        print("📁 No audio files found in current directory")
+        print("📁 No audio files found in input folder")
         return
     
     print(f"📹 Found {len(video_files)} video file(s)")
@@ -119,7 +133,7 @@ def cmd_replace_audio():
         # Create output filename
         stem = video_path.stem
         suffix = video_path.suffix
-        output_path = video_path.parent / f"{stem}_new_audio{suffix}"
+        output_path = output_dir / f"{stem}_new_audio{suffix}"
         
         # Skip if output already exists
         if output_path.exists():
@@ -140,11 +154,18 @@ def cmd_extract_audio():
     print("🎵 EXTRACT AUDIO FROM VIDEOS")
     print("=" * 50)
     
-    current_dir = Path('.')
-    video_files = find_video_files(current_dir)
+    input_dir = Path('input')
+    output_dir = Path('output')
+    output_dir.mkdir(exist_ok=True)
+    
+    if not input_dir.exists():
+        print("📁 Input folder not found. Please create an 'input' folder with video files.")
+        return
+    
+    video_files = find_video_files(input_dir)
     
     if not video_files:
-        print("📁 No video files found in current directory")
+        print("📁 No video files found in input folder")
         return
     
     # Find videos with audio
@@ -170,7 +191,7 @@ def cmd_extract_audio():
         
         # Create output filename
         stem = video_path.stem
-        output_path = video_path.parent / f"{stem}_audio.mp3"
+        output_path = output_dir / f"{stem}_audio.mp3"
         
         # Skip if output already exists
         if output_path.exists():
@@ -191,17 +212,24 @@ def cmd_mix_audio():
     print("🎵 MIX MULTIPLE AUDIO FILES AND ADD TO VIDEOS")
     print("=" * 50)
     
-    current_dir = Path('.')
-    video_files = find_video_files(current_dir)
-    audio_files = find_audio_files(current_dir)
+    input_dir = Path('input')
+    output_dir = Path('output')
+    output_dir.mkdir(exist_ok=True)
+    
+    if not input_dir.exists():
+        print("📁 Input folder not found. Please create an 'input' folder with video and audio files.")
+        return
+    
+    video_files = find_video_files(input_dir)
+    audio_files = find_audio_files(input_dir)
     
     if not video_files:
-        print("📁 No video files found in current directory")
+        print("📁 No video files found in input folder")
         return
     
     if len(audio_files) < 2:
         print("📁 Need at least 2 audio files to mix")
-        print("💡 Add more audio files (.mp3, .wav, .aac, etc.) to the current directory")
+        print("💡 Add more audio files (.mp3, .wav, .aac, etc.) to the input folder")
         return
     
     print(f"📹 Found {len(video_files)} video file(s)")
@@ -213,7 +241,7 @@ def cmd_mix_audio():
         return
     
     # Create mixed audio file
-    mixed_audio_path = current_dir / "mixed_audio.mp3"
+    mixed_audio_path = output_dir / "mixed_audio.mp3"
     print(f"\n🎵 Creating mixed audio file: {mixed_audio_path.name}")
     
     if not mix_multiple_audio_files(selected_audio_files, mixed_audio_path):
@@ -230,7 +258,7 @@ def cmd_mix_audio():
         # Create output filename
         stem = video_path.stem
         suffix = video_path.suffix
-        output_path = video_path.parent / f"{stem}_mixed_audio{suffix}"
+        output_path = output_dir / f"{stem}_mixed_audio{suffix}"
         
         # Skip if output already exists
         if output_path.exists():
@@ -260,17 +288,24 @@ def cmd_concat_audio():
     print("🎵 CONCATENATE MULTIPLE AUDIO FILES AND ADD TO VIDEOS")
     print("=" * 50)
     
-    current_dir = Path('.')
-    video_files = find_video_files(current_dir)
-    audio_files = find_audio_files(current_dir)
+    input_dir = Path('input')
+    output_dir = Path('output')
+    output_dir.mkdir(exist_ok=True)
+    
+    if not input_dir.exists():
+        print("📁 Input folder not found. Please create an 'input' folder with video and audio files.")
+        return
+    
+    video_files = find_video_files(input_dir)
+    audio_files = find_audio_files(input_dir)
     
     if not video_files:
-        print("📁 No video files found in current directory")
+        print("📁 No video files found in input folder")
         return
     
     if len(audio_files) < 2:
         print("📁 Need at least 2 audio files to concatenate")
-        print("💡 Add more audio files (.mp3, .wav, .aac, etc.) to the current directory")
+        print("💡 Add more audio files (.mp3, .wav, .aac, etc.) to the input folder")
         return
     
     print(f"📹 Found {len(video_files)} video file(s)")
@@ -282,7 +317,7 @@ def cmd_concat_audio():
         return
     
     # Create concatenated audio file
-    concat_audio_path = current_dir / "concatenated_audio.mp3"
+    concat_audio_path = output_dir / "concatenated_audio.mp3"
     print(f"\n🎵 Creating concatenated audio file: {concat_audio_path.name}")
     
     if not concatenate_multiple_audio_files(selected_audio_files, concat_audio_path):
@@ -299,7 +334,7 @@ def cmd_concat_audio():
         # Create output filename
         stem = video_path.stem
         suffix = video_path.suffix
-        output_path = video_path.parent / f"{stem}_concat_audio{suffix}"
+        output_path = output_dir / f"{stem}_concat_audio{suffix}"
         
         # Skip if output already exists
         if output_path.exists():

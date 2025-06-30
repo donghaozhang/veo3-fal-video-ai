@@ -23,6 +23,17 @@ def cmd_whisper_transcribe():
     print("🎤 WHISPER TRANSCRIPTION - OpenAI Speech-to-Text")
     print("=" * 50)
     
+    # Set up directories
+    input_dir = Path('input')
+    output_dir = Path('output')
+    output_dir.mkdir(exist_ok=True)
+    
+    # Check if input directory exists
+    if not input_dir.exists():
+        print(f"❌ Input directory '{input_dir}' does not exist!")
+        print("💡 Please create the 'input' directory and place your audio/video files there.")
+        return
+    
     # Check Whisper requirements
     whisper_status = check_whisper_requirements()
     
@@ -47,16 +58,15 @@ def cmd_whisper_transcribe():
         return
     
     # Find files to transcribe
-    current_dir = Path('.')
-    video_files = find_video_files(current_dir)
-    audio_files = find_audio_files(current_dir)
+    video_files = find_video_files(input_dir)
+    audio_files = find_audio_files(input_dir)
     all_files = video_files + audio_files
     
     if not all_files:
-        print("📁 No audio or video files found in current directory")
+        print(f"📁 No audio or video files found in '{input_dir}' directory")
         return
     
-    print(f"\n📁 Found {len(all_files)} file(s):")
+    print(f"\n📁 Found {len(all_files)} file(s) in '{input_dir}':")
     print(f"   📹 Videos: {len(video_files)}")
     print(f"   🎵 Audio: {len(audio_files)}")
     
@@ -122,7 +132,7 @@ def cmd_whisper_transcribe():
         
         if successful > 0:
             print(f"\n🎉 Transcription complete!")
-            print("📄 Files saved with '_whisper_transcription' suffix")
+            print(f"📄 Files saved to '{output_dir}' with '_whisper_transcription' suffix")
             print("💡 Both JSON and TXT formats saved for each file")
             
     except KeyboardInterrupt:
@@ -135,6 +145,17 @@ def cmd_whisper_compare():
     """Compare Whisper transcription with Gemini transcription."""
     print("🆚 WHISPER VS GEMINI COMPARISON")
     print("=" * 50)
+    
+    # Set up directories
+    input_dir = Path('input')
+    output_dir = Path('output')
+    output_dir.mkdir(exist_ok=True)
+    
+    # Check if input directory exists
+    if not input_dir.exists():
+        print(f"❌ Input directory '{input_dir}' does not exist!")
+        print("💡 Please create the 'input' directory and place your audio/video files there.")
+        return
     
     # Check requirements for both
     whisper_status = check_whisper_requirements()
@@ -155,16 +176,15 @@ def cmd_whisper_compare():
         return
     
     # Find audio/video files
-    current_dir = Path('.')
-    video_files = find_video_files(current_dir)
-    audio_files = find_audio_files(current_dir)
+    video_files = find_video_files(input_dir)
+    audio_files = find_audio_files(input_dir)
     all_files = video_files + audio_files
     
     if not all_files:
-        print("📁 No audio or video files found in current directory")
+        print(f"📁 No audio or video files found in '{input_dir}' directory")
         return
     
-    print(f"\n📁 Found {len(all_files)} file(s) to compare")
+    print(f"\n📁 Found {len(all_files)} file(s) to compare from '{input_dir}'")
     
     # Choose Whisper method
     use_local = False
@@ -231,11 +251,11 @@ def cmd_whisper_compare():
             }
             
             # Save comparison
-            comparison_file = file_path.parent / f"{file_path.stem}_comparison.json"
+            comparison_file = output_dir / f"{file_path.stem}_comparison.json"
             save_analysis_result(comparison, comparison_file)
             
             # Save readable comparison
-            txt_file = file_path.parent / f"{file_path.stem}_comparison.txt"
+            txt_file = output_dir / f"{file_path.stem}_comparison.txt"
             with open(txt_file, 'w', encoding='utf-8') as f:
                 f.write(f"TRANSCRIPTION COMPARISON: {file_path.name}\n")
                 f.write("=" * 50 + "\n\n")
@@ -260,14 +280,25 @@ def cmd_whisper_compare():
     
     if successful_comparisons > 0:
         print("🎉 Comparison complete!")
-        print("📄 Check '_comparison.txt' files for readable results")
-        print("📊 Check '_comparison.json' files for detailed data")
+        print(f"📄 Check '{output_dir}' for '_comparison.txt' files with readable results")
+        print(f"📊 Check '{output_dir}' for '_comparison.json' files with detailed data")
 
 
 def cmd_whisper_batch():
     """Batch transcribe files with advanced options."""
     print("📦 WHISPER BATCH TRANSCRIPTION")
     print("=" * 50)
+    
+    # Set up directories
+    input_dir = Path('input')
+    output_dir = Path('output')
+    output_dir.mkdir(exist_ok=True)
+    
+    # Check if input directory exists
+    if not input_dir.exists():
+        print(f"❌ Input directory '{input_dir}' does not exist!")
+        print("💡 Please create the 'input' directory and place your audio/video files there.")
+        return
     
     # Check Whisper requirements
     whisper_status = check_whisper_requirements()
@@ -278,16 +309,15 @@ def cmd_whisper_batch():
         return
     
     # Find files
-    current_dir = Path('.')
-    video_files = find_video_files(current_dir)
-    audio_files = find_audio_files(current_dir)
+    video_files = find_video_files(input_dir)
+    audio_files = find_audio_files(input_dir)
     all_files = video_files + audio_files
     
     if not all_files:
-        print("📁 No audio or video files found in current directory")
+        print(f"📁 No audio or video files found in '{input_dir}' directory")
         return
     
-    print(f"📁 Found {len(all_files)} file(s) to process")
+    print(f"📁 Found {len(all_files)} file(s) to process from '{input_dir}'")
     
     # Advanced configuration
     print("\n🎛️ Advanced Configuration:")
@@ -343,7 +373,7 @@ def cmd_whisper_batch():
                 
                 if result:
                     # Save in requested formats
-                    base_name = file_path.parent / file_path.stem
+                    base_name = output_dir / file_path.stem
                     
                     if save_json:
                         json_file = Path(f"{base_name}_whisper.json")
@@ -378,6 +408,7 @@ def cmd_whisper_batch():
         
         if successful > 0:
             print("🎉 Batch transcription complete!")
+            print(f"📄 Results saved to '{output_dir}' directory")
             
     except KeyboardInterrupt:
         print("\n👋 Cancelled by user")

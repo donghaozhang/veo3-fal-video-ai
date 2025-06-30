@@ -16,11 +16,18 @@ def cmd_cut_videos(duration: int):
     print(f"✂️  VIDEO CUTTER - First {duration} Seconds Extractor")
     print("=" * 50)
     
-    current_dir = Path('.')
-    video_files = find_video_files(current_dir)
+    input_dir = Path('input')
+    output_dir = Path('output')
+    output_dir.mkdir(exist_ok=True)
+    
+    if not input_dir.exists():
+        print("📁 Input folder not found. Please create an 'input' folder with video files.")
+        return
+    
+    video_files = find_video_files(input_dir)
     
     if not video_files:
-        print("📁 No video files found in current directory")
+        print("📁 No video files found in input folder")
         return
     
     print(f"📹 Found {len(video_files)} video file(s)")
@@ -43,7 +50,7 @@ def cmd_cut_videos(duration: int):
         # Create output filename
         stem = video_path.stem
         suffix = video_path.suffix
-        output_path = video_path.parent / f"{stem}_first_{duration}s{suffix}"
+        output_path = output_dir / f"{stem}_first_{duration}s{suffix}"
         
         # Skip if output already exists
         if output_path.exists():
