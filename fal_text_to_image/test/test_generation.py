@@ -101,6 +101,11 @@ def test_single_model(generator: FALTextToImageGenerator, model: str, prompt: st
     """Test a single model with image generation (PAID)."""
     print(f"\n🎨 Testing {model} model...")
     
+    # Create test output directory
+    parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    test_output_dir = os.path.join(parent_dir, "output")
+    os.makedirs(test_output_dir, exist_ok=True)
+    
     # Test prompts for different models
     if not prompt:
         test_prompts = {
@@ -187,6 +192,11 @@ def test_all_models(generator: FALTextToImageGenerator, download: bool = False) 
     """Test all models with comparison (PAID - EXPENSIVE)."""
     print("\n🔄 Testing All Models (Comparison Mode)")
     
+    # Create test output directory
+    parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    test_output_dir = os.path.join(parent_dir, "output")
+    os.makedirs(test_output_dir, exist_ok=True)
+    
     models = ["imagen4", "seedream", "flux_schnell", "flux_dev"]
     results = {}
     
@@ -238,6 +248,11 @@ def test_all_models(generator: FALTextToImageGenerator, download: bool = False) 
 def test_batch_models(generator: FALTextToImageGenerator, selected_models: List[str]) -> Dict[str, Any]:
     """Test selected models using batch generation (PAID)."""
     print(f"\n🔄 Batch Testing {len(selected_models)} Models")
+    
+    # Create test output directory
+    parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    test_output_dir = os.path.join(parent_dir, "output")
+    os.makedirs(test_output_dir, exist_ok=True)
     
     # Use the generator's batch_generate method
     prompt = "A futuristic cityscape at night with neon lights, cyberpunk style, highly detailed"
@@ -361,11 +376,6 @@ def main():
     
     try:
         generator = FALTextToImageGenerator()
-        
-        # Create test output directory in parent folder
-        parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        test_output_dir = os.path.join(parent_dir, "test_output")
-        os.makedirs(test_output_dir, exist_ok=True)
         
         # Run specific tests based on flags
         if args.dragon:
