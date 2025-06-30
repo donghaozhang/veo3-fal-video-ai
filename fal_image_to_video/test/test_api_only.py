@@ -16,13 +16,13 @@ def test_imports():
         ('fal_client', 'fal_client'),
         ('requests', 'requests'),
         ('python-dotenv', 'dotenv'),
-        ('FALImageToVideoGenerator', 'fal_image_to_video_generator')
+        ('FALImageToVideoGenerator', '../fal_image_to_video_generator')
     ]
     
     for name, module in modules:
         try:
                     if name == 'FALImageToVideoGenerator':
-            from fal_image_to_video_generator import FALImageToVideoGenerator
+            from ..fal_image_to_video_generator import FALImageToVideoGenerator
             else:
                 __import__(module)
             print(f"✅ {name} imported successfully")
@@ -37,7 +37,7 @@ def test_environment():
     print("\n🔧 Testing environment...")
     
     # Check for .env file
-    if not os.path.exists('.env'):
+    if not os.path.exists('../.env'):
         print("⚠️  .env file not found")
         print("💡 Create a .env file with your FAL_KEY")
         return False
@@ -45,7 +45,7 @@ def test_environment():
     print("✅ .env file found")
     
     # Load environment variables
-    load_dotenv()
+    load_dotenv('../.env')
     
     # Check for FAL_KEY
     fal_key = os.getenv('FAL_KEY')
@@ -65,7 +65,7 @@ def test_generator_initialization():
     print("\n🎬 Testing FAL Video Generator initialization...")
     
     try:
-        from fal_image_to_video_generator import FALImageToVideoGenerator
+        from ..fal_image_to_video_generator import FALImageToVideoGenerator
         
         # Try to initialize (this will check for API key)
         generator = FALImageToVideoGenerator()
@@ -92,7 +92,7 @@ def test_api_key_validity():
     
     try:
         import fal_client
-        load_dotenv()
+        load_dotenv('../.env')
         api_key = os.getenv('FAL_KEY')
         
         if not api_key:

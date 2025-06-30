@@ -33,13 +33,13 @@ def test_imports():
         ('fal_client', 'fal_client'),
         ('requests', 'requests'),
         ('python-dotenv', 'dotenv'),
-        ('FALImageToVideoGenerator', 'fal_image_to_video_generator')
+        ('FALImageToVideoGenerator', '../fal_image_to_video_generator')
     ]
     
     for name, module in modules:
         try:
             if name == 'FALImageToVideoGenerator':
-                from fal_image_to_video_generator import FALImageToVideoGenerator
+                from ..fal_image_to_video_generator import FALImageToVideoGenerator
             else:
                 __import__(module)
             print(f"✅ {name} imported successfully")
@@ -82,7 +82,7 @@ def test_generator_initialization():
     print("\n🎬 Testing FAL Video Generator initialization...")
     
     try:
-        from fal_image_to_video_generator import FALImageToVideoGenerator
+        from ..fal_image_to_video_generator import FALImageToVideoGenerator
         
         # Try to initialize (this will check for API key)
         generator = FALImageToVideoGenerator()
@@ -188,11 +188,11 @@ def test_video_generation(generator, quick_test=False, model="hailuo"):
             print("🎯 Running full video generation test...")
         
         # Use local image and prompt for testing
-        local_image_path = "input/lily_squid_game.png"
+        local_image_path = "../input/lily_squid_game.png"
         
         # Load default prompt from file
         try:
-            with open("input/default_prompt.txt", "r") as f:
+            with open("../input/default_prompt.txt", "r") as f:
                 default_prompt = f.read().strip()
         except FileNotFoundError:
             default_prompt = "Woman in green squid game tracksuit walking and talking, cinematic movie scene"
@@ -222,7 +222,7 @@ def test_video_generation(generator, quick_test=False, model="hailuo"):
             # Try to download the video
             if video_url and video_url != 'No URL found':
                 print("⬇️  Attempting to download video...")
-                local_path = generator.download_video(video_url, "output", f"test_{model}_video.mp4")
+                local_path = generator.download_video(video_url, "../output", f"test_{model}_video.mp4")
                 if local_path:
                     print(f"✅ Video downloaded to: {local_path}")
                     return True
@@ -264,13 +264,13 @@ def test_both_models(generator):
     try:
         # Load default prompt from file
         try:
-            with open("input/default_prompt.txt", "r") as f:
+            with open("../input/default_prompt.txt", "r") as f:
                 default_prompt = f.read().strip()
         except FileNotFoundError:
             default_prompt = "Woman in green squid game tracksuit walking and talking, cinematic movie scene"
         
         result_hailuo = generator.generate_video_from_local_image(
-            image_path="input/lily_squid_game.png",
+            image_path="../input/lily_squid_game.png",
             prompt=default_prompt,
             duration="6",
             model="fal-ai/minimax/hailuo-02/standard/image-to-video"
@@ -293,7 +293,7 @@ def test_both_models(generator):
     print("\n2️⃣ Testing fal-ai/kling-video/v2.1/standard/image-to-video...")
     try:
         result_kling = generator.generate_video_from_local_image(
-            image_path="input/lily_squid_game.png",
+            image_path="../input/lily_squid_game.png",
             prompt=default_prompt,
             duration="5",
             model="fal-ai/kling-video/v2.1/standard/image-to-video"

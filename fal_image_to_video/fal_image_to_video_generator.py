@@ -97,6 +97,10 @@ class FALImageToVideoGenerator:
             print(f"Duration: {duration} seconds")
             print(f"Model: {model_name}")
             
+            # Generate unique task ID
+            task_id = str(uuid.uuid4())[:8]
+            print(f"Task ID: {task_id}")
+            
             # Define queue update handler
             def on_queue_update(update):
                 if hasattr(update, 'logs') and update.logs:
@@ -148,17 +152,27 @@ class FALImageToVideoGenerator:
             if result and 'video' in result:
                 video_info = result['video']
                 video_url = video_info['url']
-                file_name = video_info.get('file_name', 'generated_video.mp4')
+                original_file_name = video_info.get('file_name', 'generated_video.mp4')
                 file_size = video_info.get('file_size', 0)
                 
+                # Generate custom filename: inputname_taskid.mp4
+                if input_filename:
+                    base_name = os.path.splitext(input_filename)[0]
+                    custom_filename = f"{base_name}_{task_id}.mp4"
+                else:
+                    custom_filename = f"generated_{task_id}.mp4"
+                
                 print(f"Generated video URL: {video_url}")
-                print(f"File name: {file_name}")
+                print(f"Original file name: {original_file_name}")
+                print(f"Custom file name: {custom_filename}")
                 print(f"File size: {file_size} bytes")
                 
-                # Download video locally
-                local_path = self.download_video(video_url, output_folder, file_name)
+                # Download video locally with custom filename
+                local_path = self.download_video(video_url, output_folder, custom_filename)
                 if local_path:
                     result['local_path'] = local_path
+                    result['task_id'] = task_id
+                    result['custom_filename'] = custom_filename
                 
                 return result
             else:
@@ -332,17 +346,27 @@ class FALImageToVideoGenerator:
             if result and 'video' in result:
                 video_info = result['video']
                 video_url = video_info['url']
-                file_name = video_info.get('file_name', 'kling_video.mp4')
+                original_file_name = video_info.get('file_name', 'kling_video.mp4')
                 file_size = video_info.get('file_size', 0)
                 
+                # Generate custom filename: inputname_taskid.mp4
+                if input_filename:
+                    base_name = os.path.splitext(input_filename)[0]
+                    custom_filename = f"{base_name}_{task_id}.mp4"
+                else:
+                    custom_filename = f"kling_{task_id}.mp4"
+                
                 print(f"Generated video URL: {video_url}")
-                print(f"File name: {file_name}")
+                print(f"Original file name: {original_file_name}")
+                print(f"Custom file name: {custom_filename}")
                 print(f"File size: {file_size} bytes")
                 
-                # Download video locally
-                local_path = self.download_video(video_url, output_folder, file_name)
+                # Download video locally with custom filename
+                local_path = self.download_video(video_url, output_folder, custom_filename)
                 if local_path:
                     result['local_path'] = local_path
+                    result['task_id'] = task_id
+                    result['custom_filename'] = custom_filename
                 
                 return result
             else:
