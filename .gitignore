@@ -1,24 +1,151 @@
-# Ignore MP4 files
+# Video files
 *.mp4
+*.avi
+*.mov
+*.mkv
+*.wmv
+*.flv
+*.webm
+*.m4v
+*.mpg
+*.mpeg
+*.3gp
 
-# Ignore folders
+# Audio files
+*.mp3
+*.wav
+*.aac
+*.flac
+*.ogg
+*.m4a
+*.wma
+*.opus
+*.amr
+
+# Image files (optional - uncomment if needed)
+# *.jpg
+# *.jpeg
+# *.png
+# *.gif
+# *.bmp
+# *.tiff
+# *.webp
+# *.svg
+
+# Output folders (all projects)
+output/
+test_output/
+*/output/
+*/test_output/
+**/output/
+**/test_output/
+
+# Video tools output
+/video_tools/output/
+/video_tools/test_output/
+
+# Project specific folders
 /result_folder/
 /video_analyzer/
 /archive/
 
-# FAL AI text-to-image output folders
+# FAL AI output folders
+/fal_video_generation/output/
+/fal_avatar_generation/output/
 /fal_text_to_image/output/
 /fal_text_to_image/test_output/
+/fal_image_to_image/output/
 
-# Text-to-speech virtual environment and output
+# Google Veo output
+/veo3_video_generation/result_folder/
+
+# Text-to-speech
 /text_to_speech/tts_env/
 /text_to_speech/output/
 
+# Temporary and cache files
+temp/
+tmp/
+cache/
+*/temp/
+*/tmp/
+*/cache/
+
 # Environment files
 .env
+*.env
+.env.*
 
 # Python cache files
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.env/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Log files
+*.log
+logs/
+*/logs/
+
+# Large model files
+*.bin
+*.safetensors
+*.ckpt
+*.pth
+
+# AI service temporary files
+*.tmp
+*_temp.*
+*_temporary.*
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Test artifacts
+test_results/
+coverage/
+.coverage
+.pytest_cache/
+
 images 
