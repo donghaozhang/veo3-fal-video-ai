@@ -439,7 +439,7 @@ def main():
             prompt="Man walked into winter cave with polar bear",
             image_url="https://storage.googleapis.com/falserverless/model_tests/minimax/1749891352437225630-389852416840474630_1749891352.png",
             duration="6",
-            output_folder="fal_output"
+            output_folder="output"
         )
         
         if result1:
@@ -449,14 +449,14 @@ def main():
                 print(f"Local path: {result1['local_path']}")
         
         # Example 2: Generate video from local image (if available)
-        local_image_path = "../images/smiling_woman.jpg"
+        local_image_path = "input/smiling_woman.jpg"
         if os.path.exists(local_image_path):
             print("\n=== Example 2: Generate from local image ===")
             result2 = generator.generate_video_from_local_image(
                 prompt="A smiling woman in a beautiful garden, gentle breeze moving her hair",
                 image_path=local_image_path,
                 duration="6",
-                output_folder="fal_output"
+                output_folder="output"
             )
             
             if result2:

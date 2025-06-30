@@ -113,7 +113,7 @@ def main():
                     image_url="https://v3.fal.media/files/panda/W-_J46zuJDQnUhqkKm9Iv_image.webp",
                     duration="5",
                     model=model_name,
-                    output_folder="demo_output"
+                    output_folder="output"
                 )
             else:
                 result = generator.generate_video_from_image(
@@ -121,7 +121,7 @@ def main():
                     image_url="https://storage.googleapis.com/falserverless/model_tests/minimax/1749891352437225630-389852416840474630_1749891352.png",
                     duration="6",
                     model=model_name,
-                    output_folder="demo_output"
+                    output_folder="output"
                 )
             
             if result:
@@ -135,7 +135,7 @@ def main():
         
         elif demo_choice == 1:
             # Demo 2: Generate from local image
-            local_image_path = "../images/smiling_woman.jpg"
+            local_image_path = "input/smiling_woman.jpg"
             if os.path.exists(local_image_path):
                 print("\n🎯 Demo: Generate video from local image")
                 print("-" * 40)
@@ -148,7 +148,7 @@ def main():
                     prompt="A smiling woman in a beautiful garden, gentle breeze moving her hair, warm sunlight",
                     image_path=local_image_path,
                     duration="6" if model_name == "fal-ai/minimax/hailuo-02/standard/image-to-video" else "5",
-                    output_folder="demo_output",
+                    output_folder="output",
                     model=model_name
                 )
                 
@@ -245,7 +245,7 @@ def main():
                 print("❌ Failed to generate custom video")
         
         print("\n🎉 Demo completed!")
-        print("💡 Check the 'demo_output' folder for downloaded videos")
+        print("💡 Check the 'output' folder for downloaded videos")
         
     except KeyboardInterrupt:
         print("\n\n⚠️  Demo interrupted by user")
