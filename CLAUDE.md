@@ -7,9 +7,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is a comprehensive AI content generation project supporting multiple platforms and content types:
 - **Google Veo** (Vertex AI): High-resolution, enterprise-grade video generation
 - **FAL AI Video**: Simple API-based generation with dual models (MiniMax Hailuo-02 and Kling Video 2.1)
+- **FAL AI Text-to-Video**: Unified text-to-video generation with dual model support (MiniMax Hailuo-02 Pro and Google Veo 3)
 - **FAL AI Avatar**: Talking avatar generation with text-to-speech and audio-to-avatar capabilities
 - **FAL AI Text-to-Image**: Multi-model image generation (Imagen 4, Seedream v3, FLUX.1)
 - **FAL AI Image-to-Image**: AI-powered image modification using Luma Photon Flash
+- **Text-to-Speech**: Professional voice synthesis with ElevenLabs integration
+- **Video Tools**: Comprehensive video processing and analysis utilities
 
 ## Common Commands
 
@@ -88,15 +91,54 @@ python test_generation.py --batch    # Batch processing test
 python demo.py
 ```
 
+### FAL AI Text-to-Video Commands (fal_text_to_video/)
+```bash
+cd fal_text_to_video
+pip install -r requirements.txt
+
+# Setup and environment tests (FREE)
+python test_setup.py                 # Validate setup without costs
+python test_generation.py            # Test video generation with costs
+
+# Interactive demo
+python demo.py
+```
+
+### Text-to-Speech Commands (text_to_speech/)
+```bash
+cd text_to_speech
+pip install -r requirements.txt
+
+# Basic usage examples
+python examples/basic_usage.py       # Simple text-to-speech conversion
+python cli/quick_start.py           # Quick start CLI interface
+python cli/interactive.py           # Interactive voice selection
+```
+
+### Video Tools Commands (video_tools/)
+```bash
+cd video_tools
+pip install -r requirements.txt
+
+# Run test suite
+python run_tests.py                  # Comprehensive test runner
+python tests/run_quick_tests.py      # Quick functionality tests
+
+# Enhanced CLI tool
+python enhanced_cli.py              # Interactive video processing
+```
+
 ## Architecture
 
 ### Directory Structure
 - `veo3_video_generation/` - Google Veo implementation (function-based)
 - `fal_video_generation/` - FAL AI video generation (class-based)
+- `fal_text_to_video/` - FAL AI text-to-video generation with dual model support (class-based)
 - `fal_avatar_generation/` - FAL AI avatar generation (class-based)
 - `fal_text_to_image/` - FAL AI text-to-image generation (class-based)
 - `fal_image_to_image/` - FAL AI image-to-image modification (class-based)
-- `video_tools/` - Video processing utilities
+- `text_to_speech/` - ElevenLabs text-to-speech integration (class-based)
+- `video_tools/` - Video processing utilities (class-based with CLI)
 
 ### Google Veo Architecture
 - **Function-based approach** in `veo_video_generation.py`
@@ -107,12 +149,27 @@ python demo.py
 ### FAL AI Architecture
 - **Class-based approach** across all FAL AI modules
 - Video: `FALVideoGenerator` with dual model support (MiniMax Hailuo-02 and Kling Video 2.1)  
+- Text-to-Video: `FALTextToVideoGenerator` with unified dual model support (MiniMax Hailuo-02 Pro and Google Veo 3)
 - Avatar: `FALAvatarGenerator` with text-to-speech and audio-to-avatar modes
 - Text-to-Image: `FALTextToImageGenerator` with 4 model support (Imagen 4, Seedream v3, FLUX.1 Schnell/Dev)
 - Image-to-Image: `FALImageToImageGenerator` with Luma Photon Flash for creative modifications
 - Universal methods with model parameter selection
 - Async processing support with polling
 - Output: Local downloads to `output/` directory
+
+### Text-to-Speech Architecture
+- **Class-based approach** with ElevenLabs integration
+- Modular design with separate voice management, audio processing, and pipeline control
+- Support for 20+ voice options with customizable settings
+- CLI interfaces for quick start and interactive usage
+- Package structure with proper setup.py for distribution
+
+### Video Tools Architecture  
+- **Enhanced class-based approach** with comprehensive video processing
+- Modular command system with specialized processors
+- Support for AI analysis, audio extraction, subtitle generation
+- Interactive CLI with enhanced user experience
+- Organized test suite in `tests/` directory with comprehensive coverage
 
 ## Configuration Requirements
 
@@ -132,11 +189,24 @@ python demo.py
 
 ### FAL AI Setup
 All FAL AI modules require the same setup:
-1. Configure `.env` in each FAL directory (fal_video_generation/, fal_avatar_generation/, fal_text_to_image/, fal_image_to_image/):
+1. Configure `.env` in each FAL directory (fal_video_generation/, fal_text_to_video/, fal_avatar_generation/, fal_text_to_image/, fal_image_to_image/):
    ```
    FAL_KEY=your_fal_api_key
    ```
 2. Run setup tests first: `python test_setup.py` (FREE - no API costs)
+
+### Text-to-Speech Setup
+1. Configure `.env` in text_to_speech/:
+   ```
+   ELEVENLABS_API_KEY=your_elevenlabs_api_key
+   ```
+2. Install dependencies: `pip install -r requirements.txt`
+3. Test with examples: `python examples/basic_usage.py`
+
+### Video Tools Setup
+1. Install dependencies: `pip install -r requirements.txt`
+2. Optional: Install Gemini requirements: `pip install -r requirements_gemini.txt`
+3. Run tests: `python run_tests.py` or `python tests/run_quick_tests.py`
 
 ## Development Patterns
 
@@ -157,12 +227,17 @@ All FAL AI modules require the same setup:
 ### Test Files
 - `veo3_video_generation/test_veo.py` - Comprehensive Google Veo testing
 - `fal_video_generation/test_fal_ai.py` - Unified FAL AI dual-model testing
+- `fal_text_to_video/test_setup.py` - FREE setup validation
+- `fal_text_to_video/test_generation.py` - Text-to-video generation testing
 - `fal_avatar_generation/test_setup.py` - FREE setup validation
 - `fal_avatar_generation/test_generation.py` - Avatar generation testing
 - `fal_text_to_image/test/test_setup.py` - FREE setup validation
 - `fal_text_to_image/test/test_generation.py` - Image generation testing
 - `fal_image_to_image/test_setup.py` - FREE setup validation
 - `fal_image_to_image/test_generation.py` - Image modification testing
+- `text_to_speech/examples/basic_usage.py` - Text-to-speech examples
+- `video_tools/run_tests.py` - Comprehensive video tools test runner
+- `video_tools/tests/` - Organized test suite with multiple test modules
 
 ### Test Command Patterns
 All test suites support:
@@ -198,11 +273,31 @@ All test suites support:
 - Fast generation (FLUX.1 Schnell)
 - High-quality images (FLUX.1 Dev, Imagen 4)
 
+### Use FAL AI Text-to-Video when:
+- Need unified dual model support
+- Want cost-effective video generation (MiniMax ~$0.08)
+- Need premium quality with advanced controls (Google Veo 3 ~$2.50-$6.00)
+- Prefer single interface for multiple models
+- Want built-in cost management features
+
 ### Use FAL AI Image-to-Image when:
 - Need to modify existing images
 - Want creative transformations
 - Artistic style transfers
 - Photo enhancement and effects
+
+### Use Text-to-Speech when:
+- Need professional voice synthesis
+- Want multiple voice options (20+ voices)
+- Require commercial-grade audio quality
+- Need ElevenLabs integration
+
+### Use Video Tools when:
+- Need comprehensive video processing
+- Want AI-powered video analysis
+- Require subtitle generation
+- Need audio extraction and processing
+- Want interactive CLI video editing
 
 ## Important Implementation Details
 
@@ -216,6 +311,11 @@ All test suites support:
 **Video Models:**
 - MiniMax Hailuo-02: 768p, 6-10s, prompt optimizer
 - Kling Video 2.1: High-quality, 5-10s, CFG scale, negative prompts
+
+**Text-to-Video Models:**
+- MiniMax Hailuo-02 Pro: 1080p, 6s, cost-effective (~$0.08)
+- Google Veo 3: 720p, 5-8s, premium quality (~$2.50-$6.00), audio support
+- Unified interface with model selection via TextToVideoModel enum
 
 **Avatar Models:**
 - Text-to-Speech: 20 voice options, automatic speech generation
@@ -239,17 +339,37 @@ All test suites support:
 - Built-in async processing with progress updates
 - Comprehensive error handling and validation
 
+### Text-to-Speech Specifics
+- **ElevenLabs Integration**: Professional voice synthesis API
+- **Voice Options**: 20+ voices with customizable settings
+- **Audio Quality**: High-quality MP3 output
+- **Package Structure**: Modular design with CLI interfaces
+- **Configuration**: Support for voice settings, stability, and clarity controls
+
+### Video Tools Specifics
+- **Enhanced Architecture**: Class-based modular design
+- **AI Analysis**: Integration with Gemini for video understanding
+- **Audio Processing**: Extract, analyze, and manipulate audio tracks
+- **Subtitle Generation**: Automatic subtitle creation and formatting
+- **Interactive CLI**: User-friendly command-line interface
+- **Test Organization**: Comprehensive test suite in dedicated `tests/` directory
+
 ## Environment Variables
 - Never commit `.env` files
 - Each implementation has separate `.env` files
 - Use environment-specific configurations
 - Google Veo requires multiple Google Cloud environment variables
 - All FAL AI modules only require `FAL_KEY`
+- Text-to-Speech requires `ELEVENLABS_API_KEY`
+- Video Tools supports optional `GEMINI_API_KEY` for AI analysis
 
 ## Cost Management
 - Always run `test_setup.py` first (FREE)
 - Use cost-conscious testing: `fal_video_generation/COST_CONSCIOUS_TESTING.md` 
+- Video generation (MiniMax): ~$0.05-0.10 per video
+- Text-to-Video (MiniMax Hailuo-02 Pro): ~$0.08 per video
+- Text-to-Video (Google Veo 3): ~$2.50-6.00 per video
 - Avatar generation: ~$0.02-0.05 per video
 - Text-to-Image: varies by model (~$0.001-0.01 per image)
 - Image-to-Image: ~$0.01-0.05 per modification
-- Video generation: ~$0.05-0.10 per video
+- Text-to-Speech: varies by usage (ElevenLabs pricing)
