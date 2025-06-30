@@ -8,8 +8,12 @@ Validates that all new classes and modules can be imported and instantiated corr
 import sys
 from pathlib import Path
 
-# Add video_utils to Python path
-sys.path.insert(0, str(Path(__file__).parent / "video_utils"))
+# Add video_utils to Python path (go up one level from tests/)
+video_utils_path = Path(__file__).parent.parent / "video_utils"
+sys.path.insert(0, str(video_utils_path))
+
+# Also add the parent directory to ensure imports work correctly
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 def test_imports():
     """Test that all new modules can be imported successfully."""

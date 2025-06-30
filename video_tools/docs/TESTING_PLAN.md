@@ -4,6 +4,18 @@ This document outlines a systematic approach to testing the new enhanced class-b
 
 ## 📋 Testing Overview
 
+### Test Directory Structure
+```
+video_tools/
+├── tests/                          # Test suite directory
+│   ├── __init__.py                 # Test package initialization
+│   ├── run_quick_tests.py          # Main test runner
+│   ├── test_enhanced_architecture.py  # Architecture validation
+│   ├── test_backward_compatibility.py # Legacy compatibility
+│   └── test_enhanced_video_processor.py # Enhanced processor tests
+└── run_tests.py                    # Main test runner (delegates to tests/)
+```
+
 ### Testing Strategy
 1. **Architecture Validation** - Verify new classes work correctly
 2. **Backward Compatibility** - Ensure existing code still works
@@ -20,13 +32,15 @@ This document outlines a systematic approach to testing the new enhanced class-b
 ## 🏗️ Phase 1: Architecture Validation Tests
 
 ### 1.1 Basic Architecture Test (EXISTING)
-**File**: `test_enhanced_architecture.py`
+**File**: `tests/test_enhanced_architecture.py`
 **Purpose**: Validate new architecture imports and instantiation
 **Status**: ✅ Already exists and passes
 
 ```bash
 cd /home/zdhpe/veo3-video-generation/video_tools
-python3 test_enhanced_architecture.py
+python3 tests/test_enhanced_architecture.py
+# OR use the main test runner:
+python3 run_tests.py
 ```
 
 **Expected Results**:
@@ -575,10 +589,15 @@ if __name__ == "__main__":
 ```bash
 cd /home/zdhpe/veo3-video-generation/video_tools
 
-# 1. Architecture validation
-python3 test_enhanced_architecture.py
+# 1. Run the complete quick test suite
+python3 run_tests.py
 
-# 2. Environment check
+# OR run individual tests:
+python3 tests/test_enhanced_architecture.py
+python3 tests/test_backward_compatibility.py  
+python3 tests/test_enhanced_video_processor.py
+
+# 2. Environment check (if exists)
 python3 tests/test_env_setup.py
 
 # 3. CLI help

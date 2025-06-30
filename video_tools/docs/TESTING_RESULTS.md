@@ -89,11 +89,24 @@
 
 ## 📁 Test Infrastructure
 
+### Test Directory Structure
+```
+video_tools/
+├── tests/                          # Test suite directory
+│   ├── __init__.py                 # Test package initialization
+│   ├── run_quick_tests.py          # Main test runner
+│   ├── test_enhanced_architecture.py  # Core architecture validation
+│   ├── test_backward_compatibility.py # Legacy compatibility verification
+│   └── test_enhanced_video_processor.py # Enhanced processor testing
+└── run_tests.py                    # Main test runner (delegates to tests/)
+```
+
 ### Test Files Created
-- `test_enhanced_architecture.py` - Core architecture validation
-- `test_backward_compatibility.py` - Legacy compatibility verification
-- `test_enhanced_video_processor.py` - Enhanced processor testing
-- `run_quick_tests.py` - Automated test runner
+- `tests/test_enhanced_architecture.py` - Core architecture validation
+- `tests/test_backward_compatibility.py` - Legacy compatibility verification
+- `tests/test_enhanced_video_processor.py` - Enhanced processor testing
+- `tests/run_quick_tests.py` - Test suite runner
+- `run_tests.py` - Main test entry point
 
 ### Documentation
 - `docs/MIGRATION_GUIDE.md` - Complete migration documentation
@@ -118,10 +131,11 @@
 ## 💡 Next Steps
 
 ### Recommended Actions
-1. **Start Using**: Try the enhanced CLI: `python3 enhanced_cli.py`
-2. **Read Documentation**: Review `docs/MIGRATION_GUIDE.md` for examples
-3. **Explore Features**: Test new capabilities like thumbnail extraction
-4. **Gradual Migration**: Replace old code with new classes when convenient
+1. **Run Tests**: Execute `python3 run_tests.py` to validate setup
+2. **Start Using**: Try the enhanced CLI: `python3 enhanced_cli.py`
+3. **Read Documentation**: Review `docs/MIGRATION_GUIDE.md` for examples
+4. **Explore Features**: Test new capabilities like thumbnail extraction
+5. **Gradual Migration**: Replace old code with new classes when convenient
 
 ### Optional Enhancements
 1. **Extended Testing**: Run full test suite when needed

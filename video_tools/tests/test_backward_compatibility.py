@@ -4,8 +4,12 @@
 import sys
 from pathlib import Path
 
-# Add video_utils to Python path
-sys.path.insert(0, str(Path(__file__).parent / "video_utils"))
+# Add video_utils to Python path (go up one level from tests/)
+video_utils_path = Path(__file__).parent.parent / "video_utils"
+sys.path.insert(0, str(video_utils_path))
+
+# Also add the parent directory to ensure imports work correctly
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 def test_legacy_imports():
     """Test that all legacy function imports work."""
@@ -124,8 +128,8 @@ def test_legacy_functionality():
         ffmpeg_available = check_ffmpeg()
         print(f"✅ check_ffmpeg() works: {ffmpeg_available}")
         
-        # Test file finding
-        input_dir = Path("input")
+        # Test file finding (look in parent directory for input)
+        input_dir = Path("../input")
         if input_dir.exists():
             video_files = find_video_files(input_dir)
             print(f"✅ find_video_files() works: found {len(video_files)} files")

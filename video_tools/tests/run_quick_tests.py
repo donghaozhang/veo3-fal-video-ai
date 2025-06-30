@@ -70,9 +70,9 @@ def main():
     print('='*50)
     
     try:
-        # Test CLI help
+        # Test CLI help (go up one level to find enhanced_cli.py)
         result = subprocess.run(
-            ["python3", "enhanced_cli.py", "--help"],
+            ["python3", "../enhanced_cli.py", "--help"],
             cwd=Path(__file__).parent,
             timeout=10,
             capture_output=True,
@@ -95,7 +95,7 @@ def main():
     # Test CLI status
     try:
         result = subprocess.run(
-            ["python3", "enhanced_cli.py", "--command", "status"],
+            ["python3", "../enhanced_cli.py", "--command", "status"],
             cwd=Path(__file__).parent,
             timeout=15,
             capture_output=True,
@@ -178,7 +178,7 @@ if __name__ == "__main__":
     if success:
         print("✅ Enhanced class-based architecture is ready for use!")
         print("📚 Check docs/MIGRATION_GUIDE.md for usage examples")
-        print("🎬 Try: python3 enhanced_cli.py")
+        print("🎬 Try: python3 ../enhanced_cli.py")
     else:
         print("❌ Issues detected with enhanced architecture")
         print("🔧 Check individual test results above")

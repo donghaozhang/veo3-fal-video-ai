@@ -60,17 +60,45 @@ This package has been completely refactored from monolithic files into a well-or
 pip install -r requirements.txt
 ```
 
-### 2. Get API Key
+### 2. Environment Setup
+
+#### Option A: Using the Activation Script (Recommended)
+```bash
+# Navigate to the text_to_speech directory
+cd text_to_speech
+
+# Run the environment activation script
+source activate_env.sh
+```
+
+The activation script will:
+- ✅ Activate the virtual environment (`tts_env/bin/activate`)
+- ✅ Set the proper PYTHONPATH for imports
+- ✅ Display ready-to-run commands
+
+#### Option B: Manual Setup
+```bash
+# Activate virtual environment
+source tts_env/bin/activate
+
+# Set PYTHONPATH for proper imports
+export PYTHONPATH=/home/zdhpe/veo3-video-generation:$PYTHONPATH
+
+# Set API key
+export ELEVENLABS_API_KEY="your_api_key_here"
+```
+
+### 3. Get API Key
 
 Get your API key from [ElevenLabs Speech Synthesis](https://elevenlabs.io/app/speech-synthesis/text-to-speech)
 
-### 3. Set Environment Variable
+### 4. Set Environment Variable
 
 ```bash
 export ELEVENLABS_API_KEY="your_api_key_here"
 ```
 
-### 4. Basic Usage
+### 5. Basic Usage
 
 ```python
 from elevenlabs_tts_controller import ElevenLabsTTSController
@@ -87,14 +115,28 @@ success = tts.text_to_speech_with_timing_control(
 )
 ```
 
-### 5. Text-to-Dialogue Usage
+### 6. Text-to-Dialogue Usage
 
 ```python
 # Quick dialogue script
 python text_to_dialogue_script.py
 ```
 
-### 6. Complete AI Pipeline Usage
+### 7. Quick Start Commands
+
+After running the activation script, you can immediately use:
+```bash
+# Basic usage examples
+python examples/basic_usage.py
+
+# Quick start with interactive CLI
+python cli/quick_start.py
+
+# Simple test to verify setup
+python test_simple.py
+```
+
+### 8. Complete AI Pipeline Usage
 
 ```bash
 # Quick start with demos

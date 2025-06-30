@@ -4,8 +4,12 @@
 import sys
 from pathlib import Path
 
-# Add video_utils to Python path
-sys.path.insert(0, str(Path(__file__).parent / "video_utils"))
+# Add video_utils to Python path (go up one level from tests/)
+video_utils_path = Path(__file__).parent.parent / "video_utils"
+sys.path.insert(0, str(video_utils_path))
+
+# Also add the parent directory to ensure imports work correctly
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from video_utils import VideoProcessor
 
@@ -33,9 +37,9 @@ def test_video_processor():
         print(f"❌ Dependency check failed: {e}")
     tests_total += 1
     
-    # Setup directories
-    input_dir = Path("input")
-    output_dir = Path("output")
+    # Setup directories (look in parent directory structure)
+    input_dir = Path("../input")
+    output_dir = Path("../output")
     output_dir.mkdir(exist_ok=True)
     
     sample_video = input_dir / "sample_video.mp4"
