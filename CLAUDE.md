@@ -14,12 +14,27 @@ This is a comprehensive AI content generation project supporting multiple platfo
 - **Text-to-Speech**: Professional voice synthesis with ElevenLabs integration
 - **Video Tools**: Comprehensive video processing and analysis utilities
 
+## Environment Setup
+
+### Python Virtual Environment (Required)
+```bash
+# Create and activate virtual environment (run from project root)
+python3 -m venv venv
+source venv/bin/activate  # Linux/Mac
+# or venv\Scripts\activate  # Windows
+
+# Install all dependencies from root
+pip install -r requirements.txt
+```
+
+**Memory**: Virtual environment created at `/home/zdhpe/veo3-video-generation/venv/` with all dependencies installed. Always activate before running scripts.
+
 ## Common Commands
 
 ### Google Veo Commands (veo3_video_generation/)
 ```bash
+# Activate venv first: source venv/bin/activate
 cd veo3_video_generation
-pip install -r requirements.txt
 
 # Quick setup (fixes 90% of permission issues)
 python fix_permissions.py
@@ -36,8 +51,8 @@ python demo.py
 
 ### FAL AI Video Commands (fal_video_generation/)
 ```bash
+# Activate venv first: source venv/bin/activate
 cd fal_video_generation
-pip install -r requirements.txt
 
 # Run tests
 python test_fal_ai.py                 # Basic setup test
@@ -51,8 +66,8 @@ python demo.py
 
 ### FAL AI Avatar Commands (fal_avatar_generation/)
 ```bash
+# Activate venv first: source venv/bin/activate
 cd fal_avatar_generation
-pip install -r requirements.txt
 
 # Setup and environment tests (FREE)
 python test_setup.py                 # Validate setup without costs
@@ -65,8 +80,8 @@ python demo.py
 
 ### FAL AI Text-to-Image Commands (fal_text_to_image/)
 ```bash
+# Activate venv first: source venv/bin/activate
 cd fal_text_to_image
-pip install -r requirements.txt
 
 # Setup and environment tests (FREE)
 python test_setup.py                 # Validate setup without costs
@@ -78,8 +93,8 @@ python demo.py
 
 ### FAL AI Image-to-Image Commands (fal_image_to_image/)
 ```bash
+# Activate venv first: source venv/bin/activate
 cd fal_image_to_image
-pip install -r requirements.txt
 
 # Setup and environment tests (FREE)
 python test_setup.py                 # Validate setup without costs
@@ -93,8 +108,8 @@ python demo.py
 
 ### FAL AI Text-to-Video Commands (fal_text_to_video/)
 ```bash
+# Activate venv first: source venv/bin/activate
 cd fal_text_to_video
-pip install -r requirements.txt
 
 # Setup and environment tests (FREE)
 python test_setup.py                 # Validate setup without costs
@@ -106,8 +121,8 @@ python demo.py
 
 ### Text-to-Speech Commands (text_to_speech/)
 ```bash
+# Activate venv first: source venv/bin/activate
 cd text_to_speech
-pip install -r requirements.txt
 
 # Basic usage examples
 python examples/basic_usage.py       # Simple text-to-speech conversion
@@ -117,8 +132,8 @@ python cli/interactive.py           # Interactive voice selection
 
 ### Video Tools Commands (video_tools/)
 ```bash
+# Activate venv first: source venv/bin/activate
 cd video_tools
-pip install -r requirements.txt
 
 # Run test suite
 python run_tests.py                  # Comprehensive test runner

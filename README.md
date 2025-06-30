@@ -193,11 +193,31 @@ veo3-video-generation/
 
 ## 🚀 Quick Start
 
+### Prerequisites: Python Environment Setup
+
+```bash
+# Create virtual environment
+python3 -m venv venv
+
+# Activate virtual environment
+source venv/bin/activate  # On Linux/Mac
+# or
+venv\Scripts\activate     # On Windows
+
+# Install all dependencies from root
+pip install -r requirements.txt
+```
+
+**🔧 Environment Memory**: The virtual environment is now created at `/home/zdhpe/veo3-video-generation/venv/` with all dependencies installed. Always activate it before running any scripts:
+```bash
+source venv/bin/activate
+```
+
 ### Option 1: Google Veo (High-Quality, Complex Setup)
 
 ```bash
+# After activating venv
 cd veo3_video_generation
-pip install -r requirements.txt
 
 # Configure Google Cloud authentication
 gcloud auth login
@@ -218,8 +238,8 @@ python test_veo.py
 ### Option 2: FAL AI (Simple Setup, Production Ready)
 
 ```bash
+# After activating venv
 cd fal_video_generation
-pip install -r requirements.txt
 
 # Configure API key in .env file
 # FAL_KEY=your-fal-api-key
@@ -238,8 +258,8 @@ python test_fal_ai.py --kling     # ~$0.02-0.05
 ### Option 3: ✨ **NEW!** Text-to-Speech Package (Professional TTS + AI)
 
 ```bash
+# After activating venv
 cd text_to_speech
-pip install -r requirements.txt
 
 # Configure API keys in .env file (or environment variables)
 # ELEVENLABS_API_KEY=your-elevenlabs-key
