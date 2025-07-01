@@ -77,6 +77,12 @@ def cmd_transcribe_videos_enhanced(input_path=None, output_path=None, format_typ
     return cmd_transcribe_videos_with_params(input_path, output_path, format_type)
 
 
+def cmd_generate_subtitles_enhanced(input_path=None, output_path=None, format_type=None):
+    """Enhanced generate-subtitles command with parameter support."""
+    from video_utils.subtitle_commands import cmd_generate_subtitles_with_params
+    return cmd_generate_subtitles_with_params(input_path, output_path, format_type)
+
+
 def create_parser():
     """Create argument parser with enhanced support for describe-videos."""
     parser = argparse.ArgumentParser(
@@ -89,6 +95,11 @@ Examples:
   python video_audio_utils.py describe-videos -i /path/to/video.mp4 -o /path/to/output.json
   python video_audio_utils.py describe-videos -i input_dir/ -o output_dir/
   
+  # Enhanced generate-subtitles with parameters
+  python video_audio_utils.py generate-subtitles -i video.mp4 -o subtitle.srt
+  python video_audio_utils.py generate-subtitles -i video.mp4 -o output/ -f vtt
+  python video_audio_utils.py generate-subtitles -i input_dir/ -o output_dir/ -f srt
+  
   # Traditional commands
   python video_audio_utils.py cut              # Cut first 5 seconds from all videos
   python video_audio_utils.py cut 10           # Cut first 10 seconds from all videos
@@ -98,6 +109,7 @@ Examples:
   python video_audio_utils.py analyze-videos   # AI-powered video analysis with Google Gemini
   python video_audio_utils.py transcribe-videos # AI transcription of video audio
   python video_audio_utils.py describe-videos  # AI description (traditional mode - all files in input/)
+  python video_audio_utils.py generate-subtitles # Subtitle generation (traditional mode - all files in input/)
 
 Requirements:
   - ffmpeg must be installed and available in PATH
@@ -119,14 +131,14 @@ Requirements:
     parser.add_argument('duration', type=int, nargs='?', default=5,
                        help='Duration in seconds for cut command (default: 5)')
     
-    # Enhanced parameters for describe-videos and transcribe-videos commands
+    # Enhanced parameters for describe-videos, transcribe-videos, and generate-subtitles commands
     parser.add_argument('-i', '--input', type=str,
-                       help='Input video file or directory path (for describe-videos, transcribe-videos)')
+                       help='Input video file or directory path (for describe-videos, transcribe-videos, generate-subtitles)')
     parser.add_argument('-o', '--output', type=str,
-                       help='Output file or directory path (for describe-videos, transcribe-videos)')
-    parser.add_argument('-f', '--format', type=str, choices=['describe-video', 'json', 'txt'],
+                       help='Output file or directory path (for describe-videos, transcribe-videos, generate-subtitles)')
+    parser.add_argument('-f', '--format', type=str, choices=['describe-video', 'json', 'txt', 'srt', 'vtt'],
                        default='describe-video',
-                       help='Output format for describe-videos/transcribe-videos (default: describe-video)')
+                       help='Output format: describe-video/json/txt (for describe-videos/transcribe-videos) or srt/vtt (for generate-subtitles)')
     
     return parser
 
@@ -172,6 +184,27 @@ def main():
             print("\n👋 Operation cancelled by user")
         except Exception as e:
             print(f"\n❌ Error in enhanced transcribe-videos: {e}")
+            sys.exit(1)
+    
+    # Special handling for generate-subtitles command with parameters
+    if args.command == 'generate-subtitles' and (args.input or args.output or args.format):
+        print("📝 Enhanced generate-subtitles mode with parameters")
+        print(f"📁 Input: {args.input or 'current directory/input'}")
+        print(f"📁 Output: {args.output or 'current directory/output'}")
+        if args.format in ['srt', 'vtt']:
+            print(f"📋 Format: {args.format}")
+        else:
+            print("📋 Format: interactive selection")
+        print()
+        
+        try:
+            # Map format parameter for subtitles (srt/vtt instead of describe-video/json/txt)
+            subtitle_format = args.format if args.format in ['srt', 'vtt'] else None
+            return cmd_generate_subtitles_enhanced(args.input, args.output, subtitle_format)
+        except KeyboardInterrupt:
+            print("\n👋 Operation cancelled by user")
+        except Exception as e:
+            print(f"\n❌ Error in enhanced generate-subtitles: {e}")
             sys.exit(1)
     
     # Check ffmpeg availability for commands that need it
