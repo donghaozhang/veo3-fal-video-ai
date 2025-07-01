@@ -33,6 +33,14 @@ This project provides comprehensive Python implementations for generating videos
 - **Models**: Support for top 10 OpenRouter models (Claude, Gemini, DeepSeek, etc.)
 - **Setup**: Simple API key authentication (ElevenLabs + OpenRouter)
 
+### 5. 🔧 **ENHANCED!** Video Tools with CLI Parameter Support (`video_tools/`)
+- **Features**: Comprehensive video processing utilities with enhanced CLI interface
+- **Architecture**: Enhanced with CLI parameter support for major commands
+- **Capabilities**: Subtitle generation, AI analysis, transcription, video processing
+- **CLI Enhancement**: Support for `-i` (input), `-o` (output), `-f` (format) parameters
+- **Formats**: SRT/VTT subtitles, JSON/TXT outputs for analysis
+- **Setup**: FFmpeg required, optional Gemini API for AI features
+
 ## 📁 Project Structure
 
 ```
@@ -156,9 +164,9 @@ veo3-video-generation/
 │   │   └── __init__.py
 │   └── output/                        # Generated audio files
 │
-├── video_tools/                       # Video Processing Utilities
+├── video_tools/                       # 🔧 Enhanced Video Processing Utilities
 │   ├── README.md                      # Video tools documentation
-│   ├── video_audio_utils.py           # Audio processing utilities
+│   ├── video_audio_utils.py           # 🆕 Enhanced CLI with parameter support
 │   ├── image_modify_verify.py         # Image modification and verification
 │   ├── real_video_examples.py         # Real video processing examples
 │   ├── requirements_gemini.txt        # Gemini-specific requirements
@@ -171,12 +179,12 @@ veo3-video-generation/
 │   │   ├── video_processor.py         # Video processing engine
 │   │   ├── audio_processor.py         # Audio processing engine
 │   │   ├── subtitle_generator.py      # Subtitle generation
+│   │   ├── subtitle_commands.py       # 🆕 Enhanced subtitle commands with parameters
 │   │   ├── video_understanding.py     # Video analysis and understanding
 │   │   ├── video_commands.py          # Video manipulation commands
 │   │   ├── audio_commands.py          # Audio manipulation commands
-│   │   ├── subtitle_commands.py       # Subtitle commands
 │   │   ├── whisper_commands.py        # Whisper integration
-│   │   └── ai_analysis_commands.py    # AI-powered analysis
+│   │   └── ai_analysis_commands.py    # 🆕 Enhanced AI analysis with parameters
 │   ├── docs/                          # Documentation
 │   │   ├── API_REFERENCE.md           # API documentation
 │   │   ├── BETTER_IMPLEMENTATION_ANALYSIS.md # Implementation analysis
@@ -188,6 +196,7 @@ veo3-video-generation/
 │       ├── test_env_setup.py          # Environment setup tests
 │       ├── test_image_workflow.py     # Image workflow tests
 │       ├── test_subtitles.py          # Subtitle generation tests
+│       ├── test_subtitles_cli.sh      # 🆕 Enhanced CLI testing
 │       └── test_video_understanding.py # Video understanding tests
 ```
 
@@ -286,6 +295,32 @@ tts.text_to_speech_with_timing_control(
 "
 ```
 
+### Option 4: 🔧 **ENHANCED!** Video Tools with CLI Parameters (Video Processing + AI)
+
+```bash
+# After activating venv
+cd video_tools
+
+# Test enhanced CLI functionality
+bash tests/test_subtitles_cli.sh
+
+# Enhanced subtitle generation with parameters
+python3 video_audio_utils.py generate-subtitles -i input/video.mp4 -o output/subtitle.srt -f srt
+python3 video_audio_utils.py generate-subtitles -i input/ -o output/ -f vtt
+
+# Enhanced AI analysis with parameters (requires GEMINI_API_KEY)
+python3 video_audio_utils.py describe-videos -i input/video.mp4 -o output/description.json
+python3 video_audio_utils.py transcribe-videos -i input/video.mp4 -o output/transcript.txt
+
+# Traditional mode (no parameters) - still supported
+python3 video_audio_utils.py generate-subtitles
+python3 video_audio_utils.py describe-videos
+
+# Other video processing commands
+python3 video_audio_utils.py cut 10           # Cut first 10 seconds
+python3 video_audio_utils.py extract-audio    # Extract audio tracks
+```
+
 ## 🔧 Setup Requirements
 
 ### Google Veo Requirements
@@ -306,6 +341,12 @@ tts.text_to_speech_with_timing_control(
 - Python 3.8+
 - Internet connection
 - **New Modular Architecture**: Recently refactored for professional development
+
+### Video Tools Requirements
+- FFmpeg (required for video processing)
+- Python 3.8+
+- **Optional**: Gemini API key (for AI analysis features)
+- **Enhanced CLI**: Recently added parameter support for major commands
 
 ## 📊 Feature Comparison
 
@@ -331,6 +372,17 @@ tts.text_to_speech_with_timing_control(
 | **Features** | Timing control, dialogue, voice cloning | ✅ Professional |
 | **Setup** | Simple API keys (ElevenLabs + OpenRouter) | ✅ Easy |
 
+### 🔧 Video Tools Enhanced CLI Features
+
+| Feature | Description | Status |
+|---------|-------------|---------|
+| **CLI Parameters** | `-i`, `-o`, `-f` support for major commands | ✅ Recently implemented |
+| **Subtitle Generation** | SRT/VTT format with enhanced parameters | ✅ Enhanced |
+| **AI Analysis** | describe-videos/transcribe-videos with parameters | ✅ Enhanced |
+| **Backward Compatibility** | Traditional mode (no parameters) still supported | ✅ Maintained |
+| **Testing** | Automated CLI test suite | ✅ Comprehensive |
+| **Video Processing** | Cut, extract, audio manipulation | ✅ Full featured |
+
 ## 🎯 Use Cases
 
 ### Choose Google Veo When:
@@ -351,6 +403,14 @@ tts.text_to_speech_with_timing_control(
 - You need multi-speaker dialogue generation
 - You want a complete content creation pipeline
 - You prefer modular, maintainable code architecture
+
+### Choose Video Tools When:
+- You need to process existing videos (cut, extract, modify)
+- You want to generate subtitles for videos (SRT/VTT formats)
+- You need AI-powered video analysis and transcription
+- You prefer CLI tools with parameter support
+- You want both interactive and batch processing modes
+- You need comprehensive video processing utilities
 
 ## 🛠️ Development Features
 
@@ -389,6 +449,18 @@ tts.text_to_speech_with_timing_control(
 - ✅ **Backward Compatible**: Existing code works with minimal changes
 - 📚 **Migration Guide**: Complete transition documentation
 
+### 🔧 Video Tools Enhanced Features
+- ✅ **Enhanced CLI Architecture**: Parameter support for major commands
+- ✅ **Subtitle Generation**: SRT/VTT formats with `-i`, `-o`, `-f` parameters
+- ✅ **AI Analysis**: describe-videos and transcribe-videos with parameter support
+- ✅ **Video Processing**: Cut, extract audio, format conversion
+- ✅ **Batch Processing**: Directory-level operations with enhanced CLI
+- ✅ **Backward Compatibility**: Traditional mode (no parameters) still supported
+- ✅ **Comprehensive Testing**: Automated CLI test suite with validation
+- ✅ **FFmpeg Integration**: Professional video processing capabilities
+- ✅ **Gemini AI Integration**: Optional AI-powered video analysis
+- ✅ **File Management**: Intelligent input/output path handling
+
 ## 📖 Documentation
 
 Each implementation has its own detailed documentation:
@@ -399,6 +471,9 @@ Each implementation has its own detailed documentation:
 - **✨ Text-to-Speech**: See [`text_to_speech/README.md`](text_to_speech/README.md)
   - **Migration Guide**: [`text_to_speech/MIGRATION_GUIDE.md`](text_to_speech/MIGRATION_GUIDE.md)
   - **Setup Instructions**: [`text_to_speech/setup.py`](text_to_speech/setup.py)
+- **🔧 Video Tools**: See [`video_tools/README.md`](video_tools/README.md)
+  - **CLI Examples**: [`video_tools/docs/COMMAND_LINE_EXAMPLES.md`](video_tools/docs/COMMAND_LINE_EXAMPLES.md)
+  - **API Reference**: [`video_tools/docs/API_REFERENCE.md`](video_tools/docs/API_REFERENCE.md)
 
 ## 🧪 Testing
 
@@ -465,6 +540,32 @@ python cli/interactive.py            # Interactive pipeline
 python cli/quick_start.py           # Quick start demo
 ```
 
+### Test Video Tools Enhanced CLI
+
+✅ **No Cost**: Video tools testing uses local files and FFmpeg validation.
+
+```bash
+cd video_tools
+
+# Test enhanced CLI functionality (FREE)
+bash tests/test_subtitles_cli.sh
+
+# Test individual components
+python tests/test_subtitles.py        # Subtitle generation tests
+python tests/test_env_setup.py        # Environment validation
+
+# Manual testing with enhanced CLI parameters
+# Subtitle generation (requires FFmpeg)
+python3 video_audio_utils.py generate-subtitles -i input/sample_video.mp4 -o output/test.srt -f srt
+
+# AI analysis (requires GEMINI_API_KEY - optional)
+python3 video_audio_utils.py describe-videos -i input/sample_video.mp4 -o output/description.json
+
+# Traditional mode testing (backward compatibility)
+python3 video_audio_utils.py generate-subtitles  # Interactive mode
+python3 video_audio_utils.py cut 5               # Cut first 5 seconds
+```
+
 ## 🎮 Interactive Demos
 
 All implementations include interactive demos:
@@ -484,6 +585,10 @@ cd text_to_speech && python cli/interactive.py
 
 # ✨ Text-to-Speech Quick Start Demo
 cd text_to_speech && python cli/quick_start.py
+
+# 🔧 Video Tools Enhanced CLI (Interactive & Batch modes)
+cd video_tools && python3 video_audio_utils.py generate-subtitles  # Interactive mode
+cd video_tools && bash tests/test_subtitles_cli.sh                 # Automated testing
 ```
 
 The demos provide:
@@ -492,6 +597,8 @@ The demos provide:
 - **Cost Protection**: Confirmation prompts before generating videos
 - **✨ TTS Pipeline**: AI content generation → speech conversion
 - **✨ TTS Features**: Voice selection, timing control, multi-speaker dialogue
+- **🔧 Video Processing**: Enhanced CLI with parameter support, batch operations
+- **🔧 Subtitle Generation**: Interactive and parameterized subtitle creation
 - **Configuration Validation**: Setup verification for all platforms
 
 ## 🔍 Troubleshooting
@@ -544,6 +651,12 @@ The demos provide:
   - ✅ **Testing**: Comprehensive test suite with import validation
   - ✅ **Migration**: Complete migration guide and backward compatibility
   - ✅ **Professional**: Setup.py, proper package structure, CLI tools
+- ✅ **🔧 Video Tools**: Recently enhanced with CLI parameter support - fully functional
+  - 🆕 **Enhanced CLI**: Added `-i`, `-o`, `-f` parameter support for major commands
+  - ✅ **Subtitle Generation**: SRT/VTT format support with enhanced parameters
+  - ✅ **AI Integration**: describe-videos and transcribe-videos with parameter support
+  - ✅ **Backward Compatibility**: Traditional mode (no parameters) still supported
+  - ✅ **Testing**: Automated CLI test suite with comprehensive validation
 - 🔄 **Future**: Additional model integrations and enhanced pipeline features planned
 
 ## 📝 License
