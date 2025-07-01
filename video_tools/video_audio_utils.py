@@ -89,6 +89,12 @@ def cmd_analyze_audio_enhanced(input_path=None, output_path=None, format_type=No
     return cmd_analyze_audio_with_params(input_path, output_path, format_type)
 
 
+def cmd_analyze_images_enhanced(input_path=None, output_path=None, format_type=None):
+    """Enhanced analyze-images command with parameter support."""
+    from video_utils.ai_analysis_commands import cmd_analyze_images_with_params
+    return cmd_analyze_images_with_params(input_path, output_path, format_type)
+
+
 def create_parser():
     """Create argument parser with enhanced support for describe-videos."""
     parser = argparse.ArgumentParser(
@@ -110,6 +116,11 @@ Examples:
   python video_audio_utils.py analyze-audio -i audio.mp3 -o analysis.json
   python video_audio_utils.py analyze-audio -i audio.mp3 -o output/ -f txt
   python video_audio_utils.py analyze-audio -i input_dir/ -o output_dir/ -f json
+  
+  # Enhanced analyze-images with parameters
+  python video_audio_utils.py analyze-images -i image.jpg -o analysis.json
+  python video_audio_utils.py analyze-images -i image.png -o output/ -f txt
+  python video_audio_utils.py analyze-images -i input_dir/ -o output_dir/ -f json
   
   # Traditional commands
   python video_audio_utils.py cut              # Cut first 5 seconds from all videos
@@ -142,11 +153,11 @@ Requirements:
     parser.add_argument('duration', type=int, nargs='?', default=5,
                        help='Duration in seconds for cut command (default: 5)')
     
-    # Enhanced parameters for describe-videos, transcribe-videos, generate-subtitles, and analyze-audio commands
+    # Enhanced parameters for describe-videos, transcribe-videos, generate-subtitles, analyze-audio, and analyze-images commands
     parser.add_argument('-i', '--input', type=str,
-                       help='Input video/audio file or directory path (for describe-videos, transcribe-videos, generate-subtitles, analyze-audio)')
+                       help='Input video/audio/image file or directory path (for describe-videos, transcribe-videos, generate-subtitles, analyze-audio, analyze-images)')
     parser.add_argument('-o', '--output', type=str,
-                       help='Output file or directory path (for describe-videos, transcribe-videos, generate-subtitles, analyze-audio)')
+                       help='Output file or directory path (for describe-videos, transcribe-videos, generate-subtitles, analyze-audio, analyze-images)')
     parser.add_argument('-f', '--format', type=str, choices=['describe-video', 'json', 'txt', 'srt', 'vtt'],
                        default='describe-video',
                        help='Output format: describe-video/json/txt (for AI commands) or srt/vtt (for generate-subtitles)')
@@ -237,6 +248,27 @@ def main():
             print("\n👋 Operation cancelled by user")
         except Exception as e:
             print(f"\n❌ Error in enhanced analyze-audio: {e}")
+            sys.exit(1)
+    
+    # Special handling for analyze-images command with parameters
+    if args.command == 'analyze-images' and (args.input or args.output or args.format != 'describe-video'):
+        print("🖼️ Enhanced analyze-images mode with parameters")
+        print(f"📁 Input: {args.input or 'current directory/input'}")
+        print(f"📁 Output: {args.output or 'current directory/output'}")
+        if args.format in ['json', 'txt']:
+            print(f"📋 Format: {args.format}")
+        else:
+            print("📋 Format: interactive selection")
+        print()
+        
+        try:
+            # Map format parameter for image analysis (json/txt instead of describe-video)
+            image_format = args.format if args.format in ['json', 'txt'] else 'json'
+            return cmd_analyze_images_enhanced(args.input, args.output, image_format)
+        except KeyboardInterrupt:
+            print("\n👋 Operation cancelled by user")
+        except Exception as e:
+            print(f"\n❌ Error in enhanced analyze-images: {e}")
             sys.exit(1)
     
     # Check ffmpeg availability for commands that need it

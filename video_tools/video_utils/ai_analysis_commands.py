@@ -1390,3 +1390,245 @@ def cmd_analyze_audio_with_params(input_path=None, output_path=None, format_type
             
     except KeyboardInterrupt:
         print("\n👋 Operation cancelled by user")
+
+
+def cmd_analyze_images_with_params(input_path=None, output_path=None, format_type='json'):
+    """Enhanced analyze-images command with parameter support.
+    
+    Args:
+        input_path: Path to input image file or directory
+        output_path: Path to output file or directory
+        format_type: Output format ('json', 'txt')
+    """
+    print("🖼️ IMAGE ANALYSIS - Enhanced with Parameters")
+    print("=" * 60)
+    
+    # Check requirements
+    gemini_ready, message = check_gemini_requirements()
+    if not gemini_ready:
+        print(f"❌ Gemini not available: {message}")
+        if "not installed" in message:
+            print("📥 Install with: pip install google-generativeai")
+        if "not set" in message:
+            print("🔑 Set API key: export GEMINI_API_KEY=your_api_key")
+            print("🌐 Get API key: https://aistudio.google.com/app/apikey")
+        return
+    
+    # Handle input path
+    if input_path:
+        input_path = Path(input_path)
+        if not input_path.exists():
+            print(f"❌ Input path not found: {input_path}")
+            return
+        
+        if input_path.is_file():
+            # Single file - check if it's a supported image format
+            image_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.tiff', '.tif'}
+            if input_path.suffix.lower() in image_extensions:
+                image_files = [input_path]
+            else:
+                print(f"❌ File is not a supported image format: {input_path}")
+                print(f"💡 Supported formats: {', '.join(sorted(image_extensions))}")
+                return
+        else:
+            # Directory
+            image_files = find_image_files(input_path)
+    else:
+        # Default behavior - use input directory
+        input_dir = Path('input')
+        if not input_dir.exists():
+            print("📁 Input directory 'input' not found")
+            print("💡 Create an 'input' directory and place your image files there")
+            return
+        image_files = find_image_files(input_dir)
+    
+    if not image_files:
+        print("📁 No image files found")
+        return
+    
+    print(f"🖼️ Found {len(image_files)} image file(s)")
+    
+    # Handle output path
+    if output_path:
+        output_path = Path(output_path)
+        if len(image_files) == 1 and not output_path.suffix:
+            # Single file, output path is a directory
+            output_dir = output_path
+            output_dir.mkdir(parents=True, exist_ok=True)
+            output_file = None
+        elif len(image_files) == 1 and output_path.suffix:
+            # Single file, output path is a file
+            output_dir = output_path.parent
+            output_dir.mkdir(parents=True, exist_ok=True)
+            output_file = output_path
+        else:
+            # Multiple files, output path must be a directory
+            output_dir = output_path
+            output_dir.mkdir(parents=True, exist_ok=True)
+            output_file = None
+    else:
+        # Default behavior - use output directory
+        output_dir = Path('output')
+        output_dir.mkdir(exist_ok=True)
+        output_file = None
+    
+    print(f"📁 Output directory: {output_dir}")
+    if output_file:
+        print(f"📄 Output file: {output_file}")
+    print(f"📋 Format: {format_type}")
+    
+    # Analysis type selection with defaults for non-interactive mode
+    analysis_types = {
+        '1': ('description', 'Image description and visual analysis'),
+        '2': ('classification', 'Image classification and categorization'),
+        '3': ('objects', 'Object detection and identification'),
+        '4': ('text', 'Text extraction (OCR) from images'),
+        '5': ('composition', 'Artistic and technical composition analysis'),
+        '6': ('qa', 'Question and answer analysis')
+    }
+    
+    print("\n🎯 Available analysis types:")
+    for key, (type_name, description) in analysis_types.items():
+        print(f"   {key}. {description}")
+    
+    try:
+        choice = input("\n📝 Select analysis type (1-6, default=1): ").strip()
+        if not choice:
+            choice = '1'  # Default to description
+            print("🖼️ Using default: description")
+        
+        if choice not in analysis_types:
+            print("❌ Invalid selection, using default description")
+            choice = '1'
+        
+        analysis_type, _ = analysis_types[choice]
+        
+        # Additional options with defaults for non-interactive mode
+        detailed = False
+        questions = None
+        
+        if analysis_type in ['description', 'objects']:
+            try:
+                detailed_choice = input("📖 Detailed analysis? (y/N): ").strip().lower()
+                detailed = detailed_choice == 'y'
+            except (EOFError, KeyboardInterrupt):
+                detailed = False
+                print("N")
+        elif analysis_type == 'qa':
+            print("\n❓ Enter questions (one per line, empty line to finish):")
+            questions = []
+            try:
+                while True:
+                    q = input("   Question: ").strip()
+                    if not q:
+                        break
+                    questions.append(q)
+            except (EOFError, KeyboardInterrupt):
+                pass
+            
+            if not questions:
+                questions = ["What is the main subject of this image?", "What can you tell me about this image?"]
+                print("🔍 Using default questions")
+        
+        successful = 0
+        failed = 0
+        
+        for i, image_path in enumerate(image_files):
+            print(f"\n🖼️ Analyzing: {image_path.name} ({i+1}/{len(image_files)})")
+            
+            try:
+                result = analyze_image_file(
+                    image_path, 
+                    analysis_type, 
+                    questions=questions,
+                    detailed=detailed
+                )
+                
+                if result:
+                    # Determine output filename
+                    if output_file and len(image_files) == 1:
+                        # Single file with specific output file
+                        if format_type == 'json' or output_file.suffix == '.json':
+                            json_file = output_file.with_suffix('.json')
+                            txt_file = output_file.with_suffix('.txt')
+                        elif format_type == 'txt' or output_file.suffix == '.txt':
+                            txt_file = output_file.with_suffix('.txt')
+                            json_file = output_file.with_suffix('.json')
+                        else:
+                            # Default naming
+                            json_file = output_file.with_suffix('.json')
+                            txt_file = output_file.with_suffix('.txt')
+                    else:
+                        # Directory output or multiple files
+                        base_name = f"{image_path.stem}_{analysis_type}_analysis"
+                        json_file = output_dir / f"{base_name}.json"
+                        txt_file = output_dir / f"{base_name}.txt"
+                    
+                    # Save based on format
+                    if format_type in ['json']:
+                        save_analysis_result(result, json_file)
+                        print(f"✅ Saved JSON: {json_file}")
+                    
+                    if format_type in ['txt']:
+                        # Save readable text version
+                        with open(txt_file, 'w', encoding='utf-8') as f:
+                            f.write(f"Image Analysis: {image_path.name}\n")
+                            f.write("=" * 50 + "\n\n")
+                            f.write(f"Analysis Type: {analysis_type}\n\n")
+                            
+                            if analysis_type == 'description':
+                                f.write(result['description'])
+                            elif analysis_type == 'classification':
+                                f.write(result['classification'])
+                            elif analysis_type == 'objects':
+                                f.write(result['objects'])
+                            elif analysis_type == 'text':
+                                f.write(result['extracted_text'])
+                            elif analysis_type == 'composition':
+                                f.write(result['composition'])
+                            elif analysis_type == 'qa':
+                                f.write(result['answers'])
+                            
+                            if 'file_id' in result:
+                                f.write(f"\n\nFile ID: {result['file_id']}")
+                            f.write(f"\nGenerated: {result.get('timestamp', 'Unknown')}")
+                        print(f"✅ Saved TXT: {txt_file}")
+                    
+                    successful += 1
+                    
+                    # Show preview of result
+                    print(f"📋 Analysis Preview:")
+                    if analysis_type == 'description':
+                        preview = result['description'][:200] + "..." if len(result['description']) > 200 else result['description']
+                        print(f"'{preview}'")
+                    elif analysis_type == 'classification':
+                        preview = result['classification'][:200] + "..." if len(result['classification']) > 200 else result['classification']
+                        print(f"'{preview}'")
+                    elif analysis_type == 'objects':
+                        preview = result['objects'][:200] + "..." if len(result['objects']) > 200 else result['objects']
+                        print(f"'{preview}'")
+                    elif analysis_type == 'text':
+                        preview = result['extracted_text'][:200] + "..." if len(result['extracted_text']) > 200 else result['extracted_text']
+                        print(f"'{preview}'")
+                    elif analysis_type == 'composition':
+                        preview = result['composition'][:200] + "..." if len(result['composition']) > 200 else result['composition']
+                        print(f"'{preview}'")
+                    elif analysis_type == 'qa':
+                        preview = result['answers'][:200] + "..." if len(result['answers']) > 200 else result['answers']
+                        print(f"'{preview}'")
+                else:
+                    print(f"❌ Analysis failed for: {image_path.name}")
+                    failed += 1
+                    
+            except Exception as e:
+                print(f"❌ Analysis failed: {e}")
+                failed += 1
+        
+        print(f"\n📊 Results: {successful} successful | {failed} failed")
+        
+        if successful > 0:
+            print(f"📁 Output saved to: {output_dir}")
+            print("🎉 Analysis complete! Check output files for full results.")
+            
+    except KeyboardInterrupt:
+        print("\n👋 Operation cancelled by user")
