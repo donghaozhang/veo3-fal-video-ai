@@ -71,6 +71,12 @@ def cmd_describe_videos_enhanced(input_path=None, output_path=None, format_type=
     return cmd_describe_videos_with_params(input_path, output_path, format_type)
 
 
+def cmd_transcribe_videos_enhanced(input_path=None, output_path=None, format_type=None):
+    """Enhanced transcribe-videos command with parameter support."""
+    from video_utils.ai_analysis_commands import cmd_transcribe_videos_with_params
+    return cmd_transcribe_videos_with_params(input_path, output_path, format_type)
+
+
 def create_parser():
     """Create argument parser with enhanced support for describe-videos."""
     parser = argparse.ArgumentParser(
@@ -113,14 +119,14 @@ Requirements:
     parser.add_argument('duration', type=int, nargs='?', default=5,
                        help='Duration in seconds for cut command (default: 5)')
     
-    # Enhanced parameters for describe-videos command
+    # Enhanced parameters for describe-videos and transcribe-videos commands
     parser.add_argument('-i', '--input', type=str,
-                       help='Input video file or directory path (for describe-videos)')
+                       help='Input video file or directory path (for describe-videos, transcribe-videos)')
     parser.add_argument('-o', '--output', type=str,
-                       help='Output file or directory path (for describe-videos)')
+                       help='Output file or directory path (for describe-videos, transcribe-videos)')
     parser.add_argument('-f', '--format', type=str, choices=['describe-video', 'json', 'txt'],
                        default='describe-video',
-                       help='Output format for describe-videos (default: describe-video)')
+                       help='Output format for describe-videos/transcribe-videos (default: describe-video)')
     
     return parser
 
@@ -150,6 +156,22 @@ def main():
             print("\n👋 Operation cancelled by user")
         except Exception as e:
             print(f"\n❌ Error in enhanced describe-videos: {e}")
+            sys.exit(1)
+    
+    # Special handling for transcribe-videos command with parameters
+    if args.command == 'transcribe-videos' and (args.input or args.output or args.format != 'describe-video'):
+        print("🎤 Enhanced transcribe-videos mode with parameters")
+        print(f"📁 Input: {args.input or 'current directory/input'}")
+        print(f"📁 Output: {args.output or 'current directory/output'}")
+        print(f"📋 Format: {args.format}")
+        print()
+        
+        try:
+            return cmd_transcribe_videos_enhanced(args.input, args.output, args.format)
+        except KeyboardInterrupt:
+            print("\n👋 Operation cancelled by user")
+        except Exception as e:
+            print(f"\n❌ Error in enhanced transcribe-videos: {e}")
             sys.exit(1)
     
     # Check ffmpeg availability for commands that need it
