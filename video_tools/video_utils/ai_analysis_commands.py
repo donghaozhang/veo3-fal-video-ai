@@ -293,6 +293,160 @@ def cmd_describe_videos():
     print(f"\n📊 Results: {successful} successful | {failed} failed")
 
 
+def cmd_describe_videos_with_params(input_path=None, output_path=None, format_type='describe-video'):
+    """Enhanced describe-videos command with parameter support.
+    
+    Args:
+        input_path: Path to input video file or directory
+        output_path: Path to output file or directory
+        format_type: Output format ('describe-video', 'json', 'txt')
+    """
+    print("📝 VIDEO DESCRIPTION - Enhanced with Parameters")
+    print("=" * 60)
+    
+    # Check requirements
+    gemini_ready, message = check_gemini_requirements()
+    if not gemini_ready:
+        print(f"❌ Gemini not available: {message}")
+        return
+    
+    # Handle input path
+    if input_path:
+        input_path = Path(input_path)
+        if not input_path.exists():
+            print(f"❌ Input path not found: {input_path}")
+            return
+        
+        if input_path.is_file():
+            # Single file
+            video_files = [input_path] if input_path.suffix.lower() in {'.mp4', '.avi', '.mov', '.mkv', '.webm'} else []
+            if not video_files:
+                print(f"❌ File is not a supported video format: {input_path}")
+                return
+        else:
+            # Directory
+            video_files = find_video_files(input_path)
+    else:
+        # Default behavior - use input directory
+        input_dir = Path('input')
+        if not input_dir.exists():
+            print("📁 Input directory 'input' not found")
+            print("💡 Create an 'input' directory and place your video files there")
+            return
+        video_files = find_video_files(input_dir)
+    
+    if not video_files:
+        print("📁 No video files found")
+        return
+    
+    print(f"📹 Found {len(video_files)} video file(s)")
+    
+    # Handle output path
+    if output_path:
+        output_path = Path(output_path)
+        if len(video_files) == 1 and not output_path.suffix:
+            # Single file, output path is a directory
+            output_dir = output_path
+            output_dir.mkdir(parents=True, exist_ok=True)
+            output_file = None
+        elif len(video_files) == 1 and output_path.suffix:
+            # Single file, output path is a file
+            output_dir = output_path.parent
+            output_dir.mkdir(parents=True, exist_ok=True)
+            output_file = output_path
+        else:
+            # Multiple files, output path must be a directory
+            output_dir = output_path
+            output_dir.mkdir(parents=True, exist_ok=True)
+            output_file = None
+    else:
+        # Default behavior - use output directory
+        output_dir = Path('output')
+        output_dir.mkdir(exist_ok=True)
+        output_file = None
+    
+    print(f"📁 Output directory: {output_dir}")
+    if output_file:
+        print(f"📄 Output file: {output_file}")
+    print(f"📋 Format: {format_type}")
+    
+    # Ask for detailed analysis if not specified by format
+    if format_type == 'describe-video':
+        try:
+            detailed = input("📊 Detailed analysis? (y/N): ").strip().lower() == 'y'
+        except (EOFError, KeyboardInterrupt):
+            # Non-interactive mode or interrupted - default to basic analysis
+            detailed = False
+            print("N")
+            print("📊 Using basic analysis (non-interactive mode)")
+    else:
+        detailed = True  # Default to detailed for specific formats
+    
+    successful = 0
+    failed = 0
+    
+    for i, video_path in enumerate(video_files):
+        print(f"\n📺 Describing: {video_path.name} ({i+1}/{len(video_files)})")
+        
+        try:
+            analyzer = GeminiVideoAnalyzer()
+            result = analyzer.describe_video(video_path, detailed)
+            
+            if result:
+                # Determine output filename
+                if output_file and len(video_files) == 1:
+                    # Single file with specific output file
+                    if format_type == 'json' or output_file.suffix == '.json':
+                        json_file = output_file.with_suffix('.json')
+                        txt_file = output_file.with_suffix('.txt')
+                    elif format_type == 'txt' or output_file.suffix == '.txt':
+                        txt_file = output_file.with_suffix('.txt')
+                        json_file = output_file.with_suffix('.json')
+                    else:
+                        # Default naming
+                        json_file = output_file.with_suffix('.json')
+                        txt_file = output_file.with_suffix('.txt')
+                else:
+                    # Directory output or multiple files
+                    base_name = f"{video_path.stem}_description"
+                    json_file = output_dir / f"{base_name}.json"
+                    txt_file = output_dir / f"{base_name}.txt"
+                
+                # Save based on format
+                if format_type in ['describe-video', 'json']:
+                    save_analysis_result(result, json_file)
+                    print(f"✅ Saved JSON: {json_file}")
+                
+                if format_type in ['describe-video', 'txt']:
+                    # Save readable text version
+                    with open(txt_file, 'w', encoding='utf-8') as f:
+                        f.write(f"Video Description: {video_path.name}\n")
+                        f.write("=" * 50 + "\n\n")
+                        f.write(result['description'])
+                        if 'file_id' in result:
+                            f.write(f"\n\nFile ID: {result['file_id']}")
+                        f.write(f"\nGenerated: {result.get('timestamp', 'Unknown')}")
+                    print(f"✅ Saved TXT: {txt_file}")
+                
+                successful += 1
+                
+                # Show preview
+                preview = result['description'][:150] + "..." if len(result['description']) > 150 else result['description']
+                print(f"📝 Preview: {preview}")
+            else:
+                print(f"❌ Description failed for: {video_path.name}")
+                failed += 1
+                
+        except Exception as e:
+            print(f"❌ Description failed: {e}")
+            failed += 1
+    
+    print(f"\n📊 Results: {successful} successful | {failed} failed")
+    
+    if successful > 0:
+        print(f"📁 Output saved to: {output_dir}")
+
+
 def cmd_analyze_audio():
     """Comprehensive audio analysis using Gemini."""
     print("🔊 AUDIO ANALYSIS - Google Gemini")

@@ -7,6 +7,8 @@ import os
 import time
 import traceback
 import uuid
+import argparse
+import sys
 from typing import Optional, Dict, Any
 import fal_client
 from dotenv import load_dotenv
@@ -246,6 +248,7 @@ class FALImageToVideoGenerator:
             return None
         
         # Generate video using the uploaded image URL
+        input_filename = os.path.basename(image_path)
         return self.generate_video_from_image(
             prompt=prompt,
             image_url=image_url,
@@ -253,7 +256,8 @@ class FALImageToVideoGenerator:
             prompt_optimizer=prompt_optimizer,
             output_folder=output_folder,
             use_async=use_async,
-            model=model
+            model=model,
+            input_filename=input_filename
         )
     
     def generate_video_with_kling(
@@ -352,11 +356,8 @@ class FALImageToVideoGenerator:
                 file_size = video_info.get('file_size', 0)
                 
                 # Generate custom filename: inputname_taskid.mp4
-                if input_filename:
-                    base_name = os.path.splitext(input_filename)[0]
-                    custom_filename = f"{base_name}_{task_id}.mp4"
-                else:
-                    custom_filename = f"kling_{task_id}.mp4"
+                task_id = str(uuid.uuid4())[:8]
+                custom_filename = f"kling_{task_id}.mp4"
                 
                 print(f"Generated video URL: {video_url}")
                 print(f"Original file name: {original_file_name}")
@@ -451,10 +452,235 @@ class FALImageToVideoGenerator:
             return None
 
 
+def create_argument_parser():
+    """
+    Create and configure the argument parser for CLI usage
+    """
+    parser = argparse.ArgumentParser(
+        description="FAL AI Image-to-Video Generator CLI",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Generate video from local image
+  python fal_image_to_video_generator.py -i input.jpg -p "A person walking in a garden" -o output/
+
+  # Generate video with specific duration and model
+  python fal_image_to_video_generator.py -i image.png -p "Dynamic motion" -d 10 --model kling
+
+  # Generate video with async processing
+  python fal_image_to_video_generator.py -i photo.jpg -p "Beautiful sunset" --async
+
+  # Generate video from URL with custom settings
+  python fal_image_to_video_generator.py --url "https://example.com/image.jpg" -p "Ocean waves" --cfg-scale 0.7
+
+Supported Models:
+  - hailuo (default): MiniMax Hailuo-02 - 768p, 6-10s, with prompt optimizer
+  - kling: Kling Video 2.1 - High-quality, 5-10s, with CFG scale and negative prompts
+        """
+    )
+    
+    # Input options (mutually exclusive)
+    input_group = parser.add_mutually_exclusive_group(required=True)
+    input_group.add_argument('-i', '--image', type=str,
+                            help='Path to local image file')
+    input_group.add_argument('--url', type=str,
+                            help='URL of image to use')
+    
+    # Required parameters
+    parser.add_argument('-p', '--prompt', type=str, required=True,
+                       help='Text prompt for video generation')
+    
+    # Output options
+    parser.add_argument('-o', '--output', type=str, default='output',
+                       help='Output folder for generated video (default: output)')
+    
+    # Model selection
+    parser.add_argument('--model', type=str, choices=['hailuo', 'kling'], default='hailuo',
+                       help='Model to use for generation (default: hailuo)')
+    
+    # Duration
+    parser.add_argument('-d', '--duration', type=str, default='6',
+                       help='Video duration in seconds (default: 6)')
+    
+    # Processing options
+    parser.add_argument('--async', action='store_true',
+                       help='Use async processing with polling')
+    
+    # Model-specific parameters
+    parser.add_argument('--no-prompt-optimizer', action='store_true',
+                       help='Disable prompt optimizer (Hailuo only, default: enabled)')
+    parser.add_argument('--negative-prompt', type=str, default='blur, distort, and low quality',
+                       help='Negative prompt (Kling only, default: "blur, distort, and low quality")')
+    parser.add_argument('--cfg-scale', type=float, default=0.5,
+                       help='CFG scale for guidance (Kling only, default: 0.5)')
+    
+    # API key
+    parser.add_argument('--api-key', type=str,
+                       help='FAL API key (if not set in environment)')
+    
+    # Verbose output
+    parser.add_argument('-v', '--verbose', action='store_true',
+                       help='Enable verbose output')
+    
+    return parser
+
+
+def validate_arguments(args):
+    """
+    Validate CLI arguments and check for common issues
+    """
+    errors = []
+    
+    # Check if local image file exists
+    if args.image and not os.path.exists(args.image):
+        errors.append(f"Image file not found: {args.image}")
+    
+    # Validate duration for specific models
+    if args.model == 'hailuo' and args.duration not in ['6', '10']:
+        errors.append("Hailuo model supports duration of '6' or '10' seconds only")
+    elif args.model == 'kling' and args.duration not in ['5', '10']:
+        errors.append("Kling model supports duration of '5' or '10' seconds only")
+    
+    # Validate CFG scale
+    if args.cfg_scale < 0.0 or args.cfg_scale > 1.0:
+        errors.append("CFG scale must be between 0.0 and 1.0")
+    
+    # Check API key
+    if not args.api_key and not os.getenv('FAL_KEY'):
+        errors.append("FAL API key required. Set FAL_KEY environment variable or use --api-key")
+    
+    return errors
+
+
+def run_cli():
+    """
+    Main CLI function to handle command-line arguments and execute video generation
+    """
+    parser = create_argument_parser()
+    args = parser.parse_args()
+    
+    # Validate arguments
+    validation_errors = validate_arguments(args)
+    if validation_errors:
+        print("❌ Validation errors:")
+        for error in validation_errors:
+            print(f"  - {error}")
+        sys.exit(1)
+    
+    try:
+        # Initialize generator
+        if args.verbose:
+            print("🔧 Initializing FAL Image-to-Video Generator...")
+        
+        generator = FALImageToVideoGenerator(api_key=args.api_key)
+        
+        # Prepare parameters
+        if args.verbose:
+            print(f"📋 Configuration:")
+            print(f"  - Model: {args.model}")
+            print(f"  - Duration: {args.duration}s")
+            print(f"  - Output folder: {args.output}")
+            print(f"  - Async processing: {getattr(args, 'async')}")
+            print(f"  - Prompt: '{args.prompt}'")
+            if args.image:
+                print(f"  - Local image: {args.image}")
+            else:
+                print(f"  - Image URL: {args.url}")
+        
+        # Generate video based on input type
+        result = None
+        
+        if args.image:
+            # Generate from local image
+            input_filename = os.path.basename(args.image)
+            
+            if args.model == 'kling':
+                # Upload image first for Kling model
+                image_url = generator.upload_local_image(args.image)
+                if not image_url:
+                    print("❌ Failed to upload image")
+                    sys.exit(1)
+                
+                result = generator.generate_video_with_kling(
+                    prompt=args.prompt,
+                    image_url=image_url,
+                    duration=args.duration,
+                    negative_prompt=args.negative_prompt,
+                    cfg_scale=args.cfg_scale,
+                    output_folder=args.output,
+                    use_async=getattr(args, 'async')
+                )
+            else:
+                # Hailuo model
+                result = generator.generate_video_from_local_image(
+                    prompt=args.prompt,
+                    image_path=args.image,
+                    duration=args.duration,
+                    prompt_optimizer=not args.no_prompt_optimizer,
+                    output_folder=args.output,
+                    use_async=getattr(args, 'async'),
+                    model="fal-ai/minimax/hailuo-02/standard/image-to-video"
+                )
+        else:
+            # Generate from URL
+            model_endpoint = "fal-ai/kling-video/v2.1/standard/image-to-video" if args.model == 'kling' else "fal-ai/minimax/hailuo-02/standard/image-to-video"
+            
+            result = generator.generate_video_from_image(
+                prompt=args.prompt,
+                image_url=args.url,
+                duration=args.duration,
+                prompt_optimizer=not args.no_prompt_optimizer,
+                output_folder=args.output,
+                use_async=getattr(args, 'async'),
+                model=model_endpoint
+            )
+        
+        # Handle results
+        if result:
+            print("\n✅ Video generation completed successfully!")
+            print(f"📹 Video URL: {result['video']['url']}")
+            
+            if 'local_path' in result:
+                print(f"💾 Local file: {result['local_path']}")
+            
+            if 'custom_filename' in result:
+                print(f"📁 Custom filename: {result['custom_filename']}")
+            
+            if 'task_id' in result:
+                print(f"🔖 Task ID: {result['task_id']}")
+            
+            # Print file info if available
+            video_info = result.get('video', {})
+            if 'file_size' in video_info:
+                file_size_mb = video_info['file_size'] / (1024 * 1024)
+                print(f"📊 File size: {file_size_mb:.2f} MB")
+        else:
+            print("❌ Video generation failed")
+            sys.exit(1)
+            
+    except KeyboardInterrupt:
+        print("\n⚠️ Process interrupted by user")
+        sys.exit(1)
+    except Exception as e:
+        print(f"❌ Error: {e}")
+        if args.verbose:
+            traceback.print_exc()
+        sys.exit(1)
+
+
 def main():
     """
-    Example usage of FAL Video Generator
+    Main function - handles both CLI and example usage
     """
+    # Check if running as CLI (has command line arguments)
+    if len(sys.argv) > 1:
+        run_cli()
+        return
+    
+    # Otherwise run example usage
+    print("Running example usage (use --help for CLI options)")
+    print("=" * 50)
+    
     try:
         # Initialize the generator
         generator = FALImageToVideoGenerator()
