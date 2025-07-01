@@ -8,6 +8,7 @@ This is a comprehensive AI content creation project with multiple implementation
 - FAL AI text-to-image (fal_text_to_image/)
 - FAL AI image-to-image (fal_image_to_image/)
 - **NEW: Modular text-to-speech package (text_to_speech/)**
+- **ENHANCED: Video tools with CLI parameter support (video_tools/)**
 
 ## Text-to-Speech Package Architecture (RECENTLY REFACTORED)
 
@@ -61,6 +62,36 @@ from openrouter_tts_pipeline import OpenRouterTTSPipeline      # FILE REMOVED
 - All functionality preserved in new modular structure
 - Migration guide available: text_to_speech/MIGRATION_GUIDE.md
 - Backward compatibility maintained through main package interface
+
+## Video Tools Enhanced CLI Architecture (RECENTLY IMPLEMENTED)
+
+### Enhanced Commands with Parameter Support
+The video_tools package now supports enhanced CLI parameter mode for specific commands:
+
+```bash
+# Enhanced generate-subtitles with -i, -o, -f parameters
+python3 video_audio_utils.py generate-subtitles -i video.mp4 -o subtitle.srt
+python3 video_audio_utils.py generate-subtitles -i input/ -o output/ -f vtt
+
+# Enhanced describe-videos with parameters
+python3 video_audio_utils.py describe-videos -i video.mp4 -o output.json -f describe-video
+
+# Enhanced transcribe-videos with parameters  
+python3 video_audio_utils.py transcribe-videos -i video.mp4 -o output.json -f json
+```
+
+### Parameter Support Pattern
+Commands support enhanced mode when `-i`, `-o`, or `-f` parameters are provided:
+- `-i`: Input file or directory path
+- `-o`: Output file or directory path  
+- `-f`: Format specification (varies by command)
+
+### Implementation Pattern
+Enhanced commands follow this architecture:
+1. `cmd_[command]_enhanced()` wrapper function in video_audio_utils.py
+2. `cmd_[command]_with_params()` implementation in respective modules
+3. Automatic detection and routing based on parameter presence
+4. Backward compatibility with traditional mode (no parameters)
 
 ## Development Guidelines
 
@@ -134,6 +165,13 @@ from openrouter_tts_pipeline import OpenRouterTTSPipeline      # FILE REMOVED
 - Complete configuration management system
 - CLI tools and interactive interfaces
 
+### Video Tools Package
+- Enhanced CLI architecture with parameter support (recently implemented)
+- Supports both traditional mode and enhanced mode with parameters
+- Subtitle generation: SRT/VTT format support with -i/-o/-f parameters
+- AI analysis: describe-videos and transcribe-videos with parameter support
+- Comprehensive test suite with automated CLI testing
+
 ## When Working on This Project
 
 1. **Identify the Implementation**: Understand which component you're working with
@@ -160,6 +198,23 @@ python cli/interactive.py
 python cli/quick_start.py
 ```
 
+### Video Tools Development
+```bash
+cd video_tools
+
+# Test enhanced CLI functionality
+bash tests/test_subtitles_cli.sh
+
+# Enhanced commands with parameters
+python3 video_audio_utils.py generate-subtitles -i input/video.mp4 -o output/subtitle.srt -f srt
+python3 video_audio_utils.py describe-videos -i input/video.mp4 -o output/description.json
+python3 video_audio_utils.py transcribe-videos -i input/video.mp4 -o output/transcript.txt
+
+# Traditional commands (no parameters)
+python3 video_audio_utils.py generate-subtitles
+python3 video_audio_utils.py describe-videos
+```
+
 ### Other Implementations
 ```bash
 # Google Veo
@@ -170,4 +225,6 @@ cd fal_image_to_video && python test_api_only.py  # FREE
 cd fal_avatar_generation && python test_setup.py  # FREE
 ```
 
-Remember: The text_to_speech package is the newest addition with a completely refactored, professional modular architecture. Always use the new import patterns and module structure when working with it.
+Remember: 
+- The text_to_speech package has a completely refactored, professional modular architecture. Always use the new import patterns and module structure.
+- The video_tools package now supports enhanced CLI mode with -i/-o/-f parameters for generate-subtitles, describe-videos, and transcribe-videos commands. Always check for parameter support when working with these commands.
