@@ -562,6 +562,207 @@ class FALTextToImageGenerator:
                 "supports_negative_prompt": True
             }
         }
+    
+    def load_prompt_from_input(self, prompt_input: str) -> str:
+        """
+        Load prompt from either text string or file path.
+        
+        Args:
+            prompt_input: Either a text prompt or path to a text file
+            
+        Returns:
+            The prompt text
+            
+        Raises:
+            FileNotFoundError: If file path is provided but doesn't exist
+            ValueError: If file is empty or invalid
+        """
+        # Check if input looks like a file path
+        if (prompt_input.endswith(('.txt', '.md', '.prompt')) or 
+            os.path.sep in prompt_input or 
+            os.path.exists(prompt_input)):
+            
+            if not os.path.exists(prompt_input):
+                raise FileNotFoundError(f"Prompt file not found: {prompt_input}")
+            
+            try:
+                with open(prompt_input, 'r', encoding='utf-8') as f:
+                    content = f.read().strip()
+                
+                if not content:
+                    raise ValueError(f"Prompt file is empty: {prompt_input}")
+                
+                print(f"📁 Loaded prompt from file: {prompt_input}")
+                return content
+                
+            except Exception as e:
+                raise ValueError(f"Error reading prompt file {prompt_input}: {e}")
+        
+        # It's a direct text prompt
+        return prompt_input
+    
+    def generate_from_cli(self, 
+                         prompt_input: str,
+                         model: str = "flux_schnell",
+                         output_path: Optional[str] = None,
+                         **model_params) -> Dict[str, Any]:
+        """
+        Generate image from CLI with support for prompt files and output path.
+        
+        Args:
+            prompt_input: Text prompt or path to prompt file
+            model: Model to use (imagen4, seedream, flux_schnell, flux_dev)
+            output_path: Custom output directory path
+            **model_params: Model-specific parameters
+            
+        Returns:
+            Dictionary with generation results
+        """
+        try:
+            # Load prompt from input (text or file)
+            prompt = self.load_prompt_from_input(prompt_input)
+            
+            # Validate model
+            self.validate_model(model)
+            
+            # Set output directory
+            output_dir = output_path or "output"
+            
+            print(f"🎨 Generating image with {model}")
+            print(f"📝 Prompt: {prompt[:100]}{'...' if len(prompt) > 100 else ''}")
+            print(f"📁 Output: {output_dir}")
+            
+            # Filter model-specific parameters
+            valid_params = self._filter_model_params(model, model_params)
+            
+            # Generate image
+            result = self.generate_image(
+                prompt=prompt,
+                model=model,
+                **valid_params
+            )
+            
+            # Download image if successful
+            if result.get('success') and result.get('image_url'):
+                try:
+                    local_path = self.download_image(result['image_url'], output_dir)
+                    result['local_path'] = local_path
+                    print(f"✅ Image saved to: {local_path}")
+                except Exception as e:
+                    print(f"⚠️ Download failed: {e}")
+                    result['download_error'] = str(e)
+            
+            return result
+            
+        except Exception as e:
+            error_msg = f"CLI generation failed: {e}"
+            print(f"❌ {error_msg}")
+            return {"success": False, "error": error_msg}
+    
+    def _filter_model_params(self, model: str, params: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Filter parameters to only include those valid for the specified model.
+        
+        Args:
+            model: Model name
+            params: Dictionary of parameters
+            
+        Returns:
+            Filtered parameters dictionary
+        """
+        if not params:
+            return {}
+        
+        # Define valid parameters for each model
+        valid_params = {
+            "imagen4": {
+                "image_size", "num_inference_steps", "guidance_scale", 
+                "num_images", "enable_safety_checker"
+            },
+            "seedream": {
+                "image_size", "num_inference_steps", "guidance_scale",
+                "num_images", "seed", "negative_prompt"
+            },
+            "flux_schnell": {
+                "image_size", "num_inference_steps", "num_images", 
+                "enable_safety_checker"
+            },
+            "flux_dev": {
+                "image_size", "num_inference_steps", "guidance_scale",
+                "num_images", "enable_safety_checker", "negative_prompt"
+            }
+        }
+        
+        model_valid_params = valid_params.get(model, set())
+        filtered = {k: v for k, v in params.items() 
+                   if k in model_valid_params and v is not None}
+        
+        if filtered:
+            print(f"🔧 Using parameters: {filtered}")
+        
+        return filtered
+    
+    def batch_generate_from_cli(self,
+                              prompt_input: str,
+                              models: Optional[List[str]] = None,
+                              output_path: Optional[str] = None,
+                              save_results: Optional[str] = None,
+                              **shared_params) -> Dict[str, Any]:
+        """
+        Generate images with multiple models from CLI.
+        
+        Args:
+            prompt_input: Text prompt or path to prompt file
+            models: List of models to use (default: all models)
+            output_path: Custom output directory path
+            save_results: Path to save JSON results
+            **shared_params: Parameters to apply to all compatible models
+            
+        Returns:
+            Dictionary with results from all models
+        """
+        try:
+            # Load prompt
+            prompt = self.load_prompt_from_input(prompt_input)
+            
+            # Use all models if none specified
+            if not models:
+                models = list(self.MODEL_ENDPOINTS.keys())
+            
+            # Set output directory
+            output_dir = output_path or "output"
+            
+            print(f"🆚 Batch generating with {len(models)} models")
+            print(f"📝 Prompt: {prompt[:100]}{'...' if len(prompt) > 100 else ''}")
+            print(f"📁 Output: {output_dir}")
+            print(f"🤖 Models: {', '.join(models)}")
+            
+            # Use the existing batch_generate method
+            result = self.batch_generate(
+                prompt=prompt,
+                models=models,
+                output_folder=output_dir,
+                download_images=True,
+                auto_confirm=True,  # Skip interactive confirmation in CLI mode
+                **shared_params
+            )
+            
+            # Save results if requested
+            if save_results and result:
+                try:
+                    import json
+                    with open(save_results, 'w') as f:
+                        json.dump(result, f, indent=2)
+                    print(f"📄 Results saved to: {save_results}")
+                except Exception as e:
+                    print(f"⚠️ Failed to save results: {e}")
+            
+            return result
+            
+        except Exception as e:
+            error_msg = f"CLI batch generation failed: {e}"
+            print(f"❌ {error_msg}")
+            return {"success": False, "error": error_msg}
 
 
 if __name__ == "__main__":

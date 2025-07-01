@@ -53,21 +53,28 @@ def generate_image(args):
         if args.guidance_scale is not None:
             kwargs["guidance_scale"] = args.guidance_scale
         
-        # Generate image using unified method
-        result = generator.generate_image(
-            prompt=args.prompt,
-            model=args.model
-        )
+        # Prepare model-specific parameters
+        model_params = {}
+        if args.seed is not None:
+            model_params["seed"] = args.seed
+        if args.num_inference_steps is not None:
+            model_params["num_inference_steps"] = args.num_inference_steps
+        if args.guidance_scale is not None:
+            model_params["guidance_scale"] = args.guidance_scale
+        if args.image_size:
+            model_params["image_size"] = args.image_size
+        if args.negative_prompt:
+            model_params["negative_prompt"] = args.negative_prompt
+        if args.num_images is not None:
+            model_params["num_images"] = args.num_images
         
-        # Download image if successful
-        if result.get("success") and result.get("image_url"):
-            output_dir = args.output_dir or "output"
-            try:
-                local_path = generator.download_image(result["image_url"], output_dir)
-                result["local_path"] = local_path
-            except Exception as e:
-                print(f"⚠️ Download failed: {e}")
-                result["download_error"] = str(e)
+        # Use the new CLI function
+        result = generator.generate_from_cli(
+            prompt_input=args.prompt,
+            model=args.model,
+            output_path=args.output_dir,
+            **model_params
+        )
         
         # Print results
         if result.get("success"):
@@ -151,44 +158,14 @@ def compare_models(args):
         print("⚠️  This will generate 4 images and incur costs!")
         
         generator = FALTextToImageGenerator()
-        models = ["imagen4", "seedream", "flux_schnell", "flux_dev"]
-        results = {}
         
-        for i, model in enumerate(models, 1):
-            print(f"\n🎨 Testing model {i}/{len(models)}: {model}")
-            
-            try:
-                # Generate image using unified method
-                result = generator.generate_image(prompt=args.prompt, model=model)
-                
-                # Download image if successful
-                if result.get("success") and result.get("image_url"):
-                    output_dir = args.output_dir or "output"
-                    try:
-                        local_path = generator.download_image(result["image_url"], output_dir)
-                        result["local_path"] = local_path
-                    except Exception as e:
-                        result["download_error"] = str(e)
-                
-                if result.get("success"):
-                    print(f"   ✅ {model}: SUCCESS ({result.get('processing_time', 0):.2f}s)")
-                else:
-                    print(f"   ❌ {model}: FAILED - {result.get('error', 'Unknown error')}")
-                
-                results[model] = result
-                
-            except Exception as e:
-                print(f"   ❌ {model}: ERROR - {e}")
-                results[model] = {"success": False, "error": str(e)}
-        
-        # Summary
-        successful = sum(1 for r in results.values() if r.get("success", False))
-        print(f"\n📊 Comparison complete: {successful}/{len(models)} models successful")
-        
-        if args.save_json:
-            with open(args.save_json, 'w') as f:
-                json.dump(results, f, indent=2)
-            print(f"📄 Results saved to: {args.save_json}")
+        # Use the new CLI batch function
+        results = generator.batch_generate_from_cli(
+            prompt_input=args.prompt,
+            models=None,  # Use all models
+            output_path=args.output_dir,
+            save_results=args.save_json
+        )
             
     except Exception as e:
         print(f"❌ Comparison failed: {e}")
@@ -210,14 +187,22 @@ Examples:
   # Test setup (FREE)
   python -m fal_text_to_image test-setup
   
-  # Generate with Imagen 4
-  python -m fal_text_to_image generate -p "a dragon in the sky" -m imagen4
+  # Generate with text prompt
+  python -m fal_text_to_image generate -p "a dragon in the sky" -m imagen4 -o my_output
   
-  # Generate with FLUX Schnell
-  python -m fal_text_to_image generate -p "cyberpunk cityscape" -m flux_schnell
+  # Generate with prompt file
+  python -m fal_text_to_image generate -p prompts/fantasy.txt -m flux_schnell
   
-  # Compare all models
-  python -m fal_text_to_image compare -p "majestic phoenix"
+  # Generate with advanced parameters
+  python -m fal_text_to_image generate -p "cyberpunk cityscape" -m flux_dev \\
+    --image-size landscape_16_9 --guidance-scale 4.0 --num-inference-steps 30
+  
+  # Generate with negative prompt
+  python -m fal_text_to_image generate -p "beautiful landscape" -m seedream \\
+    --negative-prompt "blurry, low quality" --seed 42
+  
+  # Compare all models with prompt file
+  python -m fal_text_to_image compare -p prompts/test.txt --save-json results.json
         """
     )
     
@@ -235,19 +220,26 @@ Examples:
     
     # Generate command
     generate_parser = subparsers.add_parser("generate", help="Generate an image")
-    generate_parser.add_argument("-p", "--prompt", required=True, help="Text prompt for image generation")
+    generate_parser.add_argument("-p", "--prompt", required=True, 
+                                help="Text prompt or path to prompt file (.txt, .md, .prompt)")
     generate_parser.add_argument("-m", "--model", choices=["imagen4", "seedream", "flux_schnell", "flux_dev"],
                                 required=True, help="Model to use")
-    generate_parser.add_argument("-o", "--output-dir", help="Output directory")
-    generate_parser.add_argument("--seed", type=int, help="Random seed")
+    generate_parser.add_argument("-o", "--output-dir", help="Output directory (default: output)")
+    
+    # Model-specific parameters
+    generate_parser.add_argument("--seed", type=int, help="Random seed (seedream, flux_dev)")
     generate_parser.add_argument("--num-inference-steps", type=int, help="Number of inference steps")
-    generate_parser.add_argument("--guidance-scale", type=float, help="Guidance scale")
+    generate_parser.add_argument("--guidance-scale", type=float, help="Guidance scale (imagen4, seedream, flux_dev)")
+    generate_parser.add_argument("--image-size", help="Image size (e.g., landscape_4_3, square, portrait_16_9)")
+    generate_parser.add_argument("--negative-prompt", help="Negative prompt (seedream, flux_dev only)")
+    generate_parser.add_argument("--num-images", type=int, help="Number of images to generate (default: 1)")
     generate_parser.add_argument("--save-json", help="Save full result as JSON")
     
     # Compare command
     compare_parser = subparsers.add_parser("compare", help="Compare all models with same prompt")
-    compare_parser.add_argument("-p", "--prompt", required=True, help="Text prompt for comparison")
-    compare_parser.add_argument("-o", "--output-dir", help="Output directory")
+    compare_parser.add_argument("-p", "--prompt", required=True, 
+                               help="Text prompt or path to prompt file (.txt, .md, .prompt)")
+    compare_parser.add_argument("-o", "--output-dir", help="Output directory (default: output)")
     compare_parser.add_argument("--save-json", help="Save comparison results as JSON")
     
     # Parse arguments
