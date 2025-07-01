@@ -10,5 +10,5 @@ source venv/bin/activate
 # Navigate to fal_text_to_image directory
 cd fal_text_to_image
 
-# Run the Imagen 4 test
+# Generate image with Imagen 4 model
 python test/test_imagen4.py --yes

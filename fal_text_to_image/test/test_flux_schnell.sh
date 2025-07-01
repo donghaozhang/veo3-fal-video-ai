@@ -10,5 +10,5 @@ source venv/bin/activate
 # Navigate to fal_text_to_image directory
 cd fal_text_to_image
 
-# Run the FLUX Schnell test
+# Generate image with FLUX Schnell model
 python test/test_flux_schnell.py --yes

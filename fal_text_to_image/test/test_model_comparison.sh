@@ -10,5 +10,5 @@ source venv/bin/activate
 # Navigate to fal_text_to_image directory
 cd fal_text_to_image
 
-# Run the model comparison test
+# Compare all models with same prompt
 python test/test_model_comparison.py --yes

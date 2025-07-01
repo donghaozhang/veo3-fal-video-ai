@@ -10,5 +10,5 @@ source venv/bin/activate
 # Navigate to fal_text_to_image directory
 cd fal_text_to_image
 
-# Run the Seedream test
+# Generate image with Seedream model (supports bilingual)
 python test/test_seedream.py --yes

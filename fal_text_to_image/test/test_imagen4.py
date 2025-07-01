@@ -58,10 +58,18 @@ def test_imagen4_generation() -> Dict[str, Any]:
         print(f"📝 Prompt: {prompt}")
         print("🚀 Starting image generation...")
         
-        result = generator.generate_imagen4(
+        result = generator.generate_image(
             prompt=prompt,
-            output_dir="output"
+            model="imagen4"
         )
+        
+        # Download the image if successful
+        if result.get("success") and result.get("image_url"):
+            try:
+                local_path = generator.download_image(result["image_url"], "output")
+                result["downloaded_files"] = [local_path]
+            except Exception as e:
+                print(f"⚠️ Download failed: {e}")
         
         if result.get("success"):
             print("\n✅ Imagen 4 generation successful!")
