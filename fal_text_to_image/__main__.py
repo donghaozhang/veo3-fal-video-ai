@@ -13,7 +13,11 @@ import json
 from pathlib import Path
 from typing import Optional, Dict, Any
 
-from .fal_text_to_image_generator import FALTextToImageGenerator
+try:
+    from .fal_text_to_image_generator import FALTextToImageGenerator
+except ImportError:
+    # Fallback for direct execution
+    from fal_text_to_image_generator import FALTextToImageGenerator
 
 def print_models():
     """Print information about all supported models."""

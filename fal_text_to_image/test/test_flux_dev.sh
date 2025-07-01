@@ -1,5 +1,5 @@
 #!/bin/bash
-# Test FAL Text-to-Image FLUX Dev Model
+# Test FAL Text-to-Image FLUX Dev Model using CLI
 
 # Navigate to project root
 cd /home/zdhpe/veo3-video-generation
@@ -7,16 +7,13 @@ cd /home/zdhpe/veo3-video-generation
 # Activate virtual environment
 source venv/bin/activate
 
-# Navigate to fal_text_to_image directory
+# Navigate to fal_text_to_image directory for .env access
 cd fal_text_to_image
 
-# Create test_flux_dev.py if it doesn't exist
-if [ ! -f "test/test_flux_dev.py" ]; then
-    echo "Creating test_flux_dev.py..."
-    cp test/test_flux_schnell.py test/test_flux_dev.py
-    sed -i 's/flux_schnell/flux_dev/g' test/test_flux_dev.py
-    sed -i 's/FLUX Schnell/FLUX Dev/g' test/test_flux_dev.py
-fi
+echo "🧪 Testing FLUX Dev model via CLI..."
+echo "⚠️  This will incur costs (~$0.01-0.02 per image)"
 
-# Generate image with FLUX Dev model
-python test/test_flux_dev.py --yes
+# Generate image with FLUX Dev model using CLI (single line to avoid issues)
+python __main__.py generate -p "A surreal landscape with floating islands and waterfalls in the sky, masterpiece quality, detailed 8K art" -m flux_dev -o output --image-size landscape_16_9 --guidance-scale 4.0 --num-inference-steps 28 --save-json flux_dev_result.json
+
+echo "✅ FLUX Dev CLI test completed!"
