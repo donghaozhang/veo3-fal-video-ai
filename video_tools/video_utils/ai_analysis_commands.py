@@ -1145,3 +1145,248 @@ def cmd_extract_text():
             failed += 1
     
     print(f"\n📊 Results: {successful} successful | {failed} failed")
+
+
+def cmd_analyze_audio_with_params(input_path=None, output_path=None, format_type='json'):
+    """Enhanced analyze-audio command with parameter support.
+    
+    Args:
+        input_path: Path to input audio file or directory
+        output_path: Path to output file or directory
+        format_type: Output format ('json', 'txt')
+    """
+    print("🔊 AUDIO ANALYSIS - Enhanced with Parameters")
+    print("=" * 60)
+    
+    # Check requirements
+    gemini_ready, message = check_gemini_requirements()
+    if not gemini_ready:
+        print(f"❌ Gemini not available: {message}")
+        if "not installed" in message:
+            print("📥 Install with: pip install google-generativeai")
+        if "not set" in message:
+            print("🔑 Set API key: export GEMINI_API_KEY=your_api_key")
+            print("🌐 Get API key: https://aistudio.google.com/app/apikey")
+        return
+    
+    # Handle input path
+    if input_path:
+        input_path = Path(input_path)
+        if not input_path.exists():
+            print(f"❌ Input path not found: {input_path}")
+            return
+        
+        if input_path.is_file():
+            # Single file - check if it's a supported audio format
+            audio_extensions = {'.mp3', '.wav', '.m4a', '.flac', '.aac', '.ogg', '.wma'}
+            if input_path.suffix.lower() in audio_extensions:
+                audio_files = [input_path]
+            else:
+                print(f"❌ File is not a supported audio format: {input_path}")
+                print(f"💡 Supported formats: {', '.join(sorted(audio_extensions))}")
+                return
+        else:
+            # Directory
+            audio_files = find_audio_files(input_path)
+    else:
+        # Default behavior - use input directory
+        input_dir = Path('input')
+        if not input_dir.exists():
+            print("📁 Input directory 'input' not found")
+            print("💡 Create an 'input' directory and place your audio files there")
+            return
+        audio_files = find_audio_files(input_dir)
+    
+    if not audio_files:
+        print("📁 No audio files found")
+        return
+    
+    print(f"🎵 Found {len(audio_files)} audio file(s)")
+    
+    # Handle output path
+    if output_path:
+        output_path = Path(output_path)
+        if len(audio_files) == 1 and not output_path.suffix:
+            # Single file, output path is a directory
+            output_dir = output_path
+            output_dir.mkdir(parents=True, exist_ok=True)
+            output_file = None
+        elif len(audio_files) == 1 and output_path.suffix:
+            # Single file, output path is a file
+            output_dir = output_path.parent
+            output_dir.mkdir(parents=True, exist_ok=True)
+            output_file = output_path
+        else:
+            # Multiple files, output path must be a directory
+            output_dir = output_path
+            output_dir.mkdir(parents=True, exist_ok=True)
+            output_file = None
+    else:
+        # Default behavior - use output directory
+        output_dir = Path('output')
+        output_dir.mkdir(exist_ok=True)
+        output_file = None
+    
+    print(f"📁 Output directory: {output_dir}")
+    if output_file:
+        print(f"📄 Output file: {output_file}")
+    print(f"📋 Format: {format_type}")
+    
+    # Analysis type selection with defaults for non-interactive mode
+    analysis_types = {
+        '1': ('description', 'Audio description and characteristics'),
+        '2': ('transcription', 'Speech-to-text transcription'),
+        '3': ('content_analysis', 'Comprehensive content analysis'),
+        '4': ('events', 'Audio event and segment detection'),
+        '5': ('qa', 'Question and answer analysis')
+    }
+    
+    print("\n🎯 Available analysis types:")
+    for key, (type_name, description) in analysis_types.items():
+        print(f"   {key}. {description}")
+    
+    try:
+        choice = input("\n📝 Select analysis type (1-5, default=2): ").strip()
+        if not choice:
+            choice = '2'  # Default to transcription
+            print("🎤 Using default: transcription")
+        
+        if choice not in analysis_types:
+            print("❌ Invalid selection, using default transcription")
+            choice = '2'
+        
+        analysis_type, _ = analysis_types[choice]
+        
+        # Additional options with defaults for non-interactive mode
+        detailed = False
+        speaker_identification = True
+        questions = None
+        
+        if analysis_type == 'description':
+            try:
+                detailed_choice = input("📖 Detailed analysis? (y/N): ").strip().lower()
+                detailed = detailed_choice == 'y'
+            except (EOFError, KeyboardInterrupt):
+                detailed = False
+                print("N")
+        elif analysis_type == 'transcription':
+            try:
+                speaker_choice = input("👥 Speaker identification? (Y/n): ").strip().lower()
+                speaker_identification = speaker_choice != 'n'
+            except (EOFError, KeyboardInterrupt):
+                speaker_identification = True
+                print("Y")
+        elif analysis_type == 'qa':
+            print("\n❓ Enter questions (one per line, empty line to finish):")
+            questions = []
+            try:
+                while True:
+                    q = input("   Question: ").strip()
+                    if not q:
+                        break
+                    questions.append(q)
+            except (EOFError, KeyboardInterrupt):
+                pass
+            
+            if not questions:
+                questions = ["What is the main topic of this audio?", "Who is speaking and what are they discussing?"]
+                print("🔍 Using default questions")
+        
+        successful = 0
+        failed = 0
+        
+        for i, audio_path in enumerate(audio_files):
+            print(f"\n🎵 Analyzing: {audio_path.name} ({i+1}/{len(audio_files)})")
+            
+            try:
+                result = analyze_audio_file(
+                    audio_path, 
+                    analysis_type, 
+                    questions=questions,
+                    detailed=detailed,
+                    speaker_identification=speaker_identification
+                )
+                
+                if result:
+                    # Determine output filename
+                    if output_file and len(audio_files) == 1:
+                        # Single file with specific output file
+                        if format_type == 'json' or output_file.suffix == '.json':
+                            json_file = output_file.with_suffix('.json')
+                            txt_file = output_file.with_suffix('.txt')
+                        elif format_type == 'txt' or output_file.suffix == '.txt':
+                            txt_file = output_file.with_suffix('.txt')
+                            json_file = output_file.with_suffix('.json')
+                        else:
+                            # Default naming
+                            json_file = output_file.with_suffix('.json')
+                            txt_file = output_file.with_suffix('.txt')
+                    else:
+                        # Directory output or multiple files
+                        base_name = f"{audio_path.stem}_{analysis_type}_analysis"
+                        json_file = output_dir / f"{base_name}.json"
+                        txt_file = output_dir / f"{base_name}.txt"
+                    
+                    # Save based on format
+                    if format_type in ['json']:
+                        save_analysis_result(result, json_file)
+                        print(f"✅ Saved JSON: {json_file}")
+                    
+                    if format_type in ['txt']:
+                        # Save readable text version
+                        with open(txt_file, 'w', encoding='utf-8') as f:
+                            f.write(f"Audio Analysis: {audio_path.name}\n")
+                            f.write("=" * 50 + "\n\n")
+                            f.write(f"Analysis Type: {analysis_type}\n\n")
+                            
+                            if analysis_type == 'description':
+                                f.write(result['description'])
+                            elif analysis_type == 'transcription':
+                                f.write(result['transcription'])
+                            elif analysis_type == 'content_analysis':
+                                f.write(result['analysis'])
+                            elif analysis_type == 'events':
+                                f.write(result['events'])
+                            elif analysis_type == 'qa':
+                                f.write(result['answers'])
+                            
+                            if 'file_id' in result:
+                                f.write(f"\n\nFile ID: {result['file_id']}")
+                            f.write(f"\nGenerated: {result.get('timestamp', 'Unknown')}")
+                        print(f"✅ Saved TXT: {txt_file}")
+                    
+                    successful += 1
+                    
+                    # Show preview of result
+                    print(f"📋 Analysis Preview:")
+                    if analysis_type == 'description':
+                        preview = result['description'][:200] + "..." if len(result['description']) > 200 else result['description']
+                        print(f"'{preview}'")
+                    elif analysis_type == 'transcription':
+                        preview = result['transcription'][:200] + "..." if len(result['transcription']) > 200 else result['transcription']
+                        print(f"'{preview}'")
+                    elif analysis_type == 'content_analysis':
+                        preview = result['analysis'][:200] + "..." if len(result['analysis']) > 200 else result['analysis']
+                        print(f"'{preview}'")
+                    elif analysis_type == 'events':
+                        preview = result['events'][:200] + "..." if len(result['events']) > 200 else result['events']
+                        print(f"'{preview}'")
+                    elif analysis_type == 'qa':
+                        preview = result['answers'][:200] + "..." if len(result['answers']) > 200 else result['answers']
+                        print(f"'{preview}'")
+                else:
+                    print(f"❌ Analysis failed for: {audio_path.name}")
+                    failed += 1
+                    
+            except Exception as e:
+                print(f"❌ Analysis failed: {e}")
+                failed += 1
+        
+        print(f"\n📊 Results: {successful} successful | {failed} failed")
+        
+        if successful > 0:
+            print(f"📁 Output saved to: {output_dir}")
+            print("🎉 Analysis complete! Check output files for full results.")
+            
+    except KeyboardInterrupt:
+        print("\n👋 Operation cancelled by user")
