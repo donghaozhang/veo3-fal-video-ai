@@ -10,7 +10,7 @@ from pathlib import Path
 import fal_client
 from dotenv import load_dotenv
 
-from .models import PhotonModel, PhotonBaseModel, KontextModel, KontextMultiModel, SeedEditModel
+from .models import PhotonModel, PhotonBaseModel, KontextModel, KontextMultiModel, SeedEditModel, ClarityModel
 from .utils.file_utils import upload_local_image, ensure_output_directory
 from .config.constants import SUPPORTED_MODELS, MODEL_INFO, ModelType
 
@@ -52,7 +52,8 @@ class FALImageToImageGenerator:
             "photon_base": PhotonBaseModel(),
             "kontext": KontextModel(),
             "kontext_multi": KontextMultiModel(),
-            "seededit": SeedEditModel()
+            "seededit": SeedEditModel(),
+            "clarity": ClarityModel()
         }
         
         # Create output directories
@@ -188,6 +189,66 @@ class FALImageToImageGenerator:
             guidance_scale=guidance_scale,
             seed=seed,
             output_dir=output_dir
+        )
+    
+    def upscale_image(
+        self,
+        image_url: str,
+        scale: float = 2,
+        enable_enhancement: bool = True,
+        prompt: Optional[str] = None,
+        seed: Optional[int] = None,
+        output_dir: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """Convenience method for Clarity Upscaler."""
+        kwargs = {
+            "scale": scale,
+            "enable_enhancement": enable_enhancement
+        }
+        if prompt:
+            kwargs["prompt"] = prompt
+        if seed is not None:
+            kwargs["seed"] = seed
+            
+        # Extract prompt to avoid conflict
+        enhancement_prompt = kwargs.pop("prompt", "")
+        
+        return self.modify_image(
+            prompt=enhancement_prompt,  # Use the enhancement prompt
+            image_url=image_url,
+            model="clarity",
+            output_dir=output_dir,
+            **kwargs
+        )
+    
+    def upscale_local_image(
+        self,
+        image_path: str,
+        scale: float = 2,
+        enable_enhancement: bool = True,
+        prompt: Optional[str] = None,
+        seed: Optional[int] = None,
+        output_dir: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """Convenience method for Clarity Upscaler with local images."""
+        kwargs = {
+            "scale": scale,
+            "enable_enhancement": enable_enhancement
+        }
+        if prompt:
+            kwargs["prompt"] = prompt
+        if seed is not None:
+            kwargs["seed"] = seed
+            
+        # Extract prompt to avoid conflict
+        enhancement_prompt = kwargs.pop("prompt", "")
+        
+        return self.modify_local_image(
+            prompt=enhancement_prompt,  # Use the enhancement prompt
+            image_path=image_path,
+            model="clarity",
+            output_dir=output_dir,
+            **kwargs
         )
     
     # Information methods

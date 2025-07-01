@@ -5,11 +5,11 @@ Constants and configuration for FAL Image-to-Image models
 from typing import Dict, List, Literal
 
 # Model type definitions
-ModelType = Literal["photon", "photon_base", "kontext", "kontext_multi", "seededit"]
+ModelType = Literal["photon", "photon_base", "kontext", "kontext_multi", "seededit", "clarity"]
 AspectRatio = Literal["1:1", "16:9", "9:16", "4:3", "3:4", "21:9", "9:21"]
 
 # Supported models
-SUPPORTED_MODELS = ["photon", "photon_base", "kontext", "kontext_multi", "seededit"]
+SUPPORTED_MODELS = ["photon", "photon_base", "kontext", "kontext_multi", "seededit", "clarity"]
 
 # Model endpoints mapping
 MODEL_ENDPOINTS = {
@@ -17,7 +17,8 @@ MODEL_ENDPOINTS = {
     "photon_base": "fal-ai/luma-photon/modify",
     "kontext": "fal-ai/flux-kontext/dev",
     "kontext_multi": "fal-ai/flux-pro/kontext/max/multi",
-    "seededit": "fal-ai/bytedance/seededit/v3/edit-image"
+    "seededit": "fal-ai/bytedance/seededit/v3/edit-image",
+    "clarity": "fal-ai/clarity-upscaler"
 }
 
 # Aspect ratios for different models
@@ -43,6 +44,10 @@ DEFAULT_VALUES = {
     },
     "seededit": {
         "guidance_scale": 0.5
+    },
+    "clarity": {
+        "scale": 2,
+        "enable_enhancement": True
     }
 }
 
@@ -52,7 +57,8 @@ MODEL_DISPLAY_NAMES = {
     "photon_base": "Luma Photon Base", 
     "kontext": "FLUX Kontext Dev",
     "kontext_multi": "FLUX Kontext [max] Multi",
-    "seededit": "ByteDance SeedEdit v3"
+    "seededit": "ByteDance SeedEdit v3",
+    "clarity": "Clarity Upscaler"
 }
 
 # Model features and descriptions
@@ -125,6 +131,20 @@ MODEL_INFO = {
             "Simple parameter set",
             "High-quality results",
             "ByteDance developed"
+        ]
+    },
+    "clarity": {
+        "model_name": "Clarity Upscaler",
+        "description": "High-quality image upscaling with optional creative enhancement",
+        "scale_factor_range": "1 - 4 (default: 2)",
+        "seed_support": "Yes (optional)",
+        "features": [
+            "Up to 4x upscaling",
+            "Optional creative enhancement",
+            "Maintains image quality",
+            "Fast processing",
+            "Commercial use ready",
+            "Prompt-based enhancement"
         ]
     }
 }
