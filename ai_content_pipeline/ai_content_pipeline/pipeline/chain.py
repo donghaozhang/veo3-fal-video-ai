@@ -10,6 +10,7 @@ from enum import Enum
 class StepType(Enum):
     """Enumeration of supported pipeline step types."""
     TEXT_TO_IMAGE = "text_to_image"
+    IMAGE_TO_IMAGE = "image_to_image"
     IMAGE_TO_VIDEO = "image_to_video"
     ADD_AUDIO = "add_audio"
     UPSCALE_VIDEO = "upscale_video"
@@ -141,6 +142,7 @@ class ContentCreationChain:
         """Get the input type for a step."""
         input_types = {
             StepType.TEXT_TO_IMAGE: "text",
+            StepType.IMAGE_TO_IMAGE: "image",
             StepType.IMAGE_TO_VIDEO: "image", 
             StepType.ADD_AUDIO: "video",
             StepType.UPSCALE_VIDEO: "video"
@@ -151,6 +153,7 @@ class ContentCreationChain:
         """Get the output type for a step."""
         output_types = {
             StepType.TEXT_TO_IMAGE: "image",
+            StepType.IMAGE_TO_IMAGE: "image",
             StepType.IMAGE_TO_VIDEO: "video",
             StepType.ADD_AUDIO: "video", 
             StepType.UPSCALE_VIDEO: "video"

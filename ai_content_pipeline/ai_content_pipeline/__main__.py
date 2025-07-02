@@ -87,9 +87,11 @@ def create_video(args):
                 "error": result.error
             }
             
-            with open(args.save_json, 'w') as f:
+            # Save JSON file in output directory
+            json_path = manager.output_dir / args.save_json
+            with open(json_path, 'w') as f:
                 json.dump(result_dict, f, indent=2)
-            print(f"\n📄 Full result saved to: {args.save_json}")
+            print(f"\n📄 Full result saved to: {json_path}")
             
     except Exception as e:
         print(f"\n❌ Error: {e}")
@@ -152,9 +154,11 @@ def run_chain(args):
                 "error": result.error
             }
             
-            with open(args.save_json, 'w') as f:
+            # Save JSON file in output directory
+            json_path = manager.output_dir / args.save_json
+            with open(json_path, 'w') as f:
                 json.dump(result_dict, f, indent=2)
-            print(f"\n📄 Results saved to: {args.save_json}")
+            print(f"\n📄 Results saved to: {json_path}")
             
     except Exception as e:
         print(f"\n❌ Error: {e}")
@@ -200,9 +204,11 @@ def generate_image(args):
                 "error": result.error
             }
             
-            with open(args.save_json, 'w') as f:
+            # Save JSON file in output directory
+            json_path = manager.output_dir / args.save_json
+            with open(json_path, 'w') as f:
                 json.dump(result_dict, f, indent=2)
-            print(f"\n📄 Result saved to: {args.save_json}")
+            print(f"\n📄 Result saved to: {json_path}")
             
     except Exception as e:
         print(f"\n❌ Error: {e}")

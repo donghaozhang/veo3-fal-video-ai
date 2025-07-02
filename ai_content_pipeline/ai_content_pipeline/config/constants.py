@@ -12,6 +12,14 @@ SUPPORTED_MODELS = {
         "dalle3",             # OpenAI DALL-E 3 (planned)
         "stable_diffusion",   # Stability AI (planned)
     ],
+    "image_to_image": [
+        "photon_flash",       # Luma Photon Flash (creative, fast)
+        "photon_base",        # Luma Photon Base (high quality)
+        "flux_kontext",       # FLUX Kontext Dev (contextual editing)
+        "flux_kontext_multi", # FLUX Kontext Multi (multi-image)
+        "seededit_v3",        # ByteDance SeedEdit v3 (precise editing)
+        "clarity_upscaler",   # Clarity AI upscaler
+    ],
     "image_to_video": [
         "veo3",               # Google Veo 3.0
         "veo2",               # Google Veo 2.0  
@@ -29,6 +37,7 @@ SUPPORTED_MODELS = {
 # Pipeline step types
 PIPELINE_STEPS = [
     "text_to_image",
+    "image_to_image",
     "image_to_video", 
     "add_audio",
     "upscale_video"
@@ -41,6 +50,14 @@ MODEL_RECOMMENDATIONS = {
         "speed": "flux_schnell", 
         "cost_effective": "seedream_v3",
         "photorealistic": "imagen4"
+    },
+    "image_to_image": {
+        "quality": "photon_base",
+        "speed": "photon_flash",
+        "cost_effective": "photon_flash",
+        "creative": "photon_flash",
+        "precise": "seededit_v3",
+        "upscale": "clarity_upscaler"
     },
     "image_to_video": {
         "quality": "veo3",
@@ -57,6 +74,14 @@ COST_ESTIMATES = {
         "flux_schnell": 0.001,
         "imagen4": 0.004,
         "seedream_v3": 0.002,
+    },
+    "image_to_image": {
+        "photon_flash": 0.02,
+        "photon_base": 0.03,
+        "flux_kontext": 0.025,
+        "flux_kontext_multi": 0.04,
+        "seededit_v3": 0.02,
+        "clarity_upscaler": 0.05,
     },
     "image_to_video": {
         "veo3": 3.00,
@@ -79,6 +104,14 @@ PROCESSING_TIME_ESTIMATES = {
         "flux_schnell": 5,
         "imagen4": 20,
         "seedream_v3": 10,
+    },
+    "image_to_image": {
+        "photon_flash": 8,
+        "photon_base": 12,
+        "flux_kontext": 15,
+        "flux_kontext_multi": 25,
+        "seededit_v3": 10,
+        "clarity_upscaler": 30,
     },
     "image_to_video": {
         "veo3": 300,

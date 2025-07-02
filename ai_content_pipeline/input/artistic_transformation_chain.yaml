@@ -1,0 +1,22 @@
+name: "artistic_transformation_chain"
+description: "Multi-step artistic image transformation"
+steps:
+  - type: "text_to_image"
+    model: "flux_dev"  # High quality base
+    params:
+      aspect_ratio: "1:1"
+      style: "artistic"
+  - type: "image_to_image"
+    model: "photon_base"  # High-quality artistic transformation
+    params:
+      prompt: "transform into a beautiful oil painting with impressionist style"
+      strength: 0.8
+  - type: "image_to_image"
+    model: "seededit_v3"  # Precise refinement
+    params:
+      prompt: "add subtle golden lighting and soft shadows"
+      strength: 0.4
+output_dir: "output"
+temp_dir: "temp"
+cleanup_temp: true
+save_intermediates: true

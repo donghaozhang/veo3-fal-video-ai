@@ -10,6 +10,7 @@ from typing import Any, Dict, List, Optional
 
 from .chain import ContentCreationChain, ChainResult, PipelineStep, StepType
 from ..models.text_to_image import UnifiedTextToImageGenerator
+from ..models.image_to_image import UnifiedImageToImageGenerator
 from ..utils.file_manager import FileManager
 
 
@@ -31,6 +32,7 @@ class ChainExecutor:
         
         # Initialize model generators
         self.text_to_image = UnifiedTextToImageGenerator()
+        self.image_to_image = UnifiedImageToImageGenerator()
         
         # TODO: Initialize other generators when implemented
         # self.image_to_video = UnifiedImageToVideoGenerator()
@@ -219,6 +221,8 @@ class ChainExecutor:
         try:
             if step.step_type == StepType.TEXT_TO_IMAGE:
                 return self._execute_text_to_image(step, input_data, chain_config, **kwargs)
+            elif step.step_type == StepType.IMAGE_TO_IMAGE:
+                return self._execute_image_to_image(step, input_data, chain_config, **kwargs)
             elif step.step_type == StepType.IMAGE_TO_VIDEO:
                 return self._execute_image_to_video(step, input_data, chain_config, **kwargs)
             elif step.step_type == StepType.ADD_AUDIO:
@@ -253,6 +257,42 @@ class ChainExecutor:
         }
         
         result = self.text_to_image.generate(prompt, step.model, **params)
+        
+        return {
+            "success": result.success,
+            "output_path": result.output_path,
+            "output_url": result.output_url,
+            "processing_time": result.processing_time,
+            "cost": result.cost_estimate,
+            "model": result.model_used,
+            "metadata": result.metadata,
+            "error": result.error
+        }
+    
+    def _execute_image_to_image(
+        self,
+        step: PipelineStep,
+        source_image: str,
+        chain_config: Dict[str, Any],
+        **kwargs
+    ) -> Dict[str, Any]:
+        """Execute image-to-image step."""
+        # Get prompt from step params or kwargs
+        prompt = step.params.get("prompt", kwargs.get("prompt", "modify this image"))
+        
+        # Merge step params with chain config and kwargs, but exclude prompt to avoid duplication
+        params = {
+            **{k: v for k, v in step.params.items() if k != "prompt"},
+            **{k: v for k, v in kwargs.items() if k != "prompt"},
+            "output_dir": chain_config.get("output_dir", "output")
+        }
+        
+        result = self.image_to_image.generate(
+            source_image=source_image,
+            prompt=prompt,
+            model=step.model,
+            **params
+        )
         
         return {
             "success": result.success,
@@ -488,6 +528,7 @@ class ChainExecutor:
         """Get the output type for a step."""
         output_types = {
             StepType.TEXT_TO_IMAGE: "image",
+            StepType.IMAGE_TO_IMAGE: "image",
             StepType.IMAGE_TO_VIDEO: "video",
             StepType.ADD_AUDIO: "video",
             StepType.UPSCALE_VIDEO: "video"
