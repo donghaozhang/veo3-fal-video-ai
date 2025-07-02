@@ -14,6 +14,7 @@ class StepType(Enum):
     PROMPT_GENERATION = "prompt_generation"
     IMAGE_TO_IMAGE = "image_to_image"
     IMAGE_TO_VIDEO = "image_to_video"
+    TEXT_TO_SPEECH = "text_to_speech"
     ADD_AUDIO = "add_audio"
     UPSCALE_VIDEO = "upscale_video"
     GENERATE_SUBTITLES = "generate_subtitles"

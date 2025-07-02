@@ -12,6 +12,11 @@ SUPPORTED_MODELS = {
         "dalle3",             # OpenAI DALL-E 3 (planned)
         "stable_diffusion",   # Stability AI (planned)
     ],
+    "text_to_speech": [
+        "elevenlabs",         # ElevenLabs TTS (high quality)
+        "elevenlabs_turbo",   # ElevenLabs Turbo (fast)
+        "elevenlabs_v3",      # ElevenLabs v3 (latest)
+    ],
     "image_understanding": [
         "gemini_describe",    # Basic image description
         "gemini_detailed",    # Detailed image analysis
@@ -56,7 +61,8 @@ PIPELINE_STEPS = [
     "image_understanding",
     "prompt_generation",
     "image_to_image",
-    "image_to_video", 
+    "image_to_video",
+    "text_to_speech", 
     "add_audio",
     "upscale_video"
 ]
@@ -68,6 +74,12 @@ MODEL_RECOMMENDATIONS = {
         "speed": "flux_schnell", 
         "cost_effective": "seedream_v3",
         "photorealistic": "imagen4"
+    },
+    "text_to_speech": {
+        "quality": "elevenlabs_v3",
+        "speed": "elevenlabs_turbo",
+        "cost_effective": "elevenlabs",
+        "professional": "elevenlabs"
     },
     "image_understanding": {
         "basic": "gemini_describe",
@@ -108,6 +120,11 @@ COST_ESTIMATES = {
         "flux_schnell": 0.001,
         "imagen4": 0.004,
         "seedream_v3": 0.002,
+    },
+    "text_to_speech": {
+        "elevenlabs": 0.05,
+        "elevenlabs_turbo": 0.03,
+        "elevenlabs_v3": 0.08,
     },
     "image_understanding": {
         "gemini_describe": 0.001,
@@ -154,6 +171,11 @@ PROCESSING_TIME_ESTIMATES = {
         "flux_schnell": 5,
         "imagen4": 20,
         "seedream_v3": 10,
+    },
+    "text_to_speech": {
+        "elevenlabs": 15,
+        "elevenlabs_turbo": 8,
+        "elevenlabs_v3": 20,
     },
     "image_understanding": {
         "gemini_describe": 3,

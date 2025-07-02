@@ -16,6 +16,7 @@ from ..models.text_to_image import UnifiedTextToImageGenerator
 from ..models.image_understanding import UnifiedImageUnderstandingGenerator
 from ..models.prompt_generation import UnifiedPromptGenerator
 from ..models.image_to_image import UnifiedImageToImageGenerator
+from ..models.text_to_speech import UnifiedTextToSpeechGenerator
 from ..utils.file_manager import FileManager
 
 
@@ -40,6 +41,7 @@ class ChainExecutor:
         self.image_understanding = UnifiedImageUnderstandingGenerator()
         self.prompt_generation = UnifiedPromptGenerator()
         self.image_to_image = UnifiedImageToImageGenerator()
+        self.text_to_speech = UnifiedTextToSpeechGenerator()
         
         # TODO: Initialize other generators when implemented
         # self.image_to_video = UnifiedImageToVideoGenerator()
@@ -292,6 +294,8 @@ class ChainExecutor:
                 return self._execute_image_to_image(step, input_data, chain_config, step_context, **kwargs)
             elif step.step_type == StepType.IMAGE_TO_VIDEO:
                 return self._execute_image_to_video(step, input_data, chain_config, step_context, **kwargs)
+            elif step.step_type == StepType.TEXT_TO_SPEECH:
+                return self._execute_text_to_speech(step, input_data, chain_config, step_context, **kwargs)
             elif step.step_type == StepType.ADD_AUDIO:
                 return self._execute_add_audio(step, input_data, chain_config, step_context, **kwargs)
             elif step.step_type == StepType.UPSCALE_VIDEO:
@@ -424,6 +428,85 @@ class ChainExecutor:
             "metadata": result.metadata,
             "error": result.error
         }
+    
+    def _execute_text_to_speech(
+        self,
+        step: PipelineStep,
+        text_input: str,
+        chain_config: Dict[str, Any],
+        step_context: Dict[str, Any] = None,
+        **kwargs
+    ) -> Dict[str, Any]:
+        """Execute text-to-speech step."""
+        try:
+            # Get text to use - either from text_override param or input
+            actual_text = step.params.get("text_override", text_input)
+            
+            # Get voice and other parameters from step params or kwargs
+            voice = step.params.get("voice", kwargs.get("voice", "rachel"))
+            speed = step.params.get("speed", kwargs.get("speed", 1.0))
+            stability = step.params.get("stability", kwargs.get("stability", 0.5))
+            similarity_boost = step.params.get("similarity_boost", kwargs.get("similarity_boost", 0.8))
+            style = step.params.get("style", kwargs.get("style", 0.2))
+            output_file = step.params.get("output_file", kwargs.get("output_file", None))
+            
+            # Merge step params with chain config and kwargs
+            params = {
+                **step.params,
+                **kwargs,
+                "output_dir": chain_config.get("output_dir", "output")
+            }
+            
+            # Generate speech using the TTS generator
+            success, result = self.text_to_speech.generate(
+                prompt=actual_text,
+                model=step.model,
+                voice=voice,
+                speed=speed,
+                stability=stability,
+                similarity_boost=similarity_boost,
+                style=style,
+                output_file=output_file
+            )
+            
+            if success:
+                return {
+                    "success": True,
+                    "output_path": result["output_file"],
+                    "output_url": None,  # TTS generates local files
+                    "processing_time": result.get("processing_time", 15),
+                    "cost": result.get("cost", 0.05),  # Default cost estimate
+                    "model": result["model"],
+                    "metadata": {
+                        "voice_used": result["voice_used"],
+                        "text_length": result["text_length"],
+                        "settings": result["settings"]
+                    },
+                    "error": None
+                }
+            else:
+                return {
+                    "success": False,
+                    "output_path": None,
+                    "output_url": None,
+                    "processing_time": 0,
+                    "cost": 0,
+                    "model": step.model,
+                    "metadata": {},
+                    "error": result.get("error", "TTS generation failed")
+                }
+                
+        except Exception as e:
+            return {
+                "success": False,
+                "output_path": None,
+                "output_url": None,
+                "processing_time": 0,
+                "cost": 0,
+                "model": step.model,
+                "metadata": {},
+                "error": f"TTS execution failed: {str(e)}"
+            }
     
     def _execute_image_to_image(
         self,
