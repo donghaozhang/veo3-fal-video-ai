@@ -6,6 +6,7 @@ Handles the sequential execution of pipeline steps with file management.
 
 import time
 import json
+import requests
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from datetime import datetime
@@ -152,6 +153,19 @@ class ChainExecutor:
                 
                 # Save intermediate results if enabled
                 if chain.save_intermediates:
+                    # Download intermediate image if only URL is available
+                    if step_result.get("output_url") and not step_result.get("output_path"):
+                        local_path = self._download_intermediate_image(
+                            image_url=step_result["output_url"],
+                            step_name=step_name,
+                            config=chain.config,
+                            step_number=i+1
+                        )
+                        if local_path:
+                            # Update the step result and outputs with local path
+                            step_result["output_path"] = local_path
+                            outputs[step_name]["path"] = local_path
+                    
                     intermediate_report = self._create_intermediate_report(
                         chain=chain,
                         input_text=input_text,
@@ -897,4 +911,52 @@ class ChainExecutor:
             return str(filepath)
         except Exception as e:
             print(f"⚠️  Failed to save intermediate report: {str(e)}")
+            return None
+    
+    def _download_intermediate_image(
+        self, 
+        image_url: str, 
+        step_name: str, 
+        config: Dict[str, Any],
+        step_number: int
+    ) -> Optional[str]:
+        """
+        Download intermediate image for save_intermediates functionality.
+        
+        Args:
+            image_url: URL of the image to download
+            step_name: Name of the step (e.g., "step_1_text_to_image")
+            config: Chain configuration containing output_dir
+            step_number: Step number for filename generation
+            
+        Returns:
+            Local file path if successful, None if failed
+        """
+        try:
+            # Create intermediates directory
+            output_dir = Path(config.get("output_dir", "output"))
+            intermediates_dir = output_dir / "intermediates"
+            intermediates_dir.mkdir(exist_ok=True)
+            
+            # Generate filename
+            timestamp = int(time.time())
+            file_extension = Path(image_url).suffix or ".png"
+            filename = f"{step_name}_{timestamp}{file_extension}"
+            filepath = intermediates_dir / filename
+            
+            # Download image
+            print(f"📥 Downloading intermediate image: {step_name}")
+            response = requests.get(image_url, timeout=30, stream=True)
+            response.raise_for_status()
+            
+            # Save to file
+            with open(filepath, 'wb') as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    f.write(chunk)
+            
+            print(f"💾 Intermediate image saved: {filepath}")
+            return str(filepath)
+            
+        except Exception as e:
+            print(f"⚠️  Failed to download intermediate image: {str(e)}")
             return None

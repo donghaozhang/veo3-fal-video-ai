@@ -62,6 +62,10 @@ python -m ai_content_pipeline run-chain --config input/video_budget_hailuo.yaml 
 
 # With custom input file:
 python -m ai_content_pipeline run-chain --config input/video_documentary_realistic.yaml --prompt-file my_prompt.txt --no-confirm
+
+# Run analysis workflows (use config prompt):
+python -m ai_content_pipeline run-chain --config input/analysis_detailed_gemini.yaml --no-confirm
+python -m ai_content_pipeline run-chain --config input/analysis_ocr_extraction.yaml --no-confirm
 ```
 
 ## Notes
