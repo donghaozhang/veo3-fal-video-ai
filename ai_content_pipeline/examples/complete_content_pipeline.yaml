@@ -1,0 +1,52 @@
+name: "complete_content_pipeline"
+description: "Full content creation pipeline with audio and all AI optimizations"
+
+steps:
+  - type: "text_to_image"
+    model: "flux_dev"
+    params:
+      aspect_ratio: "16:9"
+      style: "cinematic"
+      quality: "high"
+    enabled: true
+
+  - type: "image_understanding"
+    model: "gemini_detailed"
+    params:
+      analysis_prompt: "Provide comprehensive analysis for video creation including mood, lighting, potential camera movements, and audio suggestions"
+    enabled: true
+
+  - type: "prompt_generation"
+    model: "openrouter_video_cinematic"
+    params:
+      background_context: "Create a cinematic masterpiece with professional camera work and compelling visual storytelling"
+      video_style: "cinematic"
+      duration_preference: "medium"
+    enabled: true
+
+  - type: "image_to_video"
+    model: "veo3"
+    params:
+      duration: 8
+      motion_level: "medium"
+      quality: "high"
+    enabled: true
+
+  - type: "add_audio"
+    model: "thinksound"
+    params:
+      prompt: "Epic cinematic soundtrack that matches the visual mood and enhances the storytelling"
+      style: "cinematic"
+    enabled: true
+
+output_dir: "output"
+temp_dir: "temp"
+cleanup_temp: true
+save_intermediates: true
+
+# This complete pipeline:
+# 1. Creates high-quality cinematic image
+# 2. Analyzes image for comprehensive video potential
+# 3. Generates optimized cinematic video prompts
+# 4. Creates premium video with Google Veo 3
+# 5. Adds AI-generated cinematic audio track

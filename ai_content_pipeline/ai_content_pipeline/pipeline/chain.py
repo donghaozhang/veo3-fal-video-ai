@@ -11,6 +11,7 @@ class StepType(Enum):
     """Enumeration of supported pipeline step types."""
     TEXT_TO_IMAGE = "text_to_image"
     IMAGE_UNDERSTANDING = "image_understanding"
+    PROMPT_GENERATION = "prompt_generation"
     IMAGE_TO_IMAGE = "image_to_image"
     IMAGE_TO_VIDEO = "image_to_video"
     ADD_AUDIO = "add_audio"
@@ -144,6 +145,7 @@ class ContentCreationChain:
         input_types = {
             StepType.TEXT_TO_IMAGE: "text",
             StepType.IMAGE_UNDERSTANDING: "image",
+            StepType.PROMPT_GENERATION: "image",
             StepType.IMAGE_TO_IMAGE: "image",
             StepType.IMAGE_TO_VIDEO: "image", 
             StepType.ADD_AUDIO: "video",
@@ -156,6 +158,7 @@ class ContentCreationChain:
         output_types = {
             StepType.TEXT_TO_IMAGE: "image",
             StepType.IMAGE_UNDERSTANDING: "text",
+            StepType.PROMPT_GENERATION: "text",
             StepType.IMAGE_TO_IMAGE: "image",
             StepType.IMAGE_TO_VIDEO: "video",
             StepType.ADD_AUDIO: "video", 

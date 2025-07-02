@@ -452,6 +452,114 @@ Provide detailed photographic/artistic analysis."""
         except Exception as e:
             print(f"❌ Composition analysis failed: {e}")
             raise
+    
+    def generate_video_prompt(self, image_path: Path, background_context: str = "", 
+                             video_style: str = "cinematic", duration_preference: str = "medium") -> str:
+        """Generate optimized prompt for image-to-video conversion.
+        
+        Args:
+            image_path: Path to the image file
+            background_context: Additional context about the scene, story, or desired outcome
+            video_style: Style preference (cinematic, realistic, artistic, dramatic, etc.)
+            duration_preference: Duration hint (short, medium, long) for pacing suggestions
+            
+        Returns:
+            Optimized prompt for image-to-video generation
+        """
+        try:
+            print(f"🎬 Generating video prompt for: {image_path.name}")
+            
+            image_base64 = self._encode_image_base64(image_path)
+            mime_type = self._get_image_mime_type(image_path)
+            
+            # Create comprehensive prompt for video generation
+            analysis_prompt = f"""Analyze this image and create an optimized prompt for AI image-to-video generation.
+
+CONTEXT INFORMATION:
+- Background/Story Context: {background_context if background_context else 'None provided'}
+- Desired Video Style: {video_style}
+- Duration Preference: {duration_preference}
+
+ANALYSIS REQUIREMENTS:
+1. Identify the main subject and scene elements
+2. Determine natural movement possibilities (wind, water, people, objects, camera)
+3. Assess lighting conditions and potential changes
+4. Identify atmospheric elements (fog, clouds, particles, etc.)
+5. Consider perspective and camera movement opportunities
+6. Evaluate emotional tone and mood potential
+
+OUTPUT FORMAT:
+Provide a comprehensive video generation prompt that includes:
+
+**SCENE DESCRIPTION:**
+[Clear description of the static elements]
+
+**MOVEMENT SUGGESTIONS:**
+[Specific, realistic movements that would enhance the scene]
+
+**CAMERA WORK:**
+[Camera movements, angles, or transitions that would work well]
+
+**ATMOSPHERIC EFFECTS:**
+[Weather, lighting, or environmental changes]
+
+**STYLE NOTES:**
+[Artistic direction aligned with {video_style} style]
+
+**OPTIMIZED PROMPT:**
+[A concise, powerful prompt optimized for AI video generation, 1-2 sentences max]
+
+Focus on creating movement that feels natural and enhances the original image's story without being overly complex."""
+            
+            content_list = [{
+                "type": "image_url",
+                "image_url": {
+                    "url": f"data:{mime_type};base64,{image_base64}"
+                }
+            }]
+            
+            video_prompt_analysis = self._analyze_with_prompt(content_list, analysis_prompt)
+            
+            return video_prompt_analysis
+            
+        except Exception as e:
+            print(f"❌ Video prompt generation failed: {e}")
+            raise
+    
+    def extract_optimized_prompt(self, video_prompt_analysis: str) -> str:
+        """Extract just the optimized prompt from the full analysis.
+        
+        Args:
+            video_prompt_analysis: Full analysis output from generate_video_prompt
+            
+        Returns:
+            Just the optimized prompt portion
+        """
+        try:
+            # Look for the optimized prompt section
+            lines = video_prompt_analysis.split('\n')
+            in_optimized_section = False
+            optimized_lines = []
+            
+            for line in lines:
+                if '**OPTIMIZED PROMPT:**' in line:
+                    in_optimized_section = True
+                    continue
+                elif line.startswith('**') and in_optimized_section:
+                    break
+                elif in_optimized_section and line.strip():
+                    optimized_lines.append(line.strip())
+            
+            if optimized_lines:
+                return ' '.join(optimized_lines)
+            else:
+                # Fallback: return last few sentences if structure not found
+                sentences = video_prompt_analysis.split('.')
+                return '. '.join(sentences[-2:]).strip()
+                
+        except Exception as e:
+            print(f"⚠️ Prompt extraction failed, returning full analysis: {e}")
+            return video_prompt_analysis
 
 
 def check_openrouter_requirements() -> tuple[bool, str]:

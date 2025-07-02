@@ -11,6 +11,7 @@ from typing import Any, Dict, List, Optional
 from .chain import ContentCreationChain, ChainResult, PipelineStep, StepType
 from ..models.text_to_image import UnifiedTextToImageGenerator
 from ..models.image_understanding import UnifiedImageUnderstandingGenerator
+from ..models.prompt_generation import UnifiedPromptGenerator
 from ..models.image_to_image import UnifiedImageToImageGenerator
 from ..utils.file_manager import FileManager
 
@@ -34,6 +35,7 @@ class ChainExecutor:
         # Initialize model generators
         self.text_to_image = UnifiedTextToImageGenerator()
         self.image_understanding = UnifiedImageUnderstandingGenerator()
+        self.prompt_generation = UnifiedPromptGenerator()
         self.image_to_image = UnifiedImageToImageGenerator()
         
         # TODO: Initialize other generators when implemented
@@ -228,6 +230,8 @@ class ChainExecutor:
                 return self._execute_text_to_image(step, input_data, chain_config, **kwargs)
             elif step.step_type == StepType.IMAGE_UNDERSTANDING:
                 return self._execute_image_understanding(step, input_data, chain_config, **kwargs)
+            elif step.step_type == StepType.PROMPT_GENERATION:
+                return self._execute_prompt_generation(step, input_data, chain_config, **kwargs)
             elif step.step_type == StepType.IMAGE_TO_IMAGE:
                 return self._execute_image_to_image(step, input_data, chain_config, **kwargs)
             elif step.step_type == StepType.IMAGE_TO_VIDEO:
@@ -309,6 +313,50 @@ class ChainExecutor:
         return {
             "success": result.success,
             "output_text": result.output_text,
+            "processing_time": result.processing_time,
+            "cost": result.cost_estimate,
+            "model": result.model_used,
+            "metadata": result.metadata,
+            "error": result.error
+        }
+    
+    def _execute_prompt_generation(
+        self,
+        step: PipelineStep,
+        image_input: str,
+        chain_config: Dict[str, Any],
+        **kwargs
+    ) -> Dict[str, Any]:
+        """Execute prompt generation step."""
+        # Get background context from step params or kwargs
+        background_context = step.params.get("background_context", kwargs.get("background_context", ""))
+        video_style = step.params.get("video_style", kwargs.get("video_style", ""))
+        duration_preference = step.params.get("duration_preference", kwargs.get("duration_preference", ""))
+        
+        # Merge step params with chain config and kwargs
+        params = {
+            **{k: v for k, v in step.params.items() if k not in ["background_context", "video_style", "duration_preference"]},
+            **{k: v for k, v in kwargs.items() if k not in ["background_context", "video_style", "duration_preference"]},
+        }
+        
+        # Add specific parameters if provided
+        if background_context:
+            params["background_context"] = background_context
+        if video_style:
+            params["video_style"] = video_style
+        if duration_preference:
+            params["duration_preference"] = duration_preference
+        
+        result = self.prompt_generation.generate(
+            image_path=image_input,
+            model=step.model,
+            **params
+        )
+        
+        return {
+            "success": result.success,
+            "output_text": result.output_text,
+            "extracted_prompt": result.extracted_prompt,
             "processing_time": result.processing_time,
             "cost": result.cost_estimate,
             "model": result.model_used,
@@ -576,6 +624,7 @@ class ChainExecutor:
         output_types = {
             StepType.TEXT_TO_IMAGE: "image",
             StepType.IMAGE_UNDERSTANDING: "text",
+            StepType.PROMPT_GENERATION: "text",
             StepType.IMAGE_TO_IMAGE: "image",
             StepType.IMAGE_TO_VIDEO: "video",
             StepType.ADD_AUDIO: "video",

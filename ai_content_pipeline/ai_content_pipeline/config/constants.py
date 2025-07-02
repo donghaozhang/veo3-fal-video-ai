@@ -21,6 +21,13 @@ SUPPORTED_MODELS = {
         "gemini_composition", # Artistic and technical analysis
         "gemini_qa",          # Question and answer system
     ],
+    "prompt_generation": [
+        "openrouter_video_prompt",     # OpenRouter-based video prompt generation
+        "openrouter_video_cinematic",  # Cinematic style video prompts
+        "openrouter_video_realistic",  # Realistic style video prompts
+        "openrouter_video_artistic",   # Artistic style video prompts
+        "openrouter_video_dramatic",   # Dramatic style video prompts
+    ],
     "image_to_image": [
         "photon_flash",       # Luma Photon Flash (creative, fast)
         "photon_base",        # Luma Photon Base (high quality)
@@ -47,6 +54,7 @@ SUPPORTED_MODELS = {
 PIPELINE_STEPS = [
     "text_to_image",
     "image_understanding",
+    "prompt_generation",
     "image_to_image",
     "image_to_video", 
     "add_audio",
@@ -69,6 +77,13 @@ MODEL_RECOMMENDATIONS = {
         "text_extraction": "gemini_ocr",
         "artistic": "gemini_composition",
         "interactive": "gemini_qa"
+    },
+    "prompt_generation": {
+        "general": "openrouter_video_prompt",
+        "cinematic": "openrouter_video_cinematic",
+        "realistic": "openrouter_video_realistic",
+        "artistic": "openrouter_video_artistic",
+        "dramatic": "openrouter_video_dramatic"
     },
     "image_to_image": {
         "quality": "photon_base",
@@ -102,6 +117,13 @@ COST_ESTIMATES = {
         "gemini_ocr": 0.001,
         "gemini_composition": 0.002,
         "gemini_qa": 0.001,
+    },
+    "prompt_generation": {
+        "openrouter_video_prompt": 0.002,
+        "openrouter_video_cinematic": 0.002,
+        "openrouter_video_realistic": 0.002,
+        "openrouter_video_artistic": 0.002,
+        "openrouter_video_dramatic": 0.002,
     },
     "image_to_image": {
         "photon_flash": 0.02,
@@ -141,6 +163,13 @@ PROCESSING_TIME_ESTIMATES = {
         "gemini_ocr": 3,
         "gemini_composition": 5,
         "gemini_qa": 4,
+    },
+    "prompt_generation": {
+        "openrouter_video_prompt": 4,
+        "openrouter_video_cinematic": 5,
+        "openrouter_video_realistic": 4,
+        "openrouter_video_artistic": 5,
+        "openrouter_video_dramatic": 5,
     },
     "image_to_image": {
         "photon_flash": 8,
