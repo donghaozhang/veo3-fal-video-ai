@@ -10,13 +10,14 @@ steps:
       quality: "high"
     enabled: true
 
-  - type: "prompt_generation"
-    model: "openrouter_video_realistic"
-    params:
-      background_context: "Create natural, documentary-style video content that feels authentic and unforced"
-      video_style: "realistic"
-      duration_preference: "medium"
-    enabled: true
+  # Prompt generation disabled due to data flow limitation
+  # - type: "prompt_generation"
+  #   model: "openrouter_video_realistic"
+  #   params:
+  #     background_context: "Create natural, documentary-style video content that feels authentic and unforced"
+  #     video_style: "realistic"
+  #     duration_preference: "medium"
+  #   enabled: false
 
   - type: "image_to_video"
     model: "hailuo"
@@ -24,6 +25,8 @@ steps:
       duration: 6
       motion_level: "low"
       natural_motion: true
+      # Using hardcoded documentary prompt since prompt_generation breaks the pipeline
+      prompt: "Create natural, documentary-style video content that feels authentic and unforced with subtle camera movements"
     enabled: true
 
 output_dir: "output"

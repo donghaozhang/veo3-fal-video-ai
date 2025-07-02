@@ -5,8 +5,10 @@ Handles the sequential execution of pipeline steps with file management.
 """
 
 import time
+import json
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+from datetime import datetime
 
 from .chain import ContentCreationChain, ChainResult, PipelineStep, StepType
 from ..models.text_to_image import UnifiedTextToImageGenerator
@@ -147,6 +149,26 @@ class ChainExecutor:
                     "model": step.model,
                     "metadata": step_result.get("metadata", {})
                 }
+                
+                # Save intermediate results if enabled
+                if chain.save_intermediates:
+                    intermediate_report = self._create_intermediate_report(
+                        chain=chain,
+                        input_text=input_text,
+                        step_results=step_results[:i+1],  # Only include completed steps
+                        outputs=outputs,
+                        total_cost=total_cost,
+                        current_step=i+1,
+                        total_steps=len(enabled_steps)
+                    )
+                    # Save intermediate report
+                    intermediate_path = self._save_intermediate_report(
+                        intermediate_report, 
+                        chain.config, 
+                        step_number=i+1
+                    )
+                    if intermediate_path:
+                        print(f"💾 Intermediate results saved: {intermediate_path}")
                 
                 print(f"✅ Step completed in {step_result.get('processing_time', 0):.1f}s")
             
@@ -778,8 +800,6 @@ class ChainExecutor:
     
     def _save_execution_report(self, report: dict, chain_config: dict) -> str:
         """Save execution report to JSON file."""
-        import json
-        from pathlib import Path
         
         try:
             # Create reports directory
@@ -801,4 +821,80 @@ class ChainExecutor:
             
         except Exception as e:
             print(f"⚠️  Failed to save execution report: {e}")
+            return None
+    
+    def _create_intermediate_report(
+        self,
+        chain: 'ContentCreationChain',
+        input_text: str,
+        step_results: List[Dict[str, Any]],
+        outputs: Dict[str, Any],
+        total_cost: float,
+        current_step: int,
+        total_steps: int
+    ) -> Dict[str, Any]:
+        """Create an intermediate execution report."""
+        execution_id = f"intermediate_{int(time.time())}"
+        
+        return {
+            "report_type": "intermediate",
+            "execution_summary": {
+                "chain_name": chain.name,
+                "execution_id": execution_id,
+                "timestamp": datetime.now().isoformat(),
+                "status": "in_progress",
+                "input_text": input_text,
+                "total_steps": total_steps,
+                "completed_steps": current_step,
+                "total_cost_usd": total_cost,
+                "current_step": current_step
+            },
+            "completed_steps": [
+                {
+                    "step_number": i + 1,
+                    "step_type": chain.steps[i].step_type.value,
+                    "model": chain.steps[i].model,
+                    "status": "completed" if result.get("success") else "failed",
+                    "cost": result.get("cost", 0),
+                    "output": {
+                        "path": result.get("output_path"),
+                        "url": result.get("output_url"),
+                        "text": result.get("output_text")
+                    }
+                }
+                for i, result in enumerate(step_results)
+            ],
+            "intermediate_outputs": outputs,
+            "metadata": {
+                "chain_config": chain.to_config(),
+                "save_intermediates": chain.save_intermediates
+            }
+        }
+    
+    def _save_intermediate_report(
+        self, 
+        report: Dict[str, Any], 
+        config: Dict[str, Any],
+        step_number: int
+    ) -> Optional[str]:
+        """Save intermediate report to file."""
+        try:
+            # Create reports directory
+            output_dir = Path(config.get("output_dir", "output"))
+            reports_dir = output_dir / "reports"
+            reports_dir.mkdir(exist_ok=True)
+            
+            # Generate filename with step number
+            chain_name = report["execution_summary"]["chain_name"]
+            timestamp = int(time.time())
+            filename = f"{chain_name}_step{step_number}_intermediate_{timestamp}.json"
+            filepath = reports_dir / filename
+            
+            # Save report
+            with open(filepath, 'w') as f:
+                json.dump(report, f, indent=2, default=str)
+            
+            return str(filepath)
+        except Exception as e:
+            print(f"⚠️  Failed to save intermediate report: {str(e)}")
             return None
