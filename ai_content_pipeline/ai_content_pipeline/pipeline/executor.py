@@ -529,10 +529,18 @@ class ChainExecutor:
                     "error": "Video generation returned None"
                 }
             
+            # Ensure we have a proper output path
+            local_path = result.get("local_path") if result else None
+            if local_path and not local_path.startswith("/"):
+                # Convert relative path to absolute path
+                from pathlib import Path
+                output_dir = chain_config.get("output_dir", "output")
+                local_path = str(Path(output_dir) / local_path)
+                
             return {
                 "success": result is not None,
-                "output_path": result.get("local_video_path") if result else None,
-                "output_url": result.get("video_url") if result else None,
+                "output_path": local_path,
+                "output_url": result.get("video", {}).get("url") if result else None,
                 "processing_time": result.get("processing_time", 0) if result else 0,
                 "cost": 0.08,  # Approximate Hailuo cost
                 "model": "hailuo",
@@ -629,11 +637,21 @@ class ChainExecutor:
     ) -> Dict[str, Any]:
         """Execute add-audio step."""
         try:
+            print(f"🎵 Debug: video_path received = {video_path}")
+            print(f"🎵 Debug: video_path type = {type(video_path)}")
+            
+            if video_path is None:
+                return {
+                    "success": False,
+                    "error": "Video path is None - video from previous step not available"
+                }
+                
             # Try to import video-to-video module
             import sys
             from pathlib import Path
-            sys.path.append(str(Path(__file__).parent.parent.parent.parent.parent / "fal_video_to_video"))
-            from fal_video_to_video import FALVideoToVideoGenerator
+            fal_video_path = Path(__file__).parent.parent.parent.parent / "fal_video_to_video"
+            sys.path.insert(0, str(fal_video_path))
+            from fal_video_to_video.generator import FALVideoToVideoGenerator
             
             generator = FALVideoToVideoGenerator()
             
@@ -642,6 +660,8 @@ class ChainExecutor:
                 **step.params,
                 "output_dir": chain_config.get("output_dir", "output")
             }
+            
+            print(f"🎵 Debug: Calling add_audio_to_local_video with path: {video_path}")
             
             # Add audio to video
             result = generator.add_audio_to_local_video(
