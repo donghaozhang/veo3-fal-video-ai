@@ -1,8 +1,3 @@
----
-description: 
-globs: 
-alwaysApply: true
----
 # Cost Protection Rule for AI Content Generation Testing
 
 ## CRITICAL: AI Content Generation Cost Protection
@@ -19,6 +14,17 @@ python test_fal_ai.py --kling            # ~$0.02-0.05 per test
 python test_fal_ai.py --compare          # ~$0.04-0.10 per test (2 videos)
 python test_fal_ai.py --full             # ~$0.02-0.05 per test
 python demo.py                           # Variable cost per generation
+
+# EXPENSIVE Text-to-Video Generation - These generate real videos from text and cost money
+python fal_text_to_video/test_generation.py --single     # ~$0.08 per test (MiniMax)
+python fal_text_to_video/test_generation.py --premium    # ~$2.50-6.00 per test (Google Veo 3)
+python fal_text_to_video/test_generation.py --batch      # ~$0.24-0.32 per test (multiple videos)
+python fal_text_to_video/demo.py                         # Variable cost per generation
+
+# EXPENSIVE Video-to-Video Enhancement - These add AI audio to videos and cost money
+python -m fal_video_to_video add-audio                   # ~$0.05-0.30 per test (depends on video length)
+python fal_video_to_video/demo.py                        # Variable cost per enhancement
+# Note: Video-to-video is relatively cost-effective at ~$0.001/second
 
 # EXPENSIVE Avatar Generation - These generate real avatar videos and cost money
 python test_generation.py --voice Bill   # ~$0.03-0.05 per test
@@ -37,6 +43,12 @@ python test_generation.py --flux-dev     # ~$0.015 per test
 python test_generation.py --dragon       # ~$0.015 per test
 python test_generation.py --compare      # ~$0.060 per test (4 images)
 python demo.py                           # Variable cost per generation
+
+# EXPENSIVE AI Content Pipeline - These chain multiple operations and costs accumulate
+python -m ai_content_pipeline generate-image             # ~$0.001-0.004 per image
+python -m ai_content_pipeline create-video               # ~$0.08-6.00+ per chain (depends on models)
+python -m ai_content_pipeline execute-chain              # Variable cost (sum of all operations in chain)
+python ai_content_pipeline/demo.py                       # Variable cost per pipeline
 
 # EXPENSIVE Text-to-Speech Generation - These generate real speech and cost money
 python text_to_speech/cli/interactive.py  # ~$0.005-0.05 per generation (varies by length/voice)
@@ -59,6 +71,14 @@ python veo3_video_generation/demo.py               # Costs money
 python fal_image_to_video/test_api_only.py         # FREE - API connection test only
 python fal_image_to_video/test_fal_ai.py           # FREE - setup test only (no video generation)
 
+# Text-to-Video Generation - FREE Tests
+python fal_text_to_video/test_setup.py             # FREE - environment and API validation
+# Note: No free content generation - all text-to-video tests cost money
+
+# Video-to-Video Enhancement - FREE Tests
+python fal_video_to_video/tests/test_setup.py      # FREE - environment and API validation
+python -m fal_video_to_video list-models           # FREE - list available models
+
 # Avatar Generation - FREE Tests  
 python fal_avatar_generation/test_setup.py         # FREE - environment and API validation
 python fal_avatar_generation/test_generation.py    # FREE - setup test only (no avatar generation)
@@ -70,6 +90,11 @@ python fal_text_to_image/test_generation.py        # FREE - setup test only (no 
 # Image-to-Image Generation - FREE Tests
 python fal_image_to_image/tests/test_setup.py      # FREE - environment and API validation
 python -m fal_image_to_image.tests.test_imports    # FREE - package structure validation
+
+# AI Content Pipeline - FREE Tests
+python -m ai_content_pipeline list-models          # FREE - list available models and costs
+python ai_content_pipeline/tests/test_setup.py     # FREE - environment and API validation
+python ai_content_pipeline/examples/basic_usage.py # FREE - structure validation (dummy operations)
 
 # Text-to-Speech Generation - FREE Tests
 python -c "from text_to_speech import ElevenLabsTTSController; print('✅ Package working!')"  # FREE - import test
@@ -134,6 +159,8 @@ These tests verify your configuration without generating content or costing mone
 
 If you want to test actual content generation:
 - Video: ~$0.02-0.05 per video
+- Text-to-Video: ~$0.08-6.00 per video (depends on model)
+- Video-to-Video: ~$0.001/second (very cost-effective)
 - Avatar: ~$0.03-0.05 per avatar video  
 - Images: ~$0.015 per image
 
@@ -146,6 +173,7 @@ Please let me know if you want to run paid tests and I'll ask for confirmation."
 ❌ WRONG: "I'll test your setup by running content generation..."
 ❌ WRONG: Automatically running `python test_generation.py --voice Bill`
 ❌ WRONG: Running demo.py without explicit user request for paid testing
+❌ WRONG: Running AI pipeline chains without cost confirmation
 ```
 
 ## Cost-Conscious Development Practices
@@ -156,6 +184,8 @@ Please let me know if you want to run paid tests and I'll ask for confirmation."
 4. **Avoid comparison tests** during development unless specifically needed
 5. **Use `test_setup.py` for CI/CD pipelines** 
 6. **Document all cost implications** in code comments and documentation
+7. **For AI pipelines**: Use `list-models` command to understand costs before execution
+8. **For text-to-video**: Choose MiniMax model for cost-effective testing, Google Veo 3 only for premium quality needs
 
 ## Emergency Cost Protection
 
@@ -171,6 +201,20 @@ If you accidentally suggest or run a paid test:
 - **Single model test**: ~$0.02-0.05 per video
 - **Comparison test**: ~$0.04-0.10 (generates 2 videos)
 - **Use**: `--hailuo` or `--kling` for single model testing
+
+### Text-to-Video Generation Costs (NEW)
+- **MiniMax Hailuo-02 Pro**: ~$0.08 per video (cost-effective, 1080p, 6s)
+- **Google Veo 3**: ~$2.50-6.00 per video (premium quality, 720p, 5-8s, audio support)
+- **Batch generation**: Costs multiply by number of videos
+- **Use**: `--single` for single model testing, avoid `--batch` during development
+- **Recommendation**: Start with MiniMax for testing, use Google Veo 3 only for final production
+
+### Video-to-Video Enhancement Costs (NEW)
+- **ThinkSound enhancement**: ~$0.001 per second of video (very cost-effective)
+- **Typical costs**: $0.05-0.30 per test (depends on video length)
+- **Max duration**: 300 seconds (5 minutes) per video
+- **Use**: Single video tests for development, batch processing for production
+- **Note**: This is one of the most cost-effective AI services in the project
 
 ### Avatar Generation Costs  
 - **Single voice test**: ~$0.03-0.05 per avatar video
@@ -196,6 +240,13 @@ If you accidentally suggest or run a paid test:
 - **Use**: `--style_transfer`, `--upscale`, or `--artistic` for single enhancement testing
 - **Professional package structure**: Always use FREE tests first for validation
 
+### AI Content Pipeline Costs (NEW)
+- **Simple operations**: ~$0.001-0.004 per image generation
+- **Complex chains**: $0.08-6.00+ per chain execution (depends on models and operations)
+- **Cost accumulation**: Costs add up for each operation in the chain
+- **Model selection**: "auto" mode may choose expensive models - use criteria and budget constraints
+- **Use**: `list-models` to see costs, start with simple chains, use budget parameters
+
 ### Text-to-Speech Generation Costs
 - **ElevenLabs TTS costs**: ~$0.005-0.05 per generation (varies by character count and voice quality)
 - **Short text samples**: ~$0.005-0.01 (testing voices, basic examples)
@@ -206,6 +257,11 @@ If you accidentally suggest or run a paid test:
   - **DeepSeek V3**: Often free or very low cost
 - **Voice quality impact**: Premium voices cost more than standard voices
 - **Character count**: Costs scale linearly with text length
+- **Use FREE package tests first**: Always validate structure before API calls
+
+Remember: **Every AI content generation test costs real money from the user's account. Treat it like spending the user's cash directly.**
+
+
 - **Use FREE package tests first**: Always validate structure before API calls
 
 Remember: **Every AI content generation test costs real money from the user's account. Treat it like spending the user's cash directly.**

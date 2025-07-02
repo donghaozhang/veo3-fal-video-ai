@@ -1,15 +1,19 @@
----
-description: 
-globs: 
-alwaysApply: false
----
 # FAL AI Multi-Model Implementation
 
-This document covers the FAL AI implementation supporting video generation, avatar generation, and text-to-image generation:
+This document covers the FAL AI implementation supporting video generation, text-to-video generation, video-to-video enhancement, avatar generation, text-to-image generation, and image-to-image enhancement:
 
 ## Video Generation (Dual-Model Support)
 - **MiniMax Hailuo-02**: Reliable 768p generation with prompt optimization
 - **Kling Video 2.1**: High-quality generation with CFG scale and negative prompts
+
+## Text-to-Video Generation (NEW - Dual-Model Support)
+- **MiniMax Hailuo-02 Pro**: Cost-effective 1080p generation ($0.08/video, 6s duration)
+- **Google Veo 3**: Premium quality generation ($2.50-6.00/video, 720p, 5-8s, audio support)
+
+## Video-to-Video Enhancement (NEW - ThinkSound API)
+- **ThinkSound Audio**: AI-powered audio generation for existing videos (~$0.001/second)
+- **Text Prompt Guidance**: Natural language descriptions for audio generation
+- **Multiple Format Support**: MP4, MOV, AVI, WebM compatibility
 
 ## Avatar Generation (Triple-Mode Support)
 - **Text-to-Speech Avatar**: 20 voice options with natural speech conversion using official FAL AI examples
@@ -21,6 +25,11 @@ This document covers the FAL AI implementation supporting video generation, avat
 - **Seedream**: Artistic and creative generation with unique style
 - **FLUX Schnell**: Ultra-fast generation (1-2 seconds)
 - **FLUX Dev**: Balanced speed and quality
+
+## Image-to-Image Enhancement (FLUX Enhancement Pipeline)
+- **FLUX Image Enhancement**: High-quality image refinement and style transfer
+- **Batch Processing**: Multiple image transformations with cost-conscious design
+- **Professional Package**: Modular architecture with setup.py and proper testing
 
 All modules provide production-ready API access with cost-conscious testing frameworks and official example compliance.
 
@@ -54,6 +63,123 @@ generator.generate_video_from_local_image(
     model="kling"  # Choose model
 )
 ```
+
+### FALTextToVideoGenerator Class (NEW)
+Located in [fal_text_to_video/fal_text_to_video_generator.py](mdc:fal_text_to_video/fal_text_to_video_generator.py)
+
+**Dual-Model Support:**
+- Direct text-to-video generation (no image step required)
+- Cost-effective vs premium quality options
+- Model selection via `model` parameter
+- Comprehensive cost estimation and warnings
+
+**Universal Methods:**
+```python
+# Generate video directly from text with model selection
+result = generator.generate_video(
+    prompt="A majestic eagle soaring over mountains at sunrise",
+    model=TextToVideoModel.MINIMAX_HAILUO,  # Cost-effective option ($0.08)
+    prompt_optimizer=True,
+    output_dir="output"
+)
+
+# Premium quality generation with advanced controls
+result = generator.generate_video(
+    prompt="A serene lake reflecting autumn colors",
+    model=TextToVideoModel.GOOGLE_VEO3,  # Premium option ($2.50-6.00)
+    duration="8s",
+    generate_audio=True,
+    aspect_ratio="16:9",
+    negative_prompt="blurry, low quality"
+)
+
+# Batch generation with cost estimation
+results = generator.generate_batch(
+    prompts=[
+        "A peaceful cat sleeping in sunlight",
+        "Ocean waves at sunset with seagulls",
+        "A butterfly landing on a flower"
+    ],
+    model=TextToVideoModel.MINIMAX_HAILUO,
+    prompt_optimizer=True
+)
+```
+
+**Model Information:**
+```python
+# Get model details and costs
+info = generator.get_model_info()
+generator.print_model_info()  # Formatted output
+
+# Model-specific features:
+# MiniMax Hailuo-02 Pro: 1080p, 6s fixed, $0.08, prompt optimization
+# Google Veo 3: 720p, 5-8s variable, $2.50-6.00, audio support, advanced controls
+```
+
+### FALVideoToVideoGenerator Class (NEW)
+Located in [fal_video_to_video/fal_video_to_video/](mdc:fal_video_to_video/fal_video_to_video/) directory
+
+**ThinkSound Audio Enhancement:**
+- AI-powered audio generation for existing videos
+- Very cost-effective at ~$0.001 per second
+- Text prompt guidance for audio style
+- Multiple video format support
+
+**Universal Methods:**
+```python
+# Add AI-generated audio to video from URL
+result = generator.add_audio_to_video(
+    video_url="https://example.com/video.mp4",
+    prompt="add dramatic orchestral music",
+    model="thinksound",
+    seed=42,
+    output_dir="output"
+)
+
+# Add AI-generated audio to local video
+result = generator.add_audio_to_local_video(
+    video_path="input/my_video.mp4", 
+    prompt="add ambient nature sounds with birds chirping",
+    model="thinksound",
+    output_dir="output"
+)
+
+# Batch processing with cost estimation
+batch_config = [
+    {
+        "video_path": "input/video1.mp4",
+        "prompt": "add ambient music",
+        "seed": 123
+    },
+    {
+        "video_url": "https://example.com/video2.mp4", 
+        "prompt": "add sound effects"
+    }
+]
+```
+
+**CLI Interface:**
+```bash
+# List available models and costs
+python -m fal_video_to_video list-models
+
+# Add audio to video with parameters
+python -m fal_video_to_video add-audio -i input/video.mp4 -p "add dramatic music"
+
+# Process from URL
+python -m fal_video_to_video add-audio -u "https://example.com/video.mp4" -p "add sound effects"
+
+# Batch processing
+python -m fal_video_to_video batch -f batch.json
+```
+
+**Key Features:**
+- **Cost-Effective**: ~$0.001 per second (one of the most affordable AI services)
+- **Max Duration**: 300 seconds (5 minutes) per video
+- **Output Format**: MP4 with enhanced audio
+- **Reproducible Results**: Use seeds for consistent outputs
+- **Multiple Formats**: Support for MP4, MOV, AVI, WebM input
+- **Batch Processing**: Efficient processing of multiple videos
 
 ### FALAvatarGenerator Class
 Located in [fal_avatar_generation/fal_avatar_generator.py](mdc:fal_avatar_generation/fal_avatar_generator.py)
@@ -771,6 +897,11 @@ All implementations include comprehensive error handling:
 - Leverage batch processing for efficient workflows
 - Implement proper error handling and validation
 - Provide rich metadata in API responses
+- Support resource management for generated content
+- Use official examples for avatar generation consistency
+- Validate input parameters before API calls
+
+
 - Support resource management for generated content
 - Use official examples for avatar generation consistency
 - Validate input parameters before API calls

@@ -1,8 +1,3 @@
----
-description: 
-globs: 
-alwaysApply: true
----
 # AI Content Generation Project Overview
 
 This project provides Python utilities for generating videos, images, and avatars using multiple AI platforms:
@@ -12,32 +7,48 @@ This project provides Python utilities for generating videos, images, and avatar
 2. **FAL AI Dual Models** (simpler setup, production ready)
    - **MiniMax Hailuo-02** (768p, prompt optimizer)
    - **Kling Video 2.1** (high-quality, CFG scale, negative prompts)
+3. **NEW: FAL AI Text-to-Video** (direct text-to-video generation)
+   - **MiniMax Hailuo-02 Pro** (1080p, $0.08/video, 6s duration)
+   - **Google Veo 3** ($2.50-$6.00/video, 720p, 5-8s, audio support)
+
+## Video Enhancement
+4. **NEW: FAL AI Video-to-Video** (AI audio enhancement)
+   - **ThinkSound API** (~$0.001/second, realistic audio generation)
+   - **Text Prompts** (guide audio generation with natural language)
+   - **Multiple Formats** (MP4, MOV, AVI, WebM support)
 
 ## Avatar Generation
-3. **FAL AI Triple-Mode System** (talking avatars with lip-sync)
+5. **FAL AI Triple-Mode System** (talking avatars with lip-sync)
    - **Text-to-Speech**: 20 voice options with natural speech conversion
    - **Audio-to-Avatar**: Custom audio files for lip-sync animation
    - **Multi-Audio Conversation**: Two-person conversations with sequential speaking
 
 ## Text-to-Image Generation
-4. **FAL AI Quad Models** (consolidated test structure, direct Python API)
+6. **FAL AI Quad Models** (consolidated test structure, direct Python API)
    - **Imagen4** (Google's high-quality model)
    - **Seedream** (Artistic and creative generation)
    - **FLUX Schnell** (Ultra-fast generation)
    - **FLUX Dev** (Balanced speed and quality)
 
 ## Image-to-Image Generation
-5. **FAL AI Image Enhancement** (comprehensive image transformation pipeline)
+7. **FAL AI Image Enhancement** (comprehensive image transformation pipeline)
    - **FLUX Image Enhancement**: High-quality image refinement and style transfer
    - **Batch Processing**: Multiple image transformations with cost-conscious design
    - **Professional Package**: Modular architecture with setup.py and proper testing
 
 ## Text-to-Speech Generation
-6. **ElevenLabs TTS Package** (modular architecture, comprehensive features)
+8. **ElevenLabs TTS Package** (modular architecture, comprehensive features)
    - **3000+ Voice Library**: Popular presets and custom voice cloning
    - **AI Content Pipeline**: OpenRouter AI integration with top 10 models
    - **Advanced Features**: Timing control, multi-speaker dialogue, emotional tags
    - **Professional Package**: Modular design with setup.py and proper imports
+
+## Unified Content Pipeline
+9. **NEW: AI Content Pipeline** (chain multiple AI operations)
+   - **Text → Image → Video → Audio Enhancement → Video Upscaling**
+   - **YAML/JSON Configuration**: Define complex workflows
+   - **Automatic Model Selection**: Based on criteria and budget
+   - **Cost Optimization**: Transparent pricing and estimation
 
 ## Main Components
 
@@ -69,6 +80,61 @@ Located in [fal_image_to_video/](mdc:fal_image_to_video) directory with simplifi
 - [test_api_only.py](mdc:fal_image_to_video/test_api_only.py) - **FREE API connection test** (no video generation)
 - [README.md](mdc:fal_image_to_video/README.md) - Complete FAL AI dual-model documentation
 - [COST_CONSCIOUS_TESTING.md](mdc:fal_image_to_video/COST_CONSCIOUS_TESTING.md) - Cost-conscious testing guide
+
+### FAL AI Text-to-Video Generation (NEW)
+Located in [fal_text_to_video/](mdc:fal_text_to_video) directory with direct text-to-video generation supporting multiple model options.
+
+**Key Components:**
+- [fal_text_to_video_generator.py](mdc:fal_text_to_video/fal_text_to_video_generator.py) - Main FALTextToVideoGenerator class with dual-model support
+- [demo.py](mdc:fal_text_to_video/demo.py) - Cost-conscious interactive demo with model selection
+- [test_setup.py](mdc:fal_text_to_video/test_setup.py) - **FREE environment and API validation**
+- [test_generation.py](mdc:fal_text_to_video/test_generation.py) - **PAID text-to-video generation tests**
+- [README.md](mdc:fal_text_to_video/README.md) - Complete FAL AI text-to-video documentation
+
+**Key Features:**
+- **MiniMax Hailuo-02 Pro**: 1080p resolution, 6-second duration, $0.08 per video, prompt optimization
+- **Google Veo 3**: 720p resolution, 5-8 seconds variable, $2.50-$6.00 per video, audio support
+- **Direct Generation**: No image step required - generate videos directly from text
+- **Cost-Effective Options**: Choose between cost-effective and premium quality models
+
+### FAL AI Video-to-Video Enhancement (NEW)
+Located in [fal_video_to_video/](mdc:fal_video_to_video) directory with AI audio enhancement for existing videos.
+
+**Key Components:**
+- [fal_video_to_video/](mdc:fal_video_to_video/fal_video_to_video/) - Main video enhancement package
+- [setup.py](mdc:fal_video_to_video/setup.py) - Professional package setup
+- [test_topaz_upscale.sh](mdc:fal_video_to_video/test_topaz_upscale.sh) - Video upscaling test script
+- [README.md](mdc:fal_video_to_video/README.md) - Complete FAL AI video-to-video documentation
+- **Examples:** Usage examples and tutorials for audio enhancement
+
+**Key Features:**
+- **ThinkSound API**: AI-powered video audio generation (~$0.001 per second)
+- **Text Prompt Audio**: Guide audio generation with natural language descriptions
+- **Multiple Formats**: Support for MP4, MOV, AVI, WebM video formats
+- **Batch Processing**: Process multiple videos efficiently
+- **CLI Interface**: Command-line tools for batch operations
+
+### AI Content Pipeline (NEW)
+Located in [ai_content_pipeline/](mdc:ai_content_pipeline) directory with unified content creation system for chaining AI operations.
+
+**Key Components:**
+- [ai_content_pipeline/](mdc:ai_content_pipeline/ai_content_pipeline/) - Main pipeline package
+- [setup.py](mdc:ai_content_pipeline/setup.py) - Professional package setup
+- [README.md](mdc:ai_content_pipeline/README.md) - Complete AI content pipeline documentation
+- **Pipeline Management:**
+  - [pipeline/manager.py](mdc:ai_content_pipeline/ai_content_pipeline/pipeline/manager.py) - Main pipeline manager
+  - [pipeline/chain.py](mdc:ai_content_pipeline/ai_content_pipeline/pipeline/chain.py) - Chain configuration classes
+  - [pipeline/executor.py](mdc:ai_content_pipeline/ai_content_pipeline/pipeline/executor.py) - Chain execution engine
+- **Model Integration:**
+  - [models/text_to_image.py](mdc:ai_content_pipeline/ai_content_pipeline/models/text_to_image.py) - Unified text-to-image generator
+  - [models/base.py](mdc:ai_content_pipeline/ai_content_pipeline/models/base.py) - Base model interface
+
+**Key Features:**
+- **Workflow Chains**: Text → Image → Video → Audio Enhancement → Video Upscaling
+- **YAML/JSON Configuration**: Define complex workflows with configuration files
+- **Automatic Model Selection**: Choose optimal models based on criteria and budget
+- **Cost Optimization**: Transparent pricing and cost estimation for all operations
+- **Professional Architecture**: Modular design with proper package structure
 
 ### FAL AI Avatar Generation (Triple-Mode)
 Located in [fal_avatar_generation/](mdc:fal_avatar_generation) directory with comprehensive avatar video generation using official FAL AI examples.
@@ -151,6 +217,25 @@ Located in [text_to_speech/](mdc:text_to_speech) directory with comprehensive TT
   - Duration: 5-10 seconds
   - Features: CFG scale, negative prompts
 
+**Supported Text-to-Video Models:**
+- **MiniMax Hailuo-02 Pro**: `fal-ai/minimax/hailuo-02-pro/text-to-video`
+  - Resolution: 1080p
+  - Duration: 6 seconds (fixed)
+  - Cost: ~$0.08 per video
+  - Features: Prompt optimization, commercial use allowed
+- **Google Veo 3**: `fal-ai/google/veo-3/text-to-video`
+  - Resolution: 720p
+  - Duration: 5-8 seconds (variable)
+  - Cost: $2.50-$6.00 per video
+  - Features: Premium quality, audio support, advanced controls
+
+**Supported Video-to-Video Models:**
+- **ThinkSound**: `fal-ai/thinksound/v1/video-to-audio`
+  - Cost: ~$0.001 per second of video
+  - Features: AI-powered audio generation, text prompt guidance
+  - Max Duration: 300 seconds (5 minutes)
+  - Output Format: MP4 with enhanced audio
+
 **Supported Avatar Models:**
 - **FAL AI Avatar Single-Text**: `fal-ai/ai-avatar/single-text`
   - Features: 20 voice options, text-to-speech conversion, natural lip-sync
@@ -198,6 +283,42 @@ veo3/
 │   ├── requirements.txt             # FAL AI dependencies
 │   ├── .env.example                 # FAL AI configuration template
 │   └── output/                      # FAL AI generated videos
+├── fal_text_to_video/               # NEW: FAL AI text-to-video implementation
+│   ├── fal_text_to_video_generator.py # FAL AI text-to-video generator class (dual-model)
+│   ├── demo.py                      # Cost-conscious interactive demo with model selection
+│   ├── test_setup.py               # FREE environment and API validation
+│   ├── test_generation.py          # PAID text-to-video generation tests
+│   ├── README.md                    # FAL AI text-to-video documentation
+│   ├── requirements.txt             # FAL AI dependencies
+│   ├── .env.example                 # FAL AI configuration template
+│   └── output/                      # Generated text-to-video files
+├── fal_video_to_video/              # NEW: FAL AI video-to-video enhancement
+│   ├── fal_video_to_video/          # Main video enhancement package
+│   ├── test_topaz_upscale.sh        # Video upscaling test script
+│   ├── setup.py                     # Professional package setup
+│   ├── README.md                    # FAL AI video-to-video documentation
+│   ├── requirements.txt             # FAL AI dependencies
+│   ├── .env                         # FAL AI configuration
+│   ├── input/                       # Input videos for enhancement
+│   ├── output/                      # Enhanced videos with AI audio
+│   ├── examples/                    # Usage examples and tutorials
+│   ├── docs/                        # Detailed documentation
+│   ├── tests/                       # Complete testing framework
+│   └── test_output/                 # Test-generated enhanced videos
+├── ai_content_pipeline/             # NEW: Unified AI content pipeline
+│   ├── ai_content_pipeline/         # Main pipeline package
+│   │   ├── config/                 # Configuration management
+│   │   ├── models/                 # Model implementations (text-to-image, etc.)
+│   │   ├── pipeline/               # Pipeline management (manager, chain, executor)
+│   │   └── utils/                  # File management and validation
+│   ├── setup.py                     # Professional package setup
+│   ├── README.md                    # AI content pipeline documentation
+│   ├── requirements.txt             # Pipeline dependencies
+│   ├── input/                       # Input files for pipeline operations
+│   ├── output/                      # Generated content from pipelines
+│   ├── temp/                        # Temporary files during chain execution
+│   ├── examples/                    # Usage examples and chain configurations
+│   └── tests/                       # Complete testing framework
 ├── fal_avatar_generation/           # FAL AI triple-mode avatar implementation
 │   ├── fal_avatar_generator.py      # FAL AI avatar generator class (triple-mode)
 │   ├── demo.py                      # Cost-conscious interactive demo with mode selection
@@ -417,6 +538,11 @@ veo3/
 - **OpenRouter AI costs** - AI content generation costs vary by model (Claude Sonnet 4, Gemini 2.0 Flash, etc.)
 - **Start with basic examples** before using advanced AI pipeline features
 - **Test voice selection** with short text samples before long-form content
+
+
+
+
+
 
 
 

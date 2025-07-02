@@ -4,11 +4,114 @@
 This is a comprehensive AI content creation project with multiple implementations:
 - Google Veo video generation (veo3_video_generation/)
 - FAL AI video generation (fal_image_to_video/)  
+- **NEW: FAL AI text-to-video generation (fal_text_to_video/)**
+- **NEW: FAL AI video-to-video audio enhancement (fal_video_to_video/)**
 - FAL AI avatar generation (fal_avatar_generation/)
 - FAL AI text-to-image (fal_text_to_image/)
 - FAL AI image-to-image (fal_image_to_image/)
-- **NEW: Modular text-to-speech package (text_to_speech/)**
+- **ENHANCED: Modular text-to-speech package (text_to_speech/)**
+- **NEW: Unified AI Content Pipeline (ai_content_pipeline/)**
 - **ENHANCED: Video tools with CLI parameter support (video_tools/)**
+
+## New AI Content Pipeline Architecture (RECENTLY ADDED)
+
+### Unified Content Creation System
+The ai_content_pipeline provides a unified interface for chaining multiple AI operations:
+**Text → Image → Video → Audio Enhancement → Video Upscaling**
+
+```
+ai_content_pipeline/
+├── ai_content_pipeline/           # Main package
+│   ├── config/                   # Configuration management
+│   ├── models/                   # Model implementations
+│   │   ├── text_to_image.py      # Unified text-to-image generator
+│   │   └── base.py               # Base model interface
+│   ├── pipeline/                 # Pipeline management
+│   │   ├── manager.py            # Main pipeline manager
+│   │   ├── chain.py              # Chain configuration classes
+│   │   └── executor.py           # Chain execution engine
+│   └── utils/                    # File management and validation
+```
+
+### Pipeline Usage Patterns
+```python
+# ✅ Correct - Unified pipeline interface
+from ai_content_pipeline import AIPipelineManager
+
+# Generate image with automatic model selection
+manager = AIPipelineManager()
+result = manager.text_to_image.generate(
+    prompt="futuristic cityscape",
+    model="auto",
+    criteria="quality"
+)
+
+# Chain multiple operations
+chain = manager.create_chain("text_to_video_enhanced.yaml")
+results = manager.execute_chain(chain)
+```
+
+## FAL AI Text-to-Video Architecture (RECENTLY ADDED)
+
+### Unified Text-to-Video Generation
+The fal_text_to_video module provides direct text-to-video generation with multiple model options:
+
+```
+fal_text_to_video/
+├── fal_text_to_video_generator.py # Main generator class
+├── test_setup.py                  # FREE setup validation
+├── test_generation.py             # PAID generation tests
+├── demo.py                        # Interactive demonstration
+└── README.md                      # Complete documentation
+```
+
+### Model Support
+- **MiniMax Hailuo-02 Pro** (Default): $0.08/video, 1080p, 6s duration
+- **Google Veo 3** (Premium): $2.50-$6.00/video, 720p, 5-8s duration, audio support
+
+### Import Patterns
+```python
+# ✅ Correct - Text-to-video generation
+from fal_text_to_video_generator import FALTextToVideoGenerator, TextToVideoModel
+
+generator = FALTextToVideoGenerator(verbose=True)
+result = generator.generate_video(
+    prompt="A majestic eagle soaring over mountains",
+    model=TextToVideoModel.MINIMAX_HAILUO  # Cost-effective option
+)
+```
+
+## FAL AI Video-to-Video Architecture (RECENTLY ADDED)
+
+### AI Audio Enhancement for Videos
+The fal_video_to_video module adds AI-generated audio to existing videos using ThinkSound:
+
+```
+fal_video_to_video/
+├── fal_video_to_video/            # Main package
+├── test_topaz_upscale.sh          # Video upscaling test
+├── setup.py                       # Professional package setup
+├── README.md                      # Complete documentation
+└── examples/                      # Usage examples
+```
+
+### Audio Enhancement Features
+- **ThinkSound API**: AI-powered video audio generation
+- **Text Prompts**: Guide audio generation with natural language
+- **Multiple Formats**: MP4, MOV, AVI, WebM support
+- **Cost-Effective**: ~$0.001 per second of video
+
+### Import Patterns
+```python
+# ✅ Correct - Video audio enhancement
+from fal_video_to_video import FALVideoToVideoGenerator
+
+generator = FALVideoToVideoGenerator()
+result = generator.add_audio_to_local_video(
+    video_path="input/my_video.mp4",
+    prompt="add ambient nature sounds"
+)
+```
 
 ## Text-to-Speech Package Architecture (RECENTLY REFACTORED)
 
@@ -95,6 +198,25 @@ Enhanced commands follow this architecture:
 
 ## Development Guidelines
 
+### AI Content Pipeline
+1. **Chain Design**: Use YAML/JSON for complex workflows
+2. **Model Selection**: Prefer "auto" selection with criteria and budget constraints
+3. **Cost Estimation**: Always provide transparent cost estimates
+4. **File Management**: Use temporary directories and cleanup
+5. **Validation**: Validate chain compatibility before execution
+
+### FAL AI Text-to-Video
+1. **Model Selection**: Use MiniMax Hailuo-02 Pro for cost-effective generation, Google Veo 3 for premium quality
+2. **Cost Consciousness**: Always warn about costs ($0.08-$6.00 per video)
+3. **Setup Testing**: Use `test_setup.py` for FREE validation before paid operations
+4. **Prompt Optimization**: Enable prompt optimization for better results
+
+### FAL AI Video-to-Video
+1. **Audio Enhancement**: Focus on realistic audio generation with text prompts
+2. **File Format Support**: Handle multiple video formats (MP4, MOV, AVI, WebM)
+3. **Cost Efficiency**: Very cost-effective at ~$0.001 per second
+4. **Batch Processing**: Support batch operations for multiple videos
+
 ### Text-to-Speech Package
 1. **Modular Design**: Keep modules focused (150-300 lines each)
 2. **Clean Imports**: Use relative imports within package, absolute from outside
@@ -158,6 +280,24 @@ Enhanced commands follow this architecture:
 - Simple API key authentication
 - Production-ready with cost-conscious design
 
+### AI Content Pipeline (ai_content_pipeline/)
+- Unified interface for chaining multiple AI operations
+- YAML/JSON-based workflow configuration
+- Automatic model selection and cost optimization
+- Professional package structure with modular design
+
+### FAL AI Text-to-Video (fal_text_to_video/)
+- Direct text-to-video generation (no image step required)
+- Multiple model options with different cost/quality trade-offs
+- 1080p output with 6-second duration (MiniMax)
+- Premium audio support available (Google Veo 3)
+
+### FAL AI Video-to-Video (fal_video_to_video/)
+- AI-powered audio enhancement for existing videos
+- ThinkSound API integration
+- Very cost-effective audio generation
+- Multiple video format support
+
 ### Text-to-Speech Package
 - Professional modular architecture (recently refactored)
 - Comprehensive pipeline: AI content generation → speech synthesis
@@ -181,8 +321,51 @@ Enhanced commands follow this architecture:
 5. **Test Appropriately**: Use FREE tests first, then paid tests with user confirmation
 6. **Update Documentation**: Keep README files current with any changes
 7. **For Text-to-Speech**: Use the new modular structure, not old monolithic files
+8. **For AI Pipeline**: Consider chain operations for complex workflows
+9. **For Text-to-Video**: Choose appropriate model based on quality/cost requirements
+10. **For Video-to-Video**: Focus on audio enhancement capabilities
 
 ## Common Commands
+
+### AI Content Pipeline Development
+```bash
+cd ai_content_pipeline
+
+# List available models and capabilities
+python -m ai_content_pipeline list-models
+
+# Generate content with automatic model selection
+python -m ai_content_pipeline generate-image --text "epic space battle" --model auto --criteria quality
+
+# Create and execute content creation chains
+python -m ai_content_pipeline create-examples
+python -m ai_content_pipeline execute-chain examples/simple_image_generation.yaml
+```
+
+### FAL AI Text-to-Video Development
+```bash
+cd fal_text_to_video
+
+# Test setup (FREE)
+python test_setup.py
+
+# Interactive demo with cost warnings
+python demo.py
+
+# Generate single video (PAID - requires confirmation)
+python test_generation.py --single
+```
+
+### FAL AI Video-to-Video Development
+```bash
+cd fal_video_to_video
+
+# Test setup (FREE)
+python tests/test_setup.py
+
+# Add audio to video (PAID - low cost ~$0.001/second)
+python -m fal_video_to_video add-audio -i input/video.mp4 -p "add dramatic music"
+```
 
 ### Text-to-Speech Development
 ```bash
@@ -226,5 +409,8 @@ cd fal_avatar_generation && python test_setup.py  # FREE
 ```
 
 Remember: 
+- The ai_content_pipeline provides a unified interface for chaining multiple AI operations with automatic model selection and cost optimization.
+- The fal_text_to_video module offers direct text-to-video generation with multiple model options (cost-effective vs premium).
+- The fal_video_to_video module specializes in AI audio enhancement for existing videos at very low cost.
 - The text_to_speech package has a completely refactored, professional modular architecture. Always use the new import patterns and module structure.
 - The video_tools package now supports enhanced CLI mode with -i/-o/-f parameters for generate-subtitles, describe-videos, and transcribe-videos commands. Always check for parameter support when working with these commands.
