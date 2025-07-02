@@ -1,11 +1,11 @@
 name: "artistic_transformation_chain"
 description: "Multi-step artistic image transformation"
-prompt: "A beautiful garden with blooming flowers and a vintage fountain in the center"
+prompt: "A stunning supermodel with flowing hair posing elegantly in a luxurious fashion studio with dramatic lighting and designer clothing"
 steps:
   - type: "text_to_image"
-    model: "flux_dev"  # High quality base
+    model: "seedream_v3"  # Cost-effective bilingual model
     params:
-      aspect_ratio: "1:1"
+      image_size: "square_hd"
       style: "artistic"
   - type: "image_to_image"
     model: "photon_base"  # High-quality artistic transformation
