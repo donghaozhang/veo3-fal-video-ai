@@ -49,7 +49,7 @@ class ChainExecutor:
     def execute(
         self,
         chain: ContentCreationChain,
-        input_text: str,
+        input_data: str,
         **kwargs
     ) -> ChainResult:
         """
@@ -57,7 +57,7 @@ class ChainExecutor:
         
         Args:
             chain: ContentCreationChain to execute
-            input_text: Initial text input
+            input_data: Initial input data (text, image path, or video path)
             **kwargs: Additional execution parameters
             
         Returns:
@@ -67,8 +67,8 @@ class ChainExecutor:
         step_results = []
         outputs = {}
         total_cost = 0.0
-        current_data = input_text
-        current_type = "text"
+        current_data = input_data
+        current_type = chain.get_initial_input_type()
         # Track additional context from previous steps
         step_context = {}
         
@@ -102,7 +102,7 @@ class ChainExecutor:
                     total_time = time.time() - start_time
                     execution_report = self._create_execution_report(
                         chain=chain,
-                        input_text=input_text,
+                        input_data=input_data,
                         step_results=step_results,
                         outputs=outputs,
                         total_cost=total_cost,
@@ -173,7 +173,7 @@ class ChainExecutor:
                     
                     intermediate_report = self._create_intermediate_report(
                         chain=chain,
-                        input_text=input_text,
+                        input_data=input_data,
                         step_results=step_results[:i+1],  # Only include completed steps
                         outputs=outputs,
                         total_cost=total_cost,
@@ -201,7 +201,7 @@ class ChainExecutor:
             # Save detailed execution report
             execution_report = self._create_execution_report(
                 chain=chain,
-                input_text=input_text,
+                input_data=input_data,
                 step_results=step_results,
                 outputs=outputs,
                 total_cost=total_cost,
@@ -231,7 +231,7 @@ class ChainExecutor:
             total_time = time.time() - start_time
             execution_report = self._create_execution_report(
                 chain=chain,
-                input_text=input_text,
+                input_data=input_data,
                 step_results=step_results,
                 outputs=outputs,
                 total_cost=total_cost,
@@ -701,12 +701,108 @@ class ChainExecutor:
         step_context: Dict[str, Any] = None,
         **kwargs
     ) -> Dict[str, Any]:
-        """Execute video upscaling step (placeholder)."""
-        # TODO: Implement when video upscaling models are integrated
-        return {
-            "success": False,
-            "error": "Video upscaling integration not yet implemented"
-        }
+        """Execute video upscaling step."""
+        import sys
+        import os
+        from pathlib import Path
+        
+        try:
+            # Try multiple import paths for fal_video_to_video
+            current_dir = os.getcwd()
+            possible_paths = [
+                os.path.join(os.path.dirname(current_dir), 'fal_video_to_video'),
+                os.path.join(current_dir, '..', 'fal_video_to_video'),
+                '/home/zdhpe/veo3-video-generation/fal_video_to_video'
+            ]
+            
+            imported = False
+            for fal_video_path in possible_paths:
+                try:
+                    print(f"🔍 Trying to import from: {fal_video_path}")
+                    if os.path.exists(fal_video_path) and fal_video_path not in sys.path:
+                        sys.path.insert(0, fal_video_path)
+                    
+                    from fal_video_to_video.generator import FALVideoToVideoGenerator
+                    imported = True
+                    break
+                except ImportError:
+                    continue
+            
+            if not imported:
+                # Try alternative import structure
+                sys.path.insert(0, '/home/zdhpe/veo3-video-generation/fal_video_to_video')
+                from fal_video_to_video.fal_video_to_video.generator import FALVideoToVideoGenerator
+            print("✅ FAL Video-to-Video upscaler imported successfully")
+            
+            # Initialize upscaler
+            upscaler = FALVideoToVideoGenerator()
+            
+            # Get parameters
+            upscale_factor = step.params.get("upscale_factor", 2)
+            target_fps = step.params.get("target_fps", None)
+            
+            print(f"🔍 Starting video upscaling...")
+            print(f"📹 Input video: {video_path}")
+            print(f"📈 Upscale factor: {upscale_factor}x")
+            if target_fps:
+                print(f"🎬 Target FPS: {target_fps}")
+            
+            # Check if video file exists
+            if not os.path.exists(video_path):
+                return {
+                    "success": False,
+                    "error": f"Video file not found: {video_path}"
+                }
+            
+            # Execute upscaling
+            start_time = time.time()
+            
+            result = upscaler.upscale_local_video(
+                video_path=video_path,
+                upscale_factor=upscale_factor,
+                target_fps=target_fps,
+                output_dir=chain_config.get("output_dir", "output")
+            )
+            
+            processing_time = time.time() - start_time
+            
+            if result.get("success"):
+                print(f"✅ Video upscaling completed successfully!")
+                print(f"📁 Output: {result.get('local_path')}")
+                print(f"⏱️  Processing time: {processing_time:.1f} seconds")
+                
+                return {
+                    "success": True,
+                    "output_path": result.get("local_path"),
+                    "output_url": result.get("video_url"),
+                    "processing_time": processing_time,
+                    "cost": result.get("cost", 1.50),  # Default Topaz cost
+                    "model": step.model,
+                    "metadata": {
+                        "upscale_factor": upscale_factor,
+                        "target_fps": target_fps,
+                        "original_path": video_path,
+                        "model_response": result
+                    },
+                    "error": None
+                }
+            else:
+                return {
+                    "success": False,
+                    "error": f"Video upscaling failed: {result.get('error', 'Unknown error')}",
+                    "processing_time": processing_time
+                }
+                
+        except ImportError as e:
+            return {
+                "success": False,
+                "error": f"Could not import video upscaling module: {e}"
+            }
+        except Exception as e:
+            return {
+                "success": False,
+                "error": f"Video upscaling failed: {str(e)}"
+            }
     
     def _get_step_output_type(self, step_type: StepType) -> str:
         """Get the output type for a step."""
@@ -724,7 +820,7 @@ class ChainExecutor:
     def _create_execution_report(
         self,
         chain,
-        input_text: str,
+        input_data: str,
         step_results: list,
         outputs: dict,
         total_cost: float,
@@ -764,7 +860,7 @@ class ChainExecutor:
             
             # Add step-specific details
             if step.step_type == StepType.TEXT_TO_IMAGE:
-                step_detail["input_prompt"] = input_text
+                step_detail["input_prompt"] = input_data
                 step_detail["generation_params"] = step.params
             elif step.step_type == StepType.PROMPT_GENERATION:
                 step_detail["optimized_prompt"] = step_result.get("extracted_prompt")
@@ -794,7 +890,8 @@ class ChainExecutor:
                 "execution_id": f"exec_{int(time.time())}",
                 "timestamp": datetime.now().isoformat(),
                 "status": "success" if success else "failed",
-                "input_text": input_text,
+                "input_data": input_data,
+                "input_type": chain.get_initial_input_type(),
                 "total_steps": len(chain.get_enabled_steps()),
                 "completed_steps": len([s for s in step_results if s.get("success", False)]),
                 "total_cost_usd": round(total_cost, 4),
@@ -866,7 +963,7 @@ class ChainExecutor:
     def _create_intermediate_report(
         self,
         chain: 'ContentCreationChain',
-        input_text: str,
+        input_data: str,
         step_results: List[Dict[str, Any]],
         outputs: Dict[str, Any],
         total_cost: float,
@@ -883,7 +980,8 @@ class ChainExecutor:
                 "execution_id": execution_id,
                 "timestamp": datetime.now().isoformat(),
                 "status": "in_progress",
-                "input_text": input_text,
+                "input_data": input_data,
+                "input_type": chain.get_initial_input_type(),
                 "total_steps": total_steps,
                 "completed_steps": current_step,
                 "total_cost_usd": total_cost,

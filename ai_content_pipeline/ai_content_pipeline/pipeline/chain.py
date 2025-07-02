@@ -88,6 +88,9 @@ class ContentCreationChain:
         self.temp_dir = self.config.get("temp_dir", "temp") 
         self.cleanup_temp = self.config.get("cleanup_temp", True)
         self.save_intermediates = self.config.get("save_intermediates", False)
+        
+        # Pipeline input type - can be "text", "image", "video", or "auto"
+        self.input_type = self.config.get("input_type", "auto")
     
     @classmethod
     def from_config(cls, config: Dict[str, Any]) -> 'ContentCreationChain':
@@ -117,29 +120,28 @@ class ContentCreationChain:
         
         if not self.steps:
             errors.append("Chain must have at least one step")
+            return errors
         
-        # Check step sequence validity
-        prev_output = "text"  # Initial input is text
+        # Determine initial input type
+        initial_input_type = self._determine_initial_input_type()
+        
         # Track the actual current data type (for PROMPT_GENERATION pass-through)
-        actual_data_type = "text"
+        actual_data_type = initial_input_type
         
         for i, step in enumerate(self.steps):
             step_input = self._get_step_input_type(step.step_type)
             step_output = self._get_step_output_type(step.step_type)
             
             if i == 0:
-                # First step must accept text input
-                if step_input != "text":
-                    errors.append(f"First step must accept text input, got {step_input}")
+                # First step must accept the initial input type
+                if step_input != initial_input_type:
+                    errors.append(f"First step expects {step_input} input, but pipeline starts with {initial_input_type}")
             else:
                 # Check if this step can accept the actual data type available
                 if step_input != actual_data_type:
                     errors.append(
                         f"Step {i+1} expects {step_input} but available data is {actual_data_type}"
                     )
-            
-            # Update data types
-            prev_output = step_output
             
             # PROMPT_GENERATION is special - it doesn't change the actual data type
             # It just adds metadata (the generated prompt) to the context
@@ -151,6 +153,24 @@ class ContentCreationChain:
                 actual_data_type = step_output
         
         return errors
+    
+    def _determine_initial_input_type(self) -> str:
+        """
+        Determine the initial input type for the pipeline.
+        
+        Returns:
+            Initial input type ("text", "image", "video")
+        """
+        if self.input_type == "auto":
+            # Auto-detect based on the first step
+            if not self.steps:
+                return "text"  # Default fallback
+            
+            first_step_input = self._get_step_input_type(self.steps[0].step_type)
+            return first_step_input
+        else:
+            # Use explicitly configured input type
+            return self.input_type
     
     def _get_step_input_type(self, step_type: StepType) -> str:
         """Get the input type for a step."""
@@ -213,6 +233,10 @@ class ContentCreationChain:
     def get_enabled_steps(self) -> List[PipelineStep]:
         """Get list of enabled steps."""
         return [step for step in self.steps if step.enabled]
+    
+    def get_initial_input_type(self) -> str:
+        """Get the expected initial input type for this chain."""
+        return self._determine_initial_input_type()
     
     def __repr__(self) -> str:
         """String representation of the chain."""

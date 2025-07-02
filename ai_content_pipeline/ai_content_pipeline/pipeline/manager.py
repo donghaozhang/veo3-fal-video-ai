@@ -123,7 +123,7 @@ class AIPipelineManager:
     def execute_chain(
         self,
         chain: ContentCreationChain,
-        input_text: str,
+        input_data: str,
         **kwargs
     ) -> ChainResult:
         """
@@ -131,7 +131,7 @@ class AIPipelineManager:
         
         Args:
             chain: ContentCreationChain to execute
-            input_text: Initial text input for the chain
+            input_data: Initial input data (text, image path, or video path)
             **kwargs: Additional execution parameters
             
         Returns:
@@ -151,11 +151,11 @@ class AIPipelineManager:
             )
         
         print(f"🚀 Executing chain: {chain.name}")
-        print(f"📝 Input: {input_text[:100]}{'...' if len(input_text) > 100 else ''}")
+        print(f"📝 Input ({chain.get_initial_input_type()}): {input_data[:100]}{'...' if len(input_data) > 100 else ''}")
         
         # Execute chain
         try:
-            return self.executor.execute(chain, input_text, **kwargs)
+            return self.executor.execute(chain, input_data, **kwargs)
         except Exception as e:
             return ChainResult(
                 success=False,
