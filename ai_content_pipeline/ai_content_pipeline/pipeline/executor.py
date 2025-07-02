@@ -86,12 +86,30 @@ class ChainExecutor:
                     error_msg = step_result.get("error", "Unknown error")
                     print(f"❌ Step failed: {error_msg}")
                     
+                    # Save failure report
+                    total_time = time.time() - start_time
+                    execution_report = self._create_execution_report(
+                        chain=chain,
+                        input_text=input_text,
+                        step_results=step_results,
+                        outputs=outputs,
+                        total_cost=total_cost,
+                        total_time=total_time,
+                        success=False,
+                        error=f"Step {i+1} failed: {error_msg}"
+                    )
+                    
+                    # Save report to file
+                    report_path = self._save_execution_report(execution_report, chain.config)
+                    if report_path:
+                        print(f"📄 Failure report saved: {report_path}")
+                    
                     return ChainResult(
                         success=False,
                         steps_completed=i,
                         total_steps=len(enabled_steps),
                         total_cost=total_cost,
-                        total_time=time.time() - start_time,
+                        total_time=total_time,
                         outputs=outputs,
                         error=f"Step {i+1} failed: {error_msg}",
                         step_results=step_results
@@ -119,6 +137,22 @@ class ChainExecutor:
             print(f"⏱️  Total time: {total_time:.1f}s")
             print(f"💰 Total cost: ${total_cost:.3f}")
             
+            # Save detailed execution report
+            execution_report = self._create_execution_report(
+                chain=chain,
+                input_text=input_text,
+                step_results=step_results,
+                outputs=outputs,
+                total_cost=total_cost,
+                total_time=total_time,
+                success=True
+            )
+            
+            # Save report to file
+            report_path = self._save_execution_report(execution_report, chain.config)
+            if report_path:
+                print(f"📄 Execution report saved: {report_path}")
+            
             return ChainResult(
                 success=True,
                 steps_completed=len(enabled_steps),
@@ -132,12 +166,30 @@ class ChainExecutor:
         except Exception as e:
             print(f"❌ Chain execution failed: {str(e)}")
             
+            # Save error report
+            total_time = time.time() - start_time
+            execution_report = self._create_execution_report(
+                chain=chain,
+                input_text=input_text,
+                step_results=step_results,
+                outputs=outputs,
+                total_cost=total_cost,
+                total_time=total_time,
+                success=False,
+                error=f"Execution error: {str(e)}"
+            )
+            
+            # Save report to file
+            report_path = self._save_execution_report(execution_report, chain.config)
+            if report_path:
+                print(f"📄 Error report saved: {report_path}")
+            
             return ChainResult(
                 success=False,
                 steps_completed=len(step_results),
                 total_steps=len(enabled_steps),
                 total_cost=total_cost,
-                total_time=time.time() - start_time,
+                total_time=total_time,
                 outputs=outputs,
                 error=f"Execution error: {str(e)}",
                 step_results=step_results
@@ -441,3 +493,142 @@ class ChainExecutor:
             StepType.UPSCALE_VIDEO: "video"
         }
         return output_types.get(step_type, "unknown")
+    
+    def _create_execution_report(
+        self,
+        chain,
+        input_text: str,
+        step_results: list,
+        outputs: dict,
+        total_cost: float,
+        total_time: float,
+        success: bool,
+        error: str = None
+    ) -> dict:
+        """Create detailed execution report with all step information."""
+        import time
+        from datetime import datetime
+        
+        # Create step details with status and download links
+        step_details = []
+        for i, step_result in enumerate(step_results):
+            step = chain.get_enabled_steps()[i]
+            
+            step_detail = {
+                "step_number": i + 1,
+                "step_name": f"step_{i+1}_{step.step_type.value}",
+                "step_type": step.step_type.value,
+                "model": step.model,
+                "status": "success" if step_result.get("success", False) else "failed",
+                "processing_time": step_result.get("processing_time", 0),
+                "cost": step_result.get("cost", 0),
+                "output_files": {},
+                "download_links": {},
+                "metadata": step_result.get("metadata", {}),
+                "error": step_result.get("error") if not step_result.get("success", False) else None
+            }
+            
+            # Add output file information
+            if step_result.get("output_path"):
+                step_detail["output_files"]["local_path"] = step_result["output_path"]
+            
+            if step_result.get("output_url"):
+                step_detail["download_links"]["direct_url"] = step_result["output_url"]
+            
+            # Add step-specific details
+            if step.step_type == StepType.TEXT_TO_IMAGE:
+                step_detail["input_prompt"] = input_text
+                step_detail["generation_params"] = step.params
+            elif step.step_type == StepType.IMAGE_TO_VIDEO:
+                step_detail["input_image_url"] = step_results[i-1].get("output_url") if i > 0 else None
+                step_detail["video_params"] = step.params
+            
+            step_details.append(step_detail)
+        
+        # Get final outputs for easy access
+        final_outputs = {}
+        download_links = {}
+        
+        for step_name, output in outputs.items():
+            if output.get("path"):
+                final_outputs[step_name] = output["path"]
+            if output.get("url"):
+                download_links[step_name] = output["url"]
+        
+        # Create comprehensive report
+        report = {
+            "execution_summary": {
+                "chain_name": chain.name,
+                "execution_id": f"exec_{int(time.time())}",
+                "timestamp": datetime.now().isoformat(),
+                "status": "success" if success else "failed",
+                "input_text": input_text,
+                "total_steps": len(chain.get_enabled_steps()),
+                "completed_steps": len([s for s in step_results if s.get("success", False)]),
+                "total_cost_usd": round(total_cost, 4),
+                "total_processing_time_seconds": round(total_time, 2),
+                "error": error
+            },
+            "step_execution_details": step_details,
+            "final_outputs": {
+                "local_files": final_outputs,
+                "download_links": download_links
+            },
+            "cost_breakdown": {
+                "by_step": [
+                    {
+                        "step": f"{i+1}_{step.step_type.value}",
+                        "model": step.model,
+                        "cost_usd": step_result.get("cost", 0)
+                    }
+                    for i, (step, step_result) in enumerate(zip(chain.get_enabled_steps(), step_results))
+                ],
+                "total_cost_usd": round(total_cost, 4)
+            },
+            "performance_metrics": {
+                "by_step": [
+                    {
+                        "step": f"{i+1}_{step.step_type.value}",
+                        "processing_time_seconds": step_result.get("processing_time", 0),
+                        "status": "success" if step_result.get("success", False) else "failed"
+                    }
+                    for i, (step, step_result) in enumerate(zip(chain.get_enabled_steps(), step_results))
+                ],
+                "total_time_seconds": round(total_time, 2),
+                "average_time_per_step": round(total_time / len(step_results) if step_results else 0, 2)
+            },
+            "metadata": {
+                "chain_config": chain.to_config(),
+                "pipeline_version": "1.0.0",
+                "models_used": [step.model for step in chain.get_enabled_steps()]
+            }
+        }
+        
+        return report
+    
+    def _save_execution_report(self, report: dict, chain_config: dict) -> str:
+        """Save execution report to JSON file."""
+        import json
+        from pathlib import Path
+        
+        try:
+            # Create reports directory
+            output_dir = Path(chain_config.get("output_dir", "output"))
+            reports_dir = output_dir / "reports"
+            reports_dir.mkdir(exist_ok=True)
+            
+            # Generate report filename
+            execution_id = report["execution_summary"]["execution_id"]
+            chain_name = report["execution_summary"]["chain_name"]
+            filename = f"{chain_name}_{execution_id}_report.json"
+            report_path = reports_dir / filename
+            
+            # Save report
+            with open(report_path, 'w') as f:
+                json.dump(report, f, indent=2, ensure_ascii=False)
+            
+            return str(report_path)
+            
+        except Exception as e:
+            print(f"⚠️  Failed to save execution report: {e}")
+            return None
