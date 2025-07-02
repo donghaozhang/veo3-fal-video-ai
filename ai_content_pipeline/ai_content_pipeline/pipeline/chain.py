@@ -16,6 +16,7 @@ class StepType(Enum):
     IMAGE_TO_VIDEO = "image_to_video"
     ADD_AUDIO = "add_audio"
     UPSCALE_VIDEO = "upscale_video"
+    GENERATE_SUBTITLES = "generate_subtitles"
 
 
 @dataclass
@@ -181,7 +182,8 @@ class ContentCreationChain:
             StepType.IMAGE_TO_IMAGE: "image",
             StepType.IMAGE_TO_VIDEO: "image", 
             StepType.ADD_AUDIO: "video",
-            StepType.UPSCALE_VIDEO: "video"
+            StepType.UPSCALE_VIDEO: "video",
+            StepType.GENERATE_SUBTITLES: "video"
         }
         return input_types.get(step_type, "unknown")
     
@@ -194,7 +196,8 @@ class ContentCreationChain:
             StepType.IMAGE_TO_IMAGE: "image",
             StepType.IMAGE_TO_VIDEO: "video",
             StepType.ADD_AUDIO: "video", 
-            StepType.UPSCALE_VIDEO: "video"
+            StepType.UPSCALE_VIDEO: "video",
+            StepType.GENERATE_SUBTITLES: "video"
         }
         return output_types.get(step_type, "unknown")
     

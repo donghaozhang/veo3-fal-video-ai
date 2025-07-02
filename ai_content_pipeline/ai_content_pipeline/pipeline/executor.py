@@ -296,6 +296,8 @@ class ChainExecutor:
                 return self._execute_add_audio(step, input_data, chain_config, step_context, **kwargs)
             elif step.step_type == StepType.UPSCALE_VIDEO:
                 return self._execute_upscale_video(step, input_data, chain_config, step_context, **kwargs)
+            elif step.step_type == StepType.GENERATE_SUBTITLES:
+                return self._execute_generate_subtitles(step, input_data, chain_config, step_context, **kwargs)
             else:
                 return {
                     "success": False,
@@ -804,6 +806,145 @@ class ChainExecutor:
                 "error": f"Video upscaling failed: {str(e)}"
             }
     
+    def _execute_generate_subtitles(
+        self,
+        step: PipelineStep,
+        video_path: str,
+        chain_config: Dict[str, Any],
+        step_context: Dict[str, Any] = None,
+        **kwargs
+    ) -> Dict[str, Any]:
+        """
+        Execute subtitle generation step.
+        
+        Args:
+            step: PipelineStep configuration
+            video_path: Path to input video file
+            chain_config: Chain configuration
+            step_context: Context from previous steps
+            **kwargs: Additional parameters
+            
+        Returns:
+            Dictionary with execution results
+        """
+        import time
+        import os
+        import sys
+        from pathlib import Path
+        
+        try:
+            # Import video tools subtitle generator
+            try:
+                # Try multiple import paths
+                video_tools_path = "/home/zdhpe/veo3-video-generation/video_tools"
+                if video_tools_path not in sys.path:
+                    sys.path.append(video_tools_path)
+                
+                from video_utils.subtitle_generator import generate_subtitle_for_video
+                
+            except ImportError as e:
+                return {
+                    "success": False,
+                    "error": f"Could not import subtitle generation module: {e}"
+                }
+            
+            # Get parameters
+            subtitle_text = step.params.get("subtitle_text", "")
+            format_type = step.params.get("format", "srt")  # srt or vtt
+            words_per_second = step.params.get("words_per_second", 2.0)
+            output_dir = step.params.get("output_dir", chain_config.get("output_dir", "output"))
+            
+            # Use subtitle text from context if available and not explicitly set
+            if not subtitle_text and step_context:
+                subtitle_text = step_context.get("generated_prompt") or step_context.get("subtitle_text", "")
+            
+            if not subtitle_text:
+                return {
+                    "success": False,
+                    "error": "No subtitle text provided. Use 'subtitle_text' parameter or generate from previous prompt step."
+                }
+            
+            print(f"📝 Starting subtitle generation...")
+            print(f"📹 Input video: {video_path}")
+            print(f"📄 Format: {format_type.upper()}")
+            print(f"⏱️  Words per second: {words_per_second}")
+            print(f"📝 Subtitle text: {subtitle_text[:100]}{'...' if len(subtitle_text) > 100 else ''}")
+            
+            # Check if video file exists
+            if not os.path.exists(video_path):
+                return {
+                    "success": False,
+                    "error": f"Video file not found: {video_path}"
+                }
+            
+            # Create output directory
+            output_path = Path(output_dir)
+            output_path.mkdir(parents=True, exist_ok=True)
+            
+            # Generate output filename
+            video_name = Path(video_path).stem
+            output_subtitle_path = output_path / f"{video_name}.{format_type}"
+            
+            # Execute subtitle generation
+            start_time = time.time()
+            
+            subtitle_path = generate_subtitle_for_video(
+                video_path=Path(video_path),
+                text=subtitle_text,
+                format_type=format_type,
+                words_per_second=words_per_second,
+                output_path=output_subtitle_path
+            )
+            
+            processing_time = time.time() - start_time
+            
+            if subtitle_path and os.path.exists(subtitle_path):
+                print(f"✅ Subtitle generation completed successfully!")
+                print(f"📁 Subtitle file: {subtitle_path}")
+                print(f"⏱️  Processing time: {processing_time:.1f} seconds")
+                
+                # Copy the video file to output directory if not already there
+                output_video_path = output_path / Path(video_path).name
+                if not output_video_path.exists():
+                    import shutil
+                    shutil.copy2(video_path, output_video_path)
+                    print(f"📁 Video copied to: {output_video_path}")
+                
+                return {
+                    "success": True,
+                    "output_path": str(output_video_path),  # Return video path as main output
+                    "subtitle_path": str(subtitle_path),
+                    "processing_time": processing_time,
+                    "cost": 0.0,  # Subtitle generation is free
+                    "model": step.model,
+                    "metadata": {
+                        "format": format_type,
+                        "words_per_second": words_per_second,
+                        "subtitle_text": subtitle_text,
+                        "subtitle_file": str(subtitle_path),
+                        "video_file": str(output_video_path),
+                        "subtitle_length": len(subtitle_text)
+                    },
+                    "error": None
+                }
+            else:
+                return {
+                    "success": False,
+                    "error": f"Subtitle generation failed: No output file created",
+                    "processing_time": processing_time
+                }
+                
+        except ImportError as e:
+            return {
+                "success": False,
+                "error": f"Could not import subtitle generation module: {e}"
+            }
+        except Exception as e:
+            return {
+                "success": False,
+                "error": f"Subtitle generation failed: {str(e)}"
+            }
+    
     def _get_step_output_type(self, step_type: StepType) -> str:
         """Get the output type for a step."""
         output_types = {
@@ -813,7 +954,8 @@ class ChainExecutor:
             StepType.IMAGE_TO_IMAGE: "image",
             StepType.IMAGE_TO_VIDEO: "video",
             StepType.ADD_AUDIO: "video",
-            StepType.UPSCALE_VIDEO: "video"
+            StepType.UPSCALE_VIDEO: "video",
+            StepType.GENERATE_SUBTITLES: "video"
         }
         return output_types.get(step_type, "unknown")
     

@@ -111,16 +111,17 @@ def run_chain(args):
         
         print(f"📋 Loaded chain: {chain.name}")
         
-        # Determine input text from args, prompt file, or config
-        input_text = args.input_text
+        # Determine input data based on pipeline input type
+        input_data = args.input_text
+        initial_input_type = chain.get_initial_input_type()
         
-        # Priority: --input-text > --prompt-file > config prompt
-        if not input_text and args.prompt_file:
+        # Priority: --input-text > --prompt-file > config prompt/input_video/input_image
+        if not input_data and args.prompt_file:
             # Try to read from prompt file
             try:
                 with open(args.prompt_file, 'r') as f:
-                    input_text = f.read().strip()
-                    print(f"📝 Using prompt from file ({args.prompt_file}): {input_text}")
+                    input_data = f.read().strip()
+                    print(f"📝 Using prompt from file ({args.prompt_file}): {input_data}")
             except FileNotFoundError:
                 print(f"❌ Prompt file not found: {args.prompt_file}")
                 sys.exit(1)
@@ -128,17 +129,37 @@ def run_chain(args):
                 print(f"❌ Error reading prompt file: {e}")
                 sys.exit(1)
         
-        if not input_text:
-            # Try to get prompt from chain config
-            config_prompt = chain.config.get("prompt")
-            if config_prompt:
-                input_text = config_prompt
-                print(f"📝 Using prompt from config: {input_text}")
+        if not input_data:
+            # Try to get input from chain config based on input type
+            if initial_input_type == "text":
+                config_input = chain.config.get("prompt")
+                if config_input:
+                    input_data = config_input
+                    print(f"📝 Using prompt from config: {input_data}")
+                else:
+                    print("❌ No input text provided. Use --input-text, --prompt-file, or add 'prompt' field to config.")
+                    sys.exit(1)
+            elif initial_input_type == "video":
+                config_input = chain.config.get("input_video")
+                if config_input:
+                    input_data = config_input
+                    print(f"📹 Using video from config: {input_data}")
+                else:
+                    print("❌ No input video provided. Use --input-text or add 'input_video' field to config.")
+                    sys.exit(1)
+            elif initial_input_type == "image":
+                config_input = chain.config.get("input_image")
+                if config_input:
+                    input_data = config_input
+                    print(f"🖼️ Using image from config: {input_data}")
+                else:
+                    print("❌ No input image provided. Use --input-text or add 'input_image' field to config.")
+                    sys.exit(1)
             else:
-                print("❌ No input text provided. Use --input-text, --prompt-file, or add 'prompt' field to config.")
+                print(f"❌ Unknown input type: {initial_input_type}")
                 sys.exit(1)
         elif args.input_text:
-            print(f"📝 Using input text: {input_text}")
+            print(f"📝 Using input text: {input_data}")
         
         # Validate chain
         errors = chain.validate()
@@ -159,7 +180,7 @@ def run_chain(args):
                 sys.exit(0)
         
         # Execute chain
-        result = manager.execute_chain(chain, input_text)
+        result = manager.execute_chain(chain, input_data)
         
         # Display results
         if result.success:
