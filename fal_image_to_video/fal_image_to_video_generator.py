@@ -443,8 +443,10 @@ class FALImageToVideoGenerator:
                 for chunk in response.iter_content(chunk_size=8192):
                     f.write(chunk)
             
-            print(f"Video downloaded successfully: {local_path}")
-            return local_path
+            # Return absolute path
+            absolute_path = os.path.abspath(local_path)
+            print(f"Video downloaded successfully: {absolute_path}")
+            return absolute_path
             
         except Exception as e:
             print(f"Error downloading video: {e}")

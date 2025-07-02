@@ -15,7 +15,7 @@ def test_audio_step():
     """Test the audio step with an existing video."""
     
     # Use existing video file
-    video_path = "output/generated_b92e3918.mp4"
+    video_path = "output/generated_95f810c6.mp4"
     
     # Check if file exists
     if not Path(video_path).exists():

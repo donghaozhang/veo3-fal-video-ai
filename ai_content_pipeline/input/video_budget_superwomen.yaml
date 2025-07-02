@@ -10,7 +10,7 @@ steps:
   - type: "image_to_video"
     model: "hailuo"  # Cheap video model (~$0.08)
     params:
-      duration: 10
+      duration: 6
       motion_level: "medium"
       optimize_for_cost: true
   - type: "add_audio"

@@ -529,13 +529,8 @@ class ChainExecutor:
                     "error": "Video generation returned None"
                 }
             
-            # Ensure we have a proper output path
+            # Get the local path from result
             local_path = result.get("local_path") if result else None
-            if local_path and not local_path.startswith("/"):
-                # Convert relative path to absolute path
-                from pathlib import Path
-                output_dir = chain_config.get("output_dir", "output")
-                local_path = str(Path(output_dir) / local_path)
                 
             return {
                 "success": result is not None,
