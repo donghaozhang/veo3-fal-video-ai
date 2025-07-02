@@ -1,0 +1,22 @@
+name: "simple_artistic_video"
+description: "Simple artistic video workflow that works with current pipeline"
+
+steps:
+  - type: "text_to_image"
+    model: "flux_schnell"  # Fast generation
+    params:
+      aspect_ratio: "16:9"
+    enabled: true
+
+  # Directly generate video from image with an artistic prompt
+  - type: "image_to_video"
+    model: "hailuo"
+    params:
+      duration: 6
+      prompt: "Transform this image into a cinematic artistic video with flowing movements and dynamic transitions"
+    enabled: true
+
+output_dir: "output"
+temp_dir: "temp"
+cleanup_temp: true
+save_intermediates: true

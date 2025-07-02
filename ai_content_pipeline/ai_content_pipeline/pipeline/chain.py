@@ -120,6 +120,8 @@ class ContentCreationChain:
         
         # Check step sequence validity
         prev_output = "text"  # Initial input is text
+        # Track the actual current data type (for PROMPT_GENERATION pass-through)
+        actual_data_type = "text"
         
         for i, step in enumerate(self.steps):
             step_input = self._get_step_input_type(step.step_type)
@@ -130,13 +132,23 @@ class ContentCreationChain:
                 if step_input != "text":
                     errors.append(f"First step must accept text input, got {step_input}")
             else:
-                # Subsequent steps must accept previous step's output
-                if step_input != prev_output:
+                # Check if this step can accept the actual data type available
+                if step_input != actual_data_type:
                     errors.append(
-                        f"Step {i+1} expects {step_input} but previous step outputs {prev_output}"
+                        f"Step {i+1} expects {step_input} but available data is {actual_data_type}"
                     )
             
+            # Update data types
             prev_output = step_output
+            
+            # PROMPT_GENERATION is special - it doesn't change the actual data type
+            # It just adds metadata (the generated prompt) to the context
+            if step.step_type == StepType.PROMPT_GENERATION:
+                # Keep the actual_data_type unchanged
+                pass
+            else:
+                # Normal steps change the data type
+                actual_data_type = step_output
         
         return errors
     

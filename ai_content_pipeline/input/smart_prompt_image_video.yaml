@@ -1,0 +1,43 @@
+name: "smart_prompt_image_video"
+description: "Generate image, then smart prompt, then use both for video"
+prompt: "A futuristic cityscape with flying vehicles and neon lights"
+
+steps:
+  # Step 1: Generate initial image
+  - type: "text_to_image"
+    model: "flux_schnell"
+    params:
+      aspect_ratio: "16:9"
+    enabled: true
+
+  # Step 2: Generate enhanced prompt from the image
+  # NOTE: This will output text, breaking the chain for image-to-video
+  # The pipeline needs to be enhanced to handle multiple data streams
+  - type: "prompt_generation"
+    model: "openrouter_video_artistic"
+    params:
+      background_context: "Create a cinematic video prompt that emphasizes movement and atmosphere"
+      video_style: "cinematic"
+      duration_preference: "medium"
+    enabled: false  # Disabled due to pipeline limitation
+
+  # Step 3: Create video from image
+  # For now, we'll use a static prompt since the pipeline can't pass both image AND prompt
+  - type: "image_to_video"
+    model: "hailuo"
+    params:
+      duration: 8
+      prompt: "Transform this futuristic cityscape into a cinematic video with dynamic camera movements, showcasing the flying vehicles and pulsing neon lights"
+    enabled: true
+
+output_dir: "output"
+temp_dir: "temp"
+cleanup_temp: true
+save_intermediates: true
+
+# Pipeline Enhancement Needed:
+# The current pipeline can only pass one piece of data between steps.
+# To properly use prompt_generation with image_to_video, we need:
+# 1. Support for multiple data streams (image + text)
+# 2. Or a way to reference previous step outputs by name
+# 3. Or combine prompt_generation into image_to_video as a single step

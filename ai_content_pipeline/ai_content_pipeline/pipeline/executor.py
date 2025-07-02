@@ -66,6 +66,8 @@ class ChainExecutor:
         total_cost = 0.0
         current_data = input_text
         current_type = "text"
+        # Track additional context from previous steps
+        step_context = {}
         
         enabled_steps = chain.get_enabled_steps()
         
@@ -81,6 +83,7 @@ class ChainExecutor:
                     input_data=current_data,
                     input_type=current_type,
                     chain_config=chain.config,
+                    step_context=step_context,
                     **kwargs
                 )
                 
@@ -122,10 +125,18 @@ class ChainExecutor:
                     )
                 
                 # Update current data for next step
-                current_data = (step_result.get("output_path") or 
-                               step_result.get("output_url") or 
-                               step_result.get("output_text"))
-                current_type = self._get_step_output_type(step.step_type)
+                # Special handling for PROMPT_GENERATION - keep image data
+                if step.step_type == StepType.PROMPT_GENERATION:
+                    # Store the generated prompt in context but keep the image as current_data
+                    step_context["generated_prompt"] = step_result.get("extracted_prompt") or step_result.get("output_text")
+                    # Don't update current_data - keep the image from previous step
+                    print(f"💡 Stored generated prompt, keeping image data for next step")
+                else:
+                    # Normal data flow for other steps
+                    current_data = (step_result.get("output_path") or 
+                                   step_result.get("output_url") or 
+                                   step_result.get("output_text"))
+                    current_type = self._get_step_output_type(step.step_type)
                 
                 # Store intermediate output
                 step_name = f"step_{i+1}_{step.step_type.value}"
@@ -210,6 +221,7 @@ class ChainExecutor:
         input_data: Any,
         input_type: str,
         chain_config: Dict[str, Any],
+        step_context: Dict[str, Any] = None,
         **kwargs
     ) -> Dict[str, Any]:
         """
@@ -226,20 +238,23 @@ class ChainExecutor:
             Dictionary with step execution results
         """
         try:
+            if step_context is None:
+                step_context = {}
+                
             if step.step_type == StepType.TEXT_TO_IMAGE:
-                return self._execute_text_to_image(step, input_data, chain_config, **kwargs)
+                return self._execute_text_to_image(step, input_data, chain_config, step_context, **kwargs)
             elif step.step_type == StepType.IMAGE_UNDERSTANDING:
-                return self._execute_image_understanding(step, input_data, chain_config, **kwargs)
+                return self._execute_image_understanding(step, input_data, chain_config, step_context, **kwargs)
             elif step.step_type == StepType.PROMPT_GENERATION:
-                return self._execute_prompt_generation(step, input_data, chain_config, **kwargs)
+                return self._execute_prompt_generation(step, input_data, chain_config, step_context, **kwargs)
             elif step.step_type == StepType.IMAGE_TO_IMAGE:
-                return self._execute_image_to_image(step, input_data, chain_config, **kwargs)
+                return self._execute_image_to_image(step, input_data, chain_config, step_context, **kwargs)
             elif step.step_type == StepType.IMAGE_TO_VIDEO:
-                return self._execute_image_to_video(step, input_data, chain_config, **kwargs)
+                return self._execute_image_to_video(step, input_data, chain_config, step_context, **kwargs)
             elif step.step_type == StepType.ADD_AUDIO:
-                return self._execute_add_audio(step, input_data, chain_config, **kwargs)
+                return self._execute_add_audio(step, input_data, chain_config, step_context, **kwargs)
             elif step.step_type == StepType.UPSCALE_VIDEO:
-                return self._execute_upscale_video(step, input_data, chain_config, **kwargs)
+                return self._execute_upscale_video(step, input_data, chain_config, step_context, **kwargs)
             else:
                 return {
                     "success": False,
@@ -257,6 +272,7 @@ class ChainExecutor:
         step: PipelineStep,
         prompt: str,
         chain_config: Dict[str, Any],
+        step_context: Dict[str, Any] = None,
         **kwargs
     ) -> Dict[str, Any]:
         """Execute text-to-image step."""
@@ -285,6 +301,7 @@ class ChainExecutor:
         step: PipelineStep,
         image_input: str,
         chain_config: Dict[str, Any],
+        step_context: Dict[str, Any] = None,
         **kwargs
     ) -> Dict[str, Any]:
         """Execute image understanding step."""
@@ -369,6 +386,7 @@ class ChainExecutor:
         step: PipelineStep,
         source_image: str,
         chain_config: Dict[str, Any],
+        step_context: Dict[str, Any] = None,
         **kwargs
     ) -> Dict[str, Any]:
         """Execute image-to-image step."""
@@ -405,17 +423,18 @@ class ChainExecutor:
         step: PipelineStep,
         image_path: str,
         chain_config: Dict[str, Any],
+        step_context: Dict[str, Any] = None,
         **kwargs
     ) -> Dict[str, Any]:
         """Execute image-to-video step."""
         try:
             # Try to import and use existing video generation modules
             if step.model == "hailuo":
-                return self._execute_hailuo_video(image_path, step, chain_config, **kwargs)
+                return self._execute_hailuo_video(image_path, step, chain_config, step_context, **kwargs)
             elif step.model in ["veo2", "veo3"]:
-                return self._execute_veo_video(image_path, step, chain_config, **kwargs)
+                return self._execute_veo_video(image_path, step, chain_config, step_context, **kwargs)
             elif step.model == "kling":
-                return self._execute_kling_video(image_path, step, chain_config, **kwargs)
+                return self._execute_kling_video(image_path, step, chain_config, step_context, **kwargs)
             else:
                 return {
                     "success": False,
@@ -432,6 +451,7 @@ class ChainExecutor:
         image_path: str,
         step: PipelineStep,
         chain_config: Dict[str, Any],
+        step_context: Dict[str, Any] = None,
         **kwargs
     ) -> Dict[str, Any]:
         """Execute Hailuo image-to-video generation."""
@@ -448,8 +468,16 @@ class ChainExecutor:
             generator = FALImageToVideoGenerator()
             
             # Prepare parameters
+            # Use generated prompt from previous step if available
+            default_prompt = "Create a cinematic video from this image"
+            if step_context and "generated_prompt" in step_context:
+                prompt = step_context["generated_prompt"]
+                print(f"📝 Using generated prompt: {prompt[:100]}...")
+            else:
+                prompt = step.params.get("prompt", default_prompt)
+                
             params = {
-                "prompt": "Create a cinematic video from this image",  # Default prompt
+                "prompt": prompt,
                 "image_url": image_path,  # This is actually a URL from the previous step
                 "output_folder": chain_config.get("output_dir", "output"),
                 "duration": str(step.params.get("duration", 6)),
@@ -492,6 +520,7 @@ class ChainExecutor:
         image_path: str,
         step: PipelineStep,
         chain_config: Dict[str, Any],
+        step_context: Dict[str, Any] = None,
         **kwargs
     ) -> Dict[str, Any]:
         """Execute Veo image-to-video generation."""
@@ -506,6 +535,7 @@ class ChainExecutor:
         image_path: str,
         step: PipelineStep,
         chain_config: Dict[str, Any],
+        step_context: Dict[str, Any] = None,
         **kwargs
     ) -> Dict[str, Any]:
         """Execute Kling image-to-video generation."""
@@ -558,6 +588,7 @@ class ChainExecutor:
         step: PipelineStep,
         video_path: str,
         chain_config: Dict[str, Any],
+        step_context: Dict[str, Any] = None,
         **kwargs
     ) -> Dict[str, Any]:
         """Execute add-audio step."""
@@ -610,6 +641,7 @@ class ChainExecutor:
         step: PipelineStep,
         video_path: str,
         chain_config: Dict[str, Any],
+        step_context: Dict[str, Any] = None,
         **kwargs
     ) -> Dict[str, Any]:
         """Execute video upscaling step (placeholder)."""

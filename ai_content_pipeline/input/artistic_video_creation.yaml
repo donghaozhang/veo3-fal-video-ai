@@ -1,0 +1,56 @@
+name: "artistic_video_creation"
+description: "Artistic video workflow with creative prompt optimization"
+
+# NOTE: This workflow demonstrates a limitation in the current pipeline:
+# The prompt_generation step outputs text, but image_to_video needs an image.
+# The pipeline was updated to preserve image data when prompt_generation runs,
+# and pass the generated prompt via step_context to image_to_video.
+#
+# However, this workflow is currently disabled due to validation issues.
+# Use simple_artistic_video.yaml for a working example.
+
+steps:
+  - type: "text_to_image"
+    model: "flux_dev"
+    params:
+      aspect_ratio: "9:16"
+      style: "artistic"
+      quality: "high"
+    enabled: true
+
+  # First analyze the image
+  - type: "image_understanding"
+    model: "gemini_composition"
+    params:
+      analysis_prompt: "Analyze the artistic composition, color palette, and visual elements that could be enhanced through video animation"
+    enabled: true
+
+  # Then generate prompt based on the same image (not the text from image_understanding)
+  # This creates a workflow issue - let's skip this step for now
+  # - type: "prompt_generation"
+  #   model: "openrouter_video_artistic"
+  #   params:
+  #     background_context: "Create an artistic video that emphasizes the creative and abstract elements while maintaining visual flow"
+  #     video_style: "artistic"
+  #     duration_preference: "long"
+  #   enabled: true
+
+  # For now, use a simple workflow without prompt generation
+  # We'll need to fix the pipeline to handle this properly
+  - type: "image_to_video"
+    model: "hailuo"  # Changed from veo3 as it's not implemented yet
+    params:
+      duration: 6  # Hailuo supports 6-10 seconds
+      prompt: "Create an artistic video that emphasizes the creative and abstract elements while maintaining visual flow"
+    enabled: false  # Disabled for now due to data flow issue
+
+output_dir: "output"
+temp_dir: "temp"
+cleanup_temp: true
+save_intermediates: true
+
+# This artistic workflow:
+# 1. Creates artistic image from text prompt
+# 2. Analyzes composition and artistic elements
+# 3. Generates artistic-style video prompts
+# 4. Creates high-quality video with Google Veo 3
