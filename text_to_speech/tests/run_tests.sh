@@ -22,6 +22,7 @@ show_usage() {
     echo ""
     echo "Available test types:"
     echo -e "  ${GREEN}quick${NC}          - Quick functionality test (~5 seconds, no API calls)"
+    echo -e "  ${GREEN}python-cli${NC}     - Python CLI interface test (10 tests, no API calls)"
     echo -e "  ${BLUE}comprehensive${NC}  - Complete system test (35+ tests, no API calls)" 
     echo -e "  ${YELLOW}api${NC}            - API functionality test (uses API calls, costs apply)"
     echo -e "  ${CYAN}all${NC}            - Run quick + comprehensive tests"
@@ -29,6 +30,7 @@ show_usage() {
     echo ""
     echo "Examples:"
     echo "  $0 quick              # Fast daily check"
+    echo "  $0 python-cli         # Test Python CLI interfaces"
     echo "  $0 comprehensive      # Thorough testing"
     echo "  $0 api               # Test with actual API calls"
     echo "  $0 all               # Run multiple tests"
@@ -41,7 +43,7 @@ list_tests() {
     echo "📋 Available Test Scripts:"
     echo ""
     echo "🚀 Available Tests:"
-    ls -la tests/*.sh | grep -E "(quick_test|comprehensive|api_functionality|run_tests)" | awk '{print "   " $9 " (" $5 " bytes)"}'
+    ls -la tests/*.sh | grep -E "(quick_test|test_python_cli|comprehensive|api_functionality|run_tests)" | awk '{print "   " $9 " (" $5 " bytes)"}'
     echo ""
     echo "📖 Documentation:"
     [ -f tests/README.md ] && echo "   tests/README.md ($(wc -c < tests/README.md) bytes)"
@@ -78,6 +80,10 @@ run_test() {
 case "${1:-}" in
     "quick")
         run_test "Quick Test" "tests/quick_test.sh"
+        ;;
+    
+    "python-cli")
+        run_test "Python CLI Test" "tests/test_python_cli.sh"
         ;;
     
     "comprehensive")
@@ -125,23 +131,26 @@ case "${1:-}" in
         echo "🎯 No test specified. Available options:"
         echo ""
         echo -e "  ${GREEN}Quick Test${NC}        - Fast daily check"
+        echo -e "  ${GREEN}Python CLI Test${NC}   - Test CLI interfaces"
         echo -e "  ${BLUE}Comprehensive${NC}     - Complete system verification"
         echo -e "  ${YELLOW}API Test${NC}          - Test with actual API calls (costs apply)"
         echo ""
         echo "Choose your test:"
         echo "  1) Quick test (recommended)"
-        echo "  2) Comprehensive test"
-        echo "  3) API test"
-        echo "  4) List all tests"
-        echo "  5) Help"
+        echo "  2) Python CLI test"
+        echo "  3) Comprehensive test"
+        echo "  4) API test"
+        echo "  5) List all tests"
+        echo "  6) Help"
         echo ""
-        read -p "Enter choice (1-5): " -n 1 -r
+        read -p "Enter choice (1-6): " -n 1 -r
         echo ""
         
         case $REPLY in
             1) run_test "Quick Test" "tests/quick_test.sh" ;;
-            2) run_test "Comprehensive Test" "tests/comprehensive_cli_test.sh" ;;
-            3) 
+            2) run_test "Python CLI Test" "tests/test_python_cli.sh" ;;
+            3) run_test "Comprehensive Test" "tests/comprehensive_cli_test.sh" ;;
+            4) 
                 echo ""
                 echo -e "${YELLOW}⚠️  API test will make actual API calls and may incur costs${NC}"
                 read -p "Continue? (y/N): " -n 1 -r
@@ -152,8 +161,8 @@ case "${1:-}" in
                     echo "API test cancelled."
                 fi
                 ;;
-            4) list_tests ;;
-            5) show_usage ;;
+            5) list_tests ;;
+            6) show_usage ;;
             *) echo "Invalid choice. Use --help for usage information." ;;
         esac
         ;;
