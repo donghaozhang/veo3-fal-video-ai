@@ -33,6 +33,11 @@ from .whisper_commands import (
     cmd_whisper_compare,
     cmd_whisper_batch
 )
+from .openrouter_commands import (
+    cmd_analyze_images_openrouter,
+    cmd_openrouter_info,
+    cmd_compare_providers
+)
 
 # All command functions are now imported from their respective modules
 # This file serves as a central import hub for backward compatibility

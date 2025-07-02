@@ -11,7 +11,7 @@ A comprehensive collection of Python utilities for video and audio processing, i
 - **Format Support**: MP4, AVI, MOV, MKV, WebM, and more
 
 ### 🤖 AI-Powered Multimodal Understanding (NEW!)
-- **Smart Analysis**: Google Gemini AI for video, audio, and image understanding
+- **Smart Analysis**: Google Gemini AI (direct) and OpenRouter (unified API) support
 - **Transcription**: Speech-to-text with timestamps and speaker identification
 - **Description**: Automated video/audio/image summarization
 - **Scene Analysis**: Timeline breakdown and key moments for video
@@ -23,6 +23,7 @@ A comprehensive collection of Python utilities for video and audio processing, i
 - **Composition Analysis**: Artistic and technical image analysis
 - **Q&A**: Ask specific questions about any media content
 - **Information Extraction**: Identify people, places, facts across all media types
+- **Provider Comparison**: Compare Gemini direct vs OpenRouter performance
 
 ## 🚀 Quick Start
 
@@ -42,6 +43,12 @@ python video_audio_utils.py analyze-audio
 
 # AI image analysis (requires Google Gemini API)
 python video_audio_utils.py analyze-images
+
+# AI image analysis via OpenRouter (alternative API)
+python video_audio_utils.py analyze-images-openrouter
+
+# Compare Gemini direct vs OpenRouter
+python video_audio_utils.py compare-providers
 ```
 
 ### AI Multimodal Understanding Setup
@@ -75,9 +82,51 @@ Your `.env` file should look like this:
 # Google Gemini API Configuration
 GEMINI_API_KEY=your_actual_api_key_here
 
+# OpenRouter API Configuration (Alternative to direct Gemini API)
+OPENROUTER_API_KEY=your_openrouter_api_key_here
+
 # OpenAI API Configuration (Optional)
 OPENAI_API_KEY=your_openai_api_key_here
 ```
+
+### OpenRouter Setup (Alternative API)
+
+OpenRouter provides unified access to 400+ AI models including Gemini through a single API:
+
+1. **Get OpenRouter API Key**
+   - Visit: https://openrouter.ai/keys
+   - Create account and generate API key
+
+2. **Install Dependencies**
+```bash
+pip install openai  # OpenRouter uses OpenAI-compatible interface
+```
+
+3. **Configure Environment**
+```bash
+export OPENROUTER_API_KEY=your_openrouter_api_key
+```
+
+4. **Test OpenRouter Setup**
+```bash
+# Get OpenRouter info and setup status
+python video_audio_utils.py openrouter-info
+
+# Test image analysis with OpenRouter
+python video_audio_utils.py analyze-images-openrouter
+```
+
+**Supported OpenRouter Models:**
+- Google Gemini 2.0 Flash (Latest, Fast)
+- Google Gemini 1.5 Pro (High Quality)
+- Google Gemini 1.5 Flash (Balanced)
+- Anthropic Claude 3.5 Sonnet (Alternative provider)
+
+**OpenRouter vs Direct Gemini:**
+- ✅ **OpenRouter**: Unified API, multiple models, cost-effective
+- ✅ **Direct Gemini**: Full feature support, video/audio analysis
+- ⚠️ **OpenRouter Limitations**: Image analysis only (no video/audio upload)
+- 💡 **Best Practice**: Use OpenRouter for images, Direct Gemini for video/audio
 
 # Test analysis
 python video_audio_utils.py describe-videos

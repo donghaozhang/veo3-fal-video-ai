@@ -133,11 +133,14 @@ class CommandDispatcher(BaseController):
         from .file_utils import find_video_files, find_audio_files, find_image_files
         
         options = {
-            '1': 'Analyze Videos',
-            '2': 'Analyze Audio Files', 
-            '3': 'Analyze Images',
-            '4': 'Comprehensive Media Analysis',
-            '5': 'Custom Q&A Analysis',
+            '1': 'Analyze Videos (Gemini Direct)',
+            '2': 'Analyze Audio Files (Gemini Direct)', 
+            '3': 'Analyze Images (Gemini Direct)',
+            '4': 'Analyze Images (OpenRouter)',
+            '5': 'Compare Providers (Gemini vs OpenRouter)',
+            '6': 'Comprehensive Media Analysis',
+            '7': 'Custom Q&A Analysis',
+            '8': 'OpenRouter Info & Setup',
             'b': 'Back to main menu'
         }
         
@@ -150,9 +153,15 @@ class CommandDispatcher(BaseController):
         elif choice == '3':
             return self._analyze_images()
         elif choice == '4':
-            return self._comprehensive_analysis()
+            return self._analyze_images_openrouter()
         elif choice == '5':
+            return self._compare_providers()
+        elif choice == '6':
+            return self._comprehensive_analysis()
+        elif choice == '7':
             return self._custom_qa_analysis()
+        elif choice == '8':
+            return self._openrouter_info()
         elif choice == 'b':
             return True
         else:
@@ -643,6 +652,48 @@ For detailed documentation, see the README.md file.
             """)
         
         return True
+    
+    def _analyze_images_openrouter(self) -> bool:
+        """Analyze images using OpenRouter."""
+        from .openrouter_commands import cmd_analyze_images_openrouter
+        
+        if self.verbose:
+            print("🌐 Running OpenRouter image analysis...")
+        
+        try:
+            cmd_analyze_images_openrouter()
+            return True
+        except Exception as e:
+            if self.verbose:
+                print(f"❌ OpenRouter analysis failed: {e}")
+            return False
+    
+    def _compare_providers(self) -> bool:
+        """Compare Gemini direct vs OpenRouter."""
+        from .openrouter_commands import cmd_compare_providers
+        
+        if self.verbose:
+            print("⚖️ Running provider comparison...")
+        
+        try:
+            cmd_compare_providers()
+            return True
+        except Exception as e:
+            if self.verbose:
+                print(f"❌ Provider comparison failed: {e}")
+            return False
+    
+    def _openrouter_info(self) -> bool:
+        """Show OpenRouter information and setup."""
+        from .openrouter_commands import cmd_openrouter_info
+        
+        try:
+            cmd_openrouter_info()
+            return True
+        except Exception as e:
+            if self.verbose:
+                print(f"❌ OpenRouter info failed: {e}")
+            return False
 
 
 def main():

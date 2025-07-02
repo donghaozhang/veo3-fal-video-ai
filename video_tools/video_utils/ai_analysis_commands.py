@@ -1,5 +1,5 @@
 """
-AI analysis command implementations using Google Gemini.
+AI analysis command implementations using Google Gemini and OpenRouter.
 
 Contains commands for AI-powered video, audio, and image analysis.
 """
@@ -16,6 +16,7 @@ from .video_understanding import (
     save_analysis_result,
     GeminiVideoAnalyzer
 )
+from .openrouter_analyzer import OpenRouterAnalyzer, check_openrouter_requirements
 
 
 def cmd_analyze_videos():
