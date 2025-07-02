@@ -151,6 +151,11 @@ class ChainExecutor:
                     "metadata": step_result.get("metadata", {})
                 }
                 
+                # Special handling for prompt generation - include extracted prompt
+                if step.step_type == StepType.PROMPT_GENERATION:
+                    outputs[step_name]["optimized_prompt"] = step_result.get("extracted_prompt")
+                    outputs[step_name]["full_analysis"] = step_result.get("output_text")
+                
                 # Save intermediate results if enabled
                 if chain.save_intermediates:
                     # Download intermediate image if only URL is available
@@ -378,6 +383,7 @@ class ChainExecutor:
         step: PipelineStep,
         image_input: str,
         chain_config: Dict[str, Any],
+        step_context: Dict[str, Any] = None,
         **kwargs
     ) -> Dict[str, Any]:
         """Execute prompt generation step."""
@@ -760,6 +766,11 @@ class ChainExecutor:
             if step.step_type == StepType.TEXT_TO_IMAGE:
                 step_detail["input_prompt"] = input_text
                 step_detail["generation_params"] = step.params
+            elif step.step_type == StepType.PROMPT_GENERATION:
+                step_detail["optimized_prompt"] = step_result.get("extracted_prompt")
+                step_detail["full_analysis"] = step_result.get("output_text")
+                step_detail["generation_params"] = step.params
+                step_detail["input_image_url"] = step_results[i-1].get("output_url") if i > 0 else None
             elif step.step_type == StepType.IMAGE_TO_VIDEO:
                 step_detail["input_image_url"] = step_results[i-1].get("output_url") if i > 0 else None
                 step_detail["video_params"] = step.params
@@ -888,7 +899,10 @@ class ChainExecutor:
                     "output": {
                         "path": result.get("output_path"),
                         "url": result.get("output_url"),
-                        "text": result.get("output_text")
+                        "text": result.get("output_text"),
+                        # Add prompt generation specific fields
+                        **({"optimized_prompt": result.get("extracted_prompt"), "full_analysis": result.get("output_text")} 
+                           if chain.steps[i].step_type == StepType.PROMPT_GENERATION else {})
                     }
                 }
                 for i, result in enumerate(step_results)

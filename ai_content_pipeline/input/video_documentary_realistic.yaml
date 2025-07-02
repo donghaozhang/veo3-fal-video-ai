@@ -1,5 +1,6 @@
 name: "realistic_documentary_style"
 description: "Realistic documentary-style video creation with natural prompts"
+prompt: "A majestic eagle soaring through mountain peaks at sunrise"
 
 steps:
   - type: "text_to_image"
@@ -10,14 +11,13 @@ steps:
       quality: "high"
     enabled: true
 
-  # Prompt generation disabled due to data flow limitation
-  # - type: "prompt_generation"
-  #   model: "openrouter_video_realistic"
-  #   params:
-  #     background_context: "Create natural, documentary-style video content that feels authentic and unforced"
-  #     video_style: "realistic"
-  #     duration_preference: "medium"
-  #   enabled: false
+  - type: "prompt_generation"
+    model: "openrouter_video_realistic"
+    params:
+      background_context: "Create natural, documentary-style video content that feels authentic and unforced"
+      video_style: "realistic"
+      duration_preference: "medium"
+    enabled: true
 
   - type: "image_to_video"
     model: "hailuo"
@@ -25,8 +25,7 @@ steps:
       duration: 6
       motion_level: "low"
       natural_motion: true
-      # Using hardcoded documentary prompt since prompt_generation breaks the pipeline
-      prompt: "Create natural, documentary-style video content that feels authentic and unforced with subtle camera movements"
+      # This step will use the enhanced prompt from the prompt_generation step
     enabled: true
 
 output_dir: "output"
@@ -37,4 +36,4 @@ save_intermediates: true
 # This realistic workflow:
 # 1. Creates photorealistic image using Google Imagen 4
 # 2. Generates natural, documentary-style video prompts
-# 3. Creates realistic video with subtle, natural motion using Hailuo
+# 3. Creates video using the enhanced prompt from step 2
