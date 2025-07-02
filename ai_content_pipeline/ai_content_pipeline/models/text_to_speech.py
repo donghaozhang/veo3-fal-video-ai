@@ -24,6 +24,7 @@ class UnifiedTextToSpeechGenerator:
     def __init__(self):
         """Initialize the TTS generator."""
         self.tts_path = Path("/home/zdhpe/veo3-video-generation/text_to_speech")
+        self.pipeline_base = Path("/home/zdhpe/veo3-video-generation/ai_content_pipeline")
         self.supported_models = ["elevenlabs", "elevenlabs_turbo", "elevenlabs_v3"]
         self.supported_voices = [
             "rachel", "drew", "bella", "antoni", "elli", 
@@ -85,11 +86,22 @@ class UnifiedTextToSpeechGenerator:
                 timestamp = int(time.time())
                 output_file = f"pipeline_tts_{voice}_{timestamp}.mp3"
             
+            # Determine the output directory
+            output_dir = kwargs.get("output_dir", "output")
+            
+            # If output_file doesn't have a directory path, add the pipeline output directory
+            if not "/" in output_file and not output_file.startswith("/"):
+                # Use pipeline output directory
+                full_output_path = self.pipeline_base / output_dir / output_file
+            else:
+                # Use the provided path as-is
+                full_output_path = Path(output_file)
+            
             # Use CLI wrapper for generation (ensures consistency)
             result = self._call_tts_cli(
                 text=prompt,
                 voice=voice,
-                output_file=output_file,
+                output_file=str(full_output_path),
                 speed=speed,
                 stability=stability,
                 similarity_boost=similarity_boost,

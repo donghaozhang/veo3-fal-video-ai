@@ -466,7 +466,8 @@ class ChainExecutor:
                 stability=stability,
                 similarity_boost=similarity_boost,
                 style=style,
-                output_file=output_file
+                output_file=output_file,
+                output_dir=chain_config.get("output_dir", "output")
             )
             
             if success:
