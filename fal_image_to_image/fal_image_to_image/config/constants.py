@@ -21,6 +21,12 @@ MODEL_ENDPOINTS = {
     "clarity": "fal-ai/clarity-upscaler"
 }
 
+# Reframe endpoints for aspect ratio changes
+REFRAME_ENDPOINTS = {
+    "photon": "fal-ai/luma-photon/flash/reframe",
+    "photon_base": "fal-ai/luma-photon/reframe"
+}
+
 # Aspect ratios for different models
 ASPECT_RATIOS = ["1:1", "16:9", "9:16", "4:3", "3:4", "21:9", "9:21"]
 KONTEXT_MULTI_ASPECT_RATIOS = ["21:9", "16:9", "4:3", "3:2", "1:1", "2:3", "3:4", "9:16", "9:21"]

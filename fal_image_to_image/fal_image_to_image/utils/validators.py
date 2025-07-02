@@ -173,3 +173,76 @@ def validate_output_format(format_str: str) -> str:
     if format_str not in valid_formats:
         raise ValueError(f"Output format must be one of {valid_formats}, got: {format_str}")
     return format_str
+
+
+def validate_reframing_coordinates(
+    x_start: Union[int, None],
+    y_start: Union[int, None],
+    x_end: Union[int, None],
+    y_end: Union[int, None]
+) -> tuple:
+    """
+    Validate reframing coordinates.
+    
+    Args:
+        x_start: Start X coordinate
+        y_start: Start Y coordinate
+        x_end: End X coordinate
+        y_end: End Y coordinate
+        
+    Returns:
+        Tuple of validated coordinates (x_start, y_start, x_end, y_end)
+        
+    Raises:
+        ValueError: If coordinates are invalid
+    """
+    # If all are None, return None tuple
+    if all(coord is None for coord in [x_start, y_start, x_end, y_end]):
+        return (None, None, None, None)
+    
+    # If any are provided, all must be provided
+    if any(coord is None for coord in [x_start, y_start, x_end, y_end]):
+        raise ValueError("If any reframing coordinate is provided, all must be provided")
+    
+    # Validate coordinate values
+    if x_start < 0 or y_start < 0:
+        raise ValueError("Start coordinates must be non-negative")
+    
+    if x_end <= x_start:
+        raise ValueError("x_end must be greater than x_start")
+    
+    if y_end <= y_start:
+        raise ValueError("y_end must be greater than y_start")
+    
+    return (x_start, y_start, x_end, y_end)
+
+
+def validate_grid_position(
+    grid_position_x: Union[int, None],
+    grid_position_y: Union[int, None]
+) -> tuple:
+    """
+    Validate grid position for reframing.
+    
+    Args:
+        grid_position_x: X position of the grid
+        grid_position_y: Y position of the grid
+        
+    Returns:
+        Tuple of validated positions (grid_position_x, grid_position_y)
+        
+    Raises:
+        ValueError: If positions are invalid
+    """
+    # Both must be None or both must be provided
+    if (grid_position_x is None) != (grid_position_y is None):
+        raise ValueError("Both grid_position_x and grid_position_y must be provided together")
+    
+    if grid_position_x is None:
+        return (None, None)
+    
+    # Validate values
+    if grid_position_x < 0 or grid_position_y < 0:
+        raise ValueError("Grid positions must be non-negative")
+    
+    return (grid_position_x, grid_position_y)

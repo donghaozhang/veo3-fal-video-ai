@@ -49,6 +49,26 @@ def modify_image(args):
                 kwargs["strength"] = args.strength
             if args.aspect_ratio:
                 kwargs["aspect_ratio"] = args.aspect_ratio
+            
+            # Add reframing parameters
+            if args.x_start is not None:
+                kwargs["x_start"] = args.x_start
+            if args.y_start is not None:
+                kwargs["y_start"] = args.y_start
+            if args.x_end is not None:
+                kwargs["x_end"] = args.x_end
+            if args.y_end is not None:
+                kwargs["y_end"] = args.y_end
+            if args.grid_position_x is not None:
+                kwargs["grid_position_x"] = args.grid_position_x
+            if args.grid_position_y is not None:
+                kwargs["grid_position_y"] = args.grid_position_y
+            if args.auto_center:
+                kwargs["auto_center"] = args.auto_center
+            if args.input_width is not None:
+                kwargs["input_width"] = args.input_width
+            if args.input_height is not None:
+                kwargs["input_height"] = args.input_height
                 
         elif args.model == "kontext":
             if args.num_inference_steps is not None:
@@ -269,6 +289,18 @@ Examples:
     modify_parser.add_argument("--scale", type=float, help="Scale factor for Clarity (1-4)")
     modify_parser.add_argument("--no-enhancement", action="store_true", 
                               help="Disable enhancement for Clarity")
+    
+    # Reframing options for Photon models
+    modify_parser.add_argument("--x-start", type=int, help="Start X coordinate for reframing")
+    modify_parser.add_argument("--y-start", type=int, help="Start Y coordinate for reframing")
+    modify_parser.add_argument("--x-end", type=int, help="End X coordinate for reframing")
+    modify_parser.add_argument("--y-end", type=int, help="End Y coordinate for reframing")
+    modify_parser.add_argument("--grid-position-x", type=int, help="X position of grid for reframing")
+    modify_parser.add_argument("--grid-position-y", type=int, help="Y position of grid for reframing")
+    modify_parser.add_argument("--auto-center", action="store_true", 
+                              help="Auto-center input image in output aspect ratio")
+    modify_parser.add_argument("--input-width", type=int, help="Input image width (for auto-center)")
+    modify_parser.add_argument("--input-height", type=int, help="Input image height (for auto-center)")
     
     # Output options
     modify_parser.add_argument("-o", "--output-dir", help="Output directory")
