@@ -30,8 +30,8 @@ is_valid = validate_voice("rachel")
 
 #### CLI Usage:
 ```bash
-# Basic speech generation
-python basic_usage.py --text "Hello world" --voice rachel --output output.mp3
+# Basic speech generation (automatically uses output/ folder)
+python basic_usage.py --text "Hello world" --voice rachel --output speech.mp3
 
 # With custom settings
 python basic_usage.py --text "Test speech" --voice drew --speed 1.2 --stability 0.8
@@ -58,14 +58,14 @@ python basic_usage.py --text "Hello" --voice rachel --quiet
 
 #### CLI Usage:
 ```bash
-# Simple generation
-python tts_cli_wrapper.py "Hello world" rachel output.mp3
+# Simple generation (automatically uses output/ folder)
+python tts_cli_wrapper.py "Hello world" rachel speech.mp3
 
 # With JSON output for pipelines
 python tts_cli_wrapper.py "Test speech" drew --json
 
 # Custom settings
-python tts_cli_wrapper.py "Custom text" bella output.mp3 --speed 1.2 --json
+python tts_cli_wrapper.py "Custom text" bella custom.mp3 --speed 1.2 --json
 
 # Utility commands
 python tts_cli_wrapper.py --list-voices --json
@@ -175,6 +175,15 @@ else:
 - **stability**: 0.0-1.0 (voice consistency)
 - **similarity_boost**: 0.0-1.0 (voice similarity)
 - **style**: 0.0-1.0 (expressiveness)
+
+## 📁 Folder Structure
+
+The text-to-speech system uses organized folders:
+- **`output/`** - Generated audio files (default location)
+- **`input/`** - Input files (for future audio processing features)
+- **`examples/`** - Example scripts and documentation
+
+All generated files automatically go to the `output/` folder unless you specify an absolute path.
 
 ## 🔧 Environment Setup
 

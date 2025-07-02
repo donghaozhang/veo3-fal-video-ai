@@ -55,6 +55,9 @@ def tts_pipeline_generate(text, voice_name="rachel", output_file=None, **kwargs)
             import time
             timestamp = int(time.time())
             output_file = f"output/pipeline_tts_{timestamp}.mp3"
+        elif not output_file.startswith(('output/', '/')):
+            # Ensure files go to output folder unless absolute path is specified
+            output_file = f"output/{output_file}"
         
         # Initialize TTS
         tts = TTSBasicUsage()

@@ -91,6 +91,9 @@ class TTSBasicUsage:
             import time
             timestamp = int(time.time())
             output_file = f"output/tts_{voice_name}_{timestamp}.mp3"
+        elif not output_file.startswith(('output/', '/')):
+            # Ensure files go to output folder unless absolute path is specified
+            output_file = f"output/{output_file}"
         
         # Ensure output directory exists
         output_path = Path(output_file)
