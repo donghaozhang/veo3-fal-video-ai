@@ -1,11 +1,11 @@
 name: "cheap_video_creation"
 description: "Cost-effective video creation using Hailuo model"
-prompt: "A peaceful mountain landscape at sunrise with flowing water and misty atmosphere"
+prompt: "A stunning supermodel with flowing hair walking gracefully on a beach at sunset with golden light and gentle waves"
 steps:
   - type: "text_to_image"
-    model: "flux_schnell"  # Fastest and cheapest image model
+    model: "seedream_v3"  # Cost-effective bilingual model
     params:
-      aspect_ratio: "16:9"
+      image_size: "landscape_16_9"
       style: "cinematic"
   - type: "image_to_video"
     model: "hailuo"  # Cheap video model (~$0.08)
