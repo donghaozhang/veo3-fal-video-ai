@@ -12,6 +12,15 @@ SUPPORTED_MODELS = {
         "dalle3",             # OpenAI DALL-E 3 (planned)
         "stable_diffusion",   # Stability AI (planned)
     ],
+    "image_understanding": [
+        "gemini_describe",    # Basic image description
+        "gemini_detailed",    # Detailed image analysis
+        "gemini_classify",    # Image classification and categorization
+        "gemini_objects",     # Object detection and identification
+        "gemini_ocr",         # Text extraction (OCR)
+        "gemini_composition", # Artistic and technical analysis
+        "gemini_qa",          # Question and answer system
+    ],
     "image_to_image": [
         "photon_flash",       # Luma Photon Flash (creative, fast)
         "photon_base",        # Luma Photon Base (high quality)
@@ -37,6 +46,7 @@ SUPPORTED_MODELS = {
 # Pipeline step types
 PIPELINE_STEPS = [
     "text_to_image",
+    "image_understanding",
     "image_to_image",
     "image_to_video", 
     "add_audio",
@@ -50,6 +60,15 @@ MODEL_RECOMMENDATIONS = {
         "speed": "flux_schnell", 
         "cost_effective": "seedream_v3",
         "photorealistic": "imagen4"
+    },
+    "image_understanding": {
+        "basic": "gemini_describe",
+        "detailed": "gemini_detailed",
+        "classification": "gemini_classify",
+        "objects": "gemini_objects",
+        "text_extraction": "gemini_ocr",
+        "artistic": "gemini_composition",
+        "interactive": "gemini_qa"
     },
     "image_to_image": {
         "quality": "photon_base",
@@ -74,6 +93,15 @@ COST_ESTIMATES = {
         "flux_schnell": 0.001,
         "imagen4": 0.004,
         "seedream_v3": 0.002,
+    },
+    "image_understanding": {
+        "gemini_describe": 0.001,
+        "gemini_detailed": 0.002,
+        "gemini_classify": 0.001,
+        "gemini_objects": 0.002,
+        "gemini_ocr": 0.001,
+        "gemini_composition": 0.002,
+        "gemini_qa": 0.001,
     },
     "image_to_image": {
         "photon_flash": 0.02,
@@ -104,6 +132,15 @@ PROCESSING_TIME_ESTIMATES = {
         "flux_schnell": 5,
         "imagen4": 20,
         "seedream_v3": 10,
+    },
+    "image_understanding": {
+        "gemini_describe": 3,
+        "gemini_detailed": 5,
+        "gemini_classify": 3,
+        "gemini_objects": 4,
+        "gemini_ocr": 3,
+        "gemini_composition": 5,
+        "gemini_qa": 4,
     },
     "image_to_image": {
         "photon_flash": 8,

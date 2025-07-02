@@ -1,0 +1,16 @@
+name: "detailed_image_analysis"
+description: "Detailed image analysis with object detection"
+prompt: "A serene mountain landscape with a lake and pine trees"
+steps:
+  - type: "text_to_image"
+    model: "flux_schnell"  # Fast image generation
+    params:
+      aspect_ratio: "16:9"
+  - type: "image_understanding"
+    model: "gemini_detailed"  # Detailed analysis
+    params:
+      analysis_prompt: "Provide a comprehensive analysis of this landscape"
+output_dir: "output"
+temp_dir: "temp"
+cleanup_temp: true
+save_intermediates: true

@@ -1,5 +1,6 @@
 name: "artistic_transformation_chain"
 description: "Multi-step artistic image transformation"
+prompt: "A beautiful garden with blooming flowers and a vintage fountain in the center"
 steps:
   - type: "text_to_image"
     model: "flux_dev"  # High quality base

@@ -1,5 +1,6 @@
 name: "image_enhancement_chain"
 description: "Creative image generation and enhancement pipeline"
+prompt: "A majestic mountain landscape at sunset with dramatic clouds and golden light"
 steps:
   - type: "text_to_image"
     model: "flux_schnell"  # Fast initial generation

@@ -1,6 +1,5 @@
-name: "cheap_video_creation"
-description: "Cost-effective video creation using Hailuo model"
-prompt: "A peaceful mountain landscape at sunrise with flowing water and misty atmosphere"
+name: "cheap_video_creation_no_prompt"
+description: "Cost-effective video creation using Hailuo model (no embedded prompt)"
 steps:
   - type: "text_to_image"
     model: "flux_schnell"  # Fastest and cheapest image model

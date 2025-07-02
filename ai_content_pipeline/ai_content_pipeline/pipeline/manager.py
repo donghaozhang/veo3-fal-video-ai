@@ -14,6 +14,7 @@ from typing import Dict, Any, List, Optional, Union
 from .chain import ContentCreationChain, ChainResult, PipelineStep, StepType
 from .executor import ChainExecutor
 from ..models.text_to_image import UnifiedTextToImageGenerator
+from ..models.image_understanding import UnifiedImageUnderstandingGenerator
 from ..models.image_to_image import UnifiedImageToImageGenerator
 from ..utils.file_manager import FileManager
 from ..config.constants import SUPPORTED_MODELS, DEFAULT_CHAIN_CONFIG
@@ -43,6 +44,7 @@ class AIPipelineManager:
         
         # Initialize model generators
         self.text_to_image = UnifiedTextToImageGenerator()
+        self.image_understanding = UnifiedImageUnderstandingGenerator()
         self.image_to_image = UnifiedImageToImageGenerator()
         
         # Create directories
@@ -241,6 +243,9 @@ class AIPipelineManager:
         
         # Text-to-image models
         available["text_to_image"] = self.text_to_image.get_available_models()
+        
+        # Image understanding models
+        available["image_understanding"] = self.image_understanding.get_available_models()
         
         # Image-to-image models
         available["image_to_image"] = self.image_to_image.get_available_models()

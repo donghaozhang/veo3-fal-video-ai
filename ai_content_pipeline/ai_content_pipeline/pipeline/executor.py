@@ -10,6 +10,7 @@ from typing import Any, Dict, List, Optional
 
 from .chain import ContentCreationChain, ChainResult, PipelineStep, StepType
 from ..models.text_to_image import UnifiedTextToImageGenerator
+from ..models.image_understanding import UnifiedImageUnderstandingGenerator
 from ..models.image_to_image import UnifiedImageToImageGenerator
 from ..utils.file_manager import FileManager
 
@@ -32,6 +33,7 @@ class ChainExecutor:
         
         # Initialize model generators
         self.text_to_image = UnifiedTextToImageGenerator()
+        self.image_understanding = UnifiedImageUnderstandingGenerator()
         self.image_to_image = UnifiedImageToImageGenerator()
         
         # TODO: Initialize other generators when implemented
@@ -118,7 +120,9 @@ class ChainExecutor:
                     )
                 
                 # Update current data for next step
-                current_data = step_result.get("output_path") or step_result.get("output_url")
+                current_data = (step_result.get("output_path") or 
+                               step_result.get("output_url") or 
+                               step_result.get("output_text"))
                 current_type = self._get_step_output_type(step.step_type)
                 
                 # Store intermediate output
@@ -126,6 +130,7 @@ class ChainExecutor:
                 outputs[step_name] = {
                     "path": step_result.get("output_path"),
                     "url": step_result.get("output_url"),
+                    "text": step_result.get("output_text"),
                     "model": step.model,
                     "metadata": step_result.get("metadata", {})
                 }
@@ -221,6 +226,8 @@ class ChainExecutor:
         try:
             if step.step_type == StepType.TEXT_TO_IMAGE:
                 return self._execute_text_to_image(step, input_data, chain_config, **kwargs)
+            elif step.step_type == StepType.IMAGE_UNDERSTANDING:
+                return self._execute_image_understanding(step, input_data, chain_config, **kwargs)
             elif step.step_type == StepType.IMAGE_TO_IMAGE:
                 return self._execute_image_to_image(step, input_data, chain_config, **kwargs)
             elif step.step_type == StepType.IMAGE_TO_VIDEO:
@@ -262,6 +269,46 @@ class ChainExecutor:
             "success": result.success,
             "output_path": result.output_path,
             "output_url": result.output_url,
+            "processing_time": result.processing_time,
+            "cost": result.cost_estimate,
+            "model": result.model_used,
+            "metadata": result.metadata,
+            "error": result.error
+        }
+    
+    def _execute_image_understanding(
+        self,
+        step: PipelineStep,
+        image_input: str,
+        chain_config: Dict[str, Any],
+        **kwargs
+    ) -> Dict[str, Any]:
+        """Execute image understanding step."""
+        # Get analysis prompt from step params or kwargs
+        analysis_prompt = step.params.get("prompt", kwargs.get("prompt", None))
+        question = step.params.get("question", kwargs.get("question", None))
+        
+        # Merge step params with chain config and kwargs
+        params = {
+            **{k: v for k, v in step.params.items() if k not in ["prompt", "question"]},
+            **{k: v for k, v in kwargs.items() if k not in ["prompt", "question"]},
+        }
+        
+        # Add analysis prompt or question if provided
+        if analysis_prompt:
+            params["analysis_prompt"] = analysis_prompt
+        if question:
+            params["question"] = question
+        
+        result = self.image_understanding.analyze(
+            image_path=image_input,
+            model=step.model,
+            **params
+        )
+        
+        return {
+            "success": result.success,
+            "output_text": result.output_text,
             "processing_time": result.processing_time,
             "cost": result.cost_estimate,
             "model": result.model_used,
@@ -528,6 +575,7 @@ class ChainExecutor:
         """Get the output type for a step."""
         output_types = {
             StepType.TEXT_TO_IMAGE: "image",
+            StepType.IMAGE_UNDERSTANDING: "text",
             StepType.IMAGE_TO_IMAGE: "image",
             StepType.IMAGE_TO_VIDEO: "video",
             StepType.ADD_AUDIO: "video",

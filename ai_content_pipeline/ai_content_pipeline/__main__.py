@@ -111,6 +111,35 @@ def run_chain(args):
         
         print(f"📋 Loaded chain: {chain.name}")
         
+        # Determine input text from args, prompt file, or config
+        input_text = args.input_text
+        
+        # Priority: --input-text > --prompt-file > config prompt
+        if not input_text and args.prompt_file:
+            # Try to read from prompt file
+            try:
+                with open(args.prompt_file, 'r') as f:
+                    input_text = f.read().strip()
+                    print(f"📝 Using prompt from file ({args.prompt_file}): {input_text}")
+            except FileNotFoundError:
+                print(f"❌ Prompt file not found: {args.prompt_file}")
+                sys.exit(1)
+            except Exception as e:
+                print(f"❌ Error reading prompt file: {e}")
+                sys.exit(1)
+        
+        if not input_text:
+            # Try to get prompt from chain config
+            config_prompt = chain.config.get("prompt")
+            if config_prompt:
+                input_text = config_prompt
+                print(f"📝 Using prompt from config: {input_text}")
+            else:
+                print("❌ No input text provided. Use --input-text, --prompt-file, or add 'prompt' field to config.")
+                sys.exit(1)
+        elif args.input_text:
+            print(f"📝 Using input text: {input_text}")
+        
         # Validate chain
         errors = chain.validate()
         if errors:
@@ -130,7 +159,7 @@ def run_chain(args):
                 sys.exit(0)
         
         # Execute chain
-        result = manager.execute_chain(chain, args.input_text)
+        result = manager.execute_chain(chain, input_text)
         
         # Display results
         if result.success:
@@ -283,7 +312,8 @@ Examples:
     # Run chain command
     chain_parser = subparsers.add_parser("run-chain", help="Run custom chain from configuration")
     chain_parser.add_argument("--config", required=True, help="Path to chain configuration (YAML/JSON)")
-    chain_parser.add_argument("--input-text", required=True, help="Input text for the chain")
+    chain_parser.add_argument("--input-text", help="Input text for the chain (optional if prompt defined in config)")
+    chain_parser.add_argument("--prompt-file", help="Path to text file containing the prompt")
     chain_parser.add_argument("--no-confirm", action="store_true", help="Skip confirmation prompt")
     chain_parser.add_argument("--save-json", help="Save results as JSON")
     
