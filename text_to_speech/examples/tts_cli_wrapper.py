@@ -18,7 +18,9 @@ from pathlib import Path
 # Add parent directory for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from examples.basic_usage import TTSBasicUsage, list_available_voices, validate_voice
+# Force SimpleTTS implementation for reliability
+from examples.simple_tts import SimpleTTS
+USE_BASIC_USAGE = False
 
 
 def tts_pipeline_generate(text, voice_name="rachel", output_file=None, **kwargs):
@@ -43,11 +45,12 @@ def tts_pipeline_generate(text, voice_name="rachel", output_file=None, **kwargs)
                 "output_file": None
             }
         
-        if not validate_voice(voice_name):
-            return {
-                "success": False,
-                "error": f"Invalid voice: {voice_name}. Available: {list_available_voices()}",
-                "output_file": None
+        if USE_BASIC_USAGE:
+            if not validate_voice(voice_name):
+                return {
+                    "success": False,
+                    "error": f"Invalid voice: {voice_name}. Available: {list_available_voices()}",
+                    "output_file": None
             }
         
         # Auto-generate output file if not provided
@@ -60,30 +63,40 @@ def tts_pipeline_generate(text, voice_name="rachel", output_file=None, **kwargs)
             output_file = f"output/{output_file}"
         
         # Initialize TTS
-        tts = TTSBasicUsage()
-        
-        # Generate speech
-        result_file = tts.generate_speech(
-            text=text,
-            voice_name=voice_name,
-            output_file=output_file,
-            **kwargs
-        )
-        
-        if result_file:
-            return {
-                "success": True,
-                "output_file": result_file,
-                "voice_used": voice_name,
-                "text_length": len(text),
-                "settings": kwargs
-            }
+        if USE_BASIC_USAGE:
+            tts = TTSBasicUsage()
+            # Generate speech
+            result_file = tts.generate_speech(
+                text=text,
+                voice_name=voice_name,
+                output_file=output_file,
+                **kwargs
+            )
+            
+            if result_file:
+                return {
+                    "success": True,
+                    "output_file": result_file,
+                    "voice_used": voice_name,
+                    "text_length": len(text),
+                    "settings": kwargs
+                }
+            else:
+                return {
+                    "success": False,
+                    "error": "Speech generation failed",
+                    "output_file": None
+                }
         else:
-            return {
-                "success": False,
-                "error": "Speech generation failed",
-                "output_file": None
-            }
+            # Use SimpleTTS fallback
+            tts = SimpleTTS()
+            result = tts.generate_speech(
+                text=text,
+                voice_name=voice_name,
+                output_file=output_file,
+                **kwargs
+            )
+            return result
             
     except Exception as e:
         return {
@@ -130,7 +143,13 @@ Examples:
     try:
         # Handle utility commands
         if args.list_voices:
-            voices = list_available_voices()
+            if USE_BASIC_USAGE:
+                voices = list_available_voices()
+            else:
+                # Fallback to SimpleTTS voice list
+                tts = SimpleTTS()
+                voices = list(tts.voice_map.keys())
+            
             if args.json:
                 print(json.dumps({"voices": voices}))
             else:
@@ -140,7 +159,13 @@ Examples:
             return 0
         
         if args.validate_voice:
-            is_valid = validate_voice(args.validate_voice)
+            if USE_BASIC_USAGE:
+                is_valid = validate_voice(args.validate_voice)
+            else:
+                # Fallback to SimpleTTS voice validation
+                tts = SimpleTTS()
+                is_valid = args.validate_voice.lower() in tts.voice_map
+            
             if args.json:
                 print(json.dumps({"voice": args.validate_voice, "valid": is_valid}))
             else:
