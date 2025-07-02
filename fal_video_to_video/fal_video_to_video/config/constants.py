@@ -5,19 +5,21 @@ Constants and configuration for FAL Video to Video models
 from typing import Dict, List, Literal
 
 # Model type definitions
-ModelType = Literal["thinksound"]
+ModelType = Literal["thinksound", "topaz"]
 
 # Supported models
-SUPPORTED_MODELS = ["thinksound"]
+SUPPORTED_MODELS = ["thinksound", "topaz"]
 
 # Model endpoints mapping
 MODEL_ENDPOINTS = {
-    "thinksound": "fal-ai/thinksound"
+    "thinksound": "fal-ai/thinksound",
+    "topaz": "fal-ai/topaz/upscale/video"
 }
 
 # Model display names
 MODEL_DISPLAY_NAMES = {
-    "thinksound": "ThinkSound"
+    "thinksound": "ThinkSound",
+    "topaz": "Topaz Video Upscale"
 }
 
 # Model information
@@ -36,6 +38,23 @@ MODEL_INFO = {
         "supported_formats": ["mp4", "mov", "avi", "webm"],
         "max_duration": 300,  # 5 minutes
         "output_format": "mp4"
+    },
+    "topaz": {
+        "model_name": "Topaz Video Upscale",
+        "description": "Professional-grade video upscaling using Proteus v4 with optional Apollo v8 frame interpolation",
+        "features": [
+            "Up to 4x video upscaling",
+            "Frame rate enhancement up to 120 FPS",
+            "Proteus v4 upscaling engine",
+            "Apollo v8 frame interpolation",
+            "Professional quality enhancement",
+            "Commercial use license"
+        ],
+        "pricing": "Commercial use pricing",
+        "supported_formats": ["mp4", "mov", "avi", "webm"],
+        "max_upscale": 4,
+        "max_fps": 120,
+        "output_format": "mp4"
     }
 }
 
@@ -44,6 +63,10 @@ DEFAULT_VALUES = {
     "thinksound": {
         "seed": None,
         "prompt": None
+    },
+    "topaz": {
+        "upscale_factor": 2,
+        "target_fps": None
     }
 }
 

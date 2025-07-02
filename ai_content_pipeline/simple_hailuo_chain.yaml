@@ -1,0 +1,13 @@
+name: "simple_hailuo_video"
+description: "Simple and cheap video creation with Hailuo"
+steps:
+  - type: "text_to_image"
+    model: "flux_schnell"  # Fastest and cheapest
+    params:
+      aspect_ratio: "16:9"
+  - type: "image_to_video"
+    model: "hailuo"  # Cheap video model
+    params:
+      duration: 6
+output_dir: "output"
+cleanup_temp: true

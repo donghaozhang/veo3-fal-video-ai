@@ -9,6 +9,7 @@ import fal_client
 from dotenv import load_dotenv
 
 from .models.thinksound import ThinkSoundModel
+from .models.topaz import TopazModel
 from .utils.validators import validate_model, validate_video_url, validate_video_path
 from .utils.file_utils import upload_video, get_video_info
 from .config.constants import SUPPORTED_MODELS, MODEL_DISPLAY_NAMES
@@ -43,7 +44,8 @@ class FALVideoToVideoGenerator:
         
         # Initialize models
         self.models = {
-            "thinksound": ThinkSoundModel()
+            "thinksound": ThinkSoundModel(),
+            "topaz": TopazModel()
         }
         
         print("✅ FAL Video to Video Generator initialized")
@@ -141,6 +143,102 @@ class FALVideoToVideoGenerator:
             model=model,
             prompt=prompt,
             seed=seed,
+            output_dir=output_dir,
+            **kwargs
+        )
+    
+    def upscale_video(
+        self,
+        video_url: str,
+        upscale_factor: float = 2,
+        target_fps: Optional[int] = None,
+        output_dir: Optional[str] = None,
+        **kwargs
+    ) -> Dict[str, Any]:
+        """
+        Upscale a video using Topaz Video Upscale from URL input.
+        
+        Args:
+            video_url: URL of the input video
+            upscale_factor: Upscaling factor (1-4, default: 2)
+            target_fps: Optional target FPS for frame interpolation (1-120)
+            output_dir: Custom output directory
+            **kwargs: Additional model-specific parameters
+            
+        Returns:
+            Dictionary containing:
+                - success: Whether upscaling was successful
+                - model: Model used
+                - local_path: Path to downloaded upscaled video
+                - response: Full API response
+                - processing_time: Time taken for upscaling
+        """
+        # Validate inputs
+        video_url = validate_video_url(video_url)
+        
+        # Get model instance
+        model_instance = self.models["topaz"]
+        
+        # Prepare parameters
+        params = {
+            "upscale_factor": upscale_factor,
+            "target_fps": target_fps,
+            **kwargs
+        }
+        
+        # Generate upscaled video
+        return model_instance.generate(
+            video_url=video_url,
+            output_dir=output_dir,
+            **params
+        )
+    
+    def upscale_local_video(
+        self,
+        video_path: str,
+        upscale_factor: float = 2,
+        target_fps: Optional[int] = None,
+        output_dir: Optional[str] = None,
+        **kwargs
+    ) -> Dict[str, Any]:
+        """
+        Upscale a local video file using Topaz Video Upscale.
+        
+        Args:
+            video_path: Path to local video file
+            upscale_factor: Upscaling factor (1-4, default: 2)
+            target_fps: Optional target FPS for frame interpolation (1-120)
+            output_dir: Custom output directory
+            **kwargs: Additional model-specific parameters
+            
+        Returns:
+            Dictionary containing upscaling results
+        """
+        # Validate inputs
+        video_path = validate_video_path(video_path)
+        
+        # Get video info
+        video_info = get_video_info(video_path)
+        if video_info:
+            print(f"📹 Video info:")
+            print(f"   Duration: {video_info.get('duration', 'Unknown')}s")
+            print(f"   Resolution: {video_info.get('width', '?')}x{video_info.get('height', '?')}")
+            print(f"   FPS: {video_info.get('fps', 'Unknown')}")
+            
+            # Calculate expected output resolution
+            if video_info.get('width') and video_info.get('height'):
+                new_width = int(video_info['width'] * upscale_factor)
+                new_height = int(video_info['height'] * upscale_factor)
+                print(f"   Expected output: {new_width}x{new_height}")
+        
+        # Upload video
+        video_url = upload_video(video_path)
+        
+        # Upscale video
+        return self.upscale_video(
+            video_url=video_url,
+            upscale_factor=upscale_factor,
+            target_fps=target_fps,
             output_dir=output_dir,
             **kwargs
         )

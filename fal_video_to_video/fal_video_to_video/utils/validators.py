@@ -137,3 +137,50 @@ def validate_seed(seed: Optional[int]) -> Optional[int]:
         return seed
     except (ValueError, TypeError):
         raise ValueError("Seed must be an integer")
+
+
+def validate_upscale_factor(upscale_factor: Union[int, float]) -> Union[int, float]:
+    """
+    Validate upscale factor for Topaz.
+    
+    Args:
+        upscale_factor: Upscaling factor (1-4)
+        
+    Returns:
+        Validated upscale factor
+        
+    Raises:
+        ValueError: If factor is invalid
+    """
+    try:
+        upscale_factor = float(upscale_factor)
+        if not 1 <= upscale_factor <= 4:
+            raise ValueError("Upscale factor must be between 1 and 4")
+        return upscale_factor
+    except (ValueError, TypeError):
+        raise ValueError("Upscale factor must be a number")
+
+
+def validate_target_fps(target_fps: Optional[int]) -> Optional[int]:
+    """
+    Validate target FPS for Topaz frame interpolation.
+    
+    Args:
+        target_fps: Target frames per second
+        
+    Returns:
+        Validated target FPS or None
+        
+    Raises:
+        ValueError: If FPS is invalid
+    """
+    if target_fps is None:
+        return None
+    
+    try:
+        target_fps = int(target_fps)
+        if not 1 <= target_fps <= 120:
+            raise ValueError("Target FPS must be between 1 and 120")
+        return target_fps
+    except (ValueError, TypeError):
+        raise ValueError("Target FPS must be an integer")

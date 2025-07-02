@@ -1,0 +1,308 @@
+#!/usr/bin/env python3
+"""
+AI Content Pipeline CLI Interface
+
+Allows running the module directly from command line:
+    python -m ai_content_pipeline [command] [options]
+"""
+
+import argparse
+import sys
+import os
+import json
+import yaml
+from pathlib import Path
+from typing import Optional, Dict, Any
+
+from .pipeline.manager import AIPipelineManager
+from .config.constants import SUPPORTED_MODELS, MODEL_RECOMMENDATIONS
+
+
+def print_models():
+    """Print information about all supported models."""
+    print("\n🎨 AI Content Pipeline Supported Models")
+    print("=" * 50)
+    
+    manager = AIPipelineManager()
+    available_models = manager.get_available_models()
+    
+    for step_type, models in available_models.items():
+        print(f"\n📦 {step_type.replace('_', '-').title()}")
+        
+        if models:
+            for model in models:
+                # Get model info if available
+                if step_type == "text_to_image":
+                    info = manager.text_to_image.get_model_info(model)
+                    print(f"   • {model}")
+                    if info:
+                        print(f"     Name: {info.get('name', 'N/A')}")
+                        print(f"     Provider: {info.get('provider', 'N/A')}")
+                        print(f"     Best for: {info.get('best_for', 'N/A')}")
+                        print(f"     Cost: {info.get('cost_per_image', 'N/A')}")
+                else:
+                    print(f"   • {model}")
+        else:
+            print("   No models available (integration pending)")
+
+
+def create_video(args):
+    """Handle create-video command."""
+    try:
+        manager = AIPipelineManager(args.base_dir)
+        
+        # Create quick video chain
+        result = manager.quick_create_video(
+            text=args.text,
+            image_model=args.image_model,
+            video_model=args.video_model,
+            output_dir=args.output_dir
+        )
+        
+        # Display results
+        if result.success:
+            print(f"\n✅ Video creation successful!")
+            print(f"📦 Steps completed: {result.steps_completed}/{result.total_steps}")
+            print(f"💰 Total cost: ${result.total_cost:.3f}")
+            print(f"⏱️  Total time: {result.total_time:.1f} seconds")
+            
+            if result.outputs:
+                print(f"\n📁 Outputs:")
+                for step_name, output in result.outputs.items():
+                    if output.get("path"):
+                        print(f"   {step_name}: {output['path']}")
+        else:
+            print(f"\n❌ Video creation failed!")
+            print(f"Error: {result.error}")
+        
+        # Save full result if requested
+        if args.save_json:
+            result_dict = {
+                "success": result.success,
+                "steps_completed": result.steps_completed,
+                "total_steps": result.total_steps,
+                "total_cost": result.total_cost,
+                "total_time": result.total_time,
+                "outputs": result.outputs,
+                "error": result.error
+            }
+            
+            with open(args.save_json, 'w') as f:
+                json.dump(result_dict, f, indent=2)
+            print(f"\n📄 Full result saved to: {args.save_json}")
+            
+    except Exception as e:
+        print(f"\n❌ Error: {e}")
+        if args.debug:
+            import traceback
+            traceback.print_exc()
+        sys.exit(1)
+
+
+def run_chain(args):
+    """Handle run-chain command."""
+    try:
+        manager = AIPipelineManager(args.base_dir)
+        
+        # Load chain configuration
+        chain = manager.create_chain_from_config(args.config)
+        
+        print(f"📋 Loaded chain: {chain.name}")
+        
+        # Validate chain
+        errors = chain.validate()
+        if errors:
+            print(f"❌ Chain validation failed:")
+            for error in errors:
+                print(f"   • {error}")
+            sys.exit(1)
+        
+        # Show cost estimate
+        cost_info = manager.estimate_chain_cost(chain)
+        print(f"💰 Estimated cost: ${cost_info['total_cost']:.3f}")
+        
+        if not args.no_confirm:
+            response = input("\nProceed with execution? (y/N): ")
+            if response.lower() not in ['y', 'yes']:
+                print("Execution cancelled.")
+                sys.exit(0)
+        
+        # Execute chain
+        result = manager.execute_chain(chain, args.input_text)
+        
+        # Display results
+        if result.success:
+            print(f"\n✅ Chain execution successful!")
+            print(f"📦 Steps completed: {result.steps_completed}/{result.total_steps}")
+            print(f"💰 Total cost: ${result.total_cost:.3f}")
+            print(f"⏱️  Total time: {result.total_time:.1f} seconds")
+        else:
+            print(f"\n❌ Chain execution failed!")
+            print(f"Error: {result.error}")
+        
+        # Save results if requested
+        if args.save_json:
+            result_dict = {
+                "success": result.success,
+                "steps_completed": result.steps_completed,
+                "total_steps": result.total_steps,
+                "total_cost": result.total_cost,
+                "total_time": result.total_time,
+                "outputs": result.outputs,
+                "error": result.error
+            }
+            
+            with open(args.save_json, 'w') as f:
+                json.dump(result_dict, f, indent=2)
+            print(f"\n📄 Results saved to: {args.save_json}")
+            
+    except Exception as e:
+        print(f"\n❌ Error: {e}")
+        if args.debug:
+            import traceback
+            traceback.print_exc()
+        sys.exit(1)
+
+
+def generate_image(args):
+    """Handle generate-image command."""
+    try:
+        manager = AIPipelineManager(args.base_dir)
+        
+        # Generate image
+        result = manager.text_to_image.generate(
+            prompt=args.text,
+            model=args.model,
+            aspect_ratio=args.aspect_ratio,
+            output_dir=args.output_dir or "output"
+        )
+        
+        # Display results
+        if result.success:
+            print(f"\n✅ Image generation successful!")
+            print(f"📦 Model: {result.model_used}")
+            if result.output_path:
+                print(f"📁 Output: {result.output_path}")
+            print(f"💰 Cost: ${result.cost_estimate:.3f}")
+            print(f"⏱️  Processing time: {result.processing_time:.1f} seconds")
+        else:
+            print(f"\n❌ Image generation failed!")
+            print(f"Error: {result.error}")
+        
+        # Save result if requested
+        if args.save_json:
+            result_dict = {
+                "success": result.success,
+                "model": result.model_used,
+                "output_path": result.output_path,
+                "cost": result.cost_estimate,
+                "processing_time": result.processing_time,
+                "error": result.error
+            }
+            
+            with open(args.save_json, 'w') as f:
+                json.dump(result_dict, f, indent=2)
+            print(f"\n📄 Result saved to: {args.save_json}")
+            
+    except Exception as e:
+        print(f"\n❌ Error: {e}")
+        if args.debug:
+            import traceback
+            traceback.print_exc()
+        sys.exit(1)
+
+
+def create_examples(args):
+    """Handle create-examples command."""
+    try:
+        manager = AIPipelineManager(args.base_dir)
+        manager.create_example_configs(args.output_dir)
+        print("✅ Example configurations created successfully!")
+        
+    except Exception as e:
+        print(f"\n❌ Error: {e}")
+        sys.exit(1)
+
+
+def main():
+    """Main CLI entry point."""
+    parser = argparse.ArgumentParser(
+        description="AI Content Pipeline - Unified content creation with multiple AI models",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # List all available models
+  python -m ai_content_pipeline list-models
+  
+  # Generate image only
+  python -m ai_content_pipeline generate-image --text "epic space battle" --model flux_dev
+  
+  # Quick video creation (text → image → video)
+  python -m ai_content_pipeline create-video --text "serene mountain lake"
+  
+  # Run custom chain from config
+  python -m ai_content_pipeline run-chain --config my_chain.yaml --input "cyberpunk city"
+  
+  # Create example configurations
+  python -m ai_content_pipeline create-examples
+        """
+    )
+    
+    # Global options
+    parser.add_argument("--debug", action="store_true", help="Enable debug output")
+    parser.add_argument("--base-dir", default=".", help="Base directory for operations")
+    
+    # Create subparsers
+    subparsers = parser.add_subparsers(dest="command", help="Available commands")
+    
+    # List models command
+    subparsers.add_parser("list-models", help="List all available models")
+    
+    # Generate image command
+    image_parser = subparsers.add_parser("generate-image", help="Generate image from text")
+    image_parser.add_argument("--text", required=True, help="Text prompt for image generation")
+    image_parser.add_argument("--model", default="auto", help="Model to use (default: auto)")
+    image_parser.add_argument("--aspect-ratio", default="16:9", help="Aspect ratio (default: 16:9)")
+    image_parser.add_argument("--output-dir", help="Output directory")
+    image_parser.add_argument("--save-json", help="Save result as JSON")
+    
+    # Create video command
+    video_parser = subparsers.add_parser("create-video", help="Create video from text (text → image → video)")
+    video_parser.add_argument("--text", required=True, help="Text prompt for content creation")
+    video_parser.add_argument("--image-model", default="auto", help="Model for text-to-image")
+    video_parser.add_argument("--video-model", default="auto", help="Model for image-to-video")
+    video_parser.add_argument("--output-dir", help="Output directory")
+    video_parser.add_argument("--save-json", help="Save result as JSON")
+    
+    # Run chain command
+    chain_parser = subparsers.add_parser("run-chain", help="Run custom chain from configuration")
+    chain_parser.add_argument("--config", required=True, help="Path to chain configuration (YAML/JSON)")
+    chain_parser.add_argument("--input-text", required=True, help="Input text for the chain")
+    chain_parser.add_argument("--no-confirm", action="store_true", help="Skip confirmation prompt")
+    chain_parser.add_argument("--save-json", help="Save results as JSON")
+    
+    # Create examples command
+    examples_parser = subparsers.add_parser("create-examples", help="Create example configuration files")
+    examples_parser.add_argument("--output-dir", help="Directory for example configs")
+    
+    # Parse arguments
+    args = parser.parse_args()
+    
+    # Execute command
+    if args.command == "list-models":
+        print_models()
+    elif args.command == "generate-image":
+        generate_image(args)
+    elif args.command == "create-video":
+        create_video(args)
+    elif args.command == "run-chain":
+        run_chain(args)
+    elif args.command == "create-examples":
+        create_examples(args)
+    else:
+        parser.print_help()
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

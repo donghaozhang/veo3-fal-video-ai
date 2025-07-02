@@ -90,6 +90,63 @@ def add_audio(args):
         sys.exit(1)
 
 
+def upscale_video(args):
+    """Handle upscale command."""
+    try:
+        # Initialize generator
+        generator = FALVideoToVideoGenerator()
+        
+        # Prepare kwargs
+        kwargs = {}
+        
+        if args.upscale_factor is not None:
+            kwargs["upscale_factor"] = args.upscale_factor
+        if args.target_fps is not None:
+            kwargs["target_fps"] = args.target_fps
+        if args.output_dir:
+            kwargs["output_dir"] = args.output_dir
+        
+        # Execute based on input type
+        if args.video_url:
+            result = generator.upscale_video(
+                video_url=args.video_url,
+                **kwargs
+            )
+        else:
+            result = generator.upscale_local_video(
+                video_path=args.video_path,
+                **kwargs
+            )
+        
+        # Display results
+        if result.get("success"):
+            print(f"\n✅ Video upscaling successful!")
+            print(f"📦 Model: {result.get('model')}")
+            if result.get("local_path"):
+                print(f"📁 Output: {result.get('local_path')}")
+            if result.get("upscale_factor"):
+                print(f"🔍 Upscale Factor: {result.get('upscale_factor')}x")
+            if result.get("target_fps"):
+                print(f"🎬 Target FPS: {result.get('target_fps')}")
+            print(f"⏱️  Processing time: {result.get('processing_time', 0):.2f} seconds")
+        else:
+            print(f"\n❌ Video upscaling failed!")
+            print(f"Error: {result.get('error', 'Unknown error')}")
+        
+        # Save full result if requested
+        if args.save_json:
+            with open(args.save_json, 'w') as f:
+                json.dump(result, f, indent=2)
+            print(f"\n📄 Full result saved to: {args.save_json}")
+            
+    except Exception as e:
+        print(f"\n❌ Error: {e}")
+        if args.debug:
+            import traceback
+            traceback.print_exc()
+        sys.exit(1)
+
+
 def batch_process(args):
     """Handle batch processing command."""
     try:
@@ -166,7 +223,7 @@ def batch_process(args):
 def main():
     """Main CLI entry point."""
     parser = argparse.ArgumentParser(
-        description="FAL Video to Video CLI - Add AI-generated audio to videos",
+        description="FAL Video to Video CLI - Add AI-generated audio and upscale videos",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -181,6 +238,12 @@ Examples:
   
   # Add audio from URL
   python -m fal_video_to_video add-audio -u https://example.com/video.mp4
+  
+  # Upscale video 2x
+  python -m fal_video_to_video upscale -i input/video.mp4 --upscale-factor 2
+  
+  # Upscale with frame interpolation
+  python -m fal_video_to_video upscale -i input/video.mp4 --upscale-factor 2 --target-fps 60
   
   # Batch process videos
   python -m fal_video_to_video batch -f batch.json
@@ -214,6 +277,24 @@ Examples:
     audio_parser.add_argument("-o", "--output-dir", help="Output directory")
     audio_parser.add_argument("--save-json", help="Save full result as JSON")
     
+    # Upscale command
+    upscale_parser = subparsers.add_parser("upscale", help="Upscale a single video")
+    
+    # Input options (mutually exclusive)
+    upscale_input_group = upscale_parser.add_mutually_exclusive_group(required=True)
+    upscale_input_group.add_argument("-i", "--video-path", help="Path to local video file")
+    upscale_input_group.add_argument("-u", "--video-url", help="URL of video")
+    
+    # Upscale parameters
+    upscale_parser.add_argument("--upscale-factor", type=float, default=2,
+                               help="Upscaling factor (1-4, default: 2)")
+    upscale_parser.add_argument("--target-fps", type=int,
+                               help="Target FPS for frame interpolation (1-120)")
+    
+    # Output options
+    upscale_parser.add_argument("-o", "--output-dir", help="Output directory")
+    upscale_parser.add_argument("--save-json", help="Save full result as JSON")
+    
     # Batch command
     batch_parser = subparsers.add_parser("batch", help="Batch process multiple videos")
     batch_parser.add_argument("-f", "--batch-file", required=True, help="JSON file with batch data")
@@ -229,6 +310,8 @@ Examples:
         print_models()
     elif args.command == "add-audio":
         add_audio(args)
+    elif args.command == "upscale":
+        upscale_video(args)
     elif args.command == "batch":
         batch_process(args)
     else:
