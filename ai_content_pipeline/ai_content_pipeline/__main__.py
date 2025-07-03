@@ -155,6 +155,15 @@ def run_chain(args):
                 else:
                     print("❌ No input image provided. Use --input-text or add 'input_image' field to config.")
                     sys.exit(1)
+            elif initial_input_type == "any":
+                # For parallel groups that accept any input type
+                config_input = chain.config.get("prompt")
+                if config_input:
+                    input_data = config_input
+                    print(f"📝 Using prompt from config: {input_data}")
+                else:
+                    print("❌ No input provided for parallel group. Add 'prompt' field to config or use --input-text.")
+                    sys.exit(1)
             else:
                 print(f"❌ Unknown input type: {initial_input_type}")
                 sys.exit(1)

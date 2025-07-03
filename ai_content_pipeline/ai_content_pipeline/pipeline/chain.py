@@ -18,6 +18,7 @@ class StepType(Enum):
     ADD_AUDIO = "add_audio"
     UPSCALE_VIDEO = "upscale_video"
     GENERATE_SUBTITLES = "generate_subtitles"
+    PARALLEL_GROUP = "parallel_group"
 
 
 @dataclass
@@ -136,11 +137,11 @@ class ContentCreationChain:
             
             if i == 0:
                 # First step must accept the initial input type
-                if step_input != initial_input_type:
+                if step_input != initial_input_type and step_input != "any":
                     errors.append(f"First step expects {step_input} input, but pipeline starts with {initial_input_type}")
             else:
                 # Check if this step can accept the actual data type available
-                if step_input != actual_data_type:
+                if step_input != actual_data_type and step_input != "any":
                     errors.append(
                         f"Step {i+1} expects {step_input} but available data is {actual_data_type}"
                     )
@@ -185,7 +186,8 @@ class ContentCreationChain:
             StepType.TEXT_TO_SPEECH: "text",
             StepType.ADD_AUDIO: "video",
             StepType.UPSCALE_VIDEO: "video",
-            StepType.GENERATE_SUBTITLES: "video"
+            StepType.GENERATE_SUBTITLES: "video",
+            StepType.PARALLEL_GROUP: "any"
         }
         return input_types.get(step_type, "unknown")
     
@@ -200,7 +202,8 @@ class ContentCreationChain:
             StepType.TEXT_TO_SPEECH: "audio",
             StepType.ADD_AUDIO: "video", 
             StepType.UPSCALE_VIDEO: "video",
-            StepType.GENERATE_SUBTITLES: "video"
+            StepType.GENERATE_SUBTITLES: "video",
+            StepType.PARALLEL_GROUP: "parallel_result"
         }
         return output_types.get(step_type, "unknown")
     

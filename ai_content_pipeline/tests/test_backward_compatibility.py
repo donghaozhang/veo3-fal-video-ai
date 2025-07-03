@@ -10,7 +10,8 @@ import sys
 import yaml
 from pathlib import Path
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# Add parent directory to path for imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from ai_content_pipeline.pipeline.chain import ContentCreationChain, StepType
 from ai_content_pipeline.pipeline.executor import ChainExecutor

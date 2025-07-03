@@ -47,6 +47,23 @@ class ChainExecutor:
         # self.image_to_video = UnifiedImageToVideoGenerator()
         # self.audio_generator = UnifiedAudioGenerator()
         # self.video_upscaler = UnifiedVideoUpscaler()
+        
+        # Optional parallel execution support
+        self._parallel_extension = None
+        self._try_load_parallel_extension()
+    
+    def _try_load_parallel_extension(self):
+        """Try to load parallel extension if available."""
+        try:
+            from .parallel_extension import ParallelExtension
+            self._parallel_extension = ParallelExtension(self)
+            if self._parallel_extension.enabled:
+                print("✅ Parallel execution extension loaded and enabled")
+            else:
+                print("ℹ️  Parallel execution extension loaded but disabled (set PIPELINE_PARALLEL_ENABLED=true to enable)")
+        except ImportError:
+            # Parallel extension not available, continue normally
+            print("ℹ️  Parallel execution extension not available")
     
     def execute(
         self,
@@ -82,15 +99,27 @@ class ChainExecutor:
             for i, step in enumerate(enabled_steps):
                 print(f"\n📍 Step {i+1}/{len(enabled_steps)}: {step.step_type.value} ({step.model})")
                 
-                # Execute step
-                step_result = self._execute_step(
-                    step=step,
-                    input_data=current_data,
-                    input_type=current_type,
-                    chain_config=chain.config,
-                    step_context=step_context,
-                    **kwargs
-                )
+                # Check if this is a parallel step and extension is available
+                if (self._parallel_extension and 
+                    self._parallel_extension.can_execute_parallel(step)):
+                    # Execute parallel group
+                    step_result = self._parallel_extension.execute_parallel_group(
+                        step=step,
+                        input_data=current_data,
+                        input_type=current_type,
+                        chain_config=chain.config,
+                        step_context=step_context
+                    )
+                else:
+                    # Execute step normally (existing path)
+                    step_result = self._execute_step(
+                        step=step,
+                        input_data=current_data,
+                        input_type=current_type,
+                        chain_config=chain.config,
+                        step_context=step_context,
+                        **kwargs
+                    )
                 
                 step_results.append(step_result)
                 total_cost += step_result.get("cost", 0.0)
