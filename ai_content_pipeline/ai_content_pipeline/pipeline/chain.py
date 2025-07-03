@@ -182,6 +182,7 @@ class ContentCreationChain:
             StepType.PROMPT_GENERATION: "image",
             StepType.IMAGE_TO_IMAGE: "image",
             StepType.IMAGE_TO_VIDEO: "image", 
+            StepType.TEXT_TO_SPEECH: "text",
             StepType.ADD_AUDIO: "video",
             StepType.UPSCALE_VIDEO: "video",
             StepType.GENERATE_SUBTITLES: "video"
@@ -196,6 +197,7 @@ class ContentCreationChain:
             StepType.PROMPT_GENERATION: "text",
             StepType.IMAGE_TO_IMAGE: "image",
             StepType.IMAGE_TO_VIDEO: "video",
+            StepType.TEXT_TO_SPEECH: "audio",
             StepType.ADD_AUDIO: "video", 
             StepType.UPSCALE_VIDEO: "video",
             StepType.GENERATE_SUBTITLES: "video"
