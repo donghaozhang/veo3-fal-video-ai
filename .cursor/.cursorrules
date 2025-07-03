@@ -2,53 +2,92 @@
 
 ## Project Overview
 This is a comprehensive AI content creation project with multiple implementations:
+
+### 🚀 **FLAGSHIP: AI Content Pipeline (ai_content_pipeline/)**
+- **Unified YAML-based pipeline** for multi-step content generation
+- **Parallel execution support** with 2-3x speedup using thread-based processing
+- **All model integration**: FAL AI, ElevenLabs TTS, Google services
+- **Feature flag**: `PIPELINE_PARALLEL_ENABLED=true` for parallel execution
+- **Command**: `python -m ai_content_pipeline run-chain --config config.yaml`
+
+### Individual Service Implementations:
 - Google Veo video generation (veo3_video_generation/)
-- FAL AI video generation (fal_image_to_video/)  
-- **NEW: FAL AI text-to-video generation (fal_text_to_video/)**
-- **NEW: FAL AI video-to-video audio enhancement (fal_video_to_video/)**
+- FAL AI video generation (fal_video_generation/)
+- FAL AI text-to-video generation (fal_text_to_video/)
+- FAL AI video-to-video audio enhancement (fal_video_to_video/)
 - FAL AI avatar generation (fal_avatar_generation/)
 - FAL AI text-to-image (fal_text_to_image/)
 - FAL AI image-to-image (fal_image_to_image/)
-- **ENHANCED: Modular text-to-speech package (text_to_speech/)**
-- **NEW: Unified AI Content Pipeline (ai_content_pipeline/)**
+- **ENHANCED: Modular text-to-speech package with OpenRouter AI (text_to_speech/)**
 - **ENHANCED: Video tools with CLI parameter support (video_tools/)**
 
-## New AI Content Pipeline Architecture (RECENTLY ADDED)
+## **FLAGSHIP: AI Content Pipeline Architecture** (PARALLEL EXECUTION READY)
 
-### Unified Content Creation System
-The ai_content_pipeline provides a unified interface for chaining multiple AI operations:
-**Text → Image → Video → Audio Enhancement → Video Upscaling**
+### Unified Content Creation System with Parallel Processing
+The ai_content_pipeline provides a unified interface for chaining multiple AI operations with **parallel execution support**:
+**Text → Image → Video → Audio Enhancement → Video Upscaling** (Sequential or Parallel)
 
 ```
 ai_content_pipeline/
 ├── ai_content_pipeline/           # Main package
 │   ├── config/                   # Configuration management
 │   ├── models/                   # Model implementations
-│   │   ├── text_to_image.py      # Unified text-to-image generator
+│   │   ├── text_to_speech.py     # ElevenLabs TTS integration
+│   │   ├── text_to_image.py      # FAL AI image generation
+│   │   ├── image_to_image.py     # FAL AI image modification
 │   │   └── base.py               # Base model interface
 │   ├── pipeline/                 # Pipeline management
 │   │   ├── manager.py            # Main pipeline manager
 │   │   ├── chain.py              # Chain configuration classes
-│   │   └── executor.py           # Chain execution engine
-│   └── utils/                    # File management and validation
+│   │   ├── executor.py           # Chain execution engine
+│   │   └── parallel_extension.py # **NEW: Parallel execution module**
+│   ├── utils/                    # File management and validation
+│   ├── docs/                     # **NEW: Complete documentation**
+│   ├── examples/                 # **NEW: Example scripts and POCs**
+│   └── input/                    # YAML configuration files
 ```
+
+### **NEW: Parallel Execution Features**
+- **StepType.PARALLEL_GROUP**: Execute multiple steps concurrently
+- **Thread-based processing**: 2-3x speedup for parallel operations
+- **Merge strategies**: collect_all, first_success, best_quality
+- **Feature flag**: `PIPELINE_PARALLEL_ENABLED=true`
+- **Backward compatible**: Zero breaking changes to existing workflows
 
 ### Pipeline Usage Patterns
 ```python
-# ✅ Correct - Unified pipeline interface
-from ai_content_pipeline import AIPipelineManager
+# ✅ Correct - YAML-based pipeline execution
+# Sequential execution
+python -m ai_content_pipeline run-chain --config input/tts_simple_test.yaml
 
-# Generate image with automatic model selection
-manager = AIPipelineManager()
-result = manager.text_to_image.generate(
-    prompt="futuristic cityscape",
-    model="auto",
-    criteria="quality"
-)
+# Parallel execution (2-3x speedup)
+PIPELINE_PARALLEL_ENABLED=true python -m ai_content_pipeline run-chain --config input/tts_parallel_test.yaml
 
-# Chain multiple operations
-chain = manager.create_chain("text_to_video_enhanced.yaml")
-results = manager.execute_chain(chain)
+# Debug mode
+python -m ai_content_pipeline run-chain --config config.yaml --debug
+```
+
+```yaml
+# ✅ YAML Configuration Example - Parallel TTS Generation
+pipeline_name: "parallel_tts_example"
+description: "Generate multiple TTS files in parallel"
+output_directory: "ai_content_pipeline/output/"
+
+steps:
+  - step_type: "parallel_group"
+    parallel_config:
+      merge_strategy: "collect_all"
+    steps:
+      - step_type: "text_to_speech"
+        config:
+          text: "Hello from voice 1"
+          voice: "Adam"
+        output_filename: "voice1.mp3"
+      - step_type: "text_to_speech"
+        config:
+          text: "Hello from voice 2"
+          voice: "Rachel"
+        output_filename: "voice2.mp3"
 ```
 
 ## FAL AI Text-to-Video Architecture (RECENTLY ADDED)
@@ -327,19 +366,23 @@ Enhanced commands follow this architecture:
 
 ## Common Commands
 
-### AI Content Pipeline Development
+### AI Content Pipeline Development (FLAGSHIP)
 ```bash
 cd ai_content_pipeline
 
-# List available models and capabilities
-python -m ai_content_pipeline list-models
+# Sequential execution
+python -m ai_content_pipeline run-chain --config input/tts_simple_test.yaml
 
-# Generate content with automatic model selection
-python -m ai_content_pipeline generate-image --text "epic space battle" --model auto --criteria quality
+# Parallel execution (2-3x speedup)
+PIPELINE_PARALLEL_ENABLED=true python -m ai_content_pipeline run-chain --config input/tts_parallel_test.yaml
 
-# Create and execute content creation chains
-python -m ai_content_pipeline create-examples
-python -m ai_content_pipeline execute-chain examples/simple_image_generation.yaml
+# Test backward compatibility
+python tests/test_backward_compatibility.py
+
+# View documentation
+cat docs/README.md
+cat docs/GETTING_STARTED.md
+cat docs/YAML_CONFIGURATION.md
 ```
 
 ### FAL AI Text-to-Video Development
@@ -409,8 +452,9 @@ cd fal_avatar_generation && python test_setup.py  # FREE
 ```
 
 Remember: 
-- The ai_content_pipeline provides a unified interface for chaining multiple AI operations with automatic model selection and cost optimization.
+- **FLAGSHIP: ai_content_pipeline** provides unified YAML-based pipelines with parallel execution support (2-3x speedup). Use `PIPELINE_PARALLEL_ENABLED=true` for parallel processing.
 - The fal_text_to_video module offers direct text-to-video generation with multiple model options (cost-effective vs premium).
 - The fal_video_to_video module specializes in AI audio enhancement for existing videos at very low cost.
-- The text_to_speech package has a completely refactored, professional modular architecture. Always use the new import patterns and module structure.
+- The text_to_speech package has a completely refactored, professional modular architecture with OpenRouter AI integration. Always use the new import patterns and module structure.
 - The video_tools package now supports enhanced CLI mode with -i/-o/-f parameters for generate-subtitles, describe-videos, and transcribe-videos commands. Always check for parameter support when working with these commands.
+- **Parallel Execution**: Use StepType.PARALLEL_GROUP in YAML configs for concurrent step execution with merge strategies (collect_all, first_success, best_quality).
