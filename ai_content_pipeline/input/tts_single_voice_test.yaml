@@ -1,0 +1,19 @@
+name: "tts_single_voice_test"
+description: "Single voice text-to-speech test"
+prompt: "Welcome to our advanced AI content creation platform. This demonstration showcases our integrated text-to-speech capabilities."
+
+steps:
+  - type: "text_to_speech"
+    model: "elevenlabs"
+    params:
+      voice: "rachel"
+      speed: 1.0
+      stability: 0.5
+      similarity_boost: 0.8
+      style: 0.2
+      output_file: "pipeline_single_voice_test.mp3"
+
+output_dir: "output"
+temp_dir: "temp"
+cleanup_temp: true
+save_intermediates: true
