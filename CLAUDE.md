@@ -2,17 +2,35 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Git Workflow Commands
+
+**Always run after each successful implementation:**
+```bash
+git add .
+git commit -m "descriptive commit message"
+git push origin main
+```
+
 ## Project Overview
 
 This is a comprehensive AI content generation project supporting multiple platforms and content types:
+
+### 🚀 **FLAGSHIP: AI Content Pipeline** (`ai_content_pipeline/`)
+- **Unified Pipeline**: YAML-based multi-step content generation
+- **Parallel Execution**: 2-3x speedup with thread-based parallel processing
+- **All Models**: Integration with all FAL AI models, ElevenLabs TTS, Google services
+- **Commands**: `python -m ai_content_pipeline run-chain --config config.yaml`
+
+### Individual Service Implementations:
 - **Google Veo** (Vertex AI): High-resolution, enterprise-grade video generation
 - **FAL AI Video**: Simple API-based generation with dual models (MiniMax Hailuo-02 and Kling Video 2.1)
 - **FAL AI Text-to-Video**: Unified text-to-video generation with dual model support (MiniMax Hailuo-02 Pro and Google Veo 3)
+- **FAL AI Video-to-Video**: Audio generation and video upscaling (ThinksSound + Topaz)
 - **FAL AI Avatar**: Talking avatar generation with text-to-speech and audio-to-avatar capabilities
 - **FAL AI Text-to-Image**: Multi-model image generation (Imagen 4, Seedream v3, FLUX.1)
 - **FAL AI Image-to-Image**: AI-powered image modification using Luma Photon Flash
-- **Text-to-Speech**: Professional voice synthesis with ElevenLabs integration
-- **Video Tools**: Comprehensive video processing and analysis utilities
+- **Text-to-Speech**: Professional voice synthesis with ElevenLabs + OpenRouter AI integration
+- **Video Tools**: Comprehensive video processing with enhanced CLI parameter support
 
 ## Environment Setup
 
@@ -30,6 +48,21 @@ pip install -r requirements.txt
 **Memory**: Virtual environment created at `/home/zdhpe/veo3-video-generation/venv/` with all dependencies installed. Always activate before running scripts.
 
 ## Common Commands
+
+### 🚀 AI Content Pipeline Commands (ai_content_pipeline/)
+```bash
+# Activate venv first: source venv/bin/activate
+cd ai_content_pipeline
+
+# Run sequential pipeline
+python -m ai_content_pipeline run-chain --config input/tts_simple_test.yaml
+
+# Run with parallel execution (2-3x speedup)
+PIPELINE_PARALLEL_ENABLED=true python -m ai_content_pipeline run-chain --config input/tts_parallel_test.yaml
+
+# Debug mode
+python -m ai_content_pipeline run-chain --config config.yaml --debug
+```
 
 ### Google Veo Commands (veo3_video_generation/)
 ```bash
@@ -146,14 +179,23 @@ python enhanced_cli.py              # Interactive video processing
 ## Architecture
 
 ### Directory Structure
+- `ai_content_pipeline/` - **FLAGSHIP**: Unified AI Content Pipeline with parallel execution
 - `veo3_video_generation/` - Google Veo implementation (function-based)
 - `fal_video_generation/` - FAL AI video generation (class-based)
 - `fal_text_to_video/` - FAL AI text-to-video generation with dual model support (class-based)
+- `fal_video_to_video/` - FAL AI video-to-video processing (ThinksSound + Topaz)
 - `fal_avatar_generation/` - FAL AI avatar generation (class-based)
 - `fal_text_to_image/` - FAL AI text-to-image generation (class-based)
 - `fal_image_to_image/` - FAL AI image-to-image modification (class-based)
-- `text_to_speech/` - ElevenLabs text-to-speech integration (class-based)
-- `video_tools/` - Video processing utilities (class-based with CLI)
+- `text_to_speech/` - Enhanced ElevenLabs + OpenRouter AI integration (modular package)
+- `video_tools/` - Enhanced video processing with CLI parameter support (class-based)
+
+### AI Content Pipeline Architecture (FLAGSHIP)
+- **YAML-based configuration** for multi-step workflows
+- **Parallel execution support** with thread-based processing (2-3x speedup)
+- **StepType enum**: `text_to_speech`, `text_to_image`, `image_to_image`, `parallel_group`
+- **Feature flag**: `PIPELINE_PARALLEL_ENABLED=true` for parallel execution
+- **Output**: Organized results in pipeline output directories
 
 ### Google Veo Architecture
 - **Function-based approach** in `veo_video_generation.py`
