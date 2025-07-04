@@ -24,6 +24,7 @@ class KontextModel(BaseModel):
         num_inference_steps = kwargs.get("num_inference_steps", defaults["num_inference_steps"])
         guidance_scale = kwargs.get("guidance_scale", defaults["guidance_scale"])
         resolution_mode = kwargs.get("resolution_mode", defaults["resolution_mode"])
+        enable_safety_checker = kwargs.get("enable_safety_checker", False)
         seed = kwargs.get("seed", None)
         
         num_inference_steps = validate_inference_steps(num_inference_steps)
@@ -34,6 +35,7 @@ class KontextModel(BaseModel):
             "num_inference_steps": num_inference_steps,
             "guidance_scale": guidance_scale,
             "resolution_mode": resolution_mode,
+            "enable_safety_checker": enable_safety_checker,
             "seed": seed
         }
     
@@ -44,7 +46,8 @@ class KontextModel(BaseModel):
             "image_url": image_url,
             "num_inference_steps": kwargs["num_inference_steps"],
             "guidance_scale": kwargs["guidance_scale"],
-            "resolution_mode": kwargs["resolution_mode"]
+            "resolution_mode": kwargs["resolution_mode"],
+            "enable_safety_checker": kwargs["enable_safety_checker"]
         }
         
         if kwargs.get("seed") is not None:
@@ -71,7 +74,7 @@ class KontextMultiModel(BaseModel):
         guidance_scale = kwargs.get("guidance_scale", 3.5)
         num_images = kwargs.get("num_images", 1)
         aspect_ratio = kwargs.get("aspect_ratio", "1:1")
-        safety_tolerance = kwargs.get("safety_tolerance", 2)
+        safety_tolerance = kwargs.get("safety_tolerance", 6)
         output_format = kwargs.get("output_format", "jpeg")
         sync_mode = kwargs.get("sync_mode", True)
         seed = kwargs.get("seed", None)
