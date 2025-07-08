@@ -32,11 +32,14 @@
 # *.webp
 # *.svg
 
-# Output folders (all projects)
+# Input and Output folders (all projects)
+input/
 output/
 test_output/
+*/input/
 */output/
 */test_output/
+**/input/
 **/output/
 **/test_output/
 
