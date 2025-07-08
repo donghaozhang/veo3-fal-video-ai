@@ -1,0 +1,19 @@
+name: "tts_simple_test"
+description: "Simple text-to-speech test through AI pipeline"
+prompt: "Hello world, this is a simple text-to-speech test."
+
+steps:
+  - type: "text_to_speech"
+    model: "elevenlabs"
+    params:
+      voice: "rachel"
+      speed: 1.0
+      stability: 0.5
+      similarity_boost: 0.8
+      style: 0.2
+      output_file: "pipeline_simple_test.mp3"
+
+output_dir: "output"
+temp_dir: "temp"
+cleanup_temp: true
+save_intermediates: true

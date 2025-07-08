@@ -1,0 +1,155 @@
+name: "text_to_speech_test"
+description: "Test text-to-speech functionality for AI pipeline integration"
+prompt: "Welcome to our AI content creation platform. This system can generate high-quality speech from text using advanced neural networks. Let's explore the capabilities of our text-to-speech engine with different voices and settings."
+
+# Note: text_to_speech is not yet integrated into the main AI content pipeline
+# This workflow file demonstrates how TTS could be integrated when support is added
+
+steps:
+  # Future TTS integration step (when implemented)
+  - type: "text_to_speech"
+    model: "elevenlabs"  # ElevenLabs TTS integration
+    params:
+      voice: "rachel"          # Voice selection
+      speed: 1.0              # Speech speed (0.7-1.2)
+      stability: 0.5          # Voice stability (0.0-1.0)
+      similarity_boost: 0.8   # Voice similarity (0.0-1.0)
+      style: 0.2              # Style exaggeration (0.0-1.0)
+      output_format: "mp3"    # Audio format
+      
+  # Alternative: Generate multiple voice samples
+  - type: "text_to_speech"
+    model: "elevenlabs"
+    params:
+      voice: "drew"
+      speed: 1.1
+      stability: 0.7
+      similarity_boost: 0.9
+      style: 0.1
+      output_format: "mp3"
+      text_override: "This is Drew speaking with slightly faster pace and high stability settings."
+      
+  - type: "text_to_speech"
+    model: "elevenlabs"
+    params:
+      voice: "bella"
+      speed: 0.9
+      stability: 0.3
+      similarity_boost: 0.6
+      style: 0.8
+      output_format: "mp3"
+      text_override: "Hello! This is Bella with a more creative and expressive voice style."
+
+# Alternative workflow for current implementation
+# Since TTS is not yet integrated, this demonstrates external TTS usage
+
+external_commands:
+  # Test basic TTS functionality
+  - name: "test_basic_tts"
+    command: "cd ../text_to_speech && python examples/basic_usage.py"
+    args:
+      - "--text"
+      - "Welcome to our AI content creation platform. This system can generate high-quality speech from text using advanced neural networks."
+      - "--voice"
+      - "rachel"
+      - "--output"
+      - "pipeline_test_basic.mp3"
+      - "--quiet"
+    
+  # Test CLI wrapper with JSON output
+  - name: "test_tts_wrapper"
+    command: "cd ../text_to_speech && python examples/tts_cli_wrapper.py"
+    args:
+      - "Let's explore the capabilities of our text-to-speech engine with different voices and settings."
+      - "drew"
+      - "pipeline_test_wrapper.mp3"
+      - "--speed"
+      - "1.1"
+      - "--json"
+      
+  # Test voice validation
+  - name: "test_voice_validation"
+    command: "cd ../text_to_speech && python examples/tts_cli_wrapper.py"
+    args:
+      - "--validate-voice"
+      - "rachel"
+      - "--json"
+      
+  # Test voice listing
+  - name: "test_voice_listing"
+    command: "cd ../text_to_speech && python examples/tts_cli_wrapper.py"
+    args:
+      - "--list-voices"
+      - "--json"
+
+# Configuration for when TTS is integrated
+tts_config:
+  supported_voices:
+    - "rachel"      # Versatile, clear female voice
+    - "drew"        # Warm, professional male voice
+    - "bella"       # Friendly, expressive female voice
+    - "antoni"      # Deep, authoritative male voice
+    - "elli"        # Young, energetic female voice
+    - "josh"        # Casual, conversational male voice
+    - "arnold"      # Strong, confident male voice
+    - "adam"        # Neutral, reliable male voice
+    - "sam"         # Smooth, professional male voice
+    - "clyde"       # Mature, distinguished male voice
+    
+  default_settings:
+    voice: "rachel"
+    speed: 1.0
+    stability: 0.5
+    similarity_boost: 0.8
+    style: 0.2
+    output_format: "mp3"
+    
+  cost_estimates:
+    elevenlabs: 0.05  # Per generation (varies by text length)
+    
+  processing_time_estimates:
+    elevenlabs: 10    # Seconds for typical text length
+
+# Output configuration
+output_dir: "output"
+temp_dir: "temp"
+cleanup_temp: false  # Keep temp files for TTS testing
+save_intermediates: true
+
+# Expected outputs when TTS is integrated
+expected_outputs:
+  - "pipeline_test_basic.mp3"     # Basic TTS output
+  - "pipeline_test_wrapper.mp3"   # CLI wrapper output
+  - "rachel_speech.mp3"           # Primary voice output
+  - "drew_speech.mp3"             # Alternative voice output
+  - "bella_speech.mp3"            # Creative voice output
+
+# Testing metadata
+test_metadata:
+  purpose: "Validate text-to-speech integration readiness"
+  test_type: "functionality"
+  expected_duration: 60  # seconds
+  api_calls_required: true
+  cost_estimate: 0.15   # USD for 3 TTS generations
+  
+# Integration notes
+integration_notes: |
+  This workflow demonstrates how text-to-speech could be integrated into the AI content pipeline.
+  
+  Current status:
+  - TTS functionality exists in ../text_to_speech/ directory
+  - CLI interfaces are ready for pipeline integration
+  - JSON output format supports automation
+  - Voice validation and listing work correctly
+  
+  For full integration, the following would be needed:
+  1. Add "text_to_speech" to PIPELINE_STEPS in constants.py
+  2. Add TTS models to SUPPORTED_MODELS
+  3. Implement _execute_text_to_speech method in executor.py
+  4. Add cost and timing estimates
+  5. Create StepType.TEXT_TO_SPEECH enum value
+  
+  Current workaround:
+  - Use external_commands section to test TTS functionality
+  - Run TTS commands separately and import results
+  - Use the CLI wrapper for JSON-based integration
