@@ -1,0 +1,837 @@
+{
+  "summary": {
+    "total_images": 39,
+    "images_with_iron_man": 20,
+    "images_without_iron_man": 19,
+    "duplicates_removed": 3,
+    "original_total": 42
+  },
+  "categories": {
+    "with_iron_man": [
+      {
+        "filename": "futuristic_city_1.png",
+        "content": "A blonde woman in an elegant black dress reclining on a white beach chair alongside Iron Man in his iconic red and gold armor suit, set on a tropical beach with turquoise water and luxury resort buildings in the background.",
+        "characters": [
+          "blonde woman in black dress",
+          "Iron Man in red/gold armor"
+        ],
+        "setting": "tropical beach with turquoise water and luxury resort",
+        "has_iron_man": true,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_12.png",
+        "content": "A blonde woman in an elegant black dress standing with Iron Man flying overhead in a white mosque courtyard with minarets.",
+        "characters": [
+          "blonde woman in black dress",
+          "Iron Man in red/gold armor"
+        ],
+        "setting": "white mosque with minarets and courtyard",
+        "has_iron_man": true,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_13.png",
+        "content": "A blonde woman in an elegant black dress walking through a classical columned corridor/hallway with Iron Man standing in the background.",
+        "characters": [
+          "blonde woman in black dress",
+          "Iron Man in red/gold armor"
+        ],
+        "setting": "classical columned corridor/hallway",
+        "has_iron_man": true,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_14.png",
+        "content": "A blonde woman in an elegant black dress standing with Iron Man in a modern white mosque courtyard with multiple minarets.",
+        "characters": [
+          "blonde woman in black dress",
+          "Iron Man in red/gold armor"
+        ],
+        "setting": "modern white mosque with multiple minarets",
+        "has_iron_man": true,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_15.png",
+        "content": "A blonde woman in an elegant black dress sitting on steps with Iron Man standing nearby in a university campus courtyard with people around.",
+        "characters": [
+          "blonde woman in black dress",
+          "Iron Man in red/gold armor"
+        ],
+        "setting": "university campus courtyard with people",
+        "has_iron_man": true,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_16.png",
+        "content": "A blonde woman in an elegant black dress standing with Iron Man flying overhead in a modern city plaza with distinctive tower/spire architecture.",
+        "characters": [
+          "blonde woman in black dress",
+          "Iron Man in red/gold armor"
+        ],
+        "setting": "modern city plaza with distinctive tower/spire architecture",
+        "has_iron_man": true,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_17.png",
+        "content": "A blonde woman in an elegant black dress walking with Iron Man through a traditional Middle Eastern/Arabic market street with arches.",
+        "characters": [
+          "blonde woman in black dress",
+          "Iron Man in red/gold armor"
+        ],
+        "setting": "traditional Middle Eastern/Arabic market street with arches",
+        "has_iron_man": true,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_18.png",
+        "content": "A blonde woman in an elegant black dress standing with Iron Man on a modern skyscraper balcony/terrace with city skyline view.",
+        "characters": [
+          "blonde woman in black dress",
+          "Iron Man in red/gold armor"
+        ],
+        "setting": "modern skyscraper balcony/terrace with city skyline view",
+        "has_iron_man": true,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_19.png",
+        "content": "A blonde woman in an elegant black dress sitting with Iron Man standing nearby in an Islamic mosque courtyard with traditional architecture.",
+        "characters": [
+          "blonde woman in black dress",
+          "Iron Man in red/gold armor"
+        ],
+        "setting": "Islamic mosque courtyard with traditional architecture",
+        "has_iron_man": true,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_2.png",
+        "content": "A blonde woman in an elegant black dress standing alongside Iron Man in his iconic red and gold armor suit, set in front of an ornate golden temple with traditional Southeast Asian architecture.",
+        "characters": [
+          "blonde woman in black dress",
+          "Iron Man in red/gold armor"
+        ],
+        "setting": "ornate golden temple with traditional architecture",
+        "has_iron_man": true,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_20.png",
+        "content": "A blonde woman in an elegant black dress standing with Iron Man flying overhead at a modern sports stadium at night with city lights.",
+        "characters": [
+          "blonde woman in black dress",
+          "Iron Man in red/gold armor"
+        ],
+        "setting": "modern sports stadium at night with city lights",
+        "has_iron_man": true,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_21.png",
+        "content": "A blonde woman in an elegant black dress walking with Iron Man through an ancient Roman amphitheater with stone steps and crowds.",
+        "characters": [
+          "blonde woman in black dress",
+          "Iron Man in red/gold armor"
+        ],
+        "setting": "ancient Roman amphitheater with stone steps and crowds",
+        "has_iron_man": true,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_22.png",
+        "content": "A blonde woman in an elegant black dress standing with Iron Man on a rocky coastal cliff with sea stacks and ocean waves.",
+        "characters": [
+          "blonde woman in black dress",
+          "Iron Man in red/gold armor"
+        ],
+        "setting": "rocky coastal cliff with sea stacks and ocean waves",
+        "has_iron_man": true,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_3.png",
+        "content": "A blonde woman in an elegant black dress walking alongside Iron Man flying/hovering in his armor, set in an urban park with monument and green landscaping.",
+        "characters": [
+          "blonde woman in black dress",
+          "Iron Man in red/gold armor"
+        ],
+        "setting": "urban park with monument and green landscaping",
+        "has_iron_man": true,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_4.png",
+        "content": "A blonde woman in an elegant black dress standing next to Iron Man in his armor suit, set in a government plaza with tall obelisk monument and official buildings.",
+        "characters": [
+          "blonde woman in black dress",
+          "Iron Man in red/gold armor"
+        ],
+        "setting": "government plaza with tall obelisk monument",
+        "has_iron_man": true,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_5.png",
+        "content": "A blonde woman in an elegant black dress sitting on a modern balcony/terrace with Iron Man standing nearby, overlooking a modern city skyline with twin towers.",
+        "characters": [
+          "blonde woman in black dress",
+          "Iron Man in red/gold armor"
+        ],
+        "setting": "modern city skyline with twin towers",
+        "has_iron_man": true,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_6.png",
+        "content": "A blonde woman in an elegant black dress standing with Iron Man flying nearby in palace grounds with golden traditional architecture.",
+        "characters": [
+          "blonde woman in black dress",
+          "Iron Man in red/gold armor"
+        ],
+        "setting": "palace grounds with golden architecture",
+        "has_iron_man": true,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_7.png",
+        "content": "A blonde woman in an elegant black dress standing with Iron Man on a mountain viewpoint with pyramid/obelisk structure at sunset, overlooking a city.",
+        "characters": [
+          "blonde woman in black dress",
+          "Iron Man in red/gold armor"
+        ],
+        "setting": "mountain viewpoint with pyramid/obelisk at sunset",
+        "has_iron_man": true,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_8.png",
+        "content": "A blonde woman in an elegant black dress sitting with Iron Man standing nearby in futuristic gardens with tree-like structures (similar to Singapore Gardens by the Bay).",
+        "characters": [
+          "blonde woman in black dress",
+          "Iron Man in red/gold armor"
+        ],
+        "setting": "futuristic gardens with tree-like structures",
+        "has_iron_man": true,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_9.png",
+        "content": "A blonde woman in an elegant black dress walking on golden temple steps with Iron Man flying overhead, surrounded by crowds of people.",
+        "characters": [
+          "blonde woman in black dress",
+          "Iron Man in red/gold armor"
+        ],
+        "setting": "golden temple steps with crowds",
+        "has_iron_man": true,
+        "style": "cinematic, professional photography"
+      }
+    ],
+    "without_iron_man": [
+      {
+        "filename": "futuristic_city_24.png",
+        "content": "A blonde woman in an elegant black dress standing in front of a Chinese traditional palace/temple with ornate architecture. Iron Man is NOT visible in this image.",
+        "characters": [
+          "blonde woman in black dress"
+        ],
+        "setting": "Chinese traditional palace/temple with ornate architecture",
+        "has_iron_man": false,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_25.png",
+        "content": "A blonde woman in an elegant black dress walking on a London street with Big Ben and red double-decker bus in the background. Iron Man is NOT visible in this image.",
+        "characters": [
+          "blonde woman in black dress"
+        ],
+        "setting": "London street with Big Ben and red double-decker bus",
+        "has_iron_man": false,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_26.png",
+        "content": "A blonde woman in an elegant black dress standing on a Paris rooftop terrace with the Eiffel Tower and city skyline in the background. Iron Man is NOT visible in this image.",
+        "characters": [
+          "blonde woman in black dress"
+        ],
+        "setting": "Paris rooftop view with Eiffel Tower",
+        "has_iron_man": false,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_27.png",
+        "content": "A blonde woman in an elegant black dress sitting on a bench in a cherry blossom park with pink flowering trees. Iron Man is NOT visible in this image.",
+        "characters": [
+          "blonde woman in black dress"
+        ],
+        "setting": "cherry blossom park with bench",
+        "has_iron_man": false,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_28.png",
+        "content": "A blonde woman in an elegant black dress standing in Moscow Red Square with the Kremlin walls and architecture in the background. Iron Man is NOT visible in this image.",
+        "characters": [
+          "blonde woman in black dress"
+        ],
+        "setting": "Moscow Red Square with Kremlin",
+        "has_iron_man": false,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_29.png",
+        "content": "A blonde woman in an elegant black dress walking on the White House lawn in Washington DC with the presidential residence in the background. Iron Man is NOT visible in this image.",
+        "characters": [
+          "blonde woman in black dress"
+        ],
+        "setting": "White House lawn in Washington DC",
+        "has_iron_man": false,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_30.png",
+        "content": "A blonde woman in an elegant black dress standing in front of the Egyptian pyramids of Giza in the desert. Iron Man is NOT visible in this image.",
+        "characters": [
+          "blonde woman in black dress"
+        ],
+        "setting": "Egyptian pyramids of Giza",
+        "has_iron_man": false,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_31.png",
+        "content": "A blonde woman in an elegant black dress sitting on steps at the Sydney Opera House waterfront with the iconic architecture in the background. Iron Man is NOT visible in this image.",
+        "characters": [
+          "blonde woman in black dress"
+        ],
+        "setting": "Sydney Opera House waterfront",
+        "has_iron_man": false,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_32.png",
+        "content": "A blonde woman in an elegant black dress standing in front of a European castle/palace with formal gardens and crowds. Iron Man is NOT visible in this image.",
+        "characters": [
+          "blonde woman in black dress"
+        ],
+        "setting": "European castle/palace with gardens",
+        "has_iron_man": false,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_33.png",
+        "content": "A blonde woman in an elegant black dress walking through a Korean traditional palace corridor with wooden architecture and people in traditional dress. Iron Man is NOT visible in this image.",
+        "characters": [
+          "blonde woman in black dress"
+        ],
+        "setting": "Korean traditional palace corridor",
+        "has_iron_man": false,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_34.png",
+        "content": "A blonde woman in an elegant black dress sitting by a fountain in a European city square with classical architecture. Iron Man is NOT visible in this image.",
+        "characters": [
+          "blonde woman in black dress"
+        ],
+        "setting": "European city square with fountain",
+        "has_iron_man": false,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_35.png",
+        "content": "A blonde woman in an elegant black dress standing in front of the Roman Colosseum ruins with ancient architecture. Iron Man is NOT visible in this image.",
+        "characters": [
+          "blonde woman in black dress"
+        ],
+        "setting": "Roman Colosseum ruins",
+        "has_iron_man": false,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_36.png",
+        "content": "A blonde woman in an elegant black dress standing on the steps of the ancient Greek Parthenon in Athens with classical columns. Iron Man is NOT visible in this image.",
+        "characters": [
+          "blonde woman in black dress"
+        ],
+        "setting": "ancient Greek Parthenon in Athens",
+        "has_iron_man": false,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_37.png",
+        "content": "A blonde woman in an elegant black dress standing in front of a modern government building or parliament with contemporary architecture. Iron Man is NOT visible in this image.",
+        "characters": [
+          "blonde woman in black dress"
+        ],
+        "setting": "modern government building or parliament",
+        "has_iron_man": false,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_38.png",
+        "content": "A blonde woman in an elegant black dress standing on a frozen outdoor ice rink in winter with people ice skating and city skyline in the background. Iron Man is NOT visible in this image.",
+        "characters": [
+          "blonde woman in black dress"
+        ],
+        "setting": "frozen outdoor ice rink in winter with city skyline",
+        "has_iron_man": false,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_39.png",
+        "content": "A blonde woman in an elegant black dress sitting on grass in front of a large white government building or palace with classical columns and green hills. Iron Man is NOT visible in this image.",
+        "characters": [
+          "blonde woman in black dress"
+        ],
+        "setting": "white government building or palace with classical columns",
+        "has_iron_man": false,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_40.png",
+        "content": "A blonde woman in an elegant black dress standing in a traditional Nepalese or Tibetan temple courtyard with multi-tiered pagoda architecture and people around. Iron Man is NOT visible in this image.",
+        "characters": [
+          "blonde woman in black dress"
+        ],
+        "setting": "traditional Nepalese or Tibetan temple courtyard with pagoda architecture",
+        "has_iron_man": false,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_41.png",
+        "content": "A blonde woman in an elegant black dress standing in front of a grand government building or presidential palace with modern architecture, columns, and flags. Iron Man is NOT visible in this image.",
+        "characters": [
+          "blonde woman in black dress"
+        ],
+        "setting": "grand government building or presidential palace with flags",
+        "has_iron_man": false,
+        "style": "cinematic, professional photography"
+      },
+      {
+        "filename": "futuristic_city_42.png",
+        "content": "A blonde woman in an elegant black dress sitting on a bench in formal palace gardens with manicured landscaping and a grand palace building in the background. Iron Man is NOT visible in this image.",
+        "characters": [
+          "blonde woman in black dress"
+        ],
+        "setting": "formal palace gardens with grand palace building",
+        "has_iron_man": false,
+        "style": "cinematic, professional photography"
+      }
+    ]
+  },
+  "all_images": [
+    {
+      "filename": "futuristic_city_1.png",
+      "content": "A blonde woman in an elegant black dress reclining on a white beach chair alongside Iron Man in his iconic red and gold armor suit, set on a tropical beach with turquoise water and luxury resort buildings in the background.",
+      "characters": [
+        "blonde woman in black dress",
+        "Iron Man in red/gold armor"
+      ],
+      "setting": "tropical beach with turquoise water and luxury resort",
+      "has_iron_man": true,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_12.png",
+      "content": "A blonde woman in an elegant black dress standing with Iron Man flying overhead in a white mosque courtyard with minarets.",
+      "characters": [
+        "blonde woman in black dress",
+        "Iron Man in red/gold armor"
+      ],
+      "setting": "white mosque with minarets and courtyard",
+      "has_iron_man": true,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_13.png",
+      "content": "A blonde woman in an elegant black dress walking through a classical columned corridor/hallway with Iron Man standing in the background.",
+      "characters": [
+        "blonde woman in black dress",
+        "Iron Man in red/gold armor"
+      ],
+      "setting": "classical columned corridor/hallway",
+      "has_iron_man": true,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_14.png",
+      "content": "A blonde woman in an elegant black dress standing with Iron Man in a modern white mosque courtyard with multiple minarets.",
+      "characters": [
+        "blonde woman in black dress",
+        "Iron Man in red/gold armor"
+      ],
+      "setting": "modern white mosque with multiple minarets",
+      "has_iron_man": true,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_15.png",
+      "content": "A blonde woman in an elegant black dress sitting on steps with Iron Man standing nearby in a university campus courtyard with people around.",
+      "characters": [
+        "blonde woman in black dress",
+        "Iron Man in red/gold armor"
+      ],
+      "setting": "university campus courtyard with people",
+      "has_iron_man": true,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_16.png",
+      "content": "A blonde woman in an elegant black dress standing with Iron Man flying overhead in a modern city plaza with distinctive tower/spire architecture.",
+      "characters": [
+        "blonde woman in black dress",
+        "Iron Man in red/gold armor"
+      ],
+      "setting": "modern city plaza with distinctive tower/spire architecture",
+      "has_iron_man": true,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_17.png",
+      "content": "A blonde woman in an elegant black dress walking with Iron Man through a traditional Middle Eastern/Arabic market street with arches.",
+      "characters": [
+        "blonde woman in black dress",
+        "Iron Man in red/gold armor"
+      ],
+      "setting": "traditional Middle Eastern/Arabic market street with arches",
+      "has_iron_man": true,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_18.png",
+      "content": "A blonde woman in an elegant black dress standing with Iron Man on a modern skyscraper balcony/terrace with city skyline view.",
+      "characters": [
+        "blonde woman in black dress",
+        "Iron Man in red/gold armor"
+      ],
+      "setting": "modern skyscraper balcony/terrace with city skyline view",
+      "has_iron_man": true,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_19.png",
+      "content": "A blonde woman in an elegant black dress sitting with Iron Man standing nearby in an Islamic mosque courtyard with traditional architecture.",
+      "characters": [
+        "blonde woman in black dress",
+        "Iron Man in red/gold armor"
+      ],
+      "setting": "Islamic mosque courtyard with traditional architecture",
+      "has_iron_man": true,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_2.png",
+      "content": "A blonde woman in an elegant black dress standing alongside Iron Man in his iconic red and gold armor suit, set in front of an ornate golden temple with traditional Southeast Asian architecture.",
+      "characters": [
+        "blonde woman in black dress",
+        "Iron Man in red/gold armor"
+      ],
+      "setting": "ornate golden temple with traditional architecture",
+      "has_iron_man": true,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_20.png",
+      "content": "A blonde woman in an elegant black dress standing with Iron Man flying overhead at a modern sports stadium at night with city lights.",
+      "characters": [
+        "blonde woman in black dress",
+        "Iron Man in red/gold armor"
+      ],
+      "setting": "modern sports stadium at night with city lights",
+      "has_iron_man": true,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_21.png",
+      "content": "A blonde woman in an elegant black dress walking with Iron Man through an ancient Roman amphitheater with stone steps and crowds.",
+      "characters": [
+        "blonde woman in black dress",
+        "Iron Man in red/gold armor"
+      ],
+      "setting": "ancient Roman amphitheater with stone steps and crowds",
+      "has_iron_man": true,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_22.png",
+      "content": "A blonde woman in an elegant black dress standing with Iron Man on a rocky coastal cliff with sea stacks and ocean waves.",
+      "characters": [
+        "blonde woman in black dress",
+        "Iron Man in red/gold armor"
+      ],
+      "setting": "rocky coastal cliff with sea stacks and ocean waves",
+      "has_iron_man": true,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_24.png",
+      "content": "A blonde woman in an elegant black dress standing in front of a Chinese traditional palace/temple with ornate architecture. Iron Man is NOT visible in this image.",
+      "characters": [
+        "blonde woman in black dress"
+      ],
+      "setting": "Chinese traditional palace/temple with ornate architecture",
+      "has_iron_man": false,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_25.png",
+      "content": "A blonde woman in an elegant black dress walking on a London street with Big Ben and red double-decker bus in the background. Iron Man is NOT visible in this image.",
+      "characters": [
+        "blonde woman in black dress"
+      ],
+      "setting": "London street with Big Ben and red double-decker bus",
+      "has_iron_man": false,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_26.png",
+      "content": "A blonde woman in an elegant black dress standing on a Paris rooftop terrace with the Eiffel Tower and city skyline in the background. Iron Man is NOT visible in this image.",
+      "characters": [
+        "blonde woman in black dress"
+      ],
+      "setting": "Paris rooftop view with Eiffel Tower",
+      "has_iron_man": false,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_27.png",
+      "content": "A blonde woman in an elegant black dress sitting on a bench in a cherry blossom park with pink flowering trees. Iron Man is NOT visible in this image.",
+      "characters": [
+        "blonde woman in black dress"
+      ],
+      "setting": "cherry blossom park with bench",
+      "has_iron_man": false,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_28.png",
+      "content": "A blonde woman in an elegant black dress standing in Moscow Red Square with the Kremlin walls and architecture in the background. Iron Man is NOT visible in this image.",
+      "characters": [
+        "blonde woman in black dress"
+      ],
+      "setting": "Moscow Red Square with Kremlin",
+      "has_iron_man": false,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_29.png",
+      "content": "A blonde woman in an elegant black dress walking on the White House lawn in Washington DC with the presidential residence in the background. Iron Man is NOT visible in this image.",
+      "characters": [
+        "blonde woman in black dress"
+      ],
+      "setting": "White House lawn in Washington DC",
+      "has_iron_man": false,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_3.png",
+      "content": "A blonde woman in an elegant black dress walking alongside Iron Man flying/hovering in his armor, set in an urban park with monument and green landscaping.",
+      "characters": [
+        "blonde woman in black dress",
+        "Iron Man in red/gold armor"
+      ],
+      "setting": "urban park with monument and green landscaping",
+      "has_iron_man": true,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_30.png",
+      "content": "A blonde woman in an elegant black dress standing in front of the Egyptian pyramids of Giza in the desert. Iron Man is NOT visible in this image.",
+      "characters": [
+        "blonde woman in black dress"
+      ],
+      "setting": "Egyptian pyramids of Giza",
+      "has_iron_man": false,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_31.png",
+      "content": "A blonde woman in an elegant black dress sitting on steps at the Sydney Opera House waterfront with the iconic architecture in the background. Iron Man is NOT visible in this image.",
+      "characters": [
+        "blonde woman in black dress"
+      ],
+      "setting": "Sydney Opera House waterfront",
+      "has_iron_man": false,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_32.png",
+      "content": "A blonde woman in an elegant black dress standing in front of a European castle/palace with formal gardens and crowds. Iron Man is NOT visible in this image.",
+      "characters": [
+        "blonde woman in black dress"
+      ],
+      "setting": "European castle/palace with gardens",
+      "has_iron_man": false,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_33.png",
+      "content": "A blonde woman in an elegant black dress walking through a Korean traditional palace corridor with wooden architecture and people in traditional dress. Iron Man is NOT visible in this image.",
+      "characters": [
+        "blonde woman in black dress"
+      ],
+      "setting": "Korean traditional palace corridor",
+      "has_iron_man": false,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_34.png",
+      "content": "A blonde woman in an elegant black dress sitting by a fountain in a European city square with classical architecture. Iron Man is NOT visible in this image.",
+      "characters": [
+        "blonde woman in black dress"
+      ],
+      "setting": "European city square with fountain",
+      "has_iron_man": false,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_35.png",
+      "content": "A blonde woman in an elegant black dress standing in front of the Roman Colosseum ruins with ancient architecture. Iron Man is NOT visible in this image.",
+      "characters": [
+        "blonde woman in black dress"
+      ],
+      "setting": "Roman Colosseum ruins",
+      "has_iron_man": false,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_4.png",
+      "content": "A blonde woman in an elegant black dress standing next to Iron Man in his armor suit, set in a government plaza with tall obelisk monument and official buildings.",
+      "characters": [
+        "blonde woman in black dress",
+        "Iron Man in red/gold armor"
+      ],
+      "setting": "government plaza with tall obelisk monument",
+      "has_iron_man": true,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_5.png",
+      "content": "A blonde woman in an elegant black dress sitting on a modern balcony/terrace with Iron Man standing nearby, overlooking a modern city skyline with twin towers.",
+      "characters": [
+        "blonde woman in black dress",
+        "Iron Man in red/gold armor"
+      ],
+      "setting": "modern city skyline with twin towers",
+      "has_iron_man": true,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_6.png",
+      "content": "A blonde woman in an elegant black dress standing with Iron Man flying nearby in palace grounds with golden traditional architecture.",
+      "characters": [
+        "blonde woman in black dress",
+        "Iron Man in red/gold armor"
+      ],
+      "setting": "palace grounds with golden architecture",
+      "has_iron_man": true,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_7.png",
+      "content": "A blonde woman in an elegant black dress standing with Iron Man on a mountain viewpoint with pyramid/obelisk structure at sunset, overlooking a city.",
+      "characters": [
+        "blonde woman in black dress",
+        "Iron Man in red/gold armor"
+      ],
+      "setting": "mountain viewpoint with pyramid/obelisk at sunset",
+      "has_iron_man": true,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_8.png",
+      "content": "A blonde woman in an elegant black dress sitting with Iron Man standing nearby in futuristic gardens with tree-like structures (similar to Singapore Gardens by the Bay).",
+      "characters": [
+        "blonde woman in black dress",
+        "Iron Man in red/gold armor"
+      ],
+      "setting": "futuristic gardens with tree-like structures",
+      "has_iron_man": true,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_9.png",
+      "content": "A blonde woman in an elegant black dress walking on golden temple steps with Iron Man flying overhead, surrounded by crowds of people.",
+      "characters": [
+        "blonde woman in black dress",
+        "Iron Man in red/gold armor"
+      ],
+      "setting": "golden temple steps with crowds",
+      "has_iron_man": true,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_36.png",
+      "content": "A blonde woman in an elegant black dress standing on the steps of the ancient Greek Parthenon in Athens with classical columns. Iron Man is NOT visible in this image.",
+      "characters": [
+        "blonde woman in black dress"
+      ],
+      "setting": "ancient Greek Parthenon in Athens",
+      "has_iron_man": false,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_37.png",
+      "content": "A blonde woman in an elegant black dress standing in front of a modern government building or parliament with contemporary architecture. Iron Man is NOT visible in this image.",
+      "characters": [
+        "blonde woman in black dress"
+      ],
+      "setting": "modern government building or parliament",
+      "has_iron_man": false,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_38.png",
+      "content": "A blonde woman in an elegant black dress standing on a frozen outdoor ice rink in winter with people ice skating and city skyline in the background. Iron Man is NOT visible in this image.",
+      "characters": [
+        "blonde woman in black dress"
+      ],
+      "setting": "frozen outdoor ice rink in winter with city skyline",
+      "has_iron_man": false,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_39.png",
+      "content": "A blonde woman in an elegant black dress sitting on grass in front of a large white government building or palace with classical columns and green hills. Iron Man is NOT visible in this image.",
+      "characters": [
+        "blonde woman in black dress"
+      ],
+      "setting": "white government building or palace with classical columns",
+      "has_iron_man": false,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_40.png",
+      "content": "A blonde woman in an elegant black dress standing in a traditional Nepalese or Tibetan temple courtyard with multi-tiered pagoda architecture and people around. Iron Man is NOT visible in this image.",
+      "characters": [
+        "blonde woman in black dress"
+      ],
+      "setting": "traditional Nepalese or Tibetan temple courtyard with pagoda architecture",
+      "has_iron_man": false,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_41.png",
+      "content": "A blonde woman in an elegant black dress standing in front of a grand government building or presidential palace with modern architecture, columns, and flags. Iron Man is NOT visible in this image.",
+      "characters": [
+        "blonde woman in black dress"
+      ],
+      "setting": "grand government building or presidential palace with flags",
+      "has_iron_man": false,
+      "style": "cinematic, professional photography"
+    },
+    {
+      "filename": "futuristic_city_42.png",
+      "content": "A blonde woman in an elegant black dress sitting on a bench in formal palace gardens with manicured landscaping and a grand palace building in the background. Iron Man is NOT visible in this image.",
+      "characters": [
+        "blonde woman in black dress"
+      ],
+      "setting": "formal palace gardens with grand palace building",
+      "has_iron_man": false,
+      "style": "cinematic, professional photography"
+    }
+  ]
+}
