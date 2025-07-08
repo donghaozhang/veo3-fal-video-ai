@@ -28,7 +28,14 @@ A comprehensive monorepo containing multiple AI content generation packages.
 ## 🚀 Quick Start
 
 ```bash
-# Install all packages in development mode
+# Install dependencies and all packages in development mode
+make install
+
+# Or install step by step:
+# 1. Install dependencies
+make install-deps
+
+# 2. Install packages in development mode
 make install-dev
 
 # Run tests for all packages
@@ -36,6 +43,27 @@ make test-all
 
 # Build all packages
 make build-all
+```
+
+## 📋 Installation Options
+
+### Option 1: Complete Installation (Recommended)
+```bash
+make install  # Installs all dependencies + packages in dev mode
+```
+
+### Option 2: Dependencies Only
+```bash
+pip install -r requirements.txt  # Just the dependencies
+```
+
+### Option 3: Manual Steps
+```bash
+# Install dependencies first
+make install-deps
+
+# Then install packages in development mode
+make install-dev
 ```
 
 ## 📚 Documentation

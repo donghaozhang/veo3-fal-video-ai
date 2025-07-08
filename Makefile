@@ -1,6 +1,14 @@
 # AI Content Generation Suite Makefile
 
-.PHONY: install-dev test-all build-all clean format lint
+.PHONY: install install-dev install-deps test-all build-all clean format lint
+
+# Install dependencies and all packages
+install: install-deps install-dev
+
+# Install dependencies from root requirements.txt
+install-deps:
+	@echo "📦 Installing dependencies from requirements.txt..."
+	pip install -r requirements.txt
 
 # Install all packages in development mode
 install-dev:
