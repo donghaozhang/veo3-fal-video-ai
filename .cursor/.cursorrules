@@ -1,7 +1,7 @@
-# Cursor AI Assistant Rules for Veo3 Video Generation Project
+# Cursor AI Assistant Rules for AI Content Generation Platform
 
 ## Project Overview
-This is a comprehensive AI content creation project with multiple implementations:
+This is a comprehensive AI content generation platform with multiple specialized implementations and a unified AI Content Pipeline as the flagship feature.
 
 ### 🚀 **FLAGSHIP: AI Content Pipeline (ai_content_pipeline/)**
 - **Unified YAML-based pipeline** for multi-step content generation
@@ -11,15 +11,15 @@ This is a comprehensive AI content creation project with multiple implementation
 - **Command**: `python -m ai_content_pipeline run-chain --config config.yaml`
 
 ### Individual Service Implementations:
-- Google Veo video generation (veo3_video_generation/)
-- FAL AI video generation (fal_video_generation/)
-- FAL AI text-to-video generation (fal_text_to_video/)
-- FAL AI video-to-video audio enhancement (fal_video_to_video/)
-- FAL AI avatar generation (fal_avatar_generation/)
-- FAL AI text-to-image (fal_text_to_image/)
-- FAL AI image-to-image (fal_image_to_image/)
-- **ENHANCED: Modular text-to-speech package with OpenRouter AI (text_to_speech/)**
-- **ENHANCED: Video tools with CLI parameter support (video_tools/)**
+- **Google Veo** (veo3_video_generation/) - High-resolution, enterprise-grade video generation
+- **FAL AI Video** (fal_video_generation/) - Simple API-based generation with dual models
+- **FAL AI Text-to-Video** (fal_text_to_video/) - Unified text-to-video with dual model support
+- **FAL AI Video-to-Video** (fal_video_to_video/) - Audio generation and video upscaling
+- **FAL AI Avatar** (fal_avatar_generation/) - Talking avatar generation
+- **FAL AI Text-to-Image** (fal_text_to_image/) - Multi-model image generation
+- **FAL AI Image-to-Image** (fal_image_to_image/) - AI-powered image modification
+- **✨ Text-to-Speech** (text_to_speech/) - Professional voice synthesis with ElevenLabs + OpenRouter
+- **🔧 Video Tools** (video_tools/) - Comprehensive video processing with enhanced CLI
 
 ## **FLAGSHIP: AI Content Pipeline Architecture** (PARALLEL EXECUTION READY)
 
@@ -90,18 +90,26 @@ steps:
         output_filename: "voice2.mp3"
 ```
 
-## FAL AI Text-to-Video Architecture (RECENTLY ADDED)
+## FAL AI Text-to-Video Architecture (RECENTLY ENHANCED)
 
 ### Unified Text-to-Video Generation
-The fal_text_to_video module provides direct text-to-video generation with multiple model options:
+The fal_text_to_video module provides direct text-to-video generation with dual model support:
 
 ```
 fal_text_to_video/
-├── fal_text_to_video_generator.py # Main generator class
-├── test_setup.py                  # FREE setup validation
-├── test_generation.py             # PAID generation tests
-├── demo.py                        # Interactive demonstration
-└── README.md                      # Complete documentation
+├── fal_text_to_video/            # Main package directory
+│   ├── __init__.py               # Package initialization
+│   ├── generator.py              # Unified dual-model generator
+│   ├── models/                   # Model implementations
+│   │   ├── hailuo_pro.py         # MiniMax Hailuo-02 Pro model
+│   │   └── veo3.py               # Google Veo 3 model
+│   ├── config/                   # Configuration and constants
+│   └── utils/                    # Utilities and validation
+├── examples/                     # Usage examples and demos
+├── tests/                        # Test suite
+├── docs/                         # Documentation
+├── README.md                     # Text-to-video documentation
+└── requirements.txt              # Text-to-video dependencies
 ```
 
 ### Model Support
@@ -111,7 +119,7 @@ fal_text_to_video/
 ### Import Patterns
 ```python
 # ✅ Correct - Text-to-video generation
-from fal_text_to_video_generator import FALTextToVideoGenerator, TextToVideoModel
+from fal_text_to_video import FALTextToVideoGenerator, TextToVideoModel
 
 generator = FALTextToVideoGenerator(verbose=True)
 result = generator.generate_video(
@@ -120,36 +128,51 @@ result = generator.generate_video(
 )
 ```
 
-## FAL AI Video-to-Video Architecture (RECENTLY ADDED)
+## FAL AI Video-to-Video Architecture (RECENTLY ENHANCED)
 
-### AI Audio Enhancement for Videos
-The fal_video_to_video module adds AI-generated audio to existing videos using ThinkSound:
+### Dual-Model Video Processing
+The fal_video_to_video module provides AI-powered video enhancement with dual model support:
 
 ```
 fal_video_to_video/
-├── fal_video_to_video/            # Main package
-├── test_topaz_upscale.sh          # Video upscaling test
-├── setup.py                       # Professional package setup
-├── README.md                      # Complete documentation
-└── examples/                      # Usage examples
+├── fal_video_to_video/            # Main package directory
+│   ├── __init__.py                # Package initialization
+│   ├── __main__.py                # CLI entry point
+│   ├── generator.py               # Core video-to-video logic
+│   ├── models/                    # Model implementations
+│   │   ├── thinksound.py          # ThinksSound AI audio generation
+│   │   └── topaz.py               # Topaz Video Upscale model
+│   ├── config/                    # Configuration management
+│   └── utils/                     # Utility functions
+├── examples/                      # Usage examples and demos
+├── tests/                         # Test suite
+├── input/                         # Input videos for testing
+├── output/                        # Generated videos output
+├── setup.py                       # Package installation
+├── requirements.txt               # Video-to-video dependencies
+└── README.md                      # Video-to-video documentation
 ```
 
-### Audio Enhancement Features
-- **ThinkSound API**: AI-powered video audio generation
-- **Text Prompts**: Guide audio generation with natural language
-- **Multiple Formats**: MP4, MOV, AVI, WebM support
-- **Cost-Effective**: ~$0.001 per second of video
+### Dual-Model Features
+- **ThinksSound**: AI-powered audio generation with custom prompts (~$0.05-0.10/video)
+- **Topaz Video Upscale**: Professional video enhancement up to 4x resolution (~$0.50-2.50/video)
+- **Frame Interpolation**: Target FPS control for smooth video playback
+- **Unified CLI**: Single command structure for both models
+- **Batch Processing**: Process multiple videos with JSON configuration
 
-### Import Patterns
-```python
-# ✅ Correct - Video audio enhancement
-from fal_video_to_video import FALVideoToVideoGenerator
+### CLI Usage Patterns
+```bash
+# Add AI-generated audio to video
+python -m fal_video_to_video add-audio -i input/video.mp4 -p "add dramatic music"
 
-generator = FALVideoToVideoGenerator()
-result = generator.add_audio_to_local_video(
-    video_path="input/my_video.mp4",
-    prompt="add ambient nature sounds"
-)
+# Upscale video with 2x factor
+python -m fal_video_to_video upscale -i input/video.mp4 --upscale-factor 2
+
+# Upscale with frame interpolation to 60 FPS
+python -m fal_video_to_video upscale -i input/video.mp4 --upscale-factor 2 --target-fps 60
+
+# Batch processing
+python -m fal_video_to_video batch -f batch.json
 ```
 
 ## Text-to-Speech Package Architecture (RECENTLY REFACTORED)
@@ -249,12 +272,14 @@ Enhanced commands follow this architecture:
 2. **Cost Consciousness**: Always warn about costs ($0.08-$6.00 per video)
 3. **Setup Testing**: Use `test_setup.py` for FREE validation before paid operations
 4. **Prompt Optimization**: Enable prompt optimization for better results
+5. **Package Structure**: Use modular package structure with models/, config/, utils/
 
 ### FAL AI Video-to-Video
-1. **Audio Enhancement**: Focus on realistic audio generation with text prompts
-2. **File Format Support**: Handle multiple video formats (MP4, MOV, AVI, WebM)
-3. **Cost Efficiency**: Very cost-effective at ~$0.001 per second
+1. **Dual-Model Architecture**: ThinksSound for audio generation, Topaz for video upscaling
+2. **CLI Interface**: Use unified CLI with clear command structure
+3. **Cost Management**: ThinksSound (~$0.05-0.10), Topaz (~$0.50-2.50) per video
 4. **Batch Processing**: Support batch operations for multiple videos
+5. **Frame Interpolation**: Utilize target FPS control for smooth playback
 
 ### Text-to-Speech Package
 1. **Modular Design**: Keep modules focused (150-300 lines each)
@@ -330,12 +355,14 @@ Enhanced commands follow this architecture:
 - Multiple model options with different cost/quality trade-offs
 - 1080p output with 6-second duration (MiniMax)
 - Premium audio support available (Google Veo 3)
+- Modular package structure with models/, config/, utils/
 
 ### FAL AI Video-to-Video (fal_video_to_video/)
+- Dual-model architecture: ThinksSound (audio) + Topaz (upscaling)
 - AI-powered audio enhancement for existing videos
-- ThinkSound API integration
-- Very cost-effective audio generation
-- Multiple video format support
+- Professional video upscaling up to 4x resolution
+- Frame interpolation with target FPS control
+- Unified CLI interface and batch processing support
 
 ### Text-to-Speech Package
 - Professional modular architecture (recently refactored)
@@ -406,8 +433,14 @@ cd fal_video_to_video
 # Test setup (FREE)
 python tests/test_setup.py
 
-# Add audio to video (PAID - low cost ~$0.001/second)
+# Add audio to video (PAID - ~$0.05-0.10/video)
 python -m fal_video_to_video add-audio -i input/video.mp4 -p "add dramatic music"
+
+# Upscale video (PAID - ~$0.50-2.50/video)
+python -m fal_video_to_video upscale -i input/video.mp4 --upscale-factor 2
+
+# Test with sample video
+bash test_topaz_upscale.sh
 ```
 
 ### Text-to-Speech Development
@@ -452,9 +485,10 @@ cd fal_avatar_generation && python test_setup.py  # FREE
 ```
 
 Remember: 
-- **FLAGSHIP: ai_content_pipeline** provides unified YAML-based pipelines with parallel execution support (2-3x speedup). Use `PIPELINE_PARALLEL_ENABLED=true` for parallel processing.
-- The fal_text_to_video module offers direct text-to-video generation with multiple model options (cost-effective vs premium).
-- The fal_video_to_video module specializes in AI audio enhancement for existing videos at very low cost.
-- The text_to_speech package has a completely refactored, professional modular architecture with OpenRouter AI integration. Always use the new import patterns and module structure.
-- The video_tools package now supports enhanced CLI mode with -i/-o/-f parameters for generate-subtitles, describe-videos, and transcribe-videos commands. Always check for parameter support when working with these commands.
+- **🚀 FLAGSHIP: ai_content_pipeline** provides unified YAML-based pipelines with parallel execution support (2-3x speedup). Use `PIPELINE_PARALLEL_ENABLED=true` for parallel processing.
+- The **fal_text_to_video** module offers direct text-to-video generation with dual model support (MiniMax Hailuo-02 Pro vs Google Veo 3) and modular package structure.
+- The **fal_video_to_video** module provides dual-model architecture with ThinksSound (audio generation) and Topaz (video upscaling) through unified CLI interface.
+- The **text_to_speech** package has a completely refactored, professional modular architecture (15+ focused modules) with OpenRouter AI integration. Always use the new import patterns and module structure.
+- The **video_tools** package supports enhanced CLI mode with -i/-o/-f parameters for generate-subtitles, describe-videos, and transcribe-videos commands. Always check for parameter support when working with these commands.
 - **Parallel Execution**: Use StepType.PARALLEL_GROUP in YAML configs for concurrent step execution with merge strategies (collect_all, first_success, best_quality).
+- **Cost Management**: Always start with FREE tests (test_setup.py, test_api_only.py) before running paid operations. All implementations include cost warnings and confirmation prompts.
