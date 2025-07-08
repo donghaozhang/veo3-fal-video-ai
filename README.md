@@ -1,6 +1,89 @@
-# AI Content Generation Platform
+# AI Content Platform
 
-This comprehensive platform provides Python implementations for generating content using multiple AI services and models. It features both specialized single-service implementations and a unified AI Content Pipeline with parallel execution capabilities.
+A comprehensive, production-ready AI content generation platform with unified pipeline architecture, parallel execution, and multi-service integration.
+
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
+> **⚡ NEW:** Professional Python package with comprehensive CLI, parallel execution, and enterprise-grade architecture
+
+## 🚀 Features
+
+### **Core Capabilities**
+- **🔄 Unified Pipeline Architecture**: YAML/JSON-based configuration for complex multi-step workflows
+- **⚡ Parallel Execution Engine**: 2-3x performance improvement with thread-based parallel processing
+- **🎯 Type-Safe Configuration**: Pydantic models with comprehensive validation
+- **💰 Cost Management**: Real-time cost estimation and tracking across all services
+- **📊 Rich Logging**: Beautiful console output with progress tracking and performance metrics
+
+### **AI Service Integrations**
+- **🖼️ FAL AI**: Text-to-image, image-to-image, text-to-video, video generation, avatar creation
+- **🗣️ ElevenLabs**: Professional text-to-speech with 20+ voice options
+- **🎥 Google Vertex AI**: Veo video generation and Gemini text generation  
+- **🔗 OpenRouter**: Alternative TTS and chat completion services
+
+### **Developer Experience**
+- **🛠️ Professional CLI**: Comprehensive command-line interface with Click
+- **📦 Modular Architecture**: Clean separation of concerns with extensible design
+- **🧪 Comprehensive Testing**: Unit and integration tests with pytest
+- **📚 Type Hints**: Full type coverage for excellent IDE support
+
+## 📦 Installation
+
+### Basic Installation
+```bash
+pip install ai-content-platform
+```
+
+### With All Services
+```bash
+pip install ai-content-platform[all]
+```
+
+### Service-Specific Installation
+```bash
+# FAL AI services only
+pip install ai-content-platform[fal]
+
+# Text-to-speech services
+pip install ai-content-platform[tts]
+
+# Google services
+pip install ai-content-platform[google]
+
+# Development tools
+pip install ai-content-platform[dev]
+```
+
+### From Source
+```bash
+git clone https://github.com/username/ai-content-platform.git
+cd ai-content-platform
+pip install -e .
+```
+
+## 🚀 Quick Start
+
+### 1. Initialize a New Project
+```bash
+ai-content init my-project
+cd my-project
+```
+
+### 2. Configure API Keys
+```bash
+cp .env.template .env
+# Edit .env with your API keys
+```
+
+### 3. Run Sample Pipeline
+```bash
+ai-content run configs/sample_pipeline.yaml
+```
+
+### 4. View Generated Content
+Check the `output/` directory for your generated images, audio, and videos!
 
 ## 🚀 **NEW!** AI Content Pipeline (`ai_content_pipeline/`)
 

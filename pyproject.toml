@@ -1,0 +1,195 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-content-platform"
+dynamic = ["version"]
+description = "Comprehensive AI content generation platform with unified pipeline"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "AI Content Platform Team", email = "contact@aicontentplatform.com"}
+]
+maintainers = [
+    {name = "AI Content Platform Team", email = "contact@aicontentplatform.com"}
+]
+keywords = ["ai", "content generation", "images", "videos", "audio", "fal", "elevenlabs", "google", "parallel processing"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Multimedia :: Graphics",
+    "Topic :: Multimedia :: Video",
+    "Topic :: Multimedia :: Sound/Audio",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "pydantic>=2.0.0",
+    "click>=8.0.0",
+    "rich>=13.0.0",
+    "aiofiles>=23.0.0",
+    "aiohttp>=3.8.0",
+    "PyYAML>=6.0"
+]
+
+[project.optional-dependencies]
+fal = [
+    "fal-client>=0.4.0"
+]
+google = [
+    "google-generativeai>=0.3.0",
+    "google-cloud-storage>=2.7.0",
+    "google-auth>=2.16.0"
+]
+tts = [
+    "elevenlabs>=0.2.0",
+    "openai>=1.0.0"
+]
+video = [
+    "ffmpeg-python>=0.2.0",
+    "opencv-python>=4.7.0"
+]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-mock>=3.10.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=22.0.0",
+    "isort>=5.12.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+    "sphinx>=6.0.0",
+    "sphinx-rtd-theme>=1.2.0",
+    "twine>=4.0.0",
+    "build>=0.10.0"
+]
+all = [
+    "fal-client>=0.4.0",
+    "google-generativeai>=0.3.0",
+    "google-cloud-storage>=2.7.0",
+    "google-auth>=2.16.0",
+    "elevenlabs>=0.2.0",
+    "openai>=1.0.0",
+    "ffmpeg-python>=0.2.0",
+    "opencv-python>=4.7.0"
+]
+
+[project.scripts]
+ai-content = "ai_content_platform.cli.main:cli"
+aicp = "ai_content_platform.cli.main:cli"
+
+[project.urls]
+Homepage = "https://github.com/username/ai-content-platform"
+Documentation = "https://github.com/username/ai-content-platform"
+Repository = "https://github.com/username/ai-content-platform.git"
+"Bug Tracker" = "https://github.com/username/ai-content-platform/issues"
+
+[tool.setuptools.dynamic]
+version = {attr = "ai_content_platform.__version__.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["ai_content_platform*"]
+
+[tool.setuptools.package-data]
+ai_content_platform = ["py.typed"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38', 'py39', 'py310', 'py311', 'py312']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["ai_content_platform"]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "fal_client.*",
+    "elevenlabs.*",
+    "google.*",
+    "openai.*",
+    "ffmpeg.*",
+    "cv2.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--cov=ai_content_platform",
+    "--cov-report=html",
+    "--cov-report=term-missing",
+    "--cov-fail-under=80"
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+]
+asyncio_mode = "auto"
+
+[tool.coverage.run]
+source = ["ai_content_platform"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/__main__.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "pass",
+]
