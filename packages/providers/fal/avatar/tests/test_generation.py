@@ -104,7 +104,7 @@ def test_basic_generation(generator: FALAvatarGenerator, args) -> bool:
         
         # Generate output path
         timestamp = int(time.time())
-        output_path = f"test_output/basic_avatar_{timestamp}.mp4"
+        output_path = f"output/basic_avatar_{timestamp}.mp4"
         
         # Generate avatar video
         result = generator.generate_avatar_video(
@@ -169,7 +169,7 @@ def test_voice_comparison(generator: FALAvatarGenerator, args) -> bool:
         for i, voice in enumerate(available_test_voices):
             print(f"\n🎤 Generating avatar {i+1}/{num_videos} with voice: {voice}")
             
-            output_path = f"test_output/voice_comparison_{voice.lower()}_{timestamp}.mp4"
+            output_path = f"output/voice_comparison_{voice.lower()}_{timestamp}.mp4"
             
             result = generator.generate_avatar_video(
                 image_url=image_url,
@@ -247,7 +247,7 @@ def test_custom_scenarios(generator: FALAvatarGenerator, args) -> bool:
         for i, scenario in enumerate(scenarios):
             print(f"\n🎬 Generating scenario {i+1}/{num_videos}: {scenario['name']}")
             
-            output_path = f"test_output/scenario_{scenario['name'].lower().replace(' ', '_')}_{timestamp}.mp4"
+            output_path = f"output/scenario_{scenario['name'].lower().replace(' ', '_')}_{timestamp}.mp4"
             
             result = generator.generate_avatar_video(
                 image_url=image_url,
@@ -320,7 +320,7 @@ def test_audio_generation(generator: FALAvatarGenerator, args) -> bool:
         
         # Generate output path
         timestamp = int(time.time())
-        output_path = f"test_output/audio_avatar_{timestamp}.mp4"
+        output_path = f"output/audio_avatar_{timestamp}.mp4"
         
         # Generate avatar video from audio
         result = generator.generate_avatar_from_audio(
@@ -381,7 +381,7 @@ def test_multi_audio_generation(generator: FALAvatarGenerator, args) -> bool:
         
         # Generate output path
         timestamp = int(time.time())
-        output_path = f"test_output/multi_conversation_{timestamp}.mp4"
+        output_path = f"output/multi_conversation_{timestamp}.mp4"
         
         # Generate multi-avatar conversation video
         result = generator.generate_multi_avatar_conversation(
@@ -449,7 +449,7 @@ def main():
         generator = FALAvatarGenerator()
         
         # Create test output directory
-        os.makedirs("test_output", exist_ok=True)
+        os.makedirs("output", exist_ok=True)
         
         # Run tests based on arguments
         tests_run = []
@@ -496,7 +496,7 @@ def main():
         else:
             print(f"\n⚠️ Some tests failed. Check the output above for details.")
         
-        print(f"\n📁 Generated videos saved in: test_output/")
+        print(f"\n📁 Generated videos saved in: output/")
         
     except KeyboardInterrupt:
         print(f"\n❌ Tests cancelled by user")

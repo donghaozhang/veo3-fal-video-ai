@@ -58,7 +58,7 @@ class FALImageToImageGenerator:
         
         # Create output directories
         self.output_dir = ensure_output_directory("output")
-        self.test_output_dir = ensure_output_directory("test_output")
+        self.test_output_dir = self.output_dir  # Use same output directory
     
     def modify_image(
         self,

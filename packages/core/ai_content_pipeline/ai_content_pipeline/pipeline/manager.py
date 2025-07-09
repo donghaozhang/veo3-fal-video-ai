@@ -37,7 +37,7 @@ class AIPipelineManager:
         """
         self.base_dir = Path(base_dir) if base_dir else Path.cwd()
         self.output_dir = self.base_dir / "output"
-        self.temp_dir = self.base_dir / "temp"
+        self.temp_dir = self.output_dir / "temp"
         
         # Initialize components
         self.file_manager = FileManager(self.base_dir)
