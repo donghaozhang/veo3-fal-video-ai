@@ -1,0 +1,56 @@
+# MANIFEST.in - Controls what files are included in the PyPI package
+
+# Include documentation
+include README.md
+include LICENSE*
+recursive-include . *.md
+
+# Include all package files
+recursive-include packages *.py
+recursive-include packages *.yaml
+recursive-include packages *.json
+
+# Include pipeline configurations
+include input/pipelines/*.yaml
+
+# Include tests
+recursive-include tests *.py
+
+# Exclude ai_content_platform (development framework)
+prune packages/core/ai_content_platform
+
+# Exclude sensitive and environment files  
+global-exclude .env*
+global-exclude *.env*
+
+# Exclude virtual environments  
+global-exclude venv
+global-exclude venv_backup
+global-exclude test_*
+global-exclude *_env
+
+# Exclude output directories
+prune output
+prune test_output
+
+# Exclude development files
+global-exclude .git*
+global-exclude *.log
+global-exclude .vscode
+global-exclude .idea
+global-exclude __pycache__
+global-exclude *.py[co]
+global-exclude *.pyo
+
+# Exclude media files
+global-exclude *.mp4
+global-exclude *.avi
+global-exclude *.mov
+global-exclude *.mp3
+global-exclude *.wav
+
+# Exclude model files
+global-exclude *.bin
+global-exclude *.safetensors
+global-exclude *.ckpt
+global-exclude *.pth

@@ -9,8 +9,8 @@ from setuptools import setup, find_packages
 from pathlib import Path
 
 # Package metadata
-PACKAGE_NAME = "video-ai"
-VERSION = "1.0.0"
+PACKAGE_NAME = "video-ai-studio"
+VERSION = "1.0.8"
 AUTHOR = "donghao zhang"
 AUTHOR_EMAIL = "zdhpeter@gmail.com"
 DESCRIPTION = "Comprehensive AI content generation suite with multiple providers and services"
@@ -35,8 +35,15 @@ def read_requirements():
             ]
     return []
 
-# Base requirements (from consolidated requirements.txt)
-install_requires = read_requirements()
+# Base requirements (core dependencies only)
+install_requires = [
+    "python-dotenv>=1.0.0",
+    "requests>=2.31.0", 
+    "typing-extensions>=4.0.0",
+    "pyyaml>=6.0",
+    "pathlib2>=2.3.7",
+    "argparse>=1.4.0",
+]
 
 # Optional requirements organized by functionality
 extras_require = {
@@ -125,7 +132,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url=URL,
-    packages=find_packages(),
+    packages=find_packages(include=['packages', 'packages.*']),
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
