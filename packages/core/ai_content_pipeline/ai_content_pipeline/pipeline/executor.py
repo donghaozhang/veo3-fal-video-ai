@@ -16,6 +16,7 @@ from ..models.text_to_image import UnifiedTextToImageGenerator
 from ..models.image_understanding import UnifiedImageUnderstandingGenerator
 from ..models.prompt_generation import UnifiedPromptGenerator
 from ..models.image_to_image import UnifiedImageToImageGenerator
+from ..models.image_to_video import UnifiedImageToVideoGenerator
 from ..models.text_to_speech import UnifiedTextToSpeechGenerator
 from ..utils.file_manager import FileManager
 
@@ -41,10 +42,10 @@ class ChainExecutor:
         self.image_understanding = UnifiedImageUnderstandingGenerator()
         self.prompt_generation = UnifiedPromptGenerator()
         self.image_to_image = UnifiedImageToImageGenerator()
+        self.image_to_video = UnifiedImageToVideoGenerator()
         self.text_to_speech = UnifiedTextToSpeechGenerator()
         
         # TODO: Initialize other generators when implemented
-        # self.image_to_video = UnifiedImageToVideoGenerator()
         # self.audio_generator = UnifiedAudioGenerator()
         # self.video_upscaler = UnifiedVideoUpscaler()
         
@@ -584,24 +585,43 @@ class ChainExecutor:
         **kwargs
     ) -> Dict[str, Any]:
         """Execute image-to-video step."""
-        try:
-            # Try to import and use existing video generation modules
-            if step.model == "hailuo":
-                return self._execute_hailuo_video(image_path, step, chain_config, step_context, **kwargs)
-            elif step.model in ["veo2", "veo3"]:
-                return self._execute_veo_video(image_path, step, chain_config, step_context, **kwargs)
-            elif step.model == "kling":
-                return self._execute_kling_video(image_path, step, chain_config, step_context, **kwargs)
-            else:
-                return {
-                    "success": False,
-                    "error": f"Unsupported image-to-video model: {step.model}"
-                }
-        except Exception as e:
-            return {
-                "success": False,
-                "error": f"Image-to-video execution failed: {str(e)}"
-            }
+        # Get prompt from step params, kwargs, or context
+        prompt = step.params.get("prompt", kwargs.get("prompt", "Create a cinematic video from this image"))
+        
+        # Use generated prompt from previous step if available
+        if step_context and "generated_prompt" in step_context:
+            prompt = step_context["generated_prompt"]
+            print(f"📝 Using generated prompt: {prompt[:100]}...")
+        
+        # Merge step params with chain config and kwargs
+        params = {
+            **{k: v for k, v in step.params.items() if k != "prompt"},
+            **{k: v for k, v in kwargs.items() if k != "prompt"},
+            "output_dir": chain_config.get("output_dir", "output")
+        }
+        
+        # Prepare input data for the unified generator
+        input_data = {
+            "prompt": prompt,
+            "image_path": image_path
+        }
+        
+        result = self.image_to_video.generate(
+            input_data=input_data,
+            model=step.model,
+            **params
+        )
+        
+        return {
+            "success": result.success,
+            "output_path": result.output_path,
+            "output_url": result.output_url,
+            "processing_time": result.processing_time,
+            "cost": result.cost_estimate,
+            "model": result.model_used,
+            "metadata": result.metadata,
+            "error": result.error
+        }
     
     def _execute_hailuo_video(
         self,
