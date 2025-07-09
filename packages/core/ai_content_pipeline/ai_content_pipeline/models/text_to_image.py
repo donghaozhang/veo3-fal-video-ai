@@ -30,10 +30,14 @@ class UnifiedTextToImageGenerator(BaseContentModel):
         """Initialize available text-to-image generators."""
         try:
             # Try to import existing FAL text-to-image generator
-            sys.path.append(str(Path(__file__).parent.parent.parent.parent / "fal_text_to_image"))
-            from fal_text_to_image_generator import FALTextToImageGenerator
-            self._fal_generator = FALTextToImageGenerator()
-            print("✅ FAL Text-to-Image generator initialized")
+            fal_path = Path(__file__).parent.parent.parent.parent.parent / "providers" / "fal" / "text-to-image"
+            if fal_path.exists():
+                sys.path.insert(0, str(fal_path))
+                from fal_text_to_image_generator import FALTextToImageGenerator
+                self._fal_generator = FALTextToImageGenerator()
+                print("✅ FAL Text-to-Image generator initialized")
+            else:
+                print(f"⚠️  FAL Text-to-Image directory not found at: {fal_path}")
         except ImportError as e:
             print(f"⚠️  FAL Text-to-Image generator not available: {e}")
     

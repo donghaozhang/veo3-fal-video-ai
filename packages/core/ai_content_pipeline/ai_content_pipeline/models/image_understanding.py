@@ -43,14 +43,14 @@ class UnifiedImageUnderstandingGenerator:
         """Initialize the Gemini video analyzer for image understanding."""
         try:
             # Add the video_tools directory to Python path
-            video_tools_path = Path(__file__).parent.parent.parent.parent / "video_tools"
+            video_tools_path = Path(__file__).parent.parent.parent.parent.parent / "services" / "video-tools"
             if video_tools_path.exists():
                 sys.path.insert(0, str(video_tools_path))
                 from video_utils.gemini_analyzer import GeminiVideoAnalyzer
                 self.analyzer = GeminiVideoAnalyzer()
                 print("✅ Gemini Image Understanding analyzer initialized")
             else:
-                print("❌ Video tools directory not found")
+                print("❌ Video tools directory not found at:", video_tools_path)
                 self.analyzer = None
         except Exception as e:
             print(f"❌ Failed to initialize Gemini analyzer: {e}")

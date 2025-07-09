@@ -45,7 +45,7 @@ class UnifiedPromptGenerator:
         """Initialize the OpenRouter analyzer for prompt generation."""
         try:
             # Add the video_tools directory to Python path
-            video_tools_path = Path(__file__).parent.parent.parent.parent / "video_tools"
+            video_tools_path = Path(__file__).parent.parent.parent.parent.parent / "services" / "video-tools"
             if video_tools_path.exists():
                 sys.path.insert(0, str(video_tools_path))
                 from video_utils.openrouter_analyzer import OpenRouterAnalyzer
@@ -54,7 +54,7 @@ class UnifiedPromptGenerator:
                 self.analyzer = OpenRouterAnalyzer(model="google/gemini-2.0-flash-001")
                 print("✅ OpenRouter Prompt Generator initialized")
             else:
-                print("❌ Video tools directory not found")
+                print("❌ Video tools directory not found at:", video_tools_path)
                 self.analyzer = None
         except Exception as e:
             print(f"❌ Failed to initialize OpenRouter analyzer: {e}")
