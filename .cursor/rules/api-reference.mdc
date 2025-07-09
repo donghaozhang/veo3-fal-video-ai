@@ -8,7 +8,7 @@ alwaysApply: false
 This project provides comprehensive AI content generation APIs: Google Veo (complex, high-quality video), FAL AI Video Generation (dual-model, production-ready), FAL AI Avatar Generation (triple-mode, lip-sync), and FAL AI Text-to-Image Generation (quad-model).
 
 ## Google Veo API Functions
-All functions are located in [veo_video_generation.py](mdc:veo_video_generation.py).
+All functions are located in [packages/providers/google/veo/veo_video_generation.py](mdc:packages/providers/google/veo/veo_video_generation.py).
 
 ### Text-to-Video Generation
 ```python
@@ -75,7 +75,7 @@ download_gcs_file(
 **Returns**: Local file path or None on error
 
 ## FAL AI Video Generation API Class
-Located in [fal_image_to_video/fal_image_to_video_generator.py](mdc:fal_image_to_video/fal_image_to_video_generator.py).
+Located in [packages/providers/fal/video/fal_video_generator.py](mdc:packages/providers/fal/video/fal_video_generator.py).
 
 ### FALImageToVideoGenerator Class
 ```python
@@ -169,7 +169,7 @@ generator.download_video(
 **Returns**: Local file path or None if failed
 
 ## FAL AI Avatar Generation API Class
-Located in [fal_avatar_generation/fal_avatar_generator.py](mdc:fal_avatar_generation/fal_avatar_generator.py).
+Located in [packages/providers/fal/avatar/fal_avatar_generator.py](mdc:packages/providers/fal/avatar/fal_avatar_generator.py).
 
 ### FALAvatarGenerator Class
 ```python

@@ -16,15 +16,15 @@ This project offers multiple AI content generation options with different setup 
 All FAL AI modules share the same core dependencies:
 ```bash
 # Video Generation
-cd fal_video_generation
+cd packages/providers/fal/video
 pip install -r requirements.txt
 
 # Avatar Generation  
-cd fal_avatar_generation
+cd packages/providers/fal/avatar
 pip install -r requirements.txt
 
 # Text-to-Image Generation
-cd fal_text_to_image
+cd packages/providers/fal/text-to-image
 pip install -r requirements.txt
 ```
 
@@ -37,7 +37,7 @@ Key packages:
 Create `.env` files in each FAL AI directory with your API key:
 
 #### Video Generation Configuration
-Create [fal_video_generation/.env](mdc:fal_video_generation/.env):
+Create [packages/providers/fal/video/.env](mdc:packages/providers/fal/video/.env):
 ```bash
 # FAL AI API Configuration
 FAL_KEY=your_fal_api_key_here
@@ -48,7 +48,7 @@ FAL_MAX_RETRIES=3
 ```
 
 #### Avatar Generation Configuration
-Create [fal_avatar_generation/.env](mdc:fal_avatar_generation/.env):
+Create [packages/providers/fal/avatar/.env](mdc:packages/providers/fal/avatar/.env):
 ```bash
 # FAL AI API Configuration for Avatar Generation
 FAL_KEY=your_fal_api_key_here
@@ -59,7 +59,7 @@ FAL_MAX_RETRIES=3
 ```
 
 #### Text-to-Image Configuration
-Create [fal_text_to_image/.env](mdc:fal_text_to_image/.env):
+Create [packages/providers/fal/text-to-image/.env](mdc:packages/providers/fal/text-to-image/.env):
 ```bash
 # FAL AI API Configuration for Text-to-Image
 FAL_KEY=your_fal_api_key_here
@@ -77,7 +77,7 @@ FAL_MAX_RETRIES=3
 
 #### Video Generation Testing
 ```bash
-cd fal_video_generation
+cd packages/providers/fal/video
 
 # FREE Testing (No Costs)
 python test_api_only.py        # Completely FREE API connection test
@@ -90,7 +90,7 @@ python test_fal_ai.py --kling  # Test Kling model (~$0.02-0.05)
 
 #### Avatar Generation Testing
 ```bash
-cd fal_avatar_generation
+cd packages/providers/fal/avatar
 
 # FREE Testing (No Costs)
 python test_setup.py           # Completely FREE environment and API test
@@ -104,7 +104,7 @@ python test_generation.py --multi      # Test conversation mode (~$0.03-0.05)
 
 #### Text-to-Image Generation Testing
 ```bash
-cd fal_text_to_image
+cd packages/providers/fal/text-to-image
 
 # FREE Testing (No Costs)
 python test_setup.py           # Completely FREE environment and API test
@@ -117,15 +117,15 @@ python test_generation.py --dragon     # Test dragon generation (~$0.015)
 ### 4. FAL AI Usage
 ```bash
 # Video Generation Demo
-cd fal_video_generation
+cd packages/providers/fal/video
 python demo.py  # Interactive video generation demo
 
 # Avatar Generation Demo
-cd fal_avatar_generation  
+cd packages/providers/fal/avatar  
 python demo.py  # Interactive avatar generation demo with voice selection
 
 # Text-to-Image Demo
-cd fal_text_to_image
+cd packages/providers/fal/text-to-image
 python demo.py  # Interactive image generation demo
 ```
 
@@ -177,11 +177,11 @@ gcloud storage buckets add-iam-policy-binding gs://your-bucket \
 
 ### 5. Google Veo Project Configuration
 The project is pre-configured with:
-- **Sample images**: Available in [images/](mdc:images) directory
-- **Output folder**: [result_folder/](mdc:result_folder) for downloaded videos
+- **Sample images**: Available in [packages/providers/google/veo/images/](mdc:packages/providers/google/veo/images) directory
+- **Output folder**: [packages/providers/google/veo/result_folder/](mdc:packages/providers/google/veo/result_folder) for downloaded videos
 - **Archive**: [archive/](mdc:archive) contains legacy tools and alternative implementations
 
-Edit [veo_video_generation.py](mdc:veo_video_generation.py) to customize:
+Edit [packages/providers/google/veo/veo_video_generation.py](mdc:packages/providers/google/veo/veo_video_generation.py) to customize:
 ```python
 PROJECT_ID = "your-project-id"  # Or use from .env
 OUTPUT_BUCKET_PATH = "gs://your-bucket/veo_output/"
@@ -254,34 +254,50 @@ OUTPUT_BUCKET_PATH = "gs://your-bucket/veo_output/"
 ## Directory Structure
 ```
 veo3/
-├── veo_video_generation.py          # Google Veo implementation
-├── .env                             # Google Cloud configuration
+├── README.md                        # Multi-platform project overview
 ├── requirements.txt                 # Main dependencies
-├── images/                          # Input images for Google Veo
-├── result_folder/                   # Google Veo output videos
-├── archive/                         # Legacy tools
-├── fal_video_generation/            # FAL AI video implementation
-│   ├── fal_video_generator.py       # FAL AI video generator class (dual-model)
-│   ├── demo.py                      # Interactive video demo
-│   ├── test_fal_ai.py              # Video generation test suite
-│   ├── test_api_only.py            # FREE API connection test
-│   ├── .env                         # FAL AI configuration
-│   └── output/                      # FAL AI generated videos
-├── fal_avatar_generation/           # FAL AI avatar implementation
-│   ├── fal_avatar_generator.py      # FAL AI avatar generator class (triple-mode)
-│   ├── demo.py                      # Interactive avatar demo with voice selection
-│   ├── test_setup.py               # FREE environment and API test
-│   ├── test_official_example.py    # Test using exact FAL AI documentation examples
-│   ├── test_generation.py          # Avatar generation test suite
-│   ├── .env                         # FAL AI configuration
-│   └── output/                      # FAL AI generated avatar videos
-└── fal_text_to_image/               # FAL AI text-to-image implementation
-    ├── fal_text_to_image_generator.py # FAL AI text-to-image generator class (quad-model)
-    ├── demo.py                      # Interactive image generation demo
-    ├── test_setup.py               # FREE environment and API test
-    ├── test_generation.py          # Image generation test suite
-    ├── .env                         # FAL AI configuration
-    └── output/                      # FAL AI generated images
+├── setup.py                         # Unified package setup
+├── .env                            # Unified configuration file
+├── packages/                        # Main package directory
+│   ├── core/                       # Core functionality
+│   │   └── ai_content_pipeline/    # Unified AI content pipeline
+│   ├── providers/                  # AI service providers
+│   │   ├── google/                 # Google services
+│   │   │   └── veo/                # Google Veo video generation
+│   │   │       ├── veo_video_generation.py # Main Google Veo functions
+│   │   │       ├── demo.py         # Interactive video demo
+│   │   │       ├── test_veo.py     # Video generation test suite
+│   │   │       ├── .env            # Google Veo configuration
+│   │   │       ├── images/         # Input images for Google Veo
+│   │   │       └── result_folder/  # Google Veo output videos
+│   │   └── fal/                    # FAL AI services
+│   │       ├── video/              # FAL AI video implementation
+│   │       │   ├── fal_video_generator.py # FAL AI video generator class (dual-model)
+│   │       │   ├── demo.py         # Interactive video demo
+│   │       │   ├── test_fal_ai.py  # Video generation test suite
+│   │       │   ├── test_api_only.py # FREE API connection test
+│   │       │   ├── .env            # FAL AI configuration
+│   │       │   └── output/         # FAL AI generated videos
+│   │       ├── avatar/             # FAL AI avatar implementation
+│   │       │   ├── fal_avatar_generator.py # FAL AI avatar generator class (triple-mode)
+│   │       │   ├── demo.py         # Interactive avatar demo with voice selection
+│   │       │   ├── test_setup.py   # FREE environment and API test
+│   │       │   ├── test_official_example.py # Test using exact FAL AI documentation examples
+│   │       │   ├── test_generation.py # Avatar generation test suite
+│   │       │   ├── .env            # FAL AI configuration
+│   │       │   └── output/         # FAL AI generated avatar videos
+│   │       └── text-to-image/      # FAL AI text-to-image implementation
+│   │           ├── fal_text_to_image_generator.py # FAL AI text-to-image generator class (quad-model)
+│   │           ├── demo.py         # Interactive image generation demo
+│   │           ├── test_setup.py   # FREE environment and API test
+│   │           ├── test_generation.py # Image generation test suite
+│   │           ├── .env            # FAL AI configuration
+│   │           └── output/         # FAL AI generated images
+│   └── services/                   # Additional services
+│       └── text-to-speech/         # ElevenLabs TTS package
+├── tests/                          # Consolidated test suite
+├── docs/                           # Documentation
+└── archive/                        # Legacy tools
 ```
 
 ## Testing All Platforms
@@ -291,7 +307,7 @@ veo3/
 ⚠️ **Cost Warning**: Video generation costs money!
 
 ```bash
-cd fal_video_generation
+cd packages/providers/fal/video
 # FREE Tests
 python test_api_only.py        # Completely FREE API connection test
 python test_fal_ai.py          # FREE setup test (no video generation)
@@ -307,7 +323,7 @@ python demo.py                 # Interactive demo (with cost warnings)
 ⚠️ **Cost Warning**: Avatar generation costs money!
 
 ```bash
-cd fal_avatar_generation
+cd packages/providers/fal/avatar
 # FREE Tests
 python test_setup.py           # Completely FREE environment test
 
@@ -322,7 +338,7 @@ python demo.py                      # Interactive demo (with cost warnings)
 ⚠️ **Cost Warning**: Image generation costs money!
 
 ```bash
-cd fal_text_to_image
+cd packages/providers/fal/text-to-image
 # FREE Tests
 python test_setup.py           # Completely FREE environment test
 
@@ -333,7 +349,7 @@ python demo.py                         # Interactive demo (with cost warnings)
 ```
 
 ### Google Veo Testing
-Test functions individually in [veo_video_generation.py](mdc:veo_video_generation.py) with proper GCP authentication.
+Test functions individually in [packages/providers/google/veo/veo_video_generation.py](mdc:packages/providers/google/veo/veo_video_generation.py) with proper GCP authentication.
 
 ## Common Configuration Issues
 
@@ -349,7 +365,7 @@ Test functions individually in [veo_video_generation.py](mdc:veo_video_generatio
 2. **Project Not Allowlisted**: Switch to Veo 2.0 or request access
 3. **Authentication Errors**: Verify `gcloud auth list` shows correct account
 4. **Region Issues**: Ensure `us-central1` region is used for Vertex AI
-5. **Missing API Keys**: Check [.env](mdc:.env) file configuration
+5. **Missing API Keys**: Check [packages/providers/google/veo/.env](mdc:packages/providers/google/veo/.env) file configuration
 
 ## Environment Variables
 

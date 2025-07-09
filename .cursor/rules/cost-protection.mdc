@@ -16,14 +16,14 @@ python test_fal_ai.py --full             # ~$0.02-0.05 per test
 python demo.py                           # Variable cost per generation
 
 # EXPENSIVE Text-to-Video Generation - These generate real videos from text and cost money
-python fal_text_to_video/test_generation.py --single     # ~$0.08 per test (MiniMax)
-python fal_text_to_video/test_generation.py --premium    # ~$2.50-6.00 per test (Google Veo 3)
-python fal_text_to_video/test_generation.py --batch      # ~$0.24-0.32 per test (multiple videos)
-python fal_text_to_video/demo.py                         # Variable cost per generation
+python packages/providers/fal/text-to-video/test_generation.py --single     # ~$0.08 per test (MiniMax)
+python packages/providers/fal/text-to-video/test_generation.py --premium    # ~$2.50-6.00 per test (Google Veo 3)
+python packages/providers/fal/text-to-video/test_generation.py --batch      # ~$0.24-0.32 per test (multiple videos)
+python packages/providers/fal/text-to-video/demo.py                         # Variable cost per generation
 
 # EXPENSIVE Video-to-Video Enhancement - These add AI audio to videos and cost money
-python -m fal_video_to_video add-audio                   # ~$0.05-0.30 per test (depends on video length)
-python fal_video_to_video/demo.py                        # Variable cost per enhancement
+python -m packages.providers.fal.video-to-video add-audio                   # ~$0.05-0.30 per test (depends on video length)
+python packages/providers/fal/video-to-video/demo.py                        # Variable cost per enhancement
 # Note: Video-to-video is relatively cost-effective at ~$0.001/second
 
 # EXPENSIVE Avatar Generation - These generate real avatar videos and cost money
@@ -45,9 +45,9 @@ python test_generation.py --compare      # ~$0.060 per test (4 images)
 python demo.py                           # Variable cost per generation
 
 # EXPENSIVE AI Content Pipeline - These chain multiple operations and costs accumulate
-python -m ai_content_pipeline generate-image             # ~$0.001-0.004 per image
-python -m ai_content_pipeline create-video               # ~$0.08-6.00+ per chain (depends on models)
-python -m ai_content_pipeline execute-chain              # Variable cost (sum of all operations in chain)
+python -m packages.core.ai_content_pipeline generate-image             # ~$0.001-0.004 per image
+python -m packages.core.ai_content_pipeline create-video               # ~$0.08-6.00+ per chain (depends on models)
+python -m packages.core.ai_content_pipeline execute-chain              # Variable cost (sum of all operations in chain)
 python ai_content_pipeline/demo.py                       # Variable cost per pipeline
 
 # EXPENSIVE Text-to-Speech Generation - These generate real speech and cost money

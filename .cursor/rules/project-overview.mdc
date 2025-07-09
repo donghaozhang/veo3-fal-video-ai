@@ -53,13 +53,13 @@ This project provides Python utilities for generating videos, images, and avatar
 ## Main Components
 
 ### Google Veo Implementation
-Located in [veo3_video_generation/](mdc:veo3_video_generation) directory with automated setup and permission fixes.
+Located in [packages/providers/google/veo/](mdc:packages/providers/google/veo) directory with automated setup and permission fixes.
 
 **Key Components:**
-- [veo_video_generation.py](mdc:veo3_video_generation/veo_video_generation.py) - Main Google Veo video generation functions
-- [fix_permissions.py](mdc:veo3_video_generation/fix_permissions.py) - **Automated permission fix tool** (fixes 90% of setup issues)
-- [demo.py](mdc:veo3_video_generation/demo.py) - Interactive demonstration with Veo 2.0/3.0 selection
-- [test_veo.py](mdc:veo3_video_generation/test_veo.py) - Comprehensive test suite with command-line options
+- [veo_video_generation.py](mdc:packages/providers/google/veo/veo_video_generation.py) - Main Google Veo video generation functions
+- [fix_permissions.py](mdc:packages/providers/google/veo/fix_permissions.py) - **Automated permission fix tool** (fixes 90% of setup issues)
+- [demo.py](mdc:packages/providers/google/veo/demo.py) - Interactive demonstration with Veo 2.0/3.0 selection
+- [test_veo.py](mdc:packages/providers/google/veo/test_veo.py) - Comprehensive test suite with command-line options
 
 **Key Functions:**
 - `generate_video_from_text()` - Creates videos from text prompts
@@ -71,25 +71,25 @@ Located in [veo3_video_generation/](mdc:veo3_video_generation) directory with au
 **Quick Setup**: Run `python fix_permissions.py` to automatically configure Google Cloud permissions
 
 ### FAL AI Video Generation (Dual-Model)
-Located in [fal_image_to_video/](mdc:fal_image_to_video) directory with simplified API-based approach supporting two models and cost-conscious testing.
+Located in [packages/providers/fal/video/](mdc:packages/providers/fal/video) directory with simplified API-based approach supporting two models and cost-conscious testing.
 
 **Key Components:**
-- [fal_image_to_video_generator.py](mdc:fal_image_to_video/fal_image_to_video_generator.py) - Main FALImageToVideoGenerator class with full endpoint names
-- [demo.py](mdc:fal_image_to_video/demo.py) - Cost-conscious interactive demo with confirmation prompts
-- [test_fal_ai.py](mdc:fal_image_to_video/test_fal_ai.py) - Cost-conscious test suite with model-specific flags
-- [test_api_only.py](mdc:fal_image_to_video/test_api_only.py) - **FREE API connection test** (no video generation)
-- [README.md](mdc:fal_image_to_video/README.md) - Complete FAL AI dual-model documentation
-- [COST_CONSCIOUS_TESTING.md](mdc:fal_image_to_video/COST_CONSCIOUS_TESTING.md) - Cost-conscious testing guide
+- [fal_video_generator.py](mdc:packages/providers/fal/video/fal_video_generator.py) - Main FALVideoGenerator class with full endpoint names
+- [demo.py](mdc:packages/providers/fal/video/demo.py) - Cost-conscious interactive demo with confirmation prompts
+- [test_fal_ai.py](mdc:packages/providers/fal/video/test_fal_ai.py) - Cost-conscious test suite with model-specific flags
+- [test_api_only.py](mdc:packages/providers/fal/video/test_api_only.py) - **FREE API connection test** (no video generation)
+- [README.md](mdc:packages/providers/fal/video/README.md) - Complete FAL AI dual-model documentation
+- [COST_CONSCIOUS_TESTING.md](mdc:packages/providers/fal/video/COST_CONSCIOUS_TESTING.md) - Cost-conscious testing guide
 
 ### FAL AI Text-to-Video Generation (NEW)
-Located in [fal_text_to_video/](mdc:fal_text_to_video) directory with direct text-to-video generation supporting multiple model options.
+Located in [packages/providers/fal/text-to-video/](mdc:packages/providers/fal/text-to-video) directory with direct text-to-video generation supporting multiple model options.
 
 **Key Components:**
-- [fal_text_to_video_generator.py](mdc:fal_text_to_video/fal_text_to_video_generator.py) - Main FALTextToVideoGenerator class with dual-model support
-- [demo.py](mdc:fal_text_to_video/demo.py) - Cost-conscious interactive demo with model selection
-- [test_setup.py](mdc:fal_text_to_video/test_setup.py) - **FREE environment and API validation**
-- [test_generation.py](mdc:fal_text_to_video/test_generation.py) - **PAID text-to-video generation tests**
-- [README.md](mdc:fal_text_to_video/README.md) - Complete FAL AI text-to-video documentation
+- [fal_text_to_video_generator.py](mdc:packages/providers/fal/text-to-video/fal_text_to_video_generator.py) - Main FALTextToVideoGenerator class with dual-model support
+- [demo.py](mdc:packages/providers/fal/text-to-video/demo.py) - Cost-conscious interactive demo with model selection
+- [test_setup.py](mdc:packages/providers/fal/text-to-video/test_setup.py) - **FREE environment and API validation**
+- [test_generation.py](mdc:packages/providers/fal/text-to-video/test_generation.py) - **PAID text-to-video generation tests**
+- [README.md](mdc:packages/providers/fal/text-to-video/README.md) - Complete FAL AI text-to-video documentation
 
 **Key Features:**
 - **MiniMax Hailuo-02 Pro**: 1080p resolution, 6-second duration, $0.08 per video, prompt optimization
@@ -98,13 +98,13 @@ Located in [fal_text_to_video/](mdc:fal_text_to_video) directory with direct tex
 - **Cost-Effective Options**: Choose between cost-effective and premium quality models
 
 ### FAL AI Video-to-Video Enhancement (NEW)
-Located in [fal_video_to_video/](mdc:fal_video_to_video) directory with AI audio enhancement for existing videos.
+Located in [packages/providers/fal/video-to-video/](mdc:packages/providers/fal/video-to-video) directory with AI audio enhancement for existing videos.
 
 **Key Components:**
-- [fal_video_to_video/](mdc:fal_video_to_video/fal_video_to_video/) - Main video enhancement package
-- [setup.py](mdc:fal_video_to_video/setup.py) - Professional package setup
-- [test_topaz_upscale.sh](mdc:fal_video_to_video/test_topaz_upscale.sh) - Video upscaling test script
-- [README.md](mdc:fal_video_to_video/README.md) - Complete FAL AI video-to-video documentation
+- [fal_video_to_video/](mdc:packages/providers/fal/video-to-video/fal_video_to_video/) - Main video enhancement package
+- [setup.py](mdc:packages/providers/fal/video-to-video/setup.py) - Professional package setup
+- [test_topaz_upscale.sh](mdc:packages/providers/fal/video-to-video/test_topaz_upscale.sh) - Video upscaling test script
+- [README.md](mdc:packages/providers/fal/video-to-video/README.md) - Complete FAL AI video-to-video documentation
 - **Examples:** Usage examples and tutorials for audio enhancement
 
 **Key Features:**
@@ -115,19 +115,19 @@ Located in [fal_video_to_video/](mdc:fal_video_to_video) directory with AI audio
 - **CLI Interface**: Command-line tools for batch operations
 
 ### AI Content Pipeline (NEW)
-Located in [ai_content_pipeline/](mdc:ai_content_pipeline) directory with unified content creation system for chaining AI operations.
+Located in [packages/core/ai_content_pipeline/](mdc:packages/core/ai_content_pipeline) directory with unified content creation system for chaining AI operations.
 
 **Key Components:**
-- [ai_content_pipeline/](mdc:ai_content_pipeline/ai_content_pipeline/) - Main pipeline package
-- [setup.py](mdc:ai_content_pipeline/setup.py) - Professional package setup
-- [README.md](mdc:ai_content_pipeline/README.md) - Complete AI content pipeline documentation
+- [ai_content_pipeline/](mdc:packages/core/ai_content_pipeline/ai_content_pipeline/) - Main pipeline package
+- [setup.py](mdc:packages/core/ai_content_pipeline/setup.py) - Professional package setup
+- [README.md](mdc:packages/core/ai_content_pipeline/README.md) - Complete AI content pipeline documentation
 - **Pipeline Management:**
-  - [pipeline/manager.py](mdc:ai_content_pipeline/ai_content_pipeline/pipeline/manager.py) - Main pipeline manager
-  - [pipeline/chain.py](mdc:ai_content_pipeline/ai_content_pipeline/pipeline/chain.py) - Chain configuration classes
-  - [pipeline/executor.py](mdc:ai_content_pipeline/ai_content_pipeline/pipeline/executor.py) - Chain execution engine
+  - [pipeline/manager.py](mdc:packages/core/ai_content_pipeline/ai_content_pipeline/pipeline/manager.py) - Main pipeline manager
+  - [pipeline/chain.py](mdc:packages/core/ai_content_pipeline/ai_content_pipeline/pipeline/chain.py) - Chain configuration classes
+  - [pipeline/executor.py](mdc:packages/core/ai_content_pipeline/ai_content_pipeline/pipeline/executor.py) - Chain execution engine
 - **Model Integration:**
-  - [models/text_to_image.py](mdc:ai_content_pipeline/ai_content_pipeline/models/text_to_image.py) - Unified text-to-image generator
-  - [models/base.py](mdc:ai_content_pipeline/ai_content_pipeline/models/base.py) - Base model interface
+  - [models/text_to_image.py](mdc:packages/core/ai_content_pipeline/ai_content_pipeline/models/text_to_image.py) - Unified text-to-image generator
+  - [models/base.py](mdc:packages/core/ai_content_pipeline/ai_content_pipeline/models/base.py) - Base model interface
 
 **Key Features:**
 - **Workflow Chains**: Text → Image → Video → Audio Enhancement → Video Upscaling
@@ -137,41 +137,41 @@ Located in [ai_content_pipeline/](mdc:ai_content_pipeline) directory with unifie
 - **Professional Architecture**: Modular design with proper package structure
 
 ### FAL AI Avatar Generation (Triple-Mode)
-Located in [fal_avatar_generation/](mdc:fal_avatar_generation) directory with comprehensive avatar video generation using official FAL AI examples.
+Located in [packages/providers/fal/avatar/](mdc:packages/providers/fal/avatar) directory with comprehensive avatar video generation using official FAL AI examples.
 
 **Key Components:**
-- [fal_avatar_generator.py](mdc:fal_avatar_generation/fal_avatar_generator.py) - Main FALAvatarGenerator class with triple-mode support
-- [demo.py](mdc:fal_avatar_generation/demo.py) - Cost-conscious interactive demo with mode selection
-- [test_official_example.py](mdc:fal_avatar_generation/test_official_example.py) - **Test using exact FAL AI documentation examples**
-- [test_setup.py](mdc:fal_avatar_generation/test_setup.py) - **FREE environment and API validation**
-- [test_generation.py](mdc:fal_avatar_generation/test_generation.py) - **PAID avatar generation tests** (includes `--voice`, `--audio`, `--multi` flags)
-- [README.md](mdc:fal_avatar_generation/README.md) - Complete FAL AI avatar documentation
+- [fal_avatar_generator.py](mdc:packages/providers/fal/avatar/fal_avatar_generator.py) - Main FALAvatarGenerator class with triple-mode support
+- [demo.py](mdc:packages/providers/fal/avatar/demo.py) - Cost-conscious interactive demo with mode selection
+- [test_official_example.py](mdc:packages/providers/fal/avatar/test_official_example.py) - **Test using exact FAL AI documentation examples**
+- [test_setup.py](mdc:packages/providers/fal/avatar/test_setup.py) - **FREE environment and API validation**
+- [test_generation.py](mdc:packages/providers/fal/avatar/test_generation.py) - **PAID avatar generation tests** (includes `--voice`, `--audio`, `--multi` flags)
+- [README.md](mdc:packages/providers/fal/avatar/README.md) - Complete FAL AI avatar documentation
 
 ### FAL AI Text-to-Image Generation (Quad-Model)
-Located in [fal_text_to_image/](mdc:fal_text_to_image) directory with consolidated test structure and direct Python API.
+Located in [packages/providers/fal/text-to-image/](mdc:packages/providers/fal/text-to-image) directory with consolidated test structure and direct Python API.
 
 **Key Components:**
-- [fal_text_to_image_generator.py](mdc:fal_text_to_image/fal_text_to_image_generator.py) - Main FALTextToImageGenerator class
-- [demo.py](mdc:fal_text_to_image/demo.py) - Cost-conscious interactive demo
+- [fal_text_to_image_generator.py](mdc:packages/providers/fal/text-to-image/fal_text_to_image_generator.py) - Main FALTextToImageGenerator class
+- [demo.py](mdc:packages/providers/fal/text-to-image/demo.py) - Cost-conscious interactive demo
 - **Consolidated Test Suite:**
-  - [test_setup.py](mdc:fal_text_to_image/test_setup.py) - **FREE environment and API validation**
-  - [test_generation.py](mdc:fal_text_to_image/test_generation.py) - **PAID image generation tests** (includes `--dragon` flag)
-- [README.md](mdc:fal_text_to_image/README.md) - Complete FAL AI text-to-image documentation
+  - [test_setup.py](mdc:packages/providers/fal/text-to-image/test_setup.py) - **FREE environment and API validation**
+  - [test_generation.py](mdc:packages/providers/fal/text-to-image/test_generation.py) - **PAID image generation tests** (includes `--dragon` flag)
+- [README.md](mdc:packages/providers/fal/text-to-image/README.md) - Complete FAL AI text-to-image documentation
 
 ### FAL AI Image-to-Image Generation (Enhancement Pipeline)
-Located in [fal_image_to_image/](mdc:fal_image_to_image) directory with comprehensive image transformation capabilities and professional package structure.
+Located in [packages/providers/fal/image-to-image/](mdc:packages/providers/fal/image-to-image) directory with comprehensive image transformation capabilities and professional package structure.
 
 **Key Components:**
-- [fal_image_to_image/](mdc:fal_image_to_image/fal_image_to_image/) - Main image enhancement package
-- [setup.py](mdc:fal_image_to_image/setup.py) - Professional package setup
-- [demo.py](mdc:fal_image_to_image/demo.py) - Cost-conscious interactive demo
+- [fal_image_to_image/](mdc:packages/providers/fal/image-to-image/fal_image_to_image/) - Main image enhancement package
+- [setup.py](mdc:packages/providers/fal/image-to-image/setup.py) - Professional package setup
+- [demo.py](mdc:packages/providers/fal/image-to-image/demo.py) - Cost-conscious interactive demo
 - **Comprehensive Test Suite:**
-  - [tests/](mdc:fal_image_to_image/tests/) - Complete testing framework
+  - [tests/](mdc:packages/providers/fal/image-to-image/tests/) - Complete testing framework
 - **Documentation:**
-  - [README.md](mdc:fal_image_to_image/README.md) - Complete FAL AI image-to-image documentation
-  - [docs/](mdc:fal_image_to_image/docs/) - Detailed documentation
+  - [README.md](mdc:packages/providers/fal/image-to-image/README.md) - Complete FAL AI image-to-image documentation
+  - [docs/](mdc:packages/providers/fal/image-to-image/docs/) - Detailed documentation
 - **Examples:**
-  - [examples/](mdc:fal_image_to_image/examples/) - Usage examples and tutorials
+  - [examples/](mdc:packages/providers/fal/image-to-image/examples/) - Usage examples and tutorials
 
 **Key Features:**
 - **FLUX Image Enhancement**: High-quality image refinement and style transfer
@@ -180,25 +180,25 @@ Located in [fal_image_to_image/](mdc:fal_image_to_image) directory with comprehe
 - **Multiple Enhancement Modes**: Style transfer, upscaling, and artistic transformations
 
 ### ElevenLabs Text-to-Speech Package (Modular Architecture)
-Located in [text_to_speech/](mdc:text_to_speech) directory with comprehensive TTS capabilities and AI content pipeline.
+Located in [packages/services/text-to-speech/](mdc:packages/services/text-to-speech) directory with comprehensive TTS capabilities and AI content pipeline.
 
 **Key Components:**
-- [__init__.py](mdc:text_to_speech/__init__.py) - Main package interface with clean imports
+- [__init__.py](mdc:packages/services/text-to-speech/__init__.py) - Main package interface with clean imports
 - **Core TTS System:**
-  - [tts/controller.py](mdc:text_to_speech/tts/controller.py) - Main TTS controller class
-  - [tts/voice_manager.py](mdc:text_to_speech/tts/voice_manager.py) - Voice selection and management (3000+ voices)
-  - [tts/audio_processor.py](mdc:text_to_speech/tts/audio_processor.py) - Audio format handling and processing
+  - [tts/controller.py](mdc:packages/services/text-to-speech/tts/controller.py) - Main TTS controller class
+  - [tts/voice_manager.py](mdc:packages/services/text-to-speech/tts/voice_manager.py) - Voice selection and management (3000+ voices)
+  - [tts/audio_processor.py](mdc:packages/services/text-to-speech/tts/audio_processor.py) - Audio format handling and processing
 - **AI Content Pipeline:**
-  - [pipeline/core.py](mdc:text_to_speech/pipeline/core.py) - OpenRouter AI integration with top 10 models
+  - [pipeline/core.py](mdc:packages/services/text-to-speech/pipeline/core.py) - OpenRouter AI integration with top 10 models
 - **Configuration System:**
-  - [config/voices.py](mdc:text_to_speech/config/voices.py) - Voice presets and configurations
-  - [config/models.py](mdc:text_to_speech/config/models.py) - AI model settings and recommendations
-  - [config/defaults.py](mdc:text_to_speech/config/defaults.py) - Default values and settings
+  - [config/voices.py](mdc:packages/services/text-to-speech/config/voices.py) - Voice presets and configurations
+  - [config/models.py](mdc:packages/services/text-to-speech/config/models.py) - AI model settings and recommendations
+  - [config/defaults.py](mdc:packages/services/text-to-speech/config/defaults.py) - Default values and settings
 - **CLI Tools:**
-  - [cli/interactive.py](mdc:text_to_speech/cli/interactive.py) - Interactive pipeline interface
-  - [cli/quick_start.py](mdc:text_to_speech/cli/quick_start.py) - Quick demo runner
-- [README.md](mdc:text_to_speech/README.md) - Complete package documentation
-- [MIGRATION_GUIDE.md](mdc:text_to_speech/MIGRATION_GUIDE.md) - Migration from old monolithic structure
+  - [cli/interactive.py](mdc:packages/services/text-to-speech/cli/interactive.py) - Interactive pipeline interface
+  - [cli/quick_start.py](mdc:packages/services/text-to-speech/cli/quick_start.py) - Quick demo runner
+- [README.md](mdc:packages/services/text-to-speech/README.md) - Complete package documentation
+- [MIGRATION_GUIDE.md](mdc:packages/services/text-to-speech/MIGRATION_GUIDE.md) - Migration from old monolithic structure
 
 **Key Features:**
 - **3000+ Voice Library**: Popular presets (Rachel, Drew, Bella) and custom voice cloning
@@ -261,161 +261,170 @@ Located in [text_to_speech/](mdc:text_to_speech) directory with comprehensive TT
 veo3/
 ├── README.md                        # Multi-platform project overview
 ├── requirements.txt                 # Main dependencies
-├── .env                            # Legacy configuration file
-├── archive/                         # Legacy tools and older versions
-├── veo3_video_generation/           # Google Veo implementation
-│   ├── veo_video_generation.py     # Main Google Veo functions
-│   ├── fix_permissions.py          # 🔧 Automated permission fix tool
-│   ├── demo.py                     # Interactive Veo demo (2.0/3.0)
-│   ├── test_veo.py                 # Comprehensive test suite
-│   ├── README.md                   # Veo-specific documentation
-│   ├── requirements.txt            # Veo dependencies
-│   ├── .env                        # Veo configuration
-│   ├── images/                     # Input images (smiling_woman.jpg, bet.png)
-│   └── result_folder/              # Veo output videos
-├── fal_image_to_video/              # FAL AI dual-model video implementation
-│   ├── fal_image_to_video_generator.py # FAL AI image-to-video generator class (dual-model)
-│   ├── demo.py                      # Cost-conscious interactive demo
-│   ├── test_fal_ai.py              # Cost-conscious test suite (both models)
-│   ├── test_api_only.py            # FREE API connection test
-│   ├── README.md                    # FAL AI dual-model documentation
-│   ├── COST_CONSCIOUS_TESTING.md   # Cost-conscious testing guide
-│   ├── requirements.txt             # FAL AI dependencies
-│   ├── .env.example                 # FAL AI configuration template
-│   └── output/                      # FAL AI generated videos
-├── fal_text_to_video/               # NEW: FAL AI text-to-video implementation
-│   ├── fal_text_to_video_generator.py # FAL AI text-to-video generator class (dual-model)
-│   ├── demo.py                      # Cost-conscious interactive demo with model selection
-│   ├── test_setup.py               # FREE environment and API validation
-│   ├── test_generation.py          # PAID text-to-video generation tests
-│   ├── README.md                    # FAL AI text-to-video documentation
-│   ├── requirements.txt             # FAL AI dependencies
-│   ├── .env.example                 # FAL AI configuration template
-│   └── output/                      # Generated text-to-video files
-├── fal_video_to_video/              # NEW: FAL AI video-to-video enhancement
-│   ├── fal_video_to_video/          # Main video enhancement package
-│   ├── test_topaz_upscale.sh        # Video upscaling test script
-│   ├── setup.py                     # Professional package setup
-│   ├── README.md                    # FAL AI video-to-video documentation
-│   ├── requirements.txt             # FAL AI dependencies
-│   ├── .env                         # FAL AI configuration
-│   ├── input/                       # Input videos for enhancement
-│   ├── output/                      # Enhanced videos with AI audio
-│   ├── examples/                    # Usage examples and tutorials
-│   ├── docs/                        # Detailed documentation
-│   ├── tests/                       # Complete testing framework
-│   └── test_output/                 # Test-generated enhanced videos
-├── ai_content_pipeline/             # NEW: Unified AI content pipeline
-│   ├── ai_content_pipeline/         # Main pipeline package
-│   │   ├── config/                 # Configuration management
-│   │   ├── models/                 # Model implementations (text-to-image, etc.)
-│   │   ├── pipeline/               # Pipeline management (manager, chain, executor)
-│   │   └── utils/                  # File management and validation
-│   ├── setup.py                     # Professional package setup
-│   ├── README.md                    # AI content pipeline documentation
-│   ├── requirements.txt             # Pipeline dependencies
-│   ├── input/                       # Input files for pipeline operations
-│   ├── output/                      # Generated content from pipelines
-│   ├── temp/                        # Temporary files during chain execution
-│   ├── examples/                    # Usage examples and chain configurations
-│   └── tests/                       # Complete testing framework
-├── fal_avatar_generation/           # FAL AI triple-mode avatar implementation
-│   ├── fal_avatar_generator.py      # FAL AI avatar generator class (triple-mode)
-│   ├── demo.py                      # Cost-conscious interactive demo with mode selection
-│   ├── test_official_example.py    # Test using exact FAL AI documentation examples
-│   ├── test_setup.py               # FREE environment and API validation
-│   ├── test_generation.py          # PAID avatar generation tests (voice/audio/multi flags)
-│   ├── README.md                    # FAL AI avatar documentation
-│   ├── requirements.txt             # FAL AI dependencies
-│   ├── .env                         # FAL AI configuration
-│   ├── output/                      # Generated avatar videos
-│   └── test_output/                 # Test-generated avatar videos
-├── fal_text_to_image/               # FAL AI quad-model text-to-image implementation
-│   ├── fal_text_to_image_generator.py # FAL AI text-to-image generator class
-│   ├── demo.py                      # Cost-conscious interactive demo
-│   ├── test_setup.py               # FREE environment and API validation
-│   ├── test_generation.py          # PAID image generation tests (includes --dragon)
-│   ├── README.md                    # FAL AI text-to-image documentation
-│   ├── requirements.txt             # FAL AI dependencies
-│   ├── .env                         # FAL AI configuration
-│   ├── .gitignore                   # Ignore generated images and outputs
-│   ├── output/                      # Generated images
-│   └── test_output/                 # Test-generated images
-├── fal_image_to_image/              # FAL AI image enhancement implementation
-│   ├── fal_image_to_image/          # Main image enhancement package
-│   ├── setup.py                     # Professional package setup
-│   ├── README.md                    # Complete FAL AI image-to-image documentation
-│   ├── requirements.txt             # FAL AI dependencies
-│   ├── .env                         # FAL AI configuration
-│   ├── input/                       # Input images for transformation
-│   ├── output/                      # Enhanced/transformed images
-│   ├── examples/                    # Usage examples and tutorials
-│   ├── docs/                        # Detailed documentation
-│   ├── tests/                       # Complete testing framework
-│   └── archive/                     # Archived transformations
-├── text_to_speech/                  # ElevenLabs TTS package (modular architecture)
-│   ├── __init__.py                  # Main package interface
-│   ├── setup.py                     # Professional package setup
-│   ├── README.md                    # Complete package documentation
-│   ├── MIGRATION_GUIDE.md          # Migration from old monolithic structure
-│   ├── requirements.txt             # TTS dependencies
-│   ├── .env                         # ElevenLabs configuration
-│   ├── .gitignore                   # Ignore generated audio and cache
-│   ├── activate_env.sh             # Environment activation script
-│   ├── models/                      # Data models and enums
-│   │   ├── common.py               # Shared models (VoiceSettings, AudioFormat)
-│   │   └── pipeline.py             # Pipeline-specific models
-│   ├── tts/                         # Core TTS functionality
-│   │   ├── controller.py           # Main TTS controller class
-│   │   ├── voice_manager.py        # Voice selection and management (3000+)
-│   │   └── audio_processor.py      # Audio format handling
-│   ├── pipeline/                    # OpenRouter AI integration
-│   │   └── core.py                 # Complete pipeline orchestration
-│   ├── config/                      # Configuration management
-│   │   ├── voices.py               # Voice presets and configurations
-│   │   ├── models.py               # AI model settings and recommendations
-│   │   └── defaults.py             # Default values and settings
-│   ├── utils/                       # Utility functions
-│   │   ├── file_manager.py         # File operations
-│   │   ├── api_helpers.py          # API utilities
-│   │   └── validators.py           # Input validation
-│   ├── cli/                         # Command line tools
-│   │   ├── interactive.py          # Interactive pipeline interface
-│   │   └── quick_start.py          # Quick demo runner
-│   ├── examples/                    # Usage examples
-│   │   └── basic_usage.py          # Basic TTS examples
-│   ├── dialogue/                    # Multi-speaker dialogue features
-│   └── output/                      # Generated audio files
-└── video_tools/                     # Video processing utilities
-    ├── video_audio_utils.py         # Video/audio processing functions
-    ├── README.md                    # Video tools documentation
-    ├── .gitignore                   # Ignore generated videos and audio
-    └── sample_video.*               # Sample files for testing
+├── setup.py                         # Unified package setup
+├── .env                            # Unified configuration file
+├── packages/                        # Main package directory
+│   ├── core/                       # Core functionality
+│   │   └── ai_content_pipeline/    # Unified AI content pipeline
+│   │       ├── ai_content_pipeline/ # Main pipeline package
+│   │       │   ├── config/         # Configuration management
+│   │       │   ├── models/         # Model implementations
+│   │       │   ├── pipeline/       # Pipeline management
+│   │       │   └── utils/          # File management and validation
+│   │       ├── setup.py            # Professional package setup
+│   │       ├── README.md           # AI content pipeline documentation
+│   │       ├── requirements.txt    # Pipeline dependencies
+│   │       ├── input/              # Input files for pipeline operations
+│   │       ├── output/             # Generated content from pipelines
+│   │       ├── temp/               # Temporary files during chain execution
+│   │       ├── examples/           # Usage examples and chain configurations
+│   │       └── tests/              # Complete testing framework
+│   ├── providers/                  # AI service providers
+│   │   ├── google/                 # Google services
+│   │   │   └── veo/                # Google Veo video generation
+│   │   │       ├── veo_video_generation.py # Main Google Veo functions
+│   │   │       ├── fix_permissions.py # Automated permission fix tool
+│   │   │       ├── demo.py         # Interactive Veo demo (2.0/3.0)
+│   │   │       ├── test_veo.py     # Comprehensive test suite
+│   │   │       ├── README.md       # Veo-specific documentation
+│   │   │       ├── requirements.txt # Veo dependencies
+│   │   │       ├── .env            # Veo configuration
+│   │   │       ├── images/         # Input images
+│   │   │       └── result_folder/  # Veo output videos
+│   │   └── fal/                    # FAL AI services
+│   │       ├── video/              # FAL AI video generation (dual-model)
+│   │       │   ├── fal_video_generator.py # FAL AI video generator class
+│   │       │   ├── demo.py         # Cost-conscious interactive demo
+│   │       │   ├── test_fal_ai.py  # Cost-conscious test suite
+│   │       │   ├── test_api_only.py # FREE API connection test
+│   │       │   ├── README.md       # FAL AI dual-model documentation
+│   │       │   ├── COST_CONSCIOUS_TESTING.md # Cost-conscious testing guide
+│   │       │   ├── requirements.txt # FAL AI dependencies
+│   │       │   ├── .env.example    # FAL AI configuration template
+│   │       │   └── output/         # FAL AI generated videos
+│   │       ├── text-to-video/      # FAL AI text-to-video implementation
+│   │       │   ├── fal_text_to_video_generator.py # FAL AI text-to-video generator class
+│   │       │   ├── demo.py         # Cost-conscious interactive demo
+│   │       │   ├── test_setup.py   # FREE environment and API validation
+│   │       │   ├── test_generation.py # PAID text-to-video generation tests
+│   │       │   ├── README.md       # FAL AI text-to-video documentation
+│   │       │   ├── requirements.txt # FAL AI dependencies
+│   │       │   ├── .env.example    # FAL AI configuration template
+│   │       │   └── output/         # Generated text-to-video files
+│   │       ├── video-to-video/     # FAL AI video-to-video enhancement
+│   │       │   ├── fal_video_to_video/ # Main video enhancement package
+│   │       │   ├── test_topaz_upscale.sh # Video upscaling test script
+│   │       │   ├── setup.py        # Professional package setup
+│   │       │   ├── README.md       # FAL AI video-to-video documentation
+│   │       │   ├── requirements.txt # FAL AI dependencies
+│   │       │   ├── .env            # FAL AI configuration
+│   │       │   ├── input/          # Input videos for enhancement
+│   │       │   ├── output/         # Enhanced videos with AI audio
+│   │       │   ├── examples/       # Usage examples and tutorials
+│   │       │   ├── docs/           # Detailed documentation
+│   │       │   ├── tests/          # Complete testing framework
+│   │       │   └── test_output/    # Test-generated enhanced videos
+│   │       ├── avatar/             # FAL AI triple-mode avatar implementation
+│   │       │   ├── fal_avatar_generator.py # FAL AI avatar generator class
+│   │       │   ├── demo.py         # Cost-conscious interactive demo
+│   │       │   ├── test_official_example.py # Test using exact FAL AI documentation
+│   │       │   ├── test_setup.py   # FREE environment and API validation
+│   │       │   ├── test_generation.py # PAID avatar generation tests
+│   │       │   ├── README.md       # FAL AI avatar documentation
+│   │       │   ├── requirements.txt # FAL AI dependencies
+│   │       │   ├── .env            # FAL AI configuration
+│   │       │   ├── output/         # Generated avatar videos
+│   │       │   └── test_output/    # Test-generated avatar videos
+│   │       ├── text-to-image/      # FAL AI quad-model text-to-image implementation
+│   │       │   ├── fal_text_to_image_generator.py # FAL AI text-to-image generator class
+│   │       │   ├── demo.py         # Cost-conscious interactive demo
+│   │       │   ├── test_setup.py   # FREE environment and API validation
+│   │       │   ├── test_generation.py # PAID image generation tests
+│   │       │   ├── README.md       # FAL AI text-to-image documentation
+│   │       │   ├── requirements.txt # FAL AI dependencies
+│   │       │   ├── .env            # FAL AI configuration
+│   │       │   ├── .gitignore      # Ignore generated images and outputs
+│   │       │   ├── output/         # Generated images
+│   │       │   └── test_output/    # Test-generated images
+│   │       └── image-to-image/     # FAL AI image enhancement implementation
+│   │           ├── fal_image_to_image/ # Main image enhancement package
+│   │           ├── setup.py        # Professional package setup
+│   │           ├── README.md       # Complete FAL AI image-to-image documentation
+│   │           ├── requirements.txt # FAL AI dependencies
+│   │           ├── .env            # FAL AI configuration
+│   │           ├── input/          # Input images for transformation
+│   │           ├── output/         # Enhanced/transformed images
+│   │           ├── examples/       # Usage examples and tutorials
+│   │           ├── docs/           # Detailed documentation
+│   │           ├── tests/          # Complete testing framework
+│   │           └── archive/        # Archived transformations
+│   └── services/                   # Additional services
+│       ├── text-to-speech/         # ElevenLabs TTS package (modular architecture)
+│       │   ├── __init__.py         # Main package interface
+│       │   ├── setup.py            # Professional package setup
+│       │   ├── README.md           # Complete package documentation
+│       │   ├── MIGRATION_GUIDE.md  # Migration from old monolithic structure
+│       │   ├── requirements.txt    # TTS dependencies
+│       │   ├── .env                # ElevenLabs configuration
+│       │   ├── .gitignore          # Ignore generated audio and cache
+│       │   ├── activate_env.sh     # Environment activation script
+│       │   ├── models/             # Data models and enums
+│       │   │   ├── common.py       # Shared models (VoiceSettings, AudioFormat)
+│       │   │   └── pipeline.py     # Pipeline-specific models
+│       │   ├── tts/                # Core TTS functionality
+│       │   │   ├── controller.py   # Main TTS controller class
+│       │   │   ├── voice_manager.py # Voice selection and management (3000+)
+│       │   │   └── audio_processor.py # Audio format handling
+│       │   ├── pipeline/           # OpenRouter AI integration
+│       │   │   └── core.py         # Complete pipeline orchestration
+│       │   ├── config/             # Configuration management
+│       │   │   ├── voices.py       # Voice presets and configurations
+│       │   │   ├── models.py       # AI model settings and recommendations
+│       │   │   └── defaults.py     # Default values and settings
+│       │   ├── utils/              # Utility functions
+│       │   │   ├── file_manager.py # File operations
+│       │   │   ├── api_helpers.py  # API utilities
+│       │   │   └── validators.py   # Input validation
+│       │   ├── cli/                # Command line tools
+│       │   │   ├── interactive.py  # Interactive pipeline interface
+│       │   │   └── quick_start.py  # Quick demo runner
+│       │   ├── examples/           # Usage examples
+│       │   │   └── basic_usage.py  # Basic TTS examples
+│       │   ├── dialogue/           # Multi-speaker dialogue features
+│       │   └── output/             # Generated audio files
+│       └── video-tools/            # Video processing utilities
+│           ├── video_audio_utils.py # Video/audio processing functions
+│           ├── README.md           # Video tools documentation
+│           ├── .gitignore          # Ignore generated videos and audio
+│           └── sample_video.*      # Sample files for testing
+├── tests/                          # Consolidated test suite
+├── docs/                           # Documentation
+└── archive/                        # Legacy tools and older versions
 ```
 
 ## Configuration Requirements
 
 ### Google Veo Setup
 - **Quick Setup**: Run `python fix_permissions.py` (fixes 90% of issues automatically)
-- Google Cloud Project ID (configured in [veo3_video_generation/.env](mdc:veo3_video_generation/.env))
+- Google Cloud Project ID (configured in [packages/providers/google/veo/.env](mdc:packages/providers/google/veo/.env))
 - Google Cloud Storage bucket for output
 - Vertex AI API enabled (automated by fix script)
 - gcloud CLI authentication
 
 ### FAL AI Setup (Simpler)
 - FAL AI API key in respective `.env` files:
-  - [fal_image_to_video/.env.example](mdc:fal_image_to_video/.env.example) (copy to `.env`)
-  - [fal_avatar_generation/.env](mdc:fal_avatar_generation/.env)  
-  - [fal_text_to_image/.env](mdc:fal_text_to_image/.env)
-  - [fal_image_to_image/.env](mdc:fal_image_to_image/.env)
+  - [packages/providers/fal/video/.env.example](mdc:packages/providers/fal/video/.env.example) (copy to `.env`)
+  - [packages/providers/fal/avatar/.env](mdc:packages/providers/fal/avatar/.env)  
+  - [packages/providers/fal/text-to-image/.env](mdc:packages/providers/fal/text-to-image/.env)
+  - [packages/providers/fal/image-to-image/.env](mdc:packages/providers/fal/image-to-image/.env)
 - Python dependencies: fal-client, requests, python-dotenv
 - Single API key works for all FAL AI models (video, avatar, text-to-image, image-to-image)
 
 ### ElevenLabs TTS Setup (Professional Package)
-- ElevenLabs API key in [text_to_speech/.env](mdc:text_to_speech/.env)
+- ElevenLabs API key in [packages/services/text-to-speech/.env](mdc:packages/services/text-to-speech/.env)
 - Optional: OpenRouter API key for AI content pipeline
-- Package installation: `pip install -r text_to_speech/requirements.txt`
-- Environment activation: `source text_to_speech/activate_env.sh`
+- Package installation: `pip install -r packages/services/text-to-speech/requirements.txt`
+- Environment activation: `source packages/services/text-to-speech/activate_env.sh`
 - Professional package structure with setup.py and modular imports
 
 ## Model Selection Guidelines

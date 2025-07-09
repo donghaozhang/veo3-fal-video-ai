@@ -36,7 +36,7 @@ All modules provide production-ready API access with cost-conscious testing fram
 ## Core Components
 
 ### FALImageToVideoGenerator Class
-Located in [fal_image_to_video/fal_image_to_video_generator.py](mdc:fal_image_to_video/fal_image_to_video_generator.py)
+Located in [packages/providers/fal/video/fal_video_generator.py](mdc:packages/providers/fal/video/fal_video_generator.py)
 
 **Dual-Model Support:**
 - Single class supports both models
@@ -65,7 +65,7 @@ generator.generate_video_from_local_image(
 ```
 
 ### FALTextToVideoGenerator Class (NEW)
-Located in [fal_text_to_video/fal_text_to_video_generator.py](mdc:fal_text_to_video/fal_text_to_video_generator.py)
+Located in [packages/providers/fal/text-to-video/fal_text_to_video_generator.py](mdc:packages/providers/fal/text-to-video/fal_text_to_video_generator.py)
 
 **Dual-Model Support:**
 - Direct text-to-video generation (no image step required)
@@ -117,7 +117,7 @@ generator.print_model_info()  # Formatted output
 ```
 
 ### FALVideoToVideoGenerator Class (NEW)
-Located in [fal_video_to_video/fal_video_to_video/](mdc:fal_video_to_video/fal_video_to_video/) directory
+Located in [packages/providers/fal/video-to-video/fal_video_to_video/](mdc:packages/providers/fal/video-to-video/fal_video_to_video/) directory
 
 **ThinkSound Audio Enhancement:**
 - AI-powered audio generation for existing videos
@@ -182,7 +182,7 @@ python -m fal_video_to_video batch -f batch.json
 - **Batch Processing**: Efficient processing of multiple videos
 
 ### FALAvatarGenerator Class
-Located in [fal_avatar_generation/fal_avatar_generator.py](mdc:fal_avatar_generation/fal_avatar_generator.py)
+Located in [packages/providers/fal/avatar/fal_avatar_generator.py](mdc:packages/providers/fal/avatar/fal_avatar_generator.py)
 
 **Triple-Mode Support:**
 - Single class supports all three avatar generation modes
@@ -244,7 +244,7 @@ result = generator.generate_official_example(
 - Cost-conscious testing with separate FREE and PAID test suites
 
 ### FALTextToImageGenerator Class
-Located in [fal_text_to_image/fal_text_to_image_generator.py](mdc:fal_text_to_image/fal_text_to_image_generator.py)
+Located in [packages/providers/fal/text-to-image/fal_text_to_image_generator.py](mdc:packages/providers/fal/text-to-image/fal_text_to_image_generator.py)
 
 **Quad-Model Support:**
 - Single class supports all four models
@@ -295,7 +295,7 @@ generator.generate_image_with_flux_schnell(
 - Progress tracking with numbered steps
 
 ### FALImageToImageGenerator Class
-Located in [fal_image_to_image/fal_image_to_image/](mdc:fal_image_to_image/fal_image_to_image/) directory with comprehensive image transformation capabilities.
+Located in [packages/providers/fal/image-to-image/fal_image_to_image/](mdc:packages/providers/fal/image-to-image/fal_image_to_image/) directory with comprehensive image transformation capabilities.
 
 **Enhancement Pipeline Support:**
 - Single class supports multiple image transformation modes
@@ -334,7 +334,7 @@ results = generator.batch_enhance(
 ### Cost-Conscious Testing Framework
 
 **Video Generation Testing:**
-Located in [fal_image_to_video/test_fal_ai.py](mdc:fal_image_to_video/test_fal_ai.py)
+Located in [packages/providers/fal/video/test_fal_ai.py](mdc:packages/providers/fal/video/test_fal_ai.py)
 
 **FREE Testing Commands (No Cost):**
 ```bash
@@ -360,7 +360,7 @@ python test_fal_ai.py --compare     # Generates 2 videos
 ```
 
 **Avatar Generation Testing:**
-Located in [fal_avatar_generation/test_generation.py](mdc:fal_avatar_generation/test_generation.py)
+Located in [packages/providers/fal/avatar/test_generation.py](mdc:packages/providers/fal/avatar/test_generation.py)
 
 **FREE Testing Commands (No Cost):**
 ```bash
@@ -397,7 +397,7 @@ python test_generation.py --scenarios        # Multiple test scenarios
 ```
 
 **Text-to-Image Testing:**
-Located in [fal_text_to_image/test_generation.py](mdc:fal_text_to_image/test_generation.py)
+Located in [packages/providers/fal/text-to-image/test_generation.py](mdc:packages/providers/fal/text-to-image/test_generation.py)
 
 **FREE Testing Commands (No Cost):**
 ```bash
@@ -425,7 +425,7 @@ python test_generation.py --all        # Generates 4 images
 ```
 
 **Image-to-Image Testing:**
-Located in [fal_image_to_image/tests/](mdc:fal_image_to_image/tests/) directory
+Located in [packages/providers/fal/image-to-image/tests/](mdc:packages/providers/fal/image-to-image/tests/) directory
 
 **FREE Testing Commands (No Cost):**
 ```bash
@@ -461,13 +461,13 @@ python tests/test_full_pipeline.py                 # Test complete workflow
 ### Interactive Demos
 
 **Video Generation Demo:**
-Located in [fal_image_to_video/demo.py](mdc:fal_image_to_video/demo.py)
+Located in [packages/providers/fal/video/demo.py](mdc:packages/providers/fal/video/demo.py)
 - Cost warnings and confirmation prompts
 - Model selection menu with cost estimates
 - Side-by-side model comparison (with expensive operation warning)
 
 **Avatar Generation Demo:**
-Located in [fal_avatar_generation/demo.py](mdc:fal_avatar_generation/demo.py)
+Located in [packages/providers/fal/avatar/demo.py](mdc:packages/providers/fal/avatar/demo.py)
 - Interactive mode selection (Text-to-Speech, Audio-to-Avatar, Multi-Audio Conversation)
 - Voice selection with official example highlighting (Bill voice emphasized)
 - Cost estimation and confirmation prompts
@@ -475,7 +475,7 @@ Located in [fal_avatar_generation/demo.py](mdc:fal_avatar_generation/demo.py)
 - Official example option for quick testing
 
 **Text-to-Image Demo:**
-Located in [fal_text_to_image/demo.py](mdc:fal_text_to_image/demo.py)
+Located in [packages/providers/fal/text-to-image/demo.py](mdc:packages/providers/fal/text-to-image/demo.py)
 - Interactive model selection
 - Batch generation with model picker
 - Cost estimation and confirmation
@@ -483,7 +483,7 @@ Located in [fal_text_to_image/demo.py](mdc:fal_text_to_image/demo.py)
 - Support for negative prompts and custom parameters
 
 **Image-to-Image Demo:**
-Located in [fal_image_to_image/demo.py](mdc:fal_image_to_image/demo.py)
+Located in [packages/providers/fal/image-to-image/demo.py](mdc:packages/providers/fal/image-to-image/demo.py)
 - Interactive enhancement mode selection
 - Batch processing with image picker
 - Cost estimation and confirmation

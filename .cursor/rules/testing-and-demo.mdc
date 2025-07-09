@@ -15,24 +15,24 @@ This document covers the cost-conscious testing and demonstration capabilities f
 ## Cost-Conscious Test Suite Overview
 
 ### FAL AI Video Generation Tests
-Located in [fal_image_to_video/test_fal_ai.py](mdc:fal_image_to_video/test_fal_ai.py) and [fal_image_to_video/test_api_only.py](mdc:fal_image_to_video/test_api_only.py)
+Located in [packages/providers/fal/video/test_fal_ai.py](mdc:packages/providers/fal/video/test_fal_ai.py) and [packages/providers/fal/video/test_api_only.py](mdc:packages/providers/fal/video/test_api_only.py)
 
 ### FAL AI Avatar Generation Tests (TRIPLE-MODE)
-Located in [fal_avatar_generation/](mdc:fal_avatar_generation/) with comprehensive triple-mode test structure:
-- **[test_setup.py](mdc:fal_avatar_generation/test_setup.py)** - FREE environment and API validation
-- **[test_official_example.py](mdc:fal_avatar_generation/test_official_example.py)** - Test using exact FAL AI documentation examples
-- **[test_generation.py](mdc:fal_avatar_generation/test_generation.py)** - PAID avatar generation tests (includes `--voice`, `--audio`, `--multi` flags)
+Located in [packages/providers/fal/avatar/](mdc:packages/providers/fal/avatar/) with comprehensive triple-mode test structure:
+- **[test_setup.py](mdc:packages/providers/fal/avatar/test_setup.py)** - FREE environment and API validation
+- **[test_official_example.py](mdc:packages/providers/fal/avatar/test_official_example.py)** - Test using exact FAL AI documentation examples
+- **[test_generation.py](mdc:packages/providers/fal/avatar/test_generation.py)** - PAID avatar generation tests (includes `--voice`, `--audio`, `--multi` flags)
 
 ### FAL AI Text-to-Image Tests (CONSOLIDATED)
-Located in [fal_text_to_image/](mdc:fal_text_to_image/) with consolidated test structure:
-- **[test_setup.py](mdc:fal_text_to_image/test_setup.py)** - FREE environment and API validation
-- **[test_generation.py](mdc:fal_text_to_image/test_generation.py)** - PAID image generation tests (includes `--dragon` flag)
+Located in [packages/providers/fal/text-to-image/](mdc:packages/providers/fal/text-to-image/) with consolidated test structure:
+- **[test_setup.py](mdc:packages/providers/fal/text-to-image/test_setup.py)** - FREE environment and API validation
+- **[test_generation.py](mdc:packages/providers/fal/text-to-image/test_generation.py)** - PAID image generation tests (includes `--dragon` flag)
 
 ### FAL AI Image-to-Image Tests (PROFESSIONAL PACKAGE)
-Located in [fal_image_to_image/tests/](mdc:fal_image_to_image/tests/) with professional package test structure:
-- **[test_setup.py](mdc:fal_image_to_image/tests/test_setup.py)** - FREE environment and API validation
-- **[test_imports.py](mdc:fal_image_to_image/tests/test_imports.py)** - FREE package structure validation
-- **[test_enhancement.py](mdc:fal_image_to_image/tests/test_enhancement.py)** - PAID image enhancement tests (includes `--style_transfer`, `--upscale`, `--artistic` flags)
+Located in [packages/providers/fal/image-to-image/tests/](mdc:packages/providers/fal/image-to-image/tests/) with professional package test structure:
+- **[test_setup.py](mdc:packages/providers/fal/image-to-image/tests/test_setup.py)** - FREE environment and API validation
+- **[test_imports.py](mdc:packages/providers/fal/image-to-image/tests/test_imports.py)** - FREE package structure validation
+- **[test_enhancement.py](mdc:packages/providers/fal/image-to-image/tests/test_enhancement.py)** - PAID image enhancement tests (includes `--style_transfer`, `--upscale`, `--artistic` flags)
 
 The test suites provide comprehensive validation with cost warnings and confirmation prompts to prevent unexpected charges.
 
@@ -159,7 +159,7 @@ python tests/test_full_pipeline.py                 # Test complete workflow
 ## FREE Testing Scripts
 
 ### Video Generation
-Located in [fal_image_to_video/test_api_only.py](mdc:fal_image_to_video/test_api_only.py)
+Located in [packages/providers/fal/video/test_api_only.py](mdc:packages/providers/fal/video/test_api_only.py)
 
 A completely FREE testing script that validates your setup without generating any videos:
 
@@ -171,7 +171,7 @@ A completely FREE testing script that validates your setup without generating an
 - **Generator initialization** testing
 
 ### Avatar Generation
-Located in [fal_avatar_generation/test_setup.py](mdc:fal_avatar_generation/test_setup.py)
+Located in [packages/providers/fal/avatar/test_setup.py](mdc:packages/providers/fal/avatar/test_setup.py)
 
 A completely FREE testing script that validates your avatar generation setup:
 
