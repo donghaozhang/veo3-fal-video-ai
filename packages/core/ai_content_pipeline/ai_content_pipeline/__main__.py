@@ -344,7 +344,7 @@ Examples:
     chain_parser.add_argument("--config", required=True, help="Path to chain configuration (YAML/JSON)")
     chain_parser.add_argument("--input-text", help="Input text for the chain (optional if prompt defined in config)")
     chain_parser.add_argument("--prompt-file", help="Path to text file containing the prompt")
-    chain_parser.add_argument("--no-confirm", action="store_true", help="Skip confirmation prompt")
+    chain_parser.add_argument("--no-confirm", action="store_true", default=True, help="Skip confirmation prompt")
     chain_parser.add_argument("--save-json", help="Save results as JSON")
     
     # Create examples command

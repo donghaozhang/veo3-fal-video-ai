@@ -17,11 +17,11 @@ ai-content-pipeline list-models
 
 # Run pipeline from YAML config
 echo -e "\n📄 Running pipeline from YAML config..."
-ai-content-pipeline run-chain --config input/pipelines/tts_single_voice_test.yaml --no-confirm
+ai-content-pipeline run-chain --config input/pipelines/tts_comprehensive_test.yaml --no-confirm
 
 # Run with parallel execution (2-3x speedup)
 # echo -e "\n⚡ Running with parallel execution..."
-# PIPELINE_PARALLEL_ENABLED=true ai-content-pipeline run-chain --config input/pipelines/tts_single_voice_test.yaml --no-confirm
+# PIPELINE_PARALLEL_ENABLED=true ai-content-pipeline run-chain --config input/pipelines/tts_comprehensive_test.yaml --no-confirm
 
 # Generate single image
 echo -e "\n🎨 Generating single image..."
@@ -32,5 +32,13 @@ ai-content-pipeline generate-image --text "A beautiful supermodel in the rock" -
 # Create video from text (text → image → video)
 echo -e "\n🎬 Creating video from text..."
 ai-content-pipeline create-video --text "A beautiful sunset"
+
+# Test artistic transformation pipeline
+echo -e "\n🎨 Testing artistic transformation pipeline..."
+ai-content-pipeline run-chain --config input/pipelines/image_artistic_transform.yaml
+
+# Test OCR extraction pipeline
+echo -e "\n📝 Testing OCR extraction pipeline..."
+ai-content-pipeline run-chain --config input/pipelines/analysis_ocr_extraction.yaml
 
 echo -e "\n✅ All tests completed successfully!"
