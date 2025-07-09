@@ -125,12 +125,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url=URL,
-    packages=find_packages(include=[
-        "packages.*",
-        "packages.core.*",
-        "packages.providers.*", 
-        "packages.services.*",
-    ]),
+    packages=find_packages(),
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
@@ -156,14 +151,6 @@ setup(
             # AI Content Pipeline
             "ai-content-pipeline=packages.core.ai_content_pipeline.__main__:main",
             "aicp=packages.core.ai_content_pipeline.__main__:main",
-            
-            # FAL AI Providers
-            "fal-image-to-image=packages.providers.fal.image_to_image.cli:main",
-            "fal-video-to-video=packages.providers.fal.video_to_video.__main__:main",
-            
-            # Text-to-Speech Services
-            "elevenlabs-tts=packages.services.text_to_speech.cli.interactive:main",
-            "tts-quick-start=packages.services.text_to_speech.cli.quick_start:main",
         ],
     },
     include_package_data=True,

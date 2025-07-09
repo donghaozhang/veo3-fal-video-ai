@@ -107,6 +107,8 @@ env/
 ENV/
 .venv/
 .env/
+test_env
+test_env/
 
 # IDE files
 .vscode/
