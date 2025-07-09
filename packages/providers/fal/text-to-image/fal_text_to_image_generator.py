@@ -65,7 +65,7 @@ class FALTextToImageGenerator:
                 "enable_safety_checker": True
             },
             "seedream": {
-                "image_size": "1024x1024",  # Options: 512x512, 768x768, 1024x1024, 1152x896, 896x1152
+                "image_size": "square",  # Options: square_hd, square, portrait_4_3, portrait_16_9, landscape_4_3, landscape_16_9
                 "num_inference_steps": 20,
                 "guidance_scale": 7.5,
                 "num_images": 1,
@@ -234,7 +234,7 @@ class FALTextToImageGenerator:
     def generate_with_seedream(
         self,
         prompt: str,
-        image_size: str = "1024x1024",
+        image_size: str = "square",
         num_inference_steps: int = 20,
         guidance_scale: float = 7.5,
         negative_prompt: Optional[str] = None,
@@ -245,7 +245,7 @@ class FALTextToImageGenerator:
         
         Args:
             prompt: Text description (Chinese or English)
-            image_size: Image dimensions (512x512, 768x768, 1024x1024, 1152x896, 896x1152)
+            image_size: Image aspect ratio (square_hd, square, portrait_4_3, portrait_16_9, landscape_4_3, landscape_16_9)
             num_inference_steps: Number of denoising steps (1-50, default 20)
             guidance_scale: How closely to follow the prompt (1.0-20.0, default 7.5)
             negative_prompt: What to avoid in the image
