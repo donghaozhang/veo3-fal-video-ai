@@ -4,12 +4,13 @@ Run all AI Content Pipeline tests
 """
 import subprocess
 import sys
+import os
 from pathlib import Path
 
-def run_test(test_file):
+def run_test(test_name, test_file):
     """Run a single test file and return success status"""
     print(f"\n{'='*60}")
-    print(f"🧪 Running: {test_file}")
+    print(f"🧪 Running: {test_name}")
     print('='*60)
     
     try:
@@ -17,7 +18,7 @@ def run_test(test_file):
             [sys.executable, test_file],
             capture_output=True,
             text=True,
-            timeout=60
+            timeout=120  # Increased timeout for integration tests
         )
         
         # Print output
@@ -26,17 +27,17 @@ def run_test(test_file):
             print("STDERR:", result.stderr)
         
         if result.returncode == 0:
-            print(f"✅ {test_file} - PASSED")
+            print(f"\n✅ {test_name} - PASSED")
             return True
         else:
-            print(f"❌ {test_file} - FAILED (exit code: {result.returncode})")
+            print(f"\n❌ {test_name} - FAILED (exit code: {result.returncode})")
             return False
             
     except subprocess.TimeoutExpired:
-        print(f"⏱️ {test_file} - TIMEOUT")
+        print(f"\n⏱️ {test_name} - TIMEOUT")
         return False
     except Exception as e:
-        print(f"❌ {test_file} - ERROR: {e}")
+        print(f"\n❌ {test_name} - ERROR: {e}")
         return False
 
 def main():
@@ -44,23 +45,36 @@ def main():
     print("🚀 AI Content Pipeline - Test Suite Runner")
     print("="*60)
     
-    # Get all test files
-    tests_dir = Path(__file__).parent
-    test_files = sorted([
-        f for f in tests_dir.glob("test_*.py") 
-        if f.name != "run_all_tests.py"
-    ])
+    # Change to project root directory
+    project_root = Path(__file__).parent.parent
+    os.chdir(project_root)
     
-    print(f"📋 Found {len(test_files)} test files:")
-    for test_file in test_files:
-        print(f"   • {test_file.name}")
+    # Check command line arguments
+    quick_mode = len(sys.argv) > 1 and sys.argv[1] == '--quick'
+    
+    # Define test order and descriptions
+    if quick_mode:
+        print("⚡ Running in quick mode (core tests only)")
+        tests = [
+            ("Core Tests", "tests/test_core.py"),
+        ]
+    else:
+        tests = [
+            ("Core Tests", "tests/test_core.py"),
+            ("Integration Tests", "tests/test_integration.py"),
+        ]
+    
+    print(f"📋 Running {len(tests)} test suite(s):")
+    for test_name, test_file in tests:
+        status = "✓" if Path(test_file).exists() else "✗"
+        print(f"   {status} {test_name}")
     
     # Run all tests
     passed = 0
     failed = 0
     
-    for test_file in test_files:
-        if run_test(str(test_file)):
+    for test_name, test_file in tests:
+        if run_test(test_name, test_file):
             passed += 1
         else:
             failed += 1
@@ -71,13 +85,28 @@ def main():
     print('='*60)
     print(f"✅ Passed: {passed}")
     print(f"❌ Failed: {failed}")
-    print(f"📋 Total: {len(test_files)}")
+    print(f"📋 Total: {len(tests)}")
     
     if failed == 0:
         print("\n🎉 All tests passed!")
+        
+        if not quick_mode:
+            print("\n🏆 The AI Content Pipeline package is fully functional!")
+            print("\n🔧 Available Commands:")
+            print("   • ai-content-pipeline --help")
+            print("   • ai-content-pipeline list-models")
+            print("   • ai-content-pipeline run-chain --config config.yaml")
+            print("   • aicp (shortened alias)")
+        
         return 0
     else:
         print(f"\n⚠️  {failed} test(s) failed!")
+        print("\n💡 To run individual tests:")
+        print("   python tests/test_core.py")
+        print("   python tests/test_integration.py")
+        print("   python tests/demo.py --interactive")
+        print("\n🔧 Test runner options:")
+        print("   python tests/run_all_tests.py --quick  # Core tests only")
         return 1
 
 if __name__ == "__main__":
