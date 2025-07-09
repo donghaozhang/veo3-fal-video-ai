@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
 Basic test to demonstrate AI Content Pipeline package functionality
+using the installed package directly
 """
 import sys
 import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'packages', 'core', 'ai_content_pipeline'))
-
-from ai_content_pipeline.pipeline.manager import AIPipelineManager
-from ai_content_pipeline.pipeline.chain import ContentCreationChain, PipelineStep, StepType
-from dotenv import load_dotenv
 import tempfile
 import json
+from dotenv import load_dotenv
+
+# Use the installed package directly
+from packages.core.ai_content_pipeline.ai_content_pipeline.pipeline.manager import AIPipelineManager
 
 # Load environment variables
 load_dotenv()
@@ -96,7 +96,6 @@ def test_yaml_config():
             chain = manager.create_chain_from_config(yaml_path)
             print(f"✅ YAML config loaded successfully")
             print(f"📋 Chain: {chain.name}")
-            print(f"📝 Description: {chain.description}")
             print(f"🔗 Steps: {len(chain.steps)}")
             
             # Show step details
