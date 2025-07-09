@@ -316,6 +316,39 @@ See [CLAUDE.md](CLAUDE.md) for detailed commands for each package.
 - **Parallel Execution** - Optional parallel processing for improved performance
 - **Cost-Conscious Design** - Built-in cost estimation and management
 
+## 📚 Resources
+
+### 🚀 AI Content Pipeline Resources
+- [Pipeline Documentation](packages/core/ai_content_pipeline/docs/README.md)
+- [Getting Started Guide](packages/core/ai_content_pipeline/docs/GETTING_STARTED.md)
+- [YAML Configuration Reference](packages/core/ai_content_pipeline/docs/YAML_CONFIGURATION.md)
+- [Parallel Execution Design](packages/core/ai_content_pipeline/docs/parallel_pipeline_design.md)
+
+### Google Veo Resources
+- [Veo API Documentation](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/veo-video-generation)
+- [Google GenAI SDK](https://github.com/google/generative-ai-python)
+- [Vertex AI Console](https://console.cloud.google.com/vertex-ai)
+
+### FAL AI Resources
+- [FAL AI Platform](https://fal.ai/)
+- [MiniMax Hailuo Documentation](https://fal.ai/models/fal-ai/minimax-video-01)
+- [Kling Video 2.1 Documentation](https://fal.ai/models/fal-ai/kling-video/v2.1/standard/image-to-video/api)
+- [FAL AI Avatar Documentation](https://fal.ai/models/fal-ai/avatar-video)
+- [ThinksSound API Documentation](https://fal.ai/models/fal-ai/thinksound/api)
+- [Topaz Video Upscale Documentation](https://fal.ai/models/fal-ai/topaz/upscale/video/api)
+
+### Text-to-Speech Resources
+- [ElevenLabs API Documentation](https://elevenlabs.io/docs/capabilities/text-to-speech)
+- [OpenRouter Platform](https://openrouter.ai/)
+- [ElevenLabs Voice Library](https://elevenlabs.io/app/speech-synthesis/text-to-speech)
+- [Text-to-Dialogue Documentation](https://elevenlabs.io/docs/cookbooks/text-to-dialogue)
+- [Package Migration Guide](packages/services/text-to-speech/docs/MIGRATION_GUIDE.md)
+
+### Additional Documentation
+- [Project Instructions](CLAUDE.md) - Comprehensive development guide
+- [Documentation](docs/) - Additional documentation and guides
+- [Package Organization](docs/repository_organization_guide.md) - Package structure guide
+
 ## 🤝 Contributing
 
 1. Follow the development patterns in [CLAUDE.md](CLAUDE.md)
