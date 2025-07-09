@@ -1,44 +1,50 @@
-# Google Cloud and Veo Dependencies
-google-cloud-aiplatform>=1.38.0
-google-cloud-storage>=2.10.0
-google-auth>=2.23.0
-google-genai>=0.1.0
-google-generativeai>=0.8.0
+# AI Content Generation Suite - Consolidated Requirements
+# This file contains all dependencies for the entire project
 
-# FAL AI Dependencies
-fal-client>=0.4.0
+# ===== Core Dependencies =====
+python-dotenv>=1.0.0      # Environment variable management
+requests>=2.31.0          # HTTP library
+typing-extensions>=4.0.0  # Type hints backport for older Python versions
+pyyaml>=6.0               # YAML configuration parsing
+pathlib2>=2.3.7           # Path manipulation library
+argparse>=1.4.0           # Command-line argument parsing
 
-# Text-to-Speech Dependencies
-elevenlabs>=1.0.0
+# ===== AI/ML Service Clients =====
+# FAL AI
+fal-client>=0.4.0         # FAL AI API client
 
-# Core Dependencies
-requests>=2.31.0
-python-dotenv>=1.0.0
-pillow>=10.0.0
-typing-extensions>=4.0.0
-pyyaml>=6.0
-pathlib2>=2.3.7
+# Google Cloud AI
+google-cloud-aiplatform>=1.38.0  # Vertex AI client
+google-cloud-storage>=2.10.0     # Google Cloud Storage
+google-auth>=2.23.0               # Google authentication
+google-genai>=0.1.0               # Google GenAI SDK
+google-generativeai>=0.8.0        # Google Generative AI
 
-# HTTP and Async Dependencies
-aiohttp>=3.8.0
-httpx>=0.25.0
+# Text-to-Speech
+elevenlabs>=1.0.0         # ElevenLabs TTS API
 
-# Media Processing Dependencies
-moviepy>=1.0.3
-ffmpeg-python>=0.2.0
+# ===== Media Processing =====
+Pillow>=10.0.0            # Image processing library
+moviepy>=1.0.3            # Video editing library
+ffmpeg-python>=0.2.0      # FFmpeg Python bindings
 
-# Development and Jupyter Dependencies
-jupyter>=1.0.0
-ipython>=8.0.0
-notebook>=7.0.0
+# ===== HTTP and Async =====
+aiohttp>=3.8.0            # Async HTTP client/server
+httpx>=0.25.0             # Modern HTTP client
 
-# Testing Dependencies
-pytest>=7.0.0
-pytest-asyncio>=0.21.0
+# ===== Development Tools =====
+# Jupyter/Notebooks
+jupyter>=1.0.0            # Jupyter metapackage
+ipython>=8.0.0            # Enhanced Python shell
+notebook>=7.0.0           # Jupyter notebook
 
-# MCP Server Dependencies
-mcp>=1.0.0
+# Testing
+pytest>=7.0.0             # Testing framework
+pytest-asyncio>=0.21.0    # Async test support
 
-# Legacy Python Support
-argparse>=1.4.0
+# ===== Additional Tools =====
+mcp>=1.0.0                # MCP server support
+
+# ===== Optional/Conditional Dependencies =====
+# Legacy Python support (for Python < 3.4)
 pathlib2>=2.3.0; python_version < '3.4'
