@@ -56,8 +56,8 @@ PIPELINE_PARALLEL_ENABLED=true ai-content-pipeline run-chain --config config.yam
 # Generate single image
 ai-content-pipeline generate-image --text "A beautiful sunset" --model flux_dev
 
-# Create speech audio
-ai-content-pipeline create-speech --text "Hello world" --voice Rachel
+# Create video from text (text → image → video)
+ai-content-pipeline create-video --text "A beautiful sunset"
 
 # Shortened alias
 aicp --help
