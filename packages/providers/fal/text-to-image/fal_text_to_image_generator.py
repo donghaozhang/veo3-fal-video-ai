@@ -158,6 +158,9 @@ class FALTextToImageGenerator:
             if result and 'images' in result and len(result['images']) > 0:
                 image_data = result['images'][0]
                 
+                # Get output folder from kwargs or use default
+                output_folder = kwargs.get('output_folder', 'output')
+                
                 response = {
                     'success': True,
                     'model': model,
@@ -172,6 +175,14 @@ class FALTextToImageGenerator:
                 
                 print(f"✅ Image generated successfully!")
                 print(f"🔗 Image URL: {response['image_url']}")
+                
+                # Automatically download the image
+                try:
+                    local_path = self.download_image(image_data['url'], output_folder)
+                    response['local_path'] = local_path
+                    print(f"📥 Image saved to: {local_path}")
+                except Exception as e:
+                    print(f"⚠️  Warning: Could not download image: {e}")
                 
                 return response
             else:
