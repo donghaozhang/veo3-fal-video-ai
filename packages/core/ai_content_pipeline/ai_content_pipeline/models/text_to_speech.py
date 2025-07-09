@@ -23,8 +23,10 @@ class UnifiedTextToSpeechGenerator:
     
     def __init__(self):
         """Initialize the TTS generator."""
-        self.tts_path = Path("/home/zdhpe/veo3-video-generation/text_to_speech")
-        self.pipeline_base = Path("/home/zdhpe/veo3-video-generation/ai_content_pipeline")
+        # Use relative path from current package location
+        current_file = Path(__file__).parent.parent.parent.parent.parent.parent
+        self.tts_path = current_file / "packages" / "services" / "text-to-speech"
+        self.pipeline_base = Path.cwd()
         self.supported_models = ["elevenlabs", "elevenlabs_turbo", "elevenlabs_v3"]
         self.supported_voices = [
             "rachel", "drew", "bella", "antoni", "elli", 
