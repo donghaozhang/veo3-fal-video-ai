@@ -1,8 +1,0 @@
-# Google Gemini Video Understanding Dependencies
-google-generativeai>=0.8.0
-
-# Core video processing (existing requirements)
-# ffmpeg (system dependency - install separately)
-
-# Optional: For enhanced analysis
-python-dotenv  # For .env file support

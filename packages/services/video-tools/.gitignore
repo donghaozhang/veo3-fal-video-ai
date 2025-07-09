@@ -1,0 +1,56 @@
+# Video Tools - Ignore Files
+
+# All processed outputs (but keep sample inputs)
+processed/
+test_output/
+
+# Temp files and directories
+temp/
+*.tmp
+
+# Backup files
+*.bak
+*~
+
+# Generated outputs if not in organized directories
+*_first_*s.mp4
+*_with_audio.*
+*_new_audio.*
+*_mixed_audio.*
+*_concat_audio.*
+*_processed.*
+*_cut.*
+*_trimmed.*
+
+# Temporary files created during processing
+mixed_audio.mp3
+concatenated_audio.mp3
+temp_audio_list.txt
+
+# Common formats if generated in root (samples/ is tracked)
+/*.mp4
+/*.avi
+/*.mov
+/*.mkv
+/*.webm
+/*.flv
+/*.wmv
+/*.mp3
+/*.wav
+/*.aac
+/*.ogg
+/*.m4a
+/*.flac
+
+# Environment files (contains sensitive API keys)
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store
+Thumbs.db

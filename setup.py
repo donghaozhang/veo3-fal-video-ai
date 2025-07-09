@@ -1,13 +1,20 @@
-"""Setup script for AI Content Platform."""
+"""
+AI Content Generation Suite - Consolidated Setup Script
+
+This setup.py consolidates all packages in the AI Content Generation Suite
+into a single installable package with optional dependencies.
+"""
 
 from setuptools import setup, find_packages
 from pathlib import Path
 
-# Read version
-version_file = Path(__file__).parent / "ai_content_platform" / "__version__.py"
-version_dict = {}
-with open(version_file) as f:
-    exec(f.read(), version_dict)
+# Package metadata
+PACKAGE_NAME = "ai-content-generation-suite"
+VERSION = "1.0.0"
+AUTHOR = "AI Content Generation Team"
+AUTHOR_EMAIL = "team@ai-content-generation.com"
+DESCRIPTION = "Comprehensive AI content generation suite with multiple providers and services"
+URL = "https://github.com/donghaozhang/veo3-fal-video-ai"
 
 # Read README
 readme_file = Path(__file__).parent / "README.md"
@@ -16,43 +23,108 @@ if readme_file.exists():
     with open(readme_file, encoding="utf-8") as f:
         long_description = f.read()
 
-# Read requirements
-def read_requirements(filename):
-    """Read requirements from file."""
-    req_file = Path(__file__).parent / "requirements" / filename
+# Read requirements from root requirements.txt
+def read_requirements():
+    """Read requirements from root requirements.txt file."""
+    req_file = Path(__file__).parent / "requirements.txt"
     if req_file.exists():
         with open(req_file) as f:
-            return [line.strip() for line in f if line.strip() and not line.startswith("#")]
+            return [
+                line.strip() for line in f 
+                if line.strip() and not line.startswith("#")
+            ]
     return []
 
-# Base requirements
-install_requires = read_requirements("base.txt")
+# Base requirements (from consolidated requirements.txt)
+install_requires = read_requirements()
 
-# Optional requirements
+# Optional requirements organized by functionality
 extras_require = {
-    "fal": read_requirements("fal.txt"),
-    "google": read_requirements("google.txt"),
-    "tts": read_requirements("tts.txt"),
-    "video": read_requirements("video.txt"),
-    "dev": read_requirements("dev.txt"),
+    # Core AI Content Pipeline
+    "pipeline": [
+        "pyyaml>=6.0",
+        "pathlib2>=2.3.7",
+    ],
+    
+    # FAL AI Providers
+    "fal": [
+        "fal-client>=0.4.0",
+        "httpx>=0.25.0",
+    ],
+    
+    # Google Cloud Services
+    "google": [
+        "google-cloud-aiplatform>=1.38.0",
+        "google-cloud-storage>=2.10.0",
+        "google-auth>=2.23.0",
+        "google-genai>=0.1.0",
+        "google-generativeai>=0.8.0",
+    ],
+    
+    # Text-to-Speech Services
+    "tts": [
+        "elevenlabs>=1.0.0",
+    ],
+    
+    # Video Processing
+    "video": [
+        "moviepy>=1.0.3",
+        "ffmpeg-python>=0.2.0",
+    ],
+    
+    # Image Processing
+    "image": [
+        "Pillow>=10.0.0",
+    ],
+    
+    # Development Tools
+    "dev": [
+        "pytest>=7.0.0",
+        "pytest-asyncio>=0.21.0",
+        "black>=22.0.0",
+        "flake8>=4.0.0",
+        "mypy>=1.0.0",
+    ],
+    
+    # Jupyter/Notebook Support
+    "jupyter": [
+        "jupyter>=1.0.0",
+        "ipython>=8.0.0",
+        "notebook>=7.0.0",
+        "matplotlib>=3.5.0",
+    ],
+    
+    # MCP Server Support
+    "mcp": [
+        "mcp>=1.0.0",
+    ],
 }
 
-# All optional dependencies
+# Convenience groups
 extras_require["all"] = list(set(
-    req for reqs in [extras_require["fal"], extras_require["google"], 
-                    extras_require["tts"], extras_require["video"]] 
-    for req in reqs
+    req for group in ["pipeline", "fal", "google", "tts", "video", "image", "mcp"] 
+    for req in extras_require[group]
+))
+
+extras_require["providers"] = list(set(
+    req for group in ["fal", "google"] 
+    for req in extras_require[group]
+))
+
+extras_require["services"] = list(set(
+    req for group in ["tts", "video", "image"] 
+    for req in extras_require[group]
 ))
 
 setup(
-    name="ai-content-platform",
-    version=version_dict["__version__"],
-    author=version_dict["__author__"],
-    author_email=version_dict["__email__"],
-    description=version_dict["__description__"],
+    name=PACKAGE_NAME,
+    version=VERSION,
+    author=AUTHOR,
+    author_email=AUTHOR_EMAIL,
+    description=DESCRIPTION,
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url=version_dict["__url__"],
+    url=URL,
     packages=find_packages(),
     classifiers=[
         "Development Status :: 4 - Beta",
@@ -76,16 +148,40 @@ setup(
     extras_require=extras_require,
     entry_points={
         "console_scripts": [
-            "ai-content=ai_content_platform.cli.main:cli",
-            "aicp=ai_content_platform.cli.main:cli",  # Short alias
+            # AI Content Pipeline
+            "ai-content-pipeline=packages.core.ai_content_pipeline.ai_content_pipeline.__main__:main",
+            "aicp=packages.core.ai_content_pipeline.ai_content_pipeline.__main__:main",
         ],
     },
     include_package_data=True,
+    package_data={
+        "packages.core.ai_content_pipeline": [
+            "config/*.yaml",
+            "examples/*.yaml", 
+            "examples/*.json",
+            "docs/*.md",
+        ],
+        "packages.providers.fal.image_to_image": [
+            "config/*.json",
+            "docs/*.md",
+            "examples/*.py",
+        ],
+        "packages.services.text_to_speech": [
+            "config/*.json",
+            "examples/*.py",
+        ],
+        "": [
+            "input/*",
+            "output/*",
+            "docs/*.md",
+        ],
+    },
     zip_safe=False,
-    keywords="ai, content generation, images, videos, audio, fal, elevenlabs, google, parallel processing",
+    keywords="ai, content generation, images, videos, audio, fal, elevenlabs, google, parallel processing, veo, pipeline",
     project_urls={
-        "Documentation": "https://github.com/username/ai-content-platform",
-        "Source": "https://github.com/username/ai-content-platform",
-        "Tracker": "https://github.com/username/ai-content-platform/issues",
+        "Documentation": f"{URL}/blob/main/README.md",
+        "Source": URL,
+        "Tracker": f"{URL}/issues",
+        "Changelog": f"{URL}/blob/main/CHANGELOG.md",
     },
 )
