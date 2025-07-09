@@ -46,6 +46,56 @@ def print_models():
             print("   No models available (integration pending)")
 
 
+def setup_env(args):
+    """Handle setup command to create .env file."""
+    env_path = Path(args.output_dir) / ".env" if args.output_dir else Path(".env")
+    env_example_path = Path(__file__).parent.parent.parent.parent.parent / ".env.example"
+    
+    # Check if .env.example exists in the package
+    if not env_example_path.exists():
+        # Create a basic .env template
+        template_content = """# AI Content Pipeline - Environment Configuration
+# Add your API keys below
+
+# Required for most functionality
+FAL_KEY=your_fal_api_key_here
+
+# Optional - add as needed
+GEMINI_API_KEY=your_gemini_api_key_here
+OPENROUTER_API_KEY=your_openrouter_api_key_here
+ELEVENLABS_API_KEY=your_elevenlabs_api_key_here
+
+# Get API keys from:
+# FAL AI: https://fal.ai/dashboard
+# Google Gemini: https://makersuite.google.com/app/apikey
+# OpenRouter: https://openrouter.ai/keys
+# ElevenLabs: https://elevenlabs.io/app/settings
+"""
+    else:
+        with open(env_example_path, 'r') as f:
+            template_content = f.read()
+    
+    if env_path.exists():
+        response = input(f"⚠️  .env file already exists at {env_path}. Overwrite? (y/N): ")
+        if response.lower() != 'y':
+            print("❌ Setup cancelled.")
+            return
+    
+    try:
+        with open(env_path, 'w') as f:
+            f.write(template_content)
+        print(f"✅ Created .env file at {env_path}")
+        print("📝 Please edit the file and add your API keys:")
+        print(f"   nano {env_path}")
+        print("\n🔑 Get your API keys from:")
+        print("   • FAL AI: https://fal.ai/dashboard")
+        print("   • Google Gemini: https://makersuite.google.com/app/apikey")
+        print("   • OpenRouter: https://openrouter.ai/keys")
+        print("   • ElevenLabs: https://elevenlabs.io/app/settings")
+    except Exception as e:
+        print(f"❌ Error creating .env file: {e}")
+
+
 def create_video(args):
     """Handle create-video command."""
     try:
@@ -323,6 +373,10 @@ Examples:
     # List models command
     subparsers.add_parser("list-models", help="List all available models")
     
+    # Setup command
+    setup_parser = subparsers.add_parser("setup", help="Create .env file with API key templates")
+    setup_parser.add_argument("--output-dir", help="Directory to create .env file (default: current directory)")
+    
     # Generate image command
     image_parser = subparsers.add_parser("generate-image", help="Generate image from text")
     image_parser.add_argument("--text", required=True, help="Text prompt for image generation")
@@ -357,6 +411,8 @@ Examples:
     # Execute command
     if args.command == "list-models":
         print_models()
+    elif args.command == "setup":
+        setup_env(args)
     elif args.command == "generate-image":
         generate_image(args)
     elif args.command == "create-video":

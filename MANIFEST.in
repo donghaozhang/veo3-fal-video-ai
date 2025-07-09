@@ -3,6 +3,7 @@
 # Include documentation
 include README.md
 include LICENSE*
+include .env.example
 recursive-include . *.md
 
 # Include all package files

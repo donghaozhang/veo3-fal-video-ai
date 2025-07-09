@@ -33,21 +33,61 @@ The unified AI content generation pipeline with parallel execution support, mult
 
 ## 📦 Installation
 
-### Prerequisites
+### Quick Start
 ```bash
-# Create and activate virtual environment
-python3 -m venv venv
-source venv/bin/activate  # Linux/Mac
-# or venv\Scripts\activate  # Windows
+# Install from PyPI
+pip install video-ai-studio
+
+# Or install in development mode
+pip install -e .
 ```
 
-### Install Package
-```bash
-# Install in development mode (recommended)
-pip install -e .
+### 🔑 API Keys Setup
 
-# Or install from source
-pip install .
+After installation, you need to configure your API keys:
+
+1. **Download the example configuration:**
+   ```bash
+   # Option 1: Download from GitHub
+   curl -o .env https://raw.githubusercontent.com/donghaozhang/veo3-fal-video-ai/main/.env.example
+   
+   # Option 2: Create manually
+   touch .env
+   ```
+
+2. **Add your API keys to `.env`:**
+   ```env
+   # Required for most functionality
+   FAL_KEY=your_fal_api_key_here
+   
+   # Optional - add as needed
+   GEMINI_API_KEY=your_gemini_api_key_here
+   OPENROUTER_API_KEY=your_openrouter_api_key_here
+   ELEVENLABS_API_KEY=your_elevenlabs_api_key_here
+   ```
+
+3. **Get API keys from:**
+   - **FAL AI**: https://fal.ai/dashboard (required for most models)
+   - **Google Gemini**: https://makersuite.google.com/app/apikey
+   - **OpenRouter**: https://openrouter.ai/keys
+   - **ElevenLabs**: https://elevenlabs.io/app/settings
+
+### 📋 Dependencies
+The package installs core dependencies automatically. For specific models, install additional packages:
+
+```bash
+# For FAL AI models (image/video generation)
+pip install fal-client
+
+# For Google Gemini (image understanding)
+pip install google-generativeai
+
+# For ElevenLabs (text-to-speech)
+pip install elevenlabs
+
+# For OpenRouter (prompt generation)
+pip install openai
+```
 ```
 
 ## 🛠️ Quick Start
