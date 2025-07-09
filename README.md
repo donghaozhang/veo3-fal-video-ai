@@ -96,7 +96,6 @@ result = manager.execute_chain(chain, "input text")
 
 ### Core Packages
 - **[ai_content_pipeline](packages/core/ai_content_pipeline/)** - Main unified pipeline with parallel execution
-- **[ai_content_platform](packages/core/ai_content_platform/)** - Platform framework
 
 ### Provider Packages
 
