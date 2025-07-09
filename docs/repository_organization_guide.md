@@ -70,53 +70,6 @@ ai-content-generation/
 └── Makefile                        # Common operations
 ```
 
-### Option 2: Namespace Packages
-
-```
-ai-content-generation/
-├── packages/
-│   ├── aicp-core/                  # Core platform
-│   │   ├── setup.py (name="aicp-core")
-│   │   └── aicp/
-│   │       └── core/
-│   ├── aicp-fal-video/            # FAL video plugin
-│   │   ├── setup.py (name="aicp-fal-video")
-│   │   └── aicp/
-│   │       └── fal/
-│   │           └── video/
-│   └── aicp-google-veo/           # Google Veo plugin
-│       ├── setup.py (name="aicp-google-veo")
-│       └── aicp/
-│           └── google/
-│               └── veo/
-```
-
-Usage with namespace packages:
-```python
-from aicp.core import Pipeline
-from aicp.fal.video import VideoGenerator
-from aicp.google.veo import VeoGenerator
-```
-
-### Option 3: Plugin Architecture
-
-```
-ai-content-generation/
-├── core/                           # Main platform
-│   ├── ai-content-platform/
-│   │   ├── setup.py
-│   │   └── ai_content_platform/
-│   │       └── plugins/           # Plugin system
-├── plugins/                       # Installable plugins
-│   ├── plugin-fal-video/
-│   │   ├── setup.py
-│   │   └── aicp_fal_video/
-│   ├── plugin-google-veo/
-│   └── plugin-elevenlabs/
-└── standalone/                    # Standalone packages
-    ├── video-tools/
-    └── legacy-pipeline/
-```
 
 ## 🚀 Recommended Approach: Monorepo with Categories
 
@@ -211,7 +164,7 @@ clean:
 	find . -type d -name "build" -exec rm -rf {} +
 ```
 
-### Step 3: Package Naming Convention
+### Step 2: Package Naming Convention
 
 ```python
 # Package names on PyPI
@@ -231,7 +184,7 @@ import aicp_google_veo
 import aicp_fal_video
 ```
 
-### Step 4: Dependency Management
+### Step 3: Dependency Management
 
 #### For Core Platform (`packages/core/ai-content-platform/setup.py`)
 ```python
@@ -264,7 +217,7 @@ setup(
 )
 ```
 
-### Step 5: Create Shared Documentation
+### Step 4: Create Shared Documentation
 
 #### `docs/README.md`
 ```markdown
@@ -319,7 +272,7 @@ make format
 ```
 ```
 
-### Step 6: CI/CD Configuration
+### Step 5: CI/CD Configuration
 
 #### `.github/workflows/test-all.yml`
 ```yaml
