@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Simple test script to validate the AI Content Pipeline package
+Simple test script to validate the AI Content Pipeline package using installed package
 """
 import sys
 import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'packages', 'core', 'ai_content_pipeline'))
 
-from ai_content_pipeline.pipeline.manager import AIPipelineManager
+# Use the installed package instead of direct path imports
+from packages.core.ai_content_pipeline.ai_content_pipeline.pipeline.manager import AIPipelineManager
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -68,7 +68,19 @@ def test_simple_creation():
         }
         
         print("📝 Creating chain from config...")
-        chain = manager.create_chain_from_dict(config)
+        # Save config to temporary file since create_chain_from_config expects a file path
+        import tempfile
+        import json
+        
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+            json.dump(config, f)
+            temp_config_path = f.name
+        
+        try:
+            chain = manager.create_chain_from_config(temp_config_path)
+        finally:
+            # Clean up temporary file
+            os.unlink(temp_config_path)
         
         print(f"✅ Chain created: {chain.name}")
         print(f"📋 Steps: {len(chain.steps)}")
