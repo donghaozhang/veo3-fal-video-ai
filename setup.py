@@ -149,8 +149,8 @@ setup(
     entry_points={
         "console_scripts": [
             # AI Content Pipeline
-            "ai-content-pipeline=packages.core.ai_content_pipeline.__main__:main",
-            "aicp=packages.core.ai_content_pipeline.__main__:main",
+            "ai-content-pipeline=packages.core.ai_content_pipeline.ai_content_pipeline.__main__:main",
+            "aicp=packages.core.ai_content_pipeline.ai_content_pipeline.__main__:main",
         ],
     },
     include_package_data=True,
