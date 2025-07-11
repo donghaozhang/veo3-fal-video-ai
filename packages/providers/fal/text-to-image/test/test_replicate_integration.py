@@ -10,8 +10,8 @@ import sys
 import os
 from pathlib import Path
 
-# Add current directory to path for imports
-sys.path.append(str(Path(__file__).parent))
+# Add parent directory to path for imports (where the actual modules are)
+sys.path.append(str(Path(__file__).parent.parent))
 
 def test_replicate_generator():
     """Test Replicate generator without API calls."""
@@ -171,7 +171,10 @@ def test_ai_pipeline_integration():
     
     try:
         # Import main pipeline constants
-        sys.path.append(str(Path(__file__).parent.parent.parent.parent / "core" / "ai_content_pipeline" / "ai_content_pipeline"))
+        # Navigate from test file to project root, then to ai_content_pipeline
+        project_root = Path(__file__).parent.parent.parent.parent.parent.parent
+        pipeline_path = project_root / "packages" / "core" / "ai_content_pipeline" / "ai_content_pipeline"
+        sys.path.append(str(pipeline_path))
         from config.constants import SUPPORTED_MODELS, COST_ESTIMATES, MODEL_RECOMMENDATIONS
         
         # For now, just check that constants load properly
