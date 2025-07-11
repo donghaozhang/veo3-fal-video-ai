@@ -77,7 +77,7 @@ class UnifiedTextToImageGenerator(BaseContentModel):
                 print(f"🤖 Auto-selected model: {model}")
             
             # Route to appropriate generator
-            if self._unified_generator and model in ["flux_dev", "flux_schnell", "imagen4", "seedream_v3", "seedream3"]:
+            if self._unified_generator and model in ["flux_dev", "flux_schnell", "imagen4", "seedream_v3", "seedream3", "gen4"]:
                 return self._generate_with_unified(prompt, model, **kwargs)
             elif self._fal_generator and model in ["flux_dev", "flux_schnell", "imagen4", "seedream_v3"]:
                 return self._generate_with_fal(prompt, model, **kwargs)

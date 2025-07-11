@@ -10,6 +10,7 @@ SUPPORTED_MODELS = {
         "imagen4",            # Google Imagen 4
         "seedream_v3",        # Seedream v3 (bilingual) - FAL
         "seedream3",          # Seedream-3 (high-res) - Replicate
+        "gen4",               # Runway Gen-4 (multi-reference guided) - Replicate
         "dalle3",             # OpenAI DALL-E 3 (planned)
         "stable_diffusion",   # Stability AI (planned)
     ],
@@ -76,7 +77,9 @@ MODEL_RECOMMENDATIONS = {
         "speed": "flux_schnell", 
         "cost_effective": "seedream_v3",
         "photorealistic": "imagen4",
-        "high_resolution": "seedream3"
+        "high_resolution": "seedream3",
+        "cinematic": "gen4",
+        "reference_guided": "gen4"
     },
     "text_to_speech": {
         "quality": "elevenlabs_v3",
@@ -125,6 +128,7 @@ COST_ESTIMATES = {
         "imagen4": 0.004,
         "seedream_v3": 0.002,
         "seedream3": 0.003,
+        "gen4": 0.08,
     },
     "text_to_speech": {
         "elevenlabs": 0.05,

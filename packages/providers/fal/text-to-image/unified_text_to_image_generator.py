@@ -32,6 +32,13 @@ except ImportError:
     ReplicateTextToImageGenerator = None
     ReplicateTextToImageModel = None
 
+try:
+    from runway_gen4_generator import RunwayGen4Generator, RunwayGen4Model
+except ImportError:
+    print("❌ Runway Gen4 generator not found. Check runway_gen4_generator.py")
+    RunwayGen4Generator = None
+    RunwayGen4Model = None
+
 
 class Provider(Enum):
     """Available providers."""
@@ -100,6 +107,24 @@ class UnifiedTextToImageGenerator:
             "quality": "high",
             "speed": "medium",
             "use_case": "High-resolution generation"
+        },
+        "gen4": {
+            "provider": Provider.REPLICATE,
+            "model_key": "GEN4_IMAGE",
+            "name": "Runway Gen-4 Image",
+            "resolution": "720p/1080p",
+            "cost_per_image": 0.08,  # 1080p pricing (higher quality)
+            "cost_720p": 0.05,
+            "cost_1080p": 0.08,
+            "quality": "cinematic",
+            "speed": "medium",
+            "use_case": "Multi-reference guided generation",
+            "special_features": [
+                "Up to 3 reference images",
+                "Reference image tagging",
+                "Cinematic quality",
+                "Multiple resolutions"
+            ]
         }
     }
     
@@ -114,6 +139,7 @@ class UnifiedTextToImageGenerator:
         """
         self.verbose = verbose
         self.providers = {}
+        self.runway_gen4 = None
         
         # Initialize available providers
         if FALTextToImageGenerator:
@@ -133,6 +159,16 @@ class UnifiedTextToImageGenerator:
             except Exception as e:
                 if verbose:
                     print(f"⚠️ Replicate provider initialization failed: {e}")
+        
+        # Initialize Runway Gen4 generator (separate from basic Replicate)
+        if RunwayGen4Generator:
+            try:
+                self.runway_gen4 = RunwayGen4Generator(api_token=replicate_api_token, verbose=False)
+                if verbose:
+                    print("✅ Runway Gen4 provider initialized")
+            except Exception as e:
+                if verbose:
+                    print(f"⚠️ Runway Gen4 provider initialization failed: {e}")
         
         if not self.providers:
             raise ValueError("No providers could be initialized. Check API keys and dependencies.")
@@ -184,7 +220,10 @@ class UnifiedTextToImageGenerator:
                 raise ValueError(f"Model '{model}' is only available on {target_provider.value}, not {provider.value}")
         
         # Check if provider is available
-        if target_provider not in self.providers:
+        if model == "gen4":
+            if not self.runway_gen4:
+                raise ValueError("Runway Gen4 generator not initialized")
+        elif target_provider not in self.providers:
             raise ValueError(f"Provider {target_provider.value} not initialized")
         
         if self.verbose:
@@ -199,13 +238,30 @@ class UnifiedTextToImageGenerator:
                 **kwargs
             )
         elif target_provider == Provider.REPLICATE:
-            # Convert model_key to enum
-            model_enum = getattr(ReplicateTextToImageModel, model_config["model_key"])
-            result = self.providers[Provider.REPLICATE].generate_image(
-                prompt=prompt,
-                model=model_enum,
-                **kwargs
-            )
+            # Handle Gen4 model separately
+            if model == "gen4":
+                if not self.runway_gen4:
+                    raise ValueError("Runway Gen4 generator not available")
+                
+                # Convert model_key to enum for Gen4
+                model_enum = getattr(RunwayGen4Model, model_config["model_key"])
+                result = self.runway_gen4.generate_image(
+                    prompt=prompt,
+                    model=model_enum,
+                    **kwargs
+                )
+            else:
+                # Handle other Replicate models (Seedream-3)
+                if Provider.REPLICATE not in self.providers:
+                    raise ValueError("Basic Replicate provider not available")
+                
+                # Convert model_key to enum
+                model_enum = getattr(ReplicateTextToImageModel, model_config["model_key"])
+                result = self.providers[Provider.REPLICATE].generate_image(
+                    prompt=prompt,
+                    model=model_enum,
+                    **kwargs
+                )
         else:
             raise ValueError(f"Unknown provider: {target_provider}")
         
@@ -221,10 +277,14 @@ class UnifiedTextToImageGenerator:
     
     def _get_optimal_model(self, optimize_for: str) -> str:
         """Get the optimal model based on criteria."""
-        available_models = {
-            model: config for model, config in self.MODEL_CATALOG.items()
-            if config["provider"] in self.providers
-        }
+        available_models = {}
+        for model, config in self.MODEL_CATALOG.items():
+            # Check if model is available
+            if model == "gen4":
+                if self.runway_gen4:
+                    available_models[model] = config
+            elif config["provider"] in self.providers:
+                available_models[model] = config
         
         if optimize_for == "cost":
             # Find cheapest model
@@ -299,10 +359,14 @@ class UnifiedTextToImageGenerator:
     
     def get_available_models(self) -> List[str]:
         """Get list of available model keys."""
-        return [
-            model for model, config in self.MODEL_CATALOG.items()
-            if config["provider"] in self.providers
-        ]
+        available = []
+        for model, config in self.MODEL_CATALOG.items():
+            if model == "gen4":
+                if self.runway_gen4:
+                    available.append(model)
+            elif config["provider"] in self.providers:
+                available.append(model)
+        return available
     
     def get_available_providers(self) -> List[str]:
         """Get list of available provider names."""
