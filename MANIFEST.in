@@ -25,8 +25,10 @@ global-exclude .env*
 global-exclude *.env*
 
 # Exclude virtual environments  
-global-exclude venv
-global-exclude venv_backup
+prune venv
+prune venv_backup  
+prune test_env
+prune tts_env
 global-exclude test_*
 global-exclude *_env
 
