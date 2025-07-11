@@ -4,13 +4,19 @@
 
 ## 🎬 Supported Models
 
-### 1. MiniMax Hailuo-02 Pro (Default)
+### 1. MiniMax Hailuo-02 Pro (Most Cost-Effective)
 - **Cost**: ~$0.08 per video
 - **Resolution**: 1080p
 - **Duration**: 6 seconds (fixed)
-- **Use case**: Cost-effective, high-quality generation
+- **Use case**: Most cost-effective, high-quality generation
 
-### 2. Google Veo 3 (Premium)
+### 2. Google Veo 3 Fast (Balanced)
+- **Cost**: $1.25-$3.20 per video
+- **Resolution**: 720p
+- **Duration**: 5-8 seconds (variable)
+- **Use case**: Balanced cost and quality, faster generation
+
+### 3. Google Veo 3 (Premium)
 - **Cost**: $2.50-$6.00 per video
 - **Resolution**: 720p
 - **Duration**: 5-8 seconds (variable)

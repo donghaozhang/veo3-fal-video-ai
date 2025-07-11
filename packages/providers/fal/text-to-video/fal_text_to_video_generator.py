@@ -30,6 +30,7 @@ class TextToVideoModel(Enum):
     """Available text-to-video models."""
     MINIMAX_HAILUO = "fal-ai/minimax/hailuo-02/pro/text-to-video"
     GOOGLE_VEO3 = "fal-ai/veo3"
+    GOOGLE_VEO3_FAST = "fal-ai/veo3/fast"
 
 
 # Type definitions
@@ -75,6 +76,23 @@ class FALTextToVideoGenerator:
                 "Negative prompts",
                 "Seed control",
                 "Premium quality"
+            ]
+        },
+        TextToVideoModel.GOOGLE_VEO3_FAST: {
+            "name": "Google Veo 3 Fast",
+            "resolution": "720p",
+            "duration": "5-8 seconds (variable)",
+            "cost_per_second_no_audio": 0.25,
+            "cost_per_second_with_audio": 0.40,
+            "features": [
+                "720p HD resolution",
+                "Variable duration (5-8s)",
+                "Multiple aspect ratios", 
+                "Audio generation support",
+                "Faster generation time",
+                "Cost-effective pricing",
+                "Seed control",
+                "Good quality"
             ]
         }
     }
@@ -131,7 +149,7 @@ class FALTextToVideoGenerator:
         if model == TextToVideoModel.MINIMAX_HAILUO:
             return self.MODEL_CONFIGS[model]["cost_per_video"]
         
-        elif model == TextToVideoModel.GOOGLE_VEO3:
+        elif model in [TextToVideoModel.GOOGLE_VEO3, TextToVideoModel.GOOGLE_VEO3_FAST]:
             if duration is None:
                 duration = "8s"  # Default
             
@@ -186,7 +204,7 @@ class FALTextToVideoGenerator:
             Dict[str, Any]: Generation result with video URL, local path, cost, and metadata
         """
         # Calculate cost
-        if model == TextToVideoModel.GOOGLE_VEO3:
+        if model in [TextToVideoModel.GOOGLE_VEO3, TextToVideoModel.GOOGLE_VEO3_FAST]:
             if duration is None:
                 duration = "8s"
             cost = self.calculate_cost(model, duration, generate_audio)
@@ -199,7 +217,7 @@ class FALTextToVideoGenerator:
             print(f"📝 Prompt: {prompt}")
             print(f"💰 Estimated cost: ${cost:.2f}")
             
-            if model == TextToVideoModel.GOOGLE_VEO3:
+            if model in [TextToVideoModel.GOOGLE_VEO3, TextToVideoModel.GOOGLE_VEO3_FAST]:
                 print(f"📐 Aspect ratio: {aspect_ratio}")
                 print(f"⏱️ Duration: {duration}")
                 print(f"🔊 Audio: {'enabled' if generate_audio else 'disabled'}")
@@ -214,16 +232,19 @@ class FALTextToVideoGenerator:
                     "prompt_optimizer": prompt_optimizer
                 }
             
-            elif model == TextToVideoModel.GOOGLE_VEO3:
+            elif model in [TextToVideoModel.GOOGLE_VEO3, TextToVideoModel.GOOGLE_VEO3_FAST]:
                 arguments = {
                     "prompt": prompt,
                     "aspect_ratio": aspect_ratio,
                     "duration": duration,
-                    "generate_audio": generate_audio,
-                    "enhance_prompt": enhance_prompt
+                    "generate_audio": generate_audio
                 }
                 
-                # Add optional Veo 3 parameters
+                # Add Veo 3 specific parameters (enhance_prompt only for regular Veo 3)
+                if model == TextToVideoModel.GOOGLE_VEO3:
+                    arguments["enhance_prompt"] = enhance_prompt
+                
+                # Add optional parameters for both Veo 3 models
                 if negative_prompt:
                     arguments["negative_prompt"] = negative_prompt
                 if seed is not None:
@@ -257,9 +278,14 @@ class FALTextToVideoGenerator:
                 safe_prompt = "".join(c for c in prompt[:30] if c.isalnum() or c in (' ', '-', '_')).rstrip()
                 safe_prompt = safe_prompt.replace(' ', '_')
                 
-                model_name = "minimax" if model == TextToVideoModel.MINIMAX_HAILUO else "veo3"
+                if model == TextToVideoModel.MINIMAX_HAILUO:
+                    model_name = "minimax"
+                elif model == TextToVideoModel.GOOGLE_VEO3:
+                    model_name = "veo3"
+                elif model == TextToVideoModel.GOOGLE_VEO3_FAST:
+                    model_name = "veo3_fast"
                 
-                if model == TextToVideoModel.GOOGLE_VEO3:
+                if model in [TextToVideoModel.GOOGLE_VEO3, TextToVideoModel.GOOGLE_VEO3_FAST]:
                     audio_suffix = "_with_audio" if generate_audio else "_no_audio"
                     output_filename = f"{model_name}_{safe_prompt}_{duration}_{aspect_ratio.replace(':', 'x')}{audio_suffix}_{timestamp}.mp4"
                 else:
@@ -293,16 +319,19 @@ class FALTextToVideoGenerator:
                     'duration': '6s'
                 })
             
-            elif model == TextToVideoModel.GOOGLE_VEO3:
+            elif model in [TextToVideoModel.GOOGLE_VEO3, TextToVideoModel.GOOGLE_VEO3_FAST]:
                 generation_result.update({
                     'aspect_ratio': aspect_ratio,
                     'duration': duration,
                     'generate_audio': generate_audio,
-                    'enhance_prompt': enhance_prompt,
                     'negative_prompt': negative_prompt,
                     'seed': seed,
                     'resolution': '720p'
                 })
+                
+                # enhance_prompt only available for regular Veo 3
+                if model == TextToVideoModel.GOOGLE_VEO3:
+                    generation_result['enhance_prompt'] = enhance_prompt
             
             if self.verbose:
                 print(f"📹 Video saved: {local_path}")
@@ -379,6 +408,7 @@ class FALTextToVideoGenerator:
                 print("⚠️ Note: Actual generation will incur costs:")
                 print("   • MiniMax Hailuo-02 Pro: ~$0.08 per video")
                 print("   • Google Veo 3: $2.50-$6.00 per video")
+                print("   • Google Veo 3 Fast: $1.25-$3.20 per video")
             
             return True
             
@@ -431,7 +461,8 @@ class FALTextToVideoGenerator:
                 print(f"  • {feature}")
         
         print(f"\n💡 Recommendation:")
-        print("  • Use MiniMax Hailuo-02 Pro for cost-effective, high-quality videos")
+        print("  • Use MiniMax Hailuo-02 Pro for most cost-effective videos")
+        print("  • Use Google Veo 3 Fast for balanced cost and quality")
         print("  • Use Google Veo 3 for premium quality with advanced controls")
     
     def get_cost_estimate(
@@ -481,6 +512,8 @@ def main():
     for duration in ["5s", "6s", "7s", "8s"]:
         print(f"  • {generator.get_cost_estimate(TextToVideoModel.GOOGLE_VEO3, duration, True)}")
         print(f"  • {generator.get_cost_estimate(TextToVideoModel.GOOGLE_VEO3, duration, False)}")
+        print(f"  • {generator.get_cost_estimate(TextToVideoModel.GOOGLE_VEO3_FAST, duration, True)}")
+        print(f"  • {generator.get_cost_estimate(TextToVideoModel.GOOGLE_VEO3_FAST, duration, False)}")
     
     print("\n⚠️ WARNING: Video generation incurs costs!")
     print("💡 Use test_generation.py to run actual generation tests")

@@ -8,7 +8,8 @@ SUPPORTED_MODELS = {
         "flux_dev",           # FLUX.1 Dev (high quality)
         "flux_schnell",       # FLUX.1 Schnell (fast)
         "imagen4",            # Google Imagen 4
-        "seedream_v3",        # Seedream v3 (bilingual)
+        "seedream_v3",        # Seedream v3 (bilingual) - FAL
+        "seedream3",          # Seedream-3 (high-res) - Replicate
         "dalle3",             # OpenAI DALL-E 3 (planned)
         "stable_diffusion",   # Stability AI (planned)
     ],
@@ -43,6 +44,7 @@ SUPPORTED_MODELS = {
     ],
     "image_to_video": [
         "veo3",               # Google Veo 3.0
+        "veo3_fast",          # Google Veo 3.0 Fast
         "veo2",               # Google Veo 2.0  
         "hailuo",             # MiniMax Hailuo-02
         "kling",              # Kling Video 2.1
@@ -73,7 +75,8 @@ MODEL_RECOMMENDATIONS = {
         "quality": "flux_dev",
         "speed": "flux_schnell", 
         "cost_effective": "seedream_v3",
-        "photorealistic": "imagen4"
+        "photorealistic": "imagen4",
+        "high_resolution": "seedream3"
     },
     "text_to_speech": {
         "quality": "elevenlabs_v3",
@@ -109,6 +112,7 @@ MODEL_RECOMMENDATIONS = {
         "quality": "veo3",
         "speed": "hailuo",
         "cost_effective": "hailuo",
+        "balanced": "veo3_fast",
         "cinematic": "veo3"
     }
 }
@@ -120,6 +124,7 @@ COST_ESTIMATES = {
         "flux_schnell": 0.001,
         "imagen4": 0.004,
         "seedream_v3": 0.002,
+        "seedream3": 0.003,
     },
     "text_to_speech": {
         "elevenlabs": 0.05,
@@ -152,6 +157,7 @@ COST_ESTIMATES = {
     },
     "image_to_video": {
         "veo3": 3.00,
+        "veo3_fast": 2.00,
         "veo2": 2.50,
         "hailuo": 0.08,
         "kling": 0.10,
@@ -203,6 +209,7 @@ PROCESSING_TIME_ESTIMATES = {
     },
     "image_to_video": {
         "veo3": 300,
+        "veo3_fast": 180,
         "veo2": 240,
         "hailuo": 60,
         "kling": 90,
