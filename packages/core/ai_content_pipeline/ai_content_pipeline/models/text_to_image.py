@@ -24,22 +24,31 @@ class UnifiedTextToImageGenerator(BaseContentModel):
     def __init__(self):
         super().__init__("text_to_image")
         self._fal_generator = None
+        self._unified_generator = None
         self._initialize_generators()
     
     def _initialize_generators(self):
         """Initialize available text-to-image generators."""
         try:
-            # Try to import existing FAL text-to-image generator
+            # Try to import unified generator (supports FAL + Replicate)
             fal_path = Path(__file__).parent.parent.parent.parent.parent / "providers" / "fal" / "text-to-image"
             if fal_path.exists():
                 sys.path.insert(0, str(fal_path))
-                from fal_text_to_image_generator import FALTextToImageGenerator
-                self._fal_generator = FALTextToImageGenerator()
-                print("✅ FAL Text-to-Image generator initialized")
+                
+                # Try unified generator first (supports multiple providers)
+                try:
+                    from unified_text_to_image_generator import UnifiedTextToImageGenerator
+                    self._unified_generator = UnifiedTextToImageGenerator(verbose=False)
+                    print("✅ Unified Text-to-Image generator initialized (FAL + Replicate)")
+                except ImportError:
+                    # Fallback to FAL-only generator
+                    from fal_text_to_image_generator import FALTextToImageGenerator
+                    self._fal_generator = FALTextToImageGenerator()
+                    print("✅ FAL Text-to-Image generator initialized")
             else:
-                print(f"⚠️  FAL Text-to-Image directory not found at: {fal_path}")
+                print(f"⚠️  Text-to-Image directory not found at: {fal_path}")
         except ImportError as e:
-            print(f"⚠️  FAL Text-to-Image generator not available: {e}")
+            print(f"⚠️  Text-to-Image generators not available: {e}")
     
     def generate(self, prompt: str, model: str = "auto", **kwargs) -> ModelResult:
         """
@@ -68,7 +77,9 @@ class UnifiedTextToImageGenerator(BaseContentModel):
                 print(f"🤖 Auto-selected model: {model}")
             
             # Route to appropriate generator
-            if model in ["flux_dev", "flux_schnell", "imagen4", "seedream_v3"]:
+            if self._unified_generator and model in ["flux_dev", "flux_schnell", "imagen4", "seedream_v3", "seedream3"]:
+                return self._generate_with_unified(prompt, model, **kwargs)
+            elif self._fal_generator and model in ["flux_dev", "flux_schnell", "imagen4", "seedream_v3"]:
                 return self._generate_with_fal(prompt, model, **kwargs)
             elif model == "dalle3":
                 return self._generate_with_openai(prompt, model, **kwargs)
@@ -79,6 +90,42 @@ class UnifiedTextToImageGenerator(BaseContentModel):
                 
         except Exception as e:
             return self._create_error_result(model, f"Generation failed: {str(e)}")
+    
+    def _generate_with_unified(self, prompt: str, model: str, **kwargs) -> ModelResult:
+        """Generate image using unified generator (supports FAL + Replicate)."""
+        if not self._unified_generator:
+            return self._create_error_result(model, "Unified generator not available")
+        
+        try:
+            # Extract common parameters
+            output_dir = kwargs.get("output_dir", "output")
+            
+            # Generate image using unified interface
+            result = self._unified_generator.generate_image(
+                prompt=prompt,
+                model=model,
+                **{k: v for k, v in kwargs.items() 
+                   if k not in ["output_dir", "budget", "criteria"]}
+            )
+            
+            if result.get("success"):
+                return self._create_success_result(
+                    model=model,
+                    output_path=result.get("local_path"),
+                    output_url=result.get("image_url"),
+                    metadata={
+                        "prompt": prompt,
+                        "provider": result.get("provider", "unknown"),
+                        "model_config": result.get("model_config", {}),
+                        "unified_model": result.get("unified_model", model),
+                        "cost_usd": result.get("cost_usd", 0)
+                    }
+                )
+            else:
+                return self._create_error_result(model, result.get("error", "Generation failed"))
+                
+        except Exception as e:
+            return self._create_error_result(model, f"Unified generation failed: {str(e)}")
     
     def _generate_with_fal(self, prompt: str, model: str, **kwargs) -> ModelResult:
         """Generate image using FAL AI models."""
