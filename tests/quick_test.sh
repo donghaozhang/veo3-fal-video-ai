@@ -41,4 +41,8 @@ ai-content-pipeline run-chain --config input/pipelines/image_artistic_transform.
 echo -e "\n📝 Testing OCR extraction pipeline..."
 ai-content-pipeline run-chain --config input/pipelines/analysis_ocr_extraction.yaml
 
+# Test MultiTalk conversation generation
+echo -e "\n🎬 Testing MultiTalk conversation generation..."
+ai-content-pipeline run-chain --config input/pipelines/multitalk_conversation_test.yaml --input "conversation"
+
 echo -e "\n✅ All tests completed successfully!"

@@ -19,6 +19,7 @@ class StepType(Enum):
     UPSCALE_VIDEO = "upscale_video"
     GENERATE_SUBTITLES = "generate_subtitles"
     PARALLEL_GROUP = "parallel_group"
+    REPLICATE_MULTITALK = "replicate_multitalk"
 
 
 @dataclass

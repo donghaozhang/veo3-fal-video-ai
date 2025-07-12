@@ -1,6 +1,18 @@
-# FAL AI Avatar Video Generation
+# Avatar Video Generation Suite
 
-Generate talking avatar videos from images using FAL AI's Avatar models. This implementation provides a Python interface for creating lip-synced avatar videos with both text-to-speech conversion and custom audio file support.
+Generate talking avatar videos from images using multiple AI providers. This implementation provides Python interfaces for creating lip-synced avatar videos with text-to-speech conversion, custom audio files, and multi-person conversations.
+
+## 🎭 Available Models
+
+### FAL AI Avatar Models
+- **Text-to-Speech**: Convert text to talking avatar videos with 20 voice options
+- **Audio-to-Avatar**: Use custom audio files for lip-sync animation  
+- **Multi-Audio Conversation**: Two-person conversations with sequential speaking
+
+### Replicate MultiTalk Model
+- **Multi-Person Conversations**: Audio-driven conversational videos (up to 2 people)
+- **Advanced Lip-Sync**: Natural facial expressions and mouth movements
+- **Flexible Audio Input**: Support for single or dual audio tracks
 
 ## 🎭 Features
 
@@ -24,19 +36,28 @@ Generate talking avatar videos from images using FAL AI's Avatar models. This im
 # Install dependencies
 pip install -r requirements.txt
 
-# Or install individually
+# Or install individually for FAL AI
 pip install fal-client requests python-dotenv
+
+# For Replicate MultiTalk
+pip install replicate requests python-dotenv
 ```
 
 ### 2. Configuration
 
-Create a `.env` file with your FAL AI API key:
+Create a `.env` file with your API keys:
 
 ```env
+# For FAL AI Avatar models
 FAL_KEY=your-fal-ai-api-key-here
+
+# For Replicate MultiTalk model
+REPLICATE_API_TOKEN=your-replicate-api-token-here
 ```
 
-Get your API key from: https://fal.ai/dashboard
+Get API keys from:
+- FAL AI: https://fal.ai/dashboard
+- Replicate: https://replicate.com/account/api-tokens
 
 ### 3. Basic Usage
 
@@ -114,13 +135,46 @@ result = generator.generate_multi_avatar_conversation(
 print(f"Conversation video generated: {result['video']['url']}")
 ```
 
-### 4. Interactive Demo
+#### Replicate MultiTalk Model (Multi-Person Conversations)
 
-```bash
-python demo.py
+```python
+from replicate_multitalk_generator import ReplicateMultiTalkGenerator
+
+# Initialize generator
+generator = ReplicateMultiTalkGenerator()
+
+# Single person video
+result = generator.generate_single_person_video(
+    image_url="path/to/your/image.jpg",
+    audio_url="path/to/your/audio.mp3",
+    prompt="A person speaking naturally with clear expressions",
+    output_path="output/single_person.mp4"
+)
+
+# Multi-person conversation
+result = generator.generate_conversation_video(
+    image_url="path/to/two_people.jpg",
+    first_audio_url="path/to/person1_audio.mp3",
+    second_audio_url="path/to/person2_audio.mp3",
+    prompt="A smiling man and woman hosting a podcast",
+    num_frames=120,
+    output_path="output/conversation.mp4"
+)
+
+print(f"MultiTalk video generated: {result['video']['url']}")
 ```
 
-The demo provides a user-friendly interface to:
+### 4. Interactive Demos
+
+```bash
+# FAL AI Avatar demo
+python demo.py
+
+# Replicate MultiTalk demo
+python multitalk_demo.py
+```
+
+The demos provide user-friendly interfaces to:
 - Choose between text-to-speech, audio-to-avatar, or multi-audio conversation modes
 - Select images (local files, URLs, or sample images)
 - Enter text for speech or select audio files
@@ -144,15 +198,19 @@ The FAL AI Avatar model supports 20 different voices:
 Test your setup without generating videos:
 
 ```bash
-# Environment and API validation
+# FAL AI environment and API validation
 python test_setup.py
+
+# Replicate MultiTalk validation
+python tests/test_multitalk_integration.py
 ```
 
-This script validates:
+These scripts validate:
 - Python environment and dependencies
-- FAL AI API key configuration
+- API key configurations (FAL AI and Replicate)
 - Generator class functionality
 - Output directory permissions
+- Model integrations and compatibility
 
 ### PAID Tests (Costs Money)
 
@@ -182,6 +240,15 @@ python test_generation.py --multi
 
 # Test custom scenarios
 python test_generation.py --scenarios
+
+# MultiTalk real example test (costs money)
+python tests/test_real_multitalk_example.py
+
+# MultiTalk dry-run test (free)
+python tests/test_real_multitalk_example.py --dry-run
+
+# Direct replicate.run() test (costs money)
+python tests/direct_multitalk_test.py
 ```
 
 ## 💰 Cost Information
@@ -338,16 +405,25 @@ TEST_OUTPUT_DIR=test_output
 ## 📁 Project Structure
 
 ```
-fal_avatar_generation/
-├── fal_avatar_generator.py    # Main generator class
-├── demo.py                    # Interactive demonstration
-├── test_setup.py             # FREE environment tests
-├── test_generation.py        # PAID generation tests
-├── requirements.txt          # Python dependencies
-├── .env                      # Configuration file
-├── README.md                 # This documentation
-├── output/                   # Generated videos
-└── test_output/             # Test-generated videos
+avatar/
+├── fal_avatar_generator.py          # FAL AI avatar generator
+├── replicate_multitalk_generator.py # Replicate MultiTalk generator
+├── demo.py                          # FAL AI interactive demo
+├── multitalk_demo.py               # MultiTalk interactive demo
+├── test_setup.py                   # FREE environment tests
+├── test_generation.py              # PAID generation tests
+├── tests/
+│   ├── test_generation.py          # FAL AI generation tests
+│   ├── test_official_example.py    # FAL AI official example tests
+│   ├── test_setup.py               # FAL AI setup tests
+│   ├── test_multitalk_integration.py # MultiTalk integration tests
+│   ├── test_real_multitalk_example.py # Real MultiTalk example with assets
+│   └── direct_multitalk_test.py    # Direct replicate.run() test
+├── requirements.txt                # Python dependencies
+├── .env                           # Configuration file
+├── README.md                      # This documentation
+├── output/                        # Generated videos
+└── test_output/                  # Test-generated videos
 ```
 
 ## 🛠️ Advanced Usage

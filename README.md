@@ -8,6 +8,79 @@ A comprehensive AI content generation package with multiple providers and servic
 
 > **⚡ Production-ready Python package with comprehensive CLI, parallel execution, and enterprise-grade architecture**
 
+## 🎨 Available AI Models
+
+### Text-to-Image Models
+| Model Name | Provider | Cost per Image | Resolution | Special Features |
+|------------|----------|----------------|------------|------------------|
+| `flux_dev` | FAL AI | $0.003 | 1024x1024 | High quality, FLUX.1 Dev |
+| `flux_schnell` | FAL AI | $0.001 | 1024x1024 | Fast generation, FLUX.1 Schnell |
+| `imagen4` | FAL AI | $0.004 | 1024x1024 | Google Imagen 4, photorealistic |
+| `seedream_v3` | FAL AI | $0.002 | 1024x1024 | Seedream v3, bilingual support |
+| `seedream3` | Replicate | $0.003 | Up to 2048px | ByteDance Seedream-3, high-res |
+| `gen4` | Replicate | $0.08 | 720p/1080p | **Runway Gen-4, multi-reference guidance** |
+
+### Image-to-Image Models  
+| Model Name | Provider | Cost per Image | Special Features |
+|------------|----------|----------------|------------------|
+| `photon_flash` | FAL AI | $0.02 | Luma Photon Flash, creative & fast |
+| `photon_base` | FAL AI | $0.03 | Luma Photon Base, high quality |
+| `flux_kontext` | FAL AI | $0.025 | FLUX Kontext Dev, contextual editing |
+| `flux_kontext_multi` | FAL AI | $0.04 | FLUX Kontext Multi, multi-image |
+| `seededit_v3` | FAL AI | $0.02 | ByteDance SeedEdit v3, precise editing |
+| `clarity_upscaler` | FAL AI | $0.05 | Clarity AI upscaler |
+
+### Image-to-Video Models
+| Model Name | Provider | Cost per Video | Resolution | Special Features |
+|------------|----------|----------------|------------|------------------|
+| `veo3` | FAL AI | $3.00 | Up to 1080p | Google Veo 3.0, latest model |
+| `veo3_fast` | FAL AI | $2.00 | Up to 1080p | Google Veo 3.0 Fast |
+| `veo2` | FAL AI | $2.50 | Up to 1080p | Google Veo 2.0 |
+| `hailuo` | FAL AI | $0.08 | 720p | MiniMax Hailuo-02, budget-friendly |
+| `kling` | FAL AI | $0.10 | 720p | Kling Video 2.1 |
+
+### Image Understanding Models
+| Model Name | Provider | Cost per Analysis | Special Features |
+|------------|----------|-------------------|------------------|
+| `gemini_describe` | Google | $0.001 | Basic image description |
+| `gemini_detailed` | Google | $0.002 | Detailed image analysis |
+| `gemini_classify` | Google | $0.001 | Image classification |
+| `gemini_objects` | Google | $0.002 | Object detection |
+| `gemini_ocr` | Google | $0.001 | Text extraction (OCR) |
+| `gemini_composition` | Google | $0.002 | Artistic & technical analysis |
+| `gemini_qa` | Google | $0.001 | Question & answer system |
+
+### Text-to-Speech Models
+| Model Name | Provider | Cost per Request | Special Features |
+|------------|----------|------------------|------------------|
+| `elevenlabs` | ElevenLabs | $0.05 | High quality TTS |
+| `elevenlabs_turbo` | ElevenLabs | $0.03 | Fast generation |
+| `elevenlabs_v3` | ElevenLabs | $0.08 | Latest v3 model |
+
+### Prompt Generation Models
+| Model Name | Provider | Cost per Request | Special Features |
+|------------|----------|------------------|------------------|
+| `openrouter_video_prompt` | OpenRouter | $0.002 | General video prompts |
+| `openrouter_video_cinematic` | OpenRouter | $0.002 | Cinematic style prompts |
+| `openrouter_video_realistic` | OpenRouter | $0.002 | Realistic style prompts |
+| `openrouter_video_artistic` | OpenRouter | $0.002 | Artistic style prompts |
+| `openrouter_video_dramatic` | OpenRouter | $0.002 | Dramatic style prompts |
+
+### Audio & Video Processing
+| Model Name | Provider | Cost per Request | Special Features |
+|------------|----------|------------------|------------------|
+| `thinksound` | FAL AI | $0.05 | AI audio generation |
+| `topaz` | FAL AI | $1.50 | Video upscaling |
+
+### 🌟 **Featured Model: Runway Gen-4**
+The **`gen4`** model is our most advanced text-to-image model, offering unique capabilities:
+- **Multi-Reference Guidance**: Use up to 3 reference images with tagging
+- **Cinematic Quality**: Premium model for high-end generation  
+- **@ Syntax**: Reference tagged elements in prompts (`@woman`, `@park`)
+- **Variable Pricing**: $0.05 (720p) / $0.08 (1080p)
+
+**Total Models: 35+ AI models across 7 categories**
+
 ## 🚀 **FLAGSHIP: AI Content Pipeline**
 
 The unified AI content generation pipeline with parallel execution support, multi-model integration, and YAML-based configuration.

@@ -18,6 +18,7 @@ from ..models.prompt_generation import UnifiedPromptGenerator
 from ..models.image_to_image import UnifiedImageToImageGenerator
 from ..models.image_to_video import UnifiedImageToVideoGenerator
 from ..models.text_to_speech import UnifiedTextToSpeechGenerator
+from ..models.avatar import ReplicateMultiTalkGenerator
 from ..utils.file_manager import FileManager
 
 
@@ -44,6 +45,7 @@ class ChainExecutor:
         self.image_to_image = UnifiedImageToImageGenerator()
         self.image_to_video = UnifiedImageToVideoGenerator()
         self.text_to_speech = UnifiedTextToSpeechGenerator()
+        self.replicate_multitalk = ReplicateMultiTalkGenerator(file_manager=file_manager)
         
         # TODO: Initialize other generators when implemented
         # self.audio_generator = UnifiedAudioGenerator()
@@ -332,6 +334,8 @@ class ChainExecutor:
                 return self._execute_upscale_video(step, input_data, chain_config, step_context, **kwargs)
             elif step.step_type == StepType.GENERATE_SUBTITLES:
                 return self._execute_generate_subtitles(step, input_data, chain_config, step_context, **kwargs)
+            elif step.step_type == StepType.REPLICATE_MULTITALK:
+                return self._execute_replicate_multitalk(step, input_data, chain_config, step_context, **kwargs)
             else:
                 return {
                     "success": False,
@@ -1362,3 +1366,47 @@ class ChainExecutor:
         except Exception as e:
             print(f"⚠️  Failed to download intermediate image: {str(e)}")
             return None
+    
+    def _execute_replicate_multitalk(
+        self,
+        step: PipelineStep,
+        input_data: str,
+        chain_config: Dict[str, Any],
+        step_context: Dict[str, Any] = None,
+        **kwargs
+    ) -> Dict[str, Any]:
+        """Execute Replicate MultiTalk step."""
+        print("🎬 Starting MultiTalk video generation...")
+        print("⏳ This may take 5-10 minutes for high-quality conversational video")
+        print("💡 Progress: Initializing MultiTalk model...")
+        
+        # Merge step params with chain config and kwargs
+        params = {
+            **step.params,
+            **kwargs,
+        }
+        
+        # Show parameters being used
+        people_count = 2 if params.get('second_audio') else 1
+        print(f"👥 Generating {people_count}-person conversation")
+        print(f"🖼️  Image: {params.get('image', 'N/A')[:60]}...")
+        print(f"🎵 Audio files: {len([x for x in [params.get('first_audio'), params.get('second_audio')] if x])}")
+        
+        print("🔄 Submitting to Replicate MultiTalk API...")
+        result = self.replicate_multitalk.generate(**params)
+        
+        if result.success:
+            print("✅ MultiTalk generation completed successfully!")
+        else:
+            print(f"❌ MultiTalk generation failed: {result.error}")
+        
+        return {
+            "success": result.success,
+            "output_path": result.output_path,
+            "output_url": result.output_url,
+            "processing_time": getattr(result, 'processing_time', 0),
+            "cost": getattr(result, 'cost_estimate', 0),
+            "model": step.model,
+            "metadata": result.metadata,
+            "error": result.error
+        }
