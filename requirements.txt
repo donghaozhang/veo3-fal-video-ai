@@ -48,7 +48,7 @@ pytest>=7.0.0             # Testing framework
 pytest-asyncio>=0.21.0    # Async test support
 
 # ===== Additional Tools =====
-mcp>=1.0.0                # MCP server support
+# mcp>=1.0.0                # MCP server support (not available on PyPI)
 
 # ===== Optional/Conditional Dependencies =====
 # Legacy Python support (for Python < 3.4)
