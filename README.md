@@ -9,6 +9,12 @@ A comprehensive AI content generation package with multiple providers and servic
 
 > **⚡ Production-ready Python package with comprehensive CLI, parallel execution, and enterprise-grade architecture**
 
+## 🎬 **Demo Video**
+
+[![AI Content Generation Suite Demo](https://img.youtube.com/vi/xzvPrlKnXqk/maxresdefault.jpg)](https://www.youtube.com/watch?v=xzvPrlKnXqk)
+
+*Click to watch the complete demo of AI Content Generation Suite in action*
+
 ## 🎨 Available AI Models
 
 ### Text-to-Image Models
