@@ -294,6 +294,17 @@ python tests/run_all_tests.py --quick
     - 1 test for expected use
     - 1 edge case
     - 1 failure case
+- **Write ONE test file per task** focusing on core functionality only.
+- **Test only the most critical features** - avoid over-testing edge cases.
+- **Keep tests simple and fast** - complex integration tests slow development.
+
+### 📦 PyPI Publishing
+- **Build package**: `python -m build` (creates dist/ folder)
+- **Check quality**: `twine check dist/*`
+- **Publish to PyPI**: `twine upload dist/* --username __token__ --password $PYPI_API_TOKEN`
+- **Version**: Update in setup.py before building
+- **Install published**: `pip install video-ai-studio`
+- **PyPI URL**: https://pypi.org/project/video-ai-studio/
 
 ### ✅ Task Completion
 - **Mark completed tasks in `TASK.md`** immediately after finishing them.
