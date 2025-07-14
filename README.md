@@ -378,6 +378,7 @@ See [CLAUDE.md](CLAUDE.md) for detailed commands for each package.
 ## 📚 Documentation
 
 - **[Project Instructions](CLAUDE.md)** - Comprehensive development guide
+- **[Cursor AI Rules](.cursor/.cursorrules)** - Detailed project architecture and implementation patterns for AI assistants
 - **[Documentation](docs/)** - Additional documentation and guides
 - **Package READMEs** - Each package has its own README with specific instructions
 
