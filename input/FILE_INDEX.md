@@ -4,9 +4,9 @@ This file provides a comprehensive index of all files consolidated from various 
 
 ## 📊 Summary Statistics
 
-- **Total Files**: ~65 files consolidated
+- **Total Files**: ~41 files consolidated
 - **Pipeline Configurations**: 18 YAML files
-- **Images**: 31 files across 5 categories
+- **Images**: 7 files across 3 categories
 - **Videos**: 2 MP4 files
 - **Audio**: 1 MP3 file
 - **Text Files**: 5 TXT files
@@ -42,7 +42,7 @@ This file provides a comprehensive index of all files consolidated from various 
 **Image Processing:**
 - `image_artistic_transform.yaml` - Artistic image transformation
 
-### `/images/` - Image Assets (31 files)
+### `/images/` - Image Assets (7 files)
 
 #### `/images/portraits/` (2 files)
 - `anime_girl.jpeg` - Anime-style character portrait
@@ -52,28 +52,15 @@ This file provides a comprehensive index of all files consolidated from various 
 - `horror_poster_strart_notext.jpg` - Horror scene without text
 - `lily_squid_game.png` - Squid Game themed scene
 
-#### `/images/processed/` (19 files)
-Ready-to-use processed images for generation:
-- `woman_with_blonde_hair_singing.jpeg` - Performance scene
-- `woman_with_pink_hair_*.jpeg` - Various pink hair styles
-- `woman_in_red_*.jpeg` - Red outfit variations
-- `woman_in_pigtails_*.jpeg` - Pigtail hairstyles
-- Chinese character themed images with death scythe
-- Professional headshots and portraits
-
 #### `/images/horror/` (3 files)
 - `horror_poster_starter.jpg` - Horror poster base
 - `horror_poster_strart_notext.jpg` - Clean horror poster
 - `woman_portrait.jpg` - Portrait for horror processing
 
-#### `/images/flux_outputs/` (4 files)
-- `flux_kontext_death_1751335665.png` - FLUX model death theme
-- `horror_poster.png` - Horror poster output
-- `horror_poster_16_9.png` - Widescreen horror poster
-- `horror_poster_16_9_starter.png` - Widescreen starter
-
 #### Root images:
 - `test_ocr_image.webp` - OCR testing image
+
+> **Note**: Additional folders like `processed/` and `flux_outputs/` may exist locally for user workspace but are not tracked in git to keep the repository clean.
 
 ### `/videos/` - Video Files (2 files)
 - `final_multitalk_6112.mp4` - Multi-speaker conversation video
