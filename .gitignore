@@ -156,4 +156,4 @@ coverage/
 images
 
 # Video agent input folder
-fal_image_to_image/input/video_agent/
+fal_image_to_image/input/video_agent/input/images/processed/
