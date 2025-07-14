@@ -153,22 +153,7 @@ After installation, you need to configure your API keys:
    - **ElevenLabs**: https://elevenlabs.io/app/settings
 
 ### 📋 Dependencies
-The package installs core dependencies automatically. For specific models, install additional packages:
-
-```bash
-# For FAL AI models (image/video generation)
-pip install fal-client
-
-# For Google Gemini (image understanding)
-pip install google-generativeai
-
-# For ElevenLabs (text-to-speech)
-pip install elevenlabs
-
-# For OpenRouter (prompt generation)
-pip install openai
-```
-```
+The package installs core dependencies automatically. See [requirements.txt](requirements.txt) for the complete list.
 
 ## 🛠️ Quick Start
 
