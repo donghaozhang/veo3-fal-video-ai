@@ -11,7 +11,7 @@ A comprehensive AI content generation package with multiple providers and servic
 
 ## 🎬 **Demo Video**
 
-[![Watch Demo](https://img.shields.io/badge/▶️%20Watch-Demo%20Video-red?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=xzvPrlKnXqk)
+[![AI Content Generation Suite Demo](https://img.youtube.com/vi/xzvPrlKnXqk/maxresdefault.jpg)](https://www.youtube.com/watch?v=xzvPrlKnXqk)
 
 *Click to watch the complete demo of AI Content Generation Suite in action*
 
