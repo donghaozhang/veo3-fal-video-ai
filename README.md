@@ -309,53 +309,12 @@ ai-content-pipeline estimate-cost --config config.yaml
 
 ## 🧪 Testing
 
-### Consolidated Test Suite
-The package includes a comprehensive test suite:
-
 ```bash
-# Quick smoke tests (30 seconds)
-python tests/test_core.py
-
-# Full integration tests (2-3 minutes)
-python tests/test_integration.py
-
-# Interactive demonstration
-python tests/demo.py --interactive
-
-# Run all tests
-python tests/run_all_tests.py
-
-# Quick test mode
+# Quick tests
 python tests/run_all_tests.py --quick
 ```
 
-### Run Individual Package Tests
-```bash
-# Activate virtual environment
-source venv/bin/activate
-
-# AI Content Pipeline
-cd packages/core/ai_content_pipeline
-python -m pytest tests/
-
-# Google Veo
-cd packages/providers/google/veo
-python test_veo.py
-
-# FAL AI services
-cd packages/providers/fal/video
-python test_fal_ai.py
-
-# Text-to-Speech
-cd packages/services/text-to-speech
-python examples/basic_usage.py
-```
-
-### Setup Tests (No API costs)
-```bash
-# Most packages have free setup tests
-python test_setup.py  # Validates configuration without API calls
-```
+📋 See [tests/README.md](tests/README.md) for complete testing guide.
 
 ## 💰 Cost Management
 
