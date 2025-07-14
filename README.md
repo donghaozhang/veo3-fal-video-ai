@@ -88,6 +88,16 @@ The **`gen4`** model is our most advanced text-to-image model, offering unique c
 
 **Total Models: 35+ AI models across 7 categories**
 
+## 🏷️ Latest Release
+
+[![PyPI Version](https://img.shields.io/pypi/v/video-ai-studio?label=v1.0.15)](https://pypi.org/project/video-ai-studio/1.0.15/) 
+[![GitHub Release](https://img.shields.io/github/v/release/donghaozhang/veo3-fal-video-ai?label=v1.0.15)](https://github.com/donghaozhang/veo3-fal-video-ai/releases/tag/v1.0.15)
+
+### What's New in v1.0.15
+- ✅ Enhanced GitHub deployment tracking for better release visibility
+- 🧪 Improved mock mode testing infrastructure across all generators
+- 🎯 All 35+ AI models with comprehensive parallel processing support
+
 ## 🚀 **FLAGSHIP: AI Content Pipeline**
 
 The unified AI content generation pipeline with parallel execution support, multi-model integration, and YAML-based configuration.
