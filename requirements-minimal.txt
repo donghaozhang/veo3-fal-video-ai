@@ -1,0 +1,5 @@
+# Minimal requirements for testing CI
+python-dotenv>=1.0.0
+requests>=2.31.0
+pyyaml>=6.0
+google-generativeai>=0.2.0; python_version >= "3.9"
