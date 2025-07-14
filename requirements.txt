@@ -17,13 +17,13 @@ fal-client>=0.4.0         # FAL AI API client
 replicate>=0.15.0         # Replicate API client
 
 # OpenAI
-openai>=1.0.0             # OpenAI API client (for OpenRouter integration)
+openai>=1.0.0,<2.0.0      # OpenAI API client (for OpenRouter integration)
 
 # Google Cloud AI
-google-cloud-aiplatform>=1.38.0  # Vertex AI client
-google-cloud-storage>=2.10.0     # Google Cloud Storage
-google-auth>=2.23.0               # Google authentication
-google-generativeai>=0.8.0        # Google Generative AI
+google-cloud-aiplatform>=1.20.0  # Vertex AI client (relaxed for Python 3.8)
+google-cloud-storage>=2.0.0      # Google Cloud Storage (relaxed for Python 3.8)
+google-auth>=2.0.0                # Google authentication (relaxed for Python 3.8)
+google-generativeai>=0.1.0        # Google Generative AI (compatible with older Python)
 
 # Text-to-Speech
 elevenlabs>=1.0.0         # ElevenLabs TTS API
