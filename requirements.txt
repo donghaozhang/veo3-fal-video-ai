@@ -23,7 +23,7 @@ openai>=1.0.0,<2.0.0      # OpenAI API client (for OpenRouter integration)
 google-cloud-aiplatform>=1.20.0  # Vertex AI client (relaxed for Python 3.8)
 google-cloud-storage>=2.0.0      # Google Cloud Storage (relaxed for Python 3.8)
 google-auth>=2.0.0                # Google authentication (relaxed for Python 3.8)
-google-generativeai>=0.2.0; python_version >= "3.9"  # Google Generative AI (Python 3.9+ only)
+google-generativeai>=0.2.0      # Google Generative AI
 
 # Text-to-Speech
 elevenlabs>=1.0.0         # ElevenLabs TTS API
@@ -51,5 +51,3 @@ pytest-asyncio>=0.21.0    # Async test support
 # mcp>=1.0.0                # MCP server support (not available on PyPI)
 
 # ===== Optional/Conditional Dependencies =====
-# Legacy Python support (for Python < 3.4)
-pathlib2>=2.3.0; python_version < '3.4'
