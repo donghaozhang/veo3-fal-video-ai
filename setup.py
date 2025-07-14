@@ -10,7 +10,7 @@ from pathlib import Path
 
 # Package metadata
 PACKAGE_NAME = "video_ai_studio"
-VERSION = "1.0.12"
+VERSION = "1.0.13"
 AUTHOR = "donghao zhang"
 AUTHOR_EMAIL = "zdhpeter@gmail.com"
 DESCRIPTION = "Comprehensive AI content generation suite with multiple providers and services"
@@ -35,7 +35,7 @@ def read_requirements():
             ]
     return []
 
-# Base requirements (core dependencies only)
+# Base requirements (essential dependencies)
 install_requires = [
     "python-dotenv>=1.0.0",
     "requests>=2.31.0", 
@@ -43,6 +43,16 @@ install_requires = [
     "pyyaml>=6.0",
     "pathlib2>=2.3.7",
     "argparse>=1.4.0",
+    # Essential AI service clients
+    "fal-client>=0.4.0",
+    "replicate>=0.15.0",
+    "openai>=1.0.0,<2.0.0",
+    "google-generativeai>=0.2.0",
+    "elevenlabs>=1.0.0",
+    # Essential media processing
+    "Pillow>=10.0.0",
+    "httpx>=0.25.0",
+    "aiohttp>=3.8.0",
 ]
 
 # Optional requirements organized by functionality
@@ -53,24 +63,11 @@ extras_require = {
         "pathlib2>=2.3.7",
     ],
     
-    # FAL AI Providers
-    "fal": [
-        "fal-client>=0.4.0",
-        "httpx>=0.25.0",
-    ],
-    
-    # Google Cloud Services
-    "google": [
+    # Google Cloud Services (optional)
+    "google-cloud": [
         "google-cloud-aiplatform>=1.38.0",
         "google-cloud-storage>=2.10.0",
         "google-auth>=2.23.0",
-        "google-genai>=0.1.0",
-        "google-generativeai>=0.8.0",
-    ],
-    
-    # Text-to-Speech Services
-    "tts": [
-        "elevenlabs>=1.0.0",
     ],
     
     # Video Processing
@@ -109,17 +106,17 @@ extras_require = {
 
 # Convenience groups
 extras_require["all"] = list(set(
-    req for group in ["pipeline", "fal", "google", "tts", "video", "image", "mcp"] 
+    req for group in ["pipeline", "google-cloud", "video", "dev", "jupyter", "mcp"] 
     for req in extras_require[group]
 ))
 
-extras_require["providers"] = list(set(
-    req for group in ["fal", "google"] 
+extras_require["cloud"] = list(set(
+    req for group in ["google-cloud"] 
     for req in extras_require[group]
 ))
 
-extras_require["services"] = list(set(
-    req for group in ["tts", "video", "image"] 
+extras_require["media"] = list(set(
+    req for group in ["video", "image"] 
     for req in extras_require[group]
 ))
 
