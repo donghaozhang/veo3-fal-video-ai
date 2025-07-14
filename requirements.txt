@@ -23,7 +23,6 @@ openai>=1.0.0             # OpenAI API client (for OpenRouter integration)
 google-cloud-aiplatform>=1.38.0  # Vertex AI client
 google-cloud-storage>=2.10.0     # Google Cloud Storage
 google-auth>=2.23.0               # Google authentication
-google-genai>=0.1.0               # Google GenAI SDK
 google-generativeai>=0.8.0        # Google Generative AI
 
 # Text-to-Speech
