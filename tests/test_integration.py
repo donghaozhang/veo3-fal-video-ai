@@ -22,11 +22,11 @@ def test_package_installation():
     print("🧪 Testing Package Installation...")
     
     try:
-        # Test import using installed package
+        # Test import using installed package with mock mode
         from packages.core.ai_content_pipeline.ai_content_pipeline.pipeline.manager import AIPipelineManager
         print("✅ Package imports successful")
         
-        # Test basic functionality
+        # Test basic functionality with mock providers
         manager = AIPipelineManager()
         models = manager.get_available_models()
         total_models = sum(len(model_list) for model_list in models.values())
